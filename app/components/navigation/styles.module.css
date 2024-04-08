@@ -1,0 +1,112 @@
+.root {
+  display: flex;
+  justify-content: space-between;
+  background: #06173d;
+  font-family: "Roboto", sans-serif;
+}
+
+.startNavigation {
+  display: flex;
+  flex-direction: row;
+  font-family: "Nunito Sans Variable", sans-serif;
+}
+
+.endNavigation {
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 0px 20px;
+}
+
+.logo {
+  width: 160px;
+  padding-left: 16px;
+}
+
+.logo img {
+  max-width: 160px;
+}
+
+.navigationList {
+  list-style: none;
+  padding: 0px;
+  margin: 4px;
+  margin-left: 40px;
+}
+
+.navigationItem {
+  display: inline;
+  padding: 12px 8px;
+  line-height: 44px;
+  margin-right: 24px;
+}
+
+.link {
+  font-weight: 500;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 16px;
+}
+.link:hover {
+  color: #fcd535;
+}
+.linkMobile {
+  font-weight: 500;
+  color: #0b0e11;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.avatarRoot {
+  display: inline-flex;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  overflow: hidden;
+  user-select: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 100%;
+}
+
+.avatarFallback {
+  width: 36px;
+  height: 36px;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0b90b;
+  font-size: 15px;
+  line-height: 1;
+  color: #0b0e11;
+  font-weight: 500;
+}
+
+.active {
+  color: #f0b90b;
+}
+
+.lang {
+  height: 38px;
+  align-self: center;
+  margin-left: 20px;
+  width: 40px;
+  border: none;
+  background: #10132b;
+  color: #fff;
+  font-weight: 500;
+  font-size: 12px;
+  outline: none;
+}
+
+.langOption {
+  padding: 4px;
+  height: 20px;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}

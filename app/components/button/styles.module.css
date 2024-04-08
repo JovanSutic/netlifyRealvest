@@ -1,0 +1,42 @@
+.root {
+    background-color: #10132b;
+    color: #fff;
+    border: none;
+    margin: 0px 8px;
+    font-family: 'Nunito Sans Variable', sans-serif;
+    cursor: pointer;
+}
+
+.small {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 16px;
+    max-height: 34px;
+    line-height: 18px;
+}
+
+.medium {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 18px;
+    max-height: 42px;
+    line-height: 20px;
+}
+
+.big {
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 22px;
+    max-height: 54px;
+    line-height: 24px;
+}
+
+.secondary {
+    background-color: #f0b90b;
+    color: #10132b;
+}
+
+.tertiary {
+    background-color: #EAECEF;
+    color: #10132b;
+}
