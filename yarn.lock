@@ -1003,7 +1003,7 @@
     prop-types "^15.8.1"
     react-is "^18.2.0"
 
-"@netlify/functions@^2.6.0":
+"@netlify/functions@^2.5.1":
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/@netlify/functions/-/functions-2.6.0.tgz#801a6fe8ceef2ce1512c637a28e53e6a3aae289b"
   integrity sha512-vU20tij0fb4nRGACqb+5SQvKd50JYyTyEhQetCMHdakcJFzjLDivvRR16u1G2Oy4A7xNAtGJF1uz8reeOtTVcQ==
