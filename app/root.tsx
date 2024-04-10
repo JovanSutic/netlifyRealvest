@@ -15,17 +15,11 @@ import { MuiDocument } from "./mui/MuiDocument";
 import appStyles from "./app.css?url";
 import { default as ErrorPage } from "./components/error";
 import Navigation from "./components/navigation";
-import { isMobile } from "./utils/params";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
   ...getMuiLinks(),
 ];
-
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const userAgent = request.headers.get("user-agent");
-  return json({ ok: true, mobile: isMobile(userAgent!) });
-};
 
 export function ErrorBoundary() {
   const error = useRouteError();
@@ -46,7 +40,6 @@ export function ErrorBoundary() {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const loaderData: { mobile: boolean } | undefined = useLoaderData();
 
   return (
     <html lang="en">
@@ -59,7 +52,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <header>
-          <Navigation mobile={loaderData?.mobile || false} />
+          <Navigation mobile={false} />
         </header>
         {children}
         <ScrollRestoration />
