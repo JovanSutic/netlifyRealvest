@@ -1,19 +1,18 @@
 import { Box, Typography } from "@mui/material";
-import { useSearchParams } from "@remix-run/react";
 import { WidgetWrapper } from "../components/layout";
-import Table from "../components/table";
+import Table from "../components/table/Table";
 import { listMainReportData } from "../utils/reports";
 import { Translator } from "../data/language/translator";
 import { LangType, MainReportTableData } from "../types/dashboard.types";
 const MainTableReport = ({
   data,
   mobile,
+  lang,
 }: {
   data: Record<string, MainReportTableData>;
   mobile: boolean;
+  lang: LangType
 }) => {
-  const [searchParams] = useSearchParams();
-  const lang = searchParams.get("lang") as LangType;
   const translator = new Translator("dashboard");
   const tableHeaders = [
     {

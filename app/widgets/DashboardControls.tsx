@@ -1,20 +1,29 @@
 import { Box, Typography } from "@mui/material";
 import { WidgetWrapper } from "../components/layout";
-import { useSearchParams } from "@remix-run/react";
 import { LangType, PropertyType } from "../types/dashboard.types";
 import { RangeOption, formatDate } from "../utils/dateTime";
 import { Translator } from "../data/language/translator";
 import ToggleButtons from "../components/toggleButtons";
-import Select from "../components/select";
+import Select from "../components/select/Select";
 
-const DashboardControls = ({ validUntil, mobile }: { validUntil: string, mobile: boolean; }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const lang = searchParams.get("lang") as LangType;
-  const timeRange = searchParams.get("time_range") as RangeOption;
-  const propertyType = searchParams.get("property_type") as PropertyType;
+const DashboardControls = ({
+  validUntil,
+  mobile,
+  changeParams,
+  lang,
+  currentRange,
+  currentType,
+}: {
+  validUntil: string;
+  mobile: boolean;
+  changeParams: (value: string, type: string) => void;
+  lang: LangType;
+  currentRange: RangeOption;
+  currentType: PropertyType;
+}) => {
   const timeRangeOptions = ["3m", "6m", "1y", "3y", "5y", "10y"];
   const translator = new Translator("dashboard");
-  
+
   return (
     <WidgetWrapper>
       <Box
@@ -31,7 +40,7 @@ const DashboardControls = ({ validUntil, mobile }: { validUntil: string, mobile:
             flexDirection: mobile ? "column" : "row",
             alignItems: mobile ? "start" : "center",
             width: "100%",
-            mb: mobile ? "8px" : "0px"
+            mb: mobile ? "8px" : "0px",
           }}
         >
           <Typography variant={mobile ? "h6" : "h5"} component="h5">
@@ -54,16 +63,10 @@ const DashboardControls = ({ validUntil, mobile }: { validUntil: string, mobile:
             }}
           >
             <Select
-              value={propertyType || "residential"}
-              minWidth={mobile ? 120 : 160}
+              value={currentType!}
+              isFullWidth={mobile!}
               setValue={(value) => {
-                setSearchParams(
-                  (prev) => {
-                    prev.set("property_type", value || "residential");
-                    return prev;
-                  },
-                  { preventScrollReset: true }
-                );
+                changeParams(value, "propertyType")
               }}
               options={[
                 {
@@ -82,15 +85,9 @@ const DashboardControls = ({ validUntil, mobile }: { validUntil: string, mobile:
             />
 
             <ToggleButtons
-              value={timeRange!}
+              value={currentRange!}
               onChange={(value) => {
-                setSearchParams(
-                  (prev) => {
-                    prev.set("time_range", value || timeRange!);
-                    return prev;
-                  },
-                  { preventScrollReset: true }
-                );
+                  changeParams(value, "timeRange")
               }}
               options={timeRangeOptions.map((item) => ({
                 value: item,
@@ -98,11 +95,13 @@ const DashboardControls = ({ validUntil, mobile }: { validUntil: string, mobile:
               }))}
             />
           </Box>
-          <Box sx={{
+          <Box
+            sx={{
               display: "flex",
               flexDirection: "row",
               marginTop: "8px",
-            }}>
+            }}
+          >
             <Typography variant="body2" component="h6">
               {`${translator.getTranslation(lang!, "lastDate")} ${formatDate(
                 validUntil,

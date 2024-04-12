@@ -1,3 +1,5 @@
+import { RangeOption } from "~/utils/dateTime";
+
 export type GeneralObject = { id: number; name: string };
 export const propertyType = ["residential", "parking", "commercial"] as const;
 export type PropertyType = (typeof propertyType)[number];
@@ -115,4 +117,12 @@ export type CardsData = {
   sum_price: CardsDataItem;
   average_meter_price: CardsDataItem;
   sum_size: CardsDataItem;
+};
+
+export type DashboardParamsUI = {
+  lang: LangType;
+  time_range: RangeOption,
+  property_type: PropertyType,
+  municipality: string,
+  distribution_type: DistributionTypeKey,
 };

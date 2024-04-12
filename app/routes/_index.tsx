@@ -26,8 +26,8 @@ import { getDayInYear } from "../utils/dateTime";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "Realvest" },
+    { name: "description", content: "Welcome to Realvest" },
   ];
 };
 
@@ -38,7 +38,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function Index() {
   const [searchParams] = useSearchParams();
-  const lang = searchParams.get("lang");
+  const lang = searchParams.get("lang") || 'sr';
   console.log(lang);
 
   const {
@@ -104,7 +104,7 @@ export default function Index() {
                 }}
               >
                 <NavLink
-                  to={`dashboard/?lang=sr&time_range=3m&property_type=residential&municipality=1&distribution_type=price_map`}
+                  to={"dashboard/?lang=sr"}
                 >
                   Pogledaj podatke za Beograd
                 </NavLink>

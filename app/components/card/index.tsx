@@ -1,4 +1,5 @@
-import { Box, Chip, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import Chip from "../chip";
 
 const Card = ({
   label,
@@ -11,17 +12,12 @@ const Card = ({
   changeValue: number;
   isMobile: boolean;
 }) => {
-  const getColor = () => {
-    if (changeValue > 0) return "#b1ffd0";
-    if (changeValue < 0) return "#fdd0d0";
 
-    return "#c8d4ff";
-  };
-  const getFontColor = () => {
-    if (changeValue > 0) return "#107237";
-    if (changeValue < 0) return "#f90000";
+  const getChipColor = (): 'blue' | 'green' | 'red' => {
+    if (changeValue > 0) return "green";
+    if (changeValue < 0) return "red";
 
-    return "#1a39ac";
+    return "blue";
   };
 
   return (
@@ -71,15 +67,8 @@ const Card = ({
             </Typography>
             <Chip
               label={`${changeValue}%`}
-              size="small"
-              sx={{
-                width: "50px",
-                height: "auto",
-                fontWeight: 500,
-                fontSize: "12px",
-                background: getColor(),
-                color: getFontColor()
-              }}
+              isClose={false}
+              color={getChipColor()}
             />
           </Box>
 

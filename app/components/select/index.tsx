@@ -31,8 +31,9 @@ export default function Select({
       size="small"
     >
       <MuiSelect
-        labelId="demo-select-small-label"
-        id="demo-select-small"
+        labelId="select-small-label"
+        id="select-small"
+        defaultOpen={false}
         value={value}
         variant="outlined"
         onChange={handleChange}

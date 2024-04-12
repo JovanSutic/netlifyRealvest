@@ -5,16 +5,14 @@ import {
   Scripts,
   ScrollRestoration,
   isRouteErrorResponse,
-  useLoaderData,
   useRouteError,
 } from "@remix-run/react";
-import { LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
+import { LinksFunction } from "@remix-run/node";
 import { getMuiLinks } from "./mui/getMuiLinks";
 import { MuiMeta } from "./mui/MuiMeta";
 import { MuiDocument } from "./mui/MuiDocument";
 import appStyles from "./app.css?url";
 import { default as ErrorPage } from "./components/error";
-import Navigation from "./components/navigation";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
@@ -51,9 +49,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <header>
-          <Navigation mobile={false} />
-        </header>
         {children}
         <ScrollRestoration />
         <Scripts />

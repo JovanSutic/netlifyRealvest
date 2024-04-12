@@ -1,7 +1,6 @@
 import { Box, Divider, Typography } from "@mui/material";
 import { WidgetWrapper } from "../components/layout";
-import { useSearchParams } from "@remix-run/react";
-import Select from "../components/select";
+import Select from "../components/select/Select";
 import {
   getDataForPie,
   getSingleLineDataset,
@@ -28,20 +27,24 @@ const PieReport = ({
   lineData,
   data,
   mobile,
+  changeParams,
+  lang,
+  distributionType,
+  propertyType,
+  timeRange,
+  municipality,
 }: {
   municipalityList: DropdownOptions[];
   lineData: MainReportType[];
   data: PieReportType[];
   mobile: boolean;
+  changeParams: (value: string, type: string) => void;
+  lang: LangType;
+  distributionType: DistributionTypeKey;
+  propertyType: PropertyType;
+  timeRange: RangeOption;
+  municipality: string;
 }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const lang = searchParams.get("lang") as LangType;
-  const timeRange = searchParams.get("time_range") as RangeOption;
-  const propertyType = searchParams.get("property_type") as PropertyType;
-  const municipality = searchParams.get("municipality");
-  const distributionType = searchParams.get(
-    "distribution_type"
-  ) as DistributionTypeKey;
   const translator = new Translator("dashboard");
   const chartData: PieChartData = getDataForPie(
     data,
@@ -57,7 +60,7 @@ const PieReport = ({
           flexDirection: "column",
           alignItems: "center",
           boxSizing: "border-box",
-          width: "100%"
+          width: "100%",
         }}
       >
         <Box
@@ -77,19 +80,17 @@ const PieReport = ({
               marginBottom: "16px",
             }}
           >
-            <Typography component="h6" variant={mobile ? "subtitle1" : "h6"} sx={{ fontWeight: "400" }}>
+            <Typography
+              component="h6"
+              variant={mobile ? "subtitle1" : "h6"}
+              sx={{ fontWeight: "400" }}
+            >
               {translator.getTranslation(lang!, "pieTitle")}
             </Typography>
             <Select
-              value={municipality!}
+              value={municipality}
               setValue={(value) => {
-                setSearchParams(
-                  (prev) => {
-                    prev.set("municipality", value || municipality!);
-                    return prev;
-                  },
-                  { preventScrollReset: true }
-                );
+                changeParams(value, "municipality");
               }}
               options={municipalityList || []}
             />
@@ -109,8 +110,8 @@ const PieReport = ({
             data={getSingleLineDataset(
               lineData,
               translator.getTranslation(lang!, `priceAverage3m`),
-              timeRange!,
-              lang!
+              timeRange,
+              lang
             )}
             options={{
               responsive: true,
@@ -158,13 +159,7 @@ const PieReport = ({
               value={distributionType!}
               size="small"
               onChange={(value) => {
-                setSearchParams(
-                  (prev) => {
-                    prev.set("distribution_type", value || distributionType);
-                    return prev;
-                  },
-                  { preventScrollReset: true }
-                );
+                changeParams(value, "distributionType");
               }}
               options={[
                 {
@@ -188,7 +183,7 @@ const PieReport = ({
                 }}
               >
                 <DoughnutChart
-                  ratio={ mobile ? 1.5 : 2}
+                  ratio={mobile ? 1.5 : 2}
                   id="salesDistribution"
                   labels={chartData.labels}
                   data={numbersToPercentage(chartData.data)}
