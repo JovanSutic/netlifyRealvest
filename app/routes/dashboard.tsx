@@ -3,7 +3,7 @@ import { Column, Line, Page } from "../components/layout";
 import MainTableReport from "../widgets/MainTableReport";
 import { json } from "@remix-run/node";
 import { createClient } from "@supabase/supabase-js";
-import {useLoaderData, useSearchParams } from "@remix-run/react";
+import { useLoaderData, useSearchParams, useFetcher } from "@remix-run/react";
 import {
   RangeOption,
   getDateForReport,
@@ -11,14 +11,14 @@ import {
 } from "../utils/dateTime";
 import { getDataForMainReport, getOptions } from "../utils/reports";
 import PieReport from "../widgets/PieReport";
-import { isDashboardParamsValid, isMobile } from "../utils/params";
-import { MainReportType, PieReportType } from "../types/dashboard.types";
+import { isMobile } from "../utils/params";
+import { DashboardParamsUI, DistributionTypeKey, LangType, MainReportType, PieReportType, PropertyType } from "../types/dashboard.types";
 import DashboardControls from "../widgets/DashboardControls";
 import DashboardCards from "../widgets/DashboardCards";
 import { default as ErrorPage } from "../components/error";
-import { Translator } from "../data/language/translator";
+import { useState, useMemo, useCallback, useEffect } from "react";
 
-const mandatorySearchParams: Record<string, string> = {
+const mandatorySearchParams: DashboardParamsUI = {
   lang: "sr",
   time_range: "3m",
   property_type: "residential",
@@ -28,8 +28,8 @@ const mandatorySearchParams: Record<string, string> = {
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "Realvest dashboard" },
+    { name: "description", content: "Welcome to Realvest dashboard" },
   ];
 };
 
@@ -42,7 +42,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   );
 
   const startDate = getDateForReport(
-    (searchRange || mandatorySearchParams.timeRange) as RangeOption
+    (searchRange || mandatorySearchParams.time_range) as RangeOption
   );
 
   const supabase = createClient(
@@ -57,7 +57,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     id, name
   )`
     )
-    .eq("type", `${searchType || mandatorySearchParams.propertyType}`)
+    .eq("type", `${searchType || mandatorySearchParams.property_type}`)
     .gt("date_from", getDbDateString(startDate!, "en"))
     .returns<MainReportType[]>();
   if (mainError) {
@@ -71,7 +71,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     id, name
   )`
     )
-    .eq("type", `${searchType || mandatorySearchParams.propertyType}`)
+    .eq("type", `${searchType || mandatorySearchParams.property_type}`)
     .eq(
       "municipality",
       `${searchMunicipality || mandatorySearchParams.municipality}`
@@ -103,13 +103,32 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export default function Index() {
+  const [timeRange, setTimeRange] = useState(mandatorySearchParams.time_range);
+  const [propertyType, setPropertyType] = useState<PropertyType>(
+    mandatorySearchParams.property_type 
+  );
+  const [municipality, setMunicipality] = useState(
+    mandatorySearchParams.municipality
+  );
+  const [distributionType, setDistributionType] = useState(
+    mandatorySearchParams.distribution_type
+  );
+
+  const changeSearchParam = useCallback((value: string, type: string) => {
+    if(type === "municipality") setMunicipality(value);
+    if(type === "propertyType") setPropertyType(value as PropertyType);
+    if(type === "timeRange") setTimeRange(value as RangeOption);
+    if(type === "distributionType") setDistributionType(value as DistributionTypeKey);
+  }, [])
+
   const [searchParams] = useSearchParams();
-  const lang = searchParams.get("lang");
-  const timeRange = searchParams.get("time_range");
-  const propertyType = searchParams.get("property_type");
-  const municipality = searchParams.get("municipality");
-  const distributionType = searchParams.get("distribution_type");
-  const translator = new Translator("dashboard");
+  const lang = searchParams.get("lang") as LangType || 'sr';
+  const fetcher = useFetcher<{
+    reports: MainReportType[];
+    mobile: boolean;
+    municipalities: { id: number; name: string }[];
+    pieReportData: PieReportType[];
+  }>({ key: "report_change" });
 
   const {
     reports,
@@ -123,24 +142,9 @@ export default function Index() {
     pieReportData: PieReportType[];
   } = useLoaderData();
 
-  if (
-    !isDashboardParamsValid({
-      lang,
-      timeRange,
-      propertyType,
-      municipality,
-      distributionType,
-    })
-  ) {
-    return (
-      <ErrorPage
-        title={translator.getTranslation(lang!, "dashboardErrorTitle")}
-        subtitle={translator.getTranslation(lang!, "dashboardErrorSubtitle")}
-        buttonText={translator.getTranslation(lang!, "dashboardErrorButton")}
-        link={`/dashboard/?lang=${mandatorySearchParams.lang}&time_range=${mandatorySearchParams.time_range}&property_type=${mandatorySearchParams.property_type}&municipality=${mandatorySearchParams.municipality}&distribution_type=${mandatorySearchParams.distribution_type}`}
-      />
-    );
-  }
+  useEffect(() => {
+    fetcher.load(`/dashboard/?time_range=${timeRange}&property_type=${propertyType}&municipality=${municipality}&distribution_type=${distributionType}`)
+  },[timeRange, propertyType, municipality, distributionType]);
 
   return (
     <Page mobile={mobile}>
@@ -148,23 +152,49 @@ export default function Index() {
         <Column size={5}>
           <DashboardControls
             validUntil={reports[reports.length - 1].date_to}
+            changeParams={changeSearchParam}
             mobile={mobile}
+            lang={lang}
+            currentRange={timeRange}
+            currentType={propertyType}
           />
         </Column>
       </Line>
       <Line mobile={mobile}>
         <Column size={mobile ? 5 : 3}>
-          <DashboardCards mobile={mobile} data={reports} />
-          <MainTableReport data={getDataForMainReport(reports)} mobile={mobile} />
+          {useMemo(
+            () => (
+              <>
+                <DashboardCards
+                  mobile={mobile}
+                  lang={lang}
+                  data={fetcher.data?.reports || reports}
+                  timeRange={timeRange}
+                />
+                <MainTableReport
+                  data={getDataForMainReport(fetcher.data?.reports || reports)}
+                  mobile={mobile}
+                  lang={lang}
+                />
+              </>
+            ),
+            [JSON.stringify(fetcher.data?.reports), reports.length]
+          )}
         </Column>
         <Column size={mobile ? 5 : 2}>
           <PieReport
             municipalityList={getOptions(municipalities)}
-            lineData={reports.filter(
+            lineData={(fetcher.data?.reports || reports).filter(
               (item) => item.municipality.id === Number(municipality)
             )}
-            data={pieReportData}
+            data={fetcher.data?.pieReportData || pieReportData}
             mobile={mobile}
+            changeParams={changeSearchParam}
+            lang={lang}
+            distributionType={distributionType}
+            propertyType={propertyType}
+            timeRange={timeRange}
+            municipality={municipality}
           />
         </Column>
       </Line>
@@ -173,6 +203,5 @@ export default function Index() {
 }
 
 export function ErrorBoundary() {
-
   return <ErrorPage link={"/"} />;
 }

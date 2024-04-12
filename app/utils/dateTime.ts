@@ -47,7 +47,7 @@ export const getDateForReport = (
 ): Date | undefined => {
   if (range) {
     const date = new Date();
-    const isLastMonthLoaded = date.getDate() > 11;
+    const isLastMonthLoaded = date.getDate() > 16;
 
     date.setMonth(
       date.getMonth() -
