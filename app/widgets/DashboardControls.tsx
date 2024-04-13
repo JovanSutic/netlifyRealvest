@@ -5,6 +5,7 @@ import { RangeOption, formatDate } from "../utils/dateTime";
 import { Translator } from "../data/language/translator";
 import ToggleButtons from "../components/toggleButtons";
 import Select from "../components/select/Select";
+import Loader from "../components/loader";
 
 const DashboardControls = ({
   validUntil,
@@ -66,7 +67,7 @@ const DashboardControls = ({
               value={currentType!}
               isFullWidth={mobile!}
               setValue={(value) => {
-                changeParams(value, "propertyType")
+                changeParams(value, "propertyType");
               }}
               options={[
                 {
@@ -87,7 +88,7 @@ const DashboardControls = ({
             <ToggleButtons
               value={currentRange!}
               onChange={(value) => {
-                  changeParams(value, "timeRange")
+                changeParams(value, "timeRange");
               }}
               options={timeRangeOptions.map((item) => ({
                 value: item,

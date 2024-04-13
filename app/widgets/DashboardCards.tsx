@@ -27,26 +27,32 @@ const DashboardCards = ({
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: mobile ? "column" : "row",
-        justifyContent: "space-between",
-        alignSelf: "center",
-        width: "100%",
-        gap: mobile ? "20px" : "0px",
-        mb: "20px",
+        position: "relative",
       }}
     >
-      {(Object.keys(cards) as unknown as Array<keyof CardsReport>)?.map(
-        (item) => (
-          <Card
-            key={item}
-            label={translator.getTranslation(lang!, cards[item].labelKey)}
-            value={cards[item].value}
-            changeValue={cards[item].changeValue!}
-            isMobile={mobile}
-          />
-        )
-      )}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: mobile ? "column" : "row",
+          justifyContent: "space-between",
+          alignSelf: "center",
+          width: "100%",
+          gap: mobile ? "20px" : "0px",
+          mb: "20px",
+        }}
+      >
+        {(Object.keys(cards) as unknown as Array<keyof CardsReport>)?.map(
+          (item) => (
+            <Card
+              key={item}
+              label={translator.getTranslation(lang!, cards[item].labelKey)}
+              value={cards[item].value}
+              changeValue={cards[item].changeValue!}
+              isMobile={mobile}
+            />
+          )
+        )}
+      </Box>
     </Box>
   );
 };
