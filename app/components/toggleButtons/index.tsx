@@ -35,7 +35,7 @@ const ToggleButtons = ({
       }}
       aria-label="Platform"
       sx={{
-        padding: "4px",
+        padding: "4px 0px",
       }}
     >
       {options.map((option) => (
