@@ -76,6 +76,7 @@ export const Column = ({
         boxSizing: "border-box",
         display: "flex",
         flexDirection: "column",
+        position: 'relative',
         width: `${width}%`
       }}
     >
@@ -95,6 +96,7 @@ export const WidgetWrapper = ({
     <Box
       sx={{
         backgroundColor: "#fff",
+        position: 'relative',
         padding: "20px",
         borderRadius: "8px",
         boxSizing: "border-box",

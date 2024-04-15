@@ -4,6 +4,7 @@ import Table from "../components/table/Table";
 import { listMainReportData } from "../utils/reports";
 import { Translator } from "../data/language/translator";
 import { LangType, MainReportTableData } from "../types/dashboard.types";
+
 const MainTableReport = ({
   data,
   mobile,
@@ -11,7 +12,7 @@ const MainTableReport = ({
 }: {
   data: Record<string, MainReportTableData>;
   mobile: boolean;
-  lang: LangType
+  lang: LangType;
 }) => {
   const translator = new Translator("dashboard");
   const tableHeaders = [
@@ -80,11 +81,7 @@ const MainTableReport = ({
             width: "100%",
           }}
         >
-          <Table
-            headers={tableHeaders}
-            data={listMainReportData(data)}
-            height={mobile ? 386 : 500}
-          />
+          <Table headers={tableHeaders} data={listMainReportData(data)} />
         </Box>
       </Box>
     </WidgetWrapper>

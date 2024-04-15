@@ -12,11 +12,19 @@ import {
 import { getDataForMainReport, getOptions } from "../utils/reports";
 import PieReport from "../widgets/PieReport";
 import { isMobile } from "../utils/params";
-import { DashboardParamsUI, DistributionTypeKey, LangType, MainReportType, PieReportType, PropertyType } from "../types/dashboard.types";
+import {
+  DashboardParamsUI,
+  DistributionTypeKey,
+  LangType,
+  MainReportType,
+  PieReportType,
+  PropertyType,
+} from "../types/dashboard.types";
 import DashboardControls from "../widgets/DashboardControls";
 import DashboardCards from "../widgets/DashboardCards";
 import { default as ErrorPage } from "../components/error";
 import { useState, useMemo, useCallback, useEffect } from "react";
+import Loader from "../components/loader";
 
 const mandatorySearchParams: DashboardParamsUI = {
   lang: "sr",
@@ -105,7 +113,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export default function Index() {
   const [timeRange, setTimeRange] = useState(mandatorySearchParams.time_range);
   const [propertyType, setPropertyType] = useState<PropertyType>(
-    mandatorySearchParams.property_type 
+    mandatorySearchParams.property_type
   );
   const [municipality, setMunicipality] = useState(
     mandatorySearchParams.municipality
@@ -113,16 +121,40 @@ export default function Index() {
   const [distributionType, setDistributionType] = useState(
     mandatorySearchParams.distribution_type
   );
+  const [paramChangeType, setParamChangeType] = useState<"all" | "part">("all");
 
-  const changeSearchParam = useCallback((value: string, type: string) => {
-    if(type === "municipality") setMunicipality(value);
-    if(type === "propertyType") setPropertyType(value as PropertyType);
-    if(type === "timeRange") setTimeRange(value as RangeOption);
-    if(type === "distributionType") setDistributionType(value as DistributionTypeKey);
-  }, [])
+  const changeSearchParam = useCallback(
+    (value: string, type: string) => {
+      if (type === "propertyType") {
+        if (paramChangeType === "part") {
+          setParamChangeType("all");
+        }
+        setPropertyType(value as PropertyType);
+      }
+      if (type === "timeRange") {
+        if (paramChangeType === "part") {
+          setParamChangeType("all");
+        }
+        setTimeRange(value as RangeOption);
+      }
+      if (type === "distributionType") {
+        if (paramChangeType !== "part") {
+          setParamChangeType("part");
+        }
+        setDistributionType(value as DistributionTypeKey);
+      }
+      if (type === "municipality") {
+        if (paramChangeType !== "part") {
+          setParamChangeType("part");
+        }
+        setMunicipality(value);
+      }
+    },
+    [paramChangeType]
+  );
 
   const [searchParams] = useSearchParams();
-  const lang = searchParams.get("lang") as LangType || 'sr';
+  const lang = (searchParams.get("lang") as LangType) || "sr";
   const fetcher = useFetcher<{
     reports: MainReportType[];
     mobile: boolean;
@@ -143,8 +175,10 @@ export default function Index() {
   } = useLoaderData();
 
   useEffect(() => {
-    fetcher.load(`/dashboard/?time_range=${timeRange}&property_type=${propertyType}&municipality=${municipality}&distribution_type=${distributionType}`)
-  },[timeRange, propertyType, municipality, distributionType]);
+    fetcher.load(
+      `/dashboard/?time_range=${timeRange}&property_type=${propertyType}&municipality=${municipality}&distribution_type=${distributionType}`
+    );
+  }, [timeRange, propertyType, municipality, distributionType]);
 
   return (
     <Page mobile={mobile}>
@@ -162,6 +196,9 @@ export default function Index() {
       </Line>
       <Line mobile={mobile}>
         <Column size={mobile ? 5 : 3}>
+          <Loader
+            open={fetcher.state === "loading" && paramChangeType === "all"}
+          />
           {useMemo(
             () => (
               <>
@@ -182,20 +219,31 @@ export default function Index() {
           )}
         </Column>
         <Column size={mobile ? 5 : 2}>
-          <PieReport
-            municipalityList={getOptions(municipalities)}
-            lineData={(fetcher.data?.reports || reports).filter(
-              (item) => item.municipality.id === Number(municipality)
-            )}
-            data={fetcher.data?.pieReportData || pieReportData}
-            mobile={mobile}
-            changeParams={changeSearchParam}
-            lang={lang}
-            distributionType={distributionType}
-            propertyType={propertyType}
-            timeRange={timeRange}
-            municipality={municipality}
-          />
+          <Loader open={fetcher.state === "loading"} />
+          {useMemo(() => {
+            return (
+              <PieReport
+                municipalityList={getOptions(municipalities)}
+                lineData={(fetcher.data?.reports || reports).filter(
+                  (item) => item.municipality.id === Number(municipality)
+                )}
+                data={fetcher.data?.pieReportData || pieReportData}
+                mobile={mobile}
+                changeParams={changeSearchParam}
+                lang={lang}
+                distributionType={distributionType}
+                propertyType={propertyType}
+                timeRange={timeRange}
+                municipality={municipality}
+              />
+            );
+          }, [
+            JSON.stringify(fetcher.data?.reports),
+            JSON.stringify(fetcher.data?.pieReportData),
+            municipality,
+            reports.length,
+            distributionType,
+          ])}
         </Column>
       </Line>
     </Page>

@@ -5,6 +5,7 @@ import { RangeOption, formatDate } from "../utils/dateTime";
 import { Translator } from "../data/language/translator";
 import ToggleButtons from "../components/toggleButtons";
 import Select from "../components/select/Select";
+import { InfoTooltip } from "../components/icons";
 
 const DashboardControls = ({
   validUntil,
@@ -62,38 +63,50 @@ const DashboardControls = ({
               gap: mobile ? "8px" : "16px",
             }}
           >
-            <Select
-              value={currentType!}
-              isFullWidth={mobile!}
-              setValue={(value) => {
-                changeParams(value, "propertyType")
-              }}
-              options={[
-                {
-                  value: "residential",
-                  text: translator.getTranslation(lang!, "residentialType"),
-                },
-                {
-                  value: "commercial",
-                  text: translator.getTranslation(lang!, "commercialType"),
-                },
-                {
-                  value: "parking",
-                  text: translator.getTranslation(lang!, "parkingType"),
-                },
-              ]}
-            />
+            <Box sx={{
+              display: "flex",
+              gap: "4px"
+            }}>
+              <Select
+                value={currentType!}
+                isFullWidth={mobile!}
+                setValue={(value) => {
+                  changeParams(value, "propertyType");
+                }}
+                options={[
+                  {
+                    value: "residential",
+                    text: translator.getTranslation(lang!, "residentialType"),
+                  },
+                  {
+                    value: "commercial",
+                    text: translator.getTranslation(lang!, "commercialType"),
+                  },
+                  {
+                    value: "parking",
+                    text: translator.getTranslation(lang!, "parkingType"),
+                  },
+                ]}
+              />
+              <InfoTooltip text={translator.getTranslation(lang, "tooltipType")} direction="left" />
+            </Box>
 
-            <ToggleButtons
-              value={currentRange!}
-              onChange={(value) => {
-                  changeParams(value, "timeRange")
-              }}
-              options={timeRangeOptions.map((item) => ({
-                value: item,
-                text: translator.getTranslation(lang!, item),
-              }))}
-            />
+            <Box sx={{
+              display: "flex",
+              gap: "4px"
+            }}>
+              <ToggleButtons
+                value={currentRange!}
+                onChange={(value) => {
+                  changeParams(value, "timeRange");
+                }}
+                options={timeRangeOptions.map((item) => ({
+                  value: item,
+                  text: translator.getTranslation(lang!, item),
+                }))}
+              />
+              <InfoTooltip text={translator.getTranslation(lang, "timeRangeType")} direction="right" />
+            </Box>
           </Box>
           <Box
             sx={{
