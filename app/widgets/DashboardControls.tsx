@@ -88,7 +88,7 @@ const DashboardControls = ({
                   },
                 ]}
               />
-              <InfoTooltip text={translator.getTranslation(lang, "tooltipType")} direction="left" />
+              <InfoTooltip text={translator.getTranslation(lang, "tooltipType")} direction={mobile ? "right" : "left"} />
             </Box>
 
             <Box sx={{
