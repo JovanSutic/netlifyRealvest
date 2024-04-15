@@ -13,7 +13,7 @@ const Select = ({
   isFullWidth?: boolean;
 }) => {
   return (
-    <div className={styles.select}>
+    <div className={`${styles.select} ${isFullWidth && styles.full}`}>
       <select className={`${styles.text} ${isFullWidth && styles.full}`} value={value} onChange={(event) => setValue(event.target.value)}>
         {options.map((item) => (
           <option value={item.value} key={item.value}>

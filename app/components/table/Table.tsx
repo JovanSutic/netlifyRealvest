@@ -74,8 +74,7 @@ const Table = <T extends object>({
               {headers.map((item) => (
                 <td
                   className={`${
-                    item.sortable ? styles["sortable"] : undefined
-                  } ${styles["datatype-string"]}`}
+                    item.sortable && styles["sortable"]} ${styles["datatype-string"]} ${sort.column === item.key &&styles["active-sort"]}`}
                   key={item.key}
                   onClick={() => {
                     if (item.sortable) {
@@ -93,9 +92,10 @@ const Table = <T extends object>({
                   }}
                 >
                   {" "}
-                  {sort.column === item.key ? (
-                    <div className={sort.direction === "asc" ? styles["triangle-bottom"] : styles["triangle-top"]}></div>
-                  ) : null}
+                  {/* {sort.column === item.key ? (
+                    
+                  ) : null} */}
+                  <div className={sort.direction === "asc" ? styles["triangle-bottom"] : styles["triangle-top"]}></div>
                   {item.name}
                 </td>
               ))}

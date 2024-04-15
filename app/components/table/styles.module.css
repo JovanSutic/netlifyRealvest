@@ -258,12 +258,14 @@
   border-right: 30px solid black;
 }
 .triangle-top {
+  visibility: hidden;
   border-bottom: 8px solid #f0b90b;
   position: absolute;
   right: 18px;
   top: 0px;
 }
 .triangle-bottom {
+  visibility: hidden;
   border-top: 8px solid #f0b90b;
   position: absolute;
   right: 18px;
@@ -272,6 +274,14 @@
 
 .sortable {
   cursor: pointer;
+}
+
+.sortable:hover > .triangle-bottom, .sortable:hover > .triangle-top {
+  visibility: visible;
+}
+
+.active-sort > .triangle-bottom, .active-sort > .triangle-top {
+  visibility: visible;
 }
 
 .odd-row{
