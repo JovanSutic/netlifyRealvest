@@ -80,6 +80,6 @@
   right: -60%;
 }
 
-.tooltip:hover .tooltiptext {
+.icon-wrap:hover + .tooltiptext {
   visibility: visible;
 }
