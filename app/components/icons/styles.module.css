@@ -1,0 +1,85 @@
+.icon-wrap {
+  width: 20px;
+  height: 20px;
+  background-color: #eeeeee;
+  border-radius: 10px;
+  text-align: center;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.player,
+.headphones,
+.ribbon,
+.views,
+.location,
+.info,
+.help,
+.pie,
+.success,
+.success-alt,
+.warning,
+.denied {
+  padding-left: 0px;
+}
+
+/* INFO
+------------------------------------------------------------------------------------------------------------------------------- */
+
+.info {
+  color: transparent;
+}
+
+.info:before {
+  content: "i";
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 18px;
+  text-align: center;
+  color: #000;
+  /* css3 */
+  -webkit-border-radius: 16px;
+  -moz-border-radius: 16px;
+  border-radius: 16px;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: auto;
+  background-color: #686868;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 4px 6px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 300;
+  position: absolute;
+  box-sizing: border-box;
+  z-index: 1;
+  top: calc(-70%);
+  min-width: 140px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.tooltiptext.left {
+  left: -60%;
+}
+
+.tooltiptext.right {
+  right: -60%;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}

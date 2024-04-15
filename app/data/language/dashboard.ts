@@ -37,7 +37,9 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     cardAverageSize: "Average unit size",
     dashboardErrorTitle: "Error",
     dashboardErrorSubtitle: "Error",
-    dashboardErrorButton: "Error",    
+    dashboardErrorButton: "Error", 
+    tooltipType: "Choose property type",
+    timeRangeType: "Choose data time frame",   
   },
   sr: {
     "3m": "3m",
@@ -77,6 +79,8 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     cardAverageSize: "Prosečna veličina jedinice",
     dashboardErrorTitle: "Error",
     dashboardErrorSubtitle: "Error",
-    dashboardErrorButton: "Error",  
+    dashboardErrorButton: "Error",
+    tooltipType: "Izaberi tip nekretnine",
+    timeRangeType: "Izaberi vremenski okvir podataka", 
   },
 };
