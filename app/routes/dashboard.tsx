@@ -24,7 +24,7 @@ import DashboardControls from "../widgets/DashboardControls";
 import DashboardCards from "../widgets/DashboardCards";
 import { default as ErrorPage } from "../components/error";
 import { useState, useMemo, useCallback, useEffect } from "react";
-import Loader from "~/components/loader";
+import Loader from "../components/loader";
 
 const mandatorySearchParams: DashboardParamsUI = {
   lang: "sr",
@@ -121,37 +121,37 @@ export default function Index() {
   const [distributionType, setDistributionType] = useState(
     mandatorySearchParams.distribution_type
   );
-  const [paramChangeType, setParamChangeType] = useState<"all" | "part">(
-    "all"
-  );
+  const [paramChangeType, setParamChangeType] = useState<"all" | "part">("all");
 
-  const changeSearchParam = useCallback((value: string, type: string) => {
-    if (type === "propertyType") {
-      if (paramChangeType === "part") {
-        setParamChangeType("all");
+  const changeSearchParam = useCallback(
+    (value: string, type: string) => {
+      if (type === "propertyType") {
+        if (paramChangeType === "part") {
+          setParamChangeType("all");
+        }
+        setPropertyType(value as PropertyType);
       }
-      setPropertyType(value as PropertyType);
-    }
-    if (type === "timeRange") {
-      if (paramChangeType === "part") {
-        setParamChangeType("all");
+      if (type === "timeRange") {
+        if (paramChangeType === "part") {
+          setParamChangeType("all");
+        }
+        setTimeRange(value as RangeOption);
       }
-      setTimeRange(value as RangeOption);
-    }
-    if (type === "distributionType") {
-      if (paramChangeType !== "part") {
-        setParamChangeType("part");
+      if (type === "distributionType") {
+        if (paramChangeType !== "part") {
+          setParamChangeType("part");
+        }
+        setDistributionType(value as DistributionTypeKey);
       }
-      setDistributionType(value as DistributionTypeKey);
-    }
-    if (type === "municipality") {
-      if (paramChangeType !== "part") {
-        setParamChangeType("part");
+      if (type === "municipality") {
+        if (paramChangeType !== "part") {
+          setParamChangeType("part");
+        }
+        setMunicipality(value);
       }
-      setMunicipality(value);
-    }
-    
-  }, [paramChangeType]);
+    },
+    [paramChangeType]
+  );
 
   const [searchParams] = useSearchParams();
   const lang = (searchParams.get("lang") as LangType) || "sr";
@@ -196,7 +196,9 @@ export default function Index() {
       </Line>
       <Line mobile={mobile}>
         <Column size={mobile ? 5 : 3}>
-          <Loader open={fetcher.state === "loading" && paramChangeType === "all"} />
+          <Loader
+            open={fetcher.state === "loading" && paramChangeType === "all"}
+          />
           {useMemo(
             () => (
               <>
@@ -237,6 +239,7 @@ export default function Index() {
             );
           }, [
             JSON.stringify(fetcher.data?.reports),
+            JSON.stringify(fetcher.data?.pieReportData),
             municipality,
             reports.length,
             distributionType,
