@@ -1,4 +1,4 @@
-import { RangeOption } from "~/utils/dateTime";
+import { RangeOption } from "../utils/dateTime";
 
 export type GeneralObject = { id: number; name: string };
 export const propertyType = ["residential", "parking", "commercial"] as const;
@@ -86,6 +86,8 @@ export type CardReportItem = {
   value: string;
   changeType?: "minus" | "zero" | "plus";
   changeValue?: number;
+  start?: string;
+  end?: string;
 };
 
 export type CardsReport = {
@@ -111,6 +113,8 @@ export type CardsDataInfo = {
 type CardsDataItem = {
   value: number;
   difference: number;
+  start?: number;
+  end?: number;
 };
 
 export type CardsData = {
@@ -121,8 +125,8 @@ export type CardsData = {
 
 export type DashboardParamsUI = {
   lang: LangType;
-  time_range: RangeOption,
-  property_type: PropertyType,
-  municipality: string,
-  distribution_type: DistributionTypeKey,
+  time_range: RangeOption;
+  property_type: PropertyType;
+  municipality: string;
+  distribution_type: DistributionTypeKey;
 };
