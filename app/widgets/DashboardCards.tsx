@@ -7,7 +7,7 @@ import {
 } from "../types/dashboard.types";
 import { Translator } from "../data/language/translator";
 import { RangeOption } from "../utils/dateTime";
-import { getCardEffects, prepareCardDataForDisplay } from "../utils/reports";
+import { getCardEffects, getRangeDates, prepareCardDataForDisplay } from "../utils/reports";
 
 const DashboardCards = ({
   mobile,
@@ -22,6 +22,7 @@ const DashboardCards = ({
 }) => {
   const translator = new Translator("dashboard");
   const cardEffects = getCardEffects(data, timeRange);
+  const rangeDates = getRangeDates(data, timeRange, lang);
   const cards = prepareCardDataForDisplay(cardEffects);
 
   return (
@@ -47,8 +48,13 @@ const DashboardCards = ({
               key={item}
               label={translator.getTranslation(lang!, cards[item].labelKey)}
               value={cards[item].value}
+              tooltip={translator.getTranslation(lang!, cards[item].labelKey)}
               changeValue={cards[item].changeValue!}
               isMobile={mobile}
+              start={cards[item].start!}
+              end={cards[item].end!}
+              startDate={rangeDates.start}
+              endDate={rangeDates.end}
             />
           )
         )}

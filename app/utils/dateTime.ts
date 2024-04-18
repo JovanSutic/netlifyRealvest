@@ -62,8 +62,13 @@ export const getDateForReport = (
 };
 
 export const setDateString = (date: string, language: string): string => {
-  const newDate = new Date(date);
-  return newDate.toLocaleDateString(language === "en" ? "en-US" : "sr-RS");
+  const d = new Date(date);
+  const month =
+    d.getMonth() < 9 ? `0${d.getMonth() + 1}` : `${d.getMonth() + 1}`;
+  if(language === "en") {
+    return `${d.getFullYear()}-${month}-${d.getDate()}`;
+  }
+  return `${d.getDate()}.${month}.${d.getFullYear()}`;
 };
 
 export const getDayInYear = (): number => {
@@ -76,3 +81,17 @@ export const getDayInYear = (): number => {
   const oneDay = 1000 * 60 * 60 * 24;
   return Math.floor(diff / oneDay);
 };
+
+export const getYear = (date: string): number => {
+ const d = new Date(date);
+
+ return d.getFullYear();
+}
+
+export const getMonthAndYear = (date: string): string => {
+  const d = new Date(date);
+  const month =
+    d.getMonth() < 9 ? `0${d.getMonth() + 1}` : `${d.getMonth() + 1}`;
+
+  return `${month}.${d.getFullYear()}`;
+}
