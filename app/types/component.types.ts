@@ -15,3 +15,7 @@ export type TableHeader = {
   financial?: boolean;
   size?: boolean;
 };
+
+const layoutClass = ["grid", "gap", "span", "start"] as const;
+
+export type LayoutClass = (typeof layoutClass)[number];

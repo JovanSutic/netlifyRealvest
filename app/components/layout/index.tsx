@@ -1,111 +1,73 @@
-import { Box, SxProps } from "@mui/material";
-import { ColumnSizeType } from "../../types/component.types";
-
-export const Page = ({
-  children,
-  mobile,
-  style = {},
-  color = "#EAECEF",
-}: {
-  children: JSX.Element | JSX.Element[];
-  mobile: boolean;
-  style?: SxProps;
-  color?: string;
-}) => {
-  return (
-    <Box
-      sx={{
-        backgroundColor: color,
-        paddingTop: "20px",
-        paddingBottom: "28px",
-        boxSizing: "border-box",
-        width: "100%",
-      }}
-    >
-      <Box
-        sx={{
-          width: mobile ? "100%" : "1366px",
-          margin: "auto",
-          display: "block",
-          position: "relative",
-          ...style,
-        }}
-      >
-        {children}
-      </Box>
-    </Box>
-  );
-};
-
-export const Line = ({
-  children,
-  mobile,
-  style = {},
-}: {
-  children: JSX.Element | JSX.Element[];
-  mobile: boolean,
-  style?: SxProps;
-}) => {
-  return (
-    <Box
-      sx={{
-        width: "100%",
-        display: "flex",
-        flexDirection: mobile ? "column" : "row",
-        boxSizing: "border-box",
-        ...style,
-      }}
-    >
-      {children}
-    </Box>
-  );
-};
-
-export const Column = ({
-  children,
-  size,
-}: {
-  children: JSX.Element | JSX.Element[];
-  size: ColumnSizeType;
-}) => {
-  const width = size * 20;
-  return (
-    <Box
-      sx={{
-        padding: "0px 12px",
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        position: 'relative',
-        width: `${width}%`
-      }}
-    >
-      {children}
-    </Box>
-  );
-};
+import { createLayoutClasses } from "../../utils/numbers";
 
 export const WidgetWrapper = ({
   children,
-  style = {},
 }: {
   children: JSX.Element | JSX.Element[];
-  style?: SxProps;
 }) => {
   return (
-    <Box
-      sx={{
-        backgroundColor: "#fff",
-        position: 'relative',
-        padding: "20px",
-        borderRadius: "8px",
-        boxSizing: "border-box",
-        boxShadow: "0px 6px 10px -8px rgba(48,48,48,0.85)",
-        marginBottom: "20px",
-        ...style,
-      }}
+    <div className="bg-white relative box-border rounded-lg p-5 mb-5 shadow-lg">
+      {children}
+    </div>
+  );
+};
+
+export const TLine = ({
+  children,
+  columns,
+  gap = 2,
+}: {
+  children: JSX.Element | JSX.Element[];
+  columns: number;
+  gap?: number;
+}) => {
+  const columnsMap = createLayoutClasses(12, "grid");
+  const gapsMap = createLayoutClasses(12, "gap");
+
+  return (
+    <div className={`grid ${columnsMap[columns]} grid-rows-1 ${gapsMap[gap]}`}>
+      {children}
+    </div>
+  );
+};
+
+export const TColumn = ({
+  children,
+  span,
+  start = 1,
+}: {
+  children: JSX.Element | JSX.Element[];
+  span: number;
+  start?: number;
+}) => {
+  const spanMap = createLayoutClasses(12, "span");
+  const startMap = createLayoutClasses(10, "start");
+
+  return (
+    <div
+      className={`${spanMap[span]} ${startMap[start]} flex flex-col relative box-border px-1 py-0`}
     >
       {children}
-    </Box>
+    </div>
+  );
+};
+
+export const TPage = ({
+  children,
+  color,
+  mobile,
+}: {
+  children: JSX.Element | JSX.Element[];
+  color?: string;
+  mobile?: boolean;
+}) => {
+  return (
+    <div className={`w-full box-border ${color || "bg-gray-200"} py-4`}>
+      <div
+        className={`${mobile ? "w-full" : "w-[1366px]"} block relative  m-auto`}
+      >
+        {children}
+      </div>
+    </div>
   );
 };
