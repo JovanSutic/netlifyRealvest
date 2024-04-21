@@ -1,28 +1,10 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { Column, Line, Page } from "../components/layout";
+import { TColumn, TLine, TPage } from "../components/layout";
 import { json } from "@remix-run/node";
-import { NavLink, useLoaderData, useSearchParams } from "@remix-run/react";
+import { useLoaderData, useSearchParams } from "@remix-run/react";
 import { default as ErrorPage } from "../components/error";
 import { isMobile } from "../utils/params";
-import {
-  Box,
-  Button,
-  Divider,
-  FormControl,
-  List,
-  ListItem,
-  ListItemIcon,
-  OutlinedInput,
-  Typography,
-} from "@mui/material";
-import {
-  CheckCircleOutline,
-  Insights,
-  Reviews,
-  AspectRatio,
-  Scale,
-} from "@mui/icons-material";
-import { getDayInYear } from "../utils/dateTime";
+import IndexCard from "../components/card/IndexCard";
 
 export const meta: MetaFunction = () => {
   return [
@@ -38,8 +20,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function Index() {
   const [searchParams] = useSearchParams();
-  const lang = searchParams.get("lang") || 'sr';
-  console.log(lang);
+  const lang = searchParams.get("lang") || "sr";
 
   const {
     mobile,
@@ -49,73 +30,96 @@ export default function Index() {
 
   return (
     <>
-      <Page mobile={mobile}>
-        <Line mobile={mobile}>
-          <Column size={5}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: "760px",
-                alignSelf: "center",
-                alignItems: "center",
-                paddingTop: "12px",
-                paddingBottom: "36px",
-                textAlign: "center",
-              }}
-            >
-              <Typography
-                variant="h2"
-                sx={{
-                  fontSize: "40px",
-                  fontWeight: "500",
-                  color: "#06173d",
-                  marginBottom: "12px",
-                }}
-              >
-                Platforma za ljude koji ulažu u nekretnine
-              </Typography>
-              {/* <Typography
-              variant="h6"
-              sx={{
-                fontWeight: "300",
-                lineHeight: "24px",
-                color: "#06173d",
-              }}
-            >
-              Donosite kupovne odluke sa više samopouzdanja i podržite svoje
-              investicione izbore čvrstim podacima.
-            </Typography> */}
-              <Button
-                variant="contained"
-                sx={{
-                  background: "#f0b90b",
-                  color: "#06173d",
-                  width: "400px",
-                  marginTop: "28px",
-                  "& a": {
-                    color: "#14182d",
-                    fontStyle: "none",
-                    textDecoration: "none",
-                  },
-                  "&:hover": {
-                    background: "#fcd535",
-                  },
-                }}
-              >
-                <NavLink
-                  to={"dashboard/?lang=sr"}
-                >
-                  Pogledaj podatke za Beograd
-                </NavLink>
-              </Button>
-            </Box>
+      <TPage mobile={mobile}>
+        <TLine columns={1}>
+          <TColumn span={1}>
+            <div className="text-[#333] p-6 mb-6">
+              <div className="text-center max-w-4xl max-md:max-w-md mx-auto">
+                <div>
+                  <p className="text-sm font-bold text-indigo-500 mb-4">
+                    <span className="rotate-90 inline-block mr-2">|</span> ALL
+                    IN ONE REAL ESTATE INVESTMENT DATA
+                  </p>
+                  <h2 className="md:text-5xl text-3xl font-extrabold mb-4 md:!leading-[55px]">
+                    Buy real estate with more confidence
+                  </h2>
+                  <p className="mt-8 text-base text-gray-500 leading-relaxed">
+                    Access reliable real estate insights on our platform. Make
+                    informed investment decisions backed by data and expertise.
+                  </p>
+                  <div className="flex flex-row w-full justify-center mt-4">
+                    <input
+                      type="email"
+                      placeholder="Enter your email"
+                      className="w-full sm:w-96 bg-gray-50 py-3.5 px-4 text-[#333] text-base focus:outline-none rounded"
+                    />
+                    <button className="max-sm:mt-8 sm:ml-4 bg-indigo-900 hover:bg-indigo-800 text-white text-base font-semibold py-3.5 px-6 rounded hover:shadow-md hover:transition-transform transition-transform hover:scale-105 focus:outline-none">
+                      Join the Waiting List
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TColumn>
+        </TLine>
+        <TLine columns={3} gap={4}>
+          <TColumn span={1} start={1}>
+            <div className="flex flex-col items-center mb-14">
+              <IndexCard
+                title="Belgrade sales report"
+                text="Discover comprehensive insights into Belgrade real estate analytics with our detailed sales report. Gain valuable data on prices, market trends, and key historical data points in an easy to use dashboard."
+                link={`/dashboard/?lang=${lang}`}
+                image="/dashboard2.jpg"
+                buttonText="Go to"
+              />
+            </div>
+          </TColumn>
+          <TColumn span={1} start={2}>
+            <div className="flex flex-col items-center mb-14">
+              <IndexCard
+                title="Rental income calculator"
+                text="Unlock the earning power of your investment property. Our service provides comprehensive estimates of rental income for both short and long-term leases, enabling you to make good investment decisions."
+              />
+            </div>
+          </TColumn>
+          <TColumn span={1} start={3}>
+            <div className="flex flex-col items-center mb-14">
+              <IndexCard
+                title="Capital appreciation"
+                text="Gain foresight into property value growth. Our cutting-edge service accurately predicts capital appreciation, guiding smart investment decisions for sustainable returns in the real estate market."
+              />
+            </div>
+          </TColumn>
+        </TLine>
+        <TLine columns={3} gap={4}>
+          <TColumn span={1} start={1}>
+            <div className="flex flex-col items-center mb-10">
+              <IndexCard
+                title="Investment opportunities"
+                text="Navigate the property market with confidence. Our comprehensive service curates the best investment opportunities, providing insights to maximize your returns and grow your portfolio strategically."
+              />
+            </div>
+          </TColumn>
+          <TColumn span={1} start={2}>
+            <div className="flex flex-col items-center mb-10">
+              <IndexCard
+                title="Data drill down"
+                text="Unlock nuanced property insights. Our advanced service enables users to delve deeper into location and time data, empowering informed decisions for strategic investments."
+              />
+            </div>
+          </TColumn>
+          <TColumn span={1} start={3}>
+            <div className="flex flex-col items-center mb-10">
+              <IndexCard
+                title="New markets"
+                text="Capture insights across diverse markets. Our service consolidates property investment data from different geographies, fostering well-rounded decision-making."
+              />
+            </div>
+          </TColumn>
+        </TLine>
 
-            <Divider />
-          </Column>
-        </Line>
-        <Line mobile={mobile}>
-          <Column size={5}>
+        {/* <TLine columns={1}>
+          <TColumn span={1}>
             <Box
               sx={{
                 display: "flex",
@@ -386,40 +390,37 @@ export default function Index() {
                 </Box>
               </Box>
             </Box>
-          </Column>
-        </Line>
-      </Page>
-      <Page mobile={mobile} color="#06173d">
-        <Line mobile={mobile}>
-          <Column size={5}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: "800px",
-                alignSelf: "center",
-                alignItems: "center",
-                paddingTop: "30px",
-                paddingBottom: "30px",
-                textAlign: "center",
-              }}
-            >
-              <Typography
-                variant="h2"
-                sx={{
-                  fontSize: "24px",
-                  fontWeight: "300",
-                  color: "#fff",
-                  marginBottom: "12px",
-                }}
-              >
-                Ukoliko aktivno investirate u nekretnine ili to čine vaši
-                klijenti. Iskoristite ovu priliku i zatražite rani pristup.
-              </Typography>
-            </Box>
-          </Column>
-        </Line>
-      </Page>
+          </TColumn>
+        </TLine> */}
+      </TPage>
+      <TPage color="bg-indigo-950" mobile={mobile}>
+        <TLine columns={1}>
+          <TColumn span={1}>
+            <div className="bg-indigo-950 py-16 px-6 font-[sans-serif]">
+              <div className="max-w-5xl mx-auto text-center text-white">
+                <h2 className="text-4xl font-extrabold mb-4">
+                  Get early access with 40% discount
+                </h2>
+                <p className="text-base text-gray-400">
+                  Secure your spot on our exclusive waiting list for early
+                  access. Join now to be first in line for groundbreaking real
+                  estate data insights!
+                </p>
+                <div className="mt-10">
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="w-full sm:w-96 bg-gray-50 py-3.5 px-4 text-[#333] text-base focus:outline-none rounded"
+                  />
+                  <button className="max-sm:mt-8 sm:ml-4 bg-indigo-200 hover:bg-indigo-300 text-indigo-900 text-base font-semibold py-3.5 px-6 rounded hover:shadow-md hover:transition-transform transition-transform hover:scale-105 focus:outline-none">
+                    Join the Waiting List
+                  </button>
+                </div>
+              </div>
+            </div>
+          </TColumn>
+        </TLine>
+      </TPage>
     </>
   );
 }

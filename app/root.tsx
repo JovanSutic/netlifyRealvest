@@ -12,10 +12,12 @@ import { getMuiLinks } from "./mui/getMuiLinks";
 import { MuiMeta } from "./mui/MuiMeta";
 import { MuiDocument } from "./mui/MuiDocument";
 import appStyles from "./app.css?url";
+import stylesheet from "../node_modules/tailwindcss/tailwind.css?url";
 import { default as ErrorPage } from "./components/error";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
+  { rel: "stylesheet", href: stylesheet },
   ...getMuiLinks(),
 ];
 

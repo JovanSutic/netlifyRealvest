@@ -21,7 +21,6 @@ import {
 } from "../types/dashboard.types";
 import { DropdownOptions } from "../types/component.types";
 import { RangeOption } from "../utils/dateTime";
-import Loader from "~/components/loader";
 
 const PieReport = ({
   municipalityList,
