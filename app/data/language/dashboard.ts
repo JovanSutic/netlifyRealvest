@@ -39,7 +39,9 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     dashboardErrorSubtitle: "Error",
     dashboardErrorButton: "Error", 
     tooltipType: "Choose property type",
-    timeRangeType: "Choose data time frame",   
+    timeRangeType: "Choose data time frame",
+    pricingTitle: "Accurate pricing",
+    pricingExplain: "Help your clients make right pricing decision by giving them insight into accurate market data. Embrace data centric approach and stay professional by present your clients the right market movements relevant for their use case.", 
   },
   sr: {
     "3m": "3m",
@@ -81,6 +83,8 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     dashboardErrorSubtitle: "Error",
     dashboardErrorButton: "Error",
     tooltipType: "Izaberi tip nekretnine",
-    timeRangeType: "Izaberi vremenski okvir podataka", 
+    timeRangeType: "Izaberi vremenski okvir podataka",
+    pricingTitle: "Usklađenije cene",
+    pricingExplain: "Pomozite vašim klijentima da odrede pravu kupovnu ili prodajnu cenu uvidom u prezicne tržišne  podatke. Prezentujte relevantna cenovna kretanja na tržištu. Uskladite podatke specifičnoj situaciji vaših klijenata.",
   },
 };

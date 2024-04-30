@@ -6,12 +6,14 @@ const IndexCard = ({
   link,
   buttonText,
   image,
+  replaceText,
 }: {
   title: string;
   text: string;
   link?: string;
   buttonText?: string;
   image?: string;
+  replaceText: string;
 }) => {
   return (
     <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
@@ -49,7 +51,7 @@ const IndexCard = ({
           </button>
         ) : (
           <span className="bg-indigo-100 text-indigo-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">
-            Coming soon
+            {replaceText}
           </span>
         )}
       </div>

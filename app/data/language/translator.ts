@@ -1,9 +1,11 @@
 import { dashboardMap } from "./dashboard";
 import { navigationMap } from "./navigation";
+import { homepageMap } from "./homepage";
 
 const translationMap = {
   dashboard: dashboardMap,
   navigation: navigationMap,
+  homepage: homepageMap,
 };
 
 export type SectionType = keyof typeof translationMap;

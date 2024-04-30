@@ -46,18 +46,19 @@ const ToggleButtons = ({
           sx={{
             padding: sizeMap[size].padding,
             fontSize: sizeMap[size].fontSize,
-            background: "#eeeeee",
+            borderColor: "rgb(165 180 252)",
+            background: "rgb(224 231 255)",
             color: "#13182d",
             "&:hover": {
-              background: "#cfcfcf",
+              background: "rgb(165 180 252)",
               color: "#13182d",
             },
             "&.Mui-selected": {
-              color: " #13182d",
-              background: "#f0b90b",
+              color: " #fff",
+              background: "rgb(49 46 129)",
               "&:hover": {
-                color: " #13182d",
-                background: "#fcd535",
+                color: " #fff",
+                background: "rgb(79 70 229)",
               },
             },
           }}
