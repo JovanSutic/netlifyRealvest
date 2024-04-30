@@ -243,8 +243,8 @@ export const getSingleLineDataset = (
         label: label,
         data: calculateLineData(data, timeRange, lang).data,
         fill: true,
-        backgroundColor: "rgba(240, 185, 11, 0.5)",
-        borderColor: "rgba(240, 185, 11, 1)",
+        backgroundColor: "rgb(165 180 252)",
+        borderColor: "rgb(99 102 241)",
       },
     ],
   };
