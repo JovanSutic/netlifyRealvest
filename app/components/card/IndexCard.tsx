@@ -16,20 +16,20 @@ const IndexCard = ({
   replaceText: string;
 }) => {
   return (
-    <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow sm:pb-1">
         <div className="h-32">
         <img className="rounded-t-sm max-h-full" src={image || "/empty3.jpg"} alt="dashboard" />
         </div>
       
       <div className="p-5 h-[250px]">
-        <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+        <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
           {title}
         </h5>
-        <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+        <p className="mb-3 font-normal text-gray-700">
           {text}
         </p>
         {link ? (
-          <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-indigo-900 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+          <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-indigo-900 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
             <Link to={link} className="inline-flex items-center">
               {buttonText}
               <svg
@@ -50,7 +50,7 @@ const IndexCard = ({
             </Link>
           </button>
         ) : (
-          <span className="bg-indigo-100 text-indigo-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">
+          <span className="bg-indigo-100 text-indigo-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded">
             {replaceText}
           </span>
         )}
