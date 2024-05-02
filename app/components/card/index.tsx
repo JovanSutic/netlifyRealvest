@@ -70,7 +70,7 @@ const Card = ({
           >
             {label}
           </Typography>
-          <InfoTooltip text={tooltip} direction="right" />
+          <InfoTooltip text={tooltip} direction="top" />
         </Box>
       </Box>
       <Box

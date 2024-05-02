@@ -16,7 +16,7 @@ import {
   PieReportType,
   PropertyType,
 } from "../types/dashboard.types";
-import { RangeOption, formatDate, getMonthAndYear, getYear, setDateString } from "./dateTime";
+import { RangeOption, excludeDayFromDateString, formatDate, getMonthAndYear, getMonthAndYearStart, getYear, setDateString } from "./dateTime";
 import { makeNumberCurrency, roundNumberToDecimal } from "./numbers";
 
 const getListAverage = (list: number[], divider: number): number => {
@@ -243,7 +243,7 @@ export const getSingleLineDataset = (
         label: label,
         data: calculateLineData(data, timeRange, lang).data,
         fill: true,
-        backgroundColor: "rgb(165 180 252)",
+        backgroundColor: "rgba(165, 180, 252, 0.6)",
         borderColor: "rgb(99 102 241)",
       },
     ],
@@ -254,12 +254,11 @@ export const getSingleLineDataset = (
 
 export const getRangeDates = (data: MainReportType[], timeRange: RangeOption, lang: LangType): {start: string; end: string } => {
   if(dividerMap[timeRange] > 1 && dividerMap[timeRange] < 12) {
-    const startSlice = data.filter((item) => item.municipality.id === 1).slice(dividerMap[timeRange] - 1);
+    const startSlice = data.filter((item) => item.municipality.id === 1).slice(0, dividerMap[timeRange]);
     const endSlice = data.filter((item) => item.municipality.id === 1).slice(-Math.abs(dividerMap[timeRange]));
-    console.log(endSlice)
     return {
-      start: `${getMonthAndYear(startSlice[0].date_to)} - ${getMonthAndYear(startSlice[startSlice.length - 1].date_to)}`,
-      end:`${getMonthAndYear(endSlice[0].date_to)} - ${getMonthAndYear(endSlice[endSlice.length - 1].date_to)}`
+      start: `${getMonthAndYearStart(startSlice[0].date_to)} - ${getMonthAndYear(startSlice[startSlice.length - 1].date_to)}`,
+      end:`${getMonthAndYearStart(endSlice[0].date_to)} - ${getMonthAndYear(endSlice[endSlice.length - 1].date_to)}`
     }
   } else if (dividerMap[timeRange] === 12) {
     return {
@@ -269,8 +268,8 @@ export const getRangeDates = (data: MainReportType[], timeRange: RangeOption, la
   }
 
   return {
-    start: setDateString(data[0].date_to, lang),
-    end: setDateString(data[data.length - 1].date_to, lang)
+    start: excludeDayFromDateString(setDateString(data[0].date_to, lang)),
+    end: excludeDayFromDateString(setDateString(data[data.length - 1].date_to, lang))
   }
 }
 

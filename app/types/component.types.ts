@@ -19,3 +19,5 @@ export type TableHeader = {
 const layoutClass = ["grid", "gap", "span", "start"] as const;
 
 export type LayoutClass = (typeof layoutClass)[number];
+
+export type TooltipDirection = 'top' | 'bottom' | 'left' | 'right';

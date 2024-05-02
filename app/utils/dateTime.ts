@@ -61,6 +61,18 @@ export const getDateForReport = (
   return undefined;
 };
 
+export const excludeDayFromDateString = (date: string): string => {
+  const isEnglish = date.includes("-");
+  const divider = isEnglish ? "-" : '.';
+  const split = date.split(divider);
+
+  if(isEnglish) {
+    return `${split[0]}-${split[1]}`;
+  }
+
+  return `${split[1]}.${split[2]}`;
+}
+
 export const setDateString = (date: string, language: string): string => {
   const d = new Date(date);
   const month =
@@ -92,6 +104,14 @@ export const getMonthAndYear = (date: string): string => {
   const d = new Date(date);
   const month =
     d.getMonth() < 9 ? `0${d.getMonth() + 1}` : `${d.getMonth() + 1}`;
+
+  return `${month}.${d.getFullYear()}`;
+}
+
+export const getMonthAndYearStart = (date: string): string => {
+  const d = new Date(date);
+  const month =
+    d.getMonth() < 9 ? `0${d.getMonth()}` : `${d.getMonth()}`;
 
   return `${month}.${d.getFullYear()}`;
 }
