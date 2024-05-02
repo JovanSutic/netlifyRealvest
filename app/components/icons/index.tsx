@@ -1,3 +1,5 @@
+import { TooltipDirection } from "../../types/component.types";
+import Tooltip from "../tooltip/Tooltip";
 import styles from "./styles.module.css";
 
 export const InfoIcon = () => {
@@ -8,11 +10,18 @@ export const InfoIcon = () => {
   );
 };
 
-export const InfoTooltip = ({ text, direction }: { text: string; direction: 'left' | 'right' }) => {
+export const InfoTooltip = ({
+  text,
+  direction,
+}: {
+  text: string;
+  direction: TooltipDirection;
+}) => {
   return (
     <div className={styles.tooltip}>
-      <InfoIcon />
-      <span className={`${styles.tooltiptext} ${styles[direction]}`}>{text}</span>
+      <Tooltip text={text} direction={direction}>
+        <InfoIcon />
+      </Tooltip>
     </div>
   );
 };

@@ -29,7 +29,7 @@ const IndexCard = ({
           {text}
         </p>
         {link ? (
-          <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-indigo-900 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
+          <button className="inline-flex mb-1 items-center px-3 py-2 text-sm font-medium text-center text-white bg-indigo-900 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
             <Link to={link} className="inline-flex items-center">
               {buttonText}
               <svg
