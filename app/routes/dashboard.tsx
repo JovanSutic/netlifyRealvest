@@ -1,9 +1,9 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { Column, Line, Page } from "../components/layout";
+import { TColumn, TLine, TPage } from "../components/layout";
 import MainTableReport from "../widgets/MainTableReport";
 import { json } from "@remix-run/node";
 import { createClient } from "@supabase/supabase-js";
-import { useLoaderData, useSearchParams, useFetcher } from "@remix-run/react";
+import { useLoaderData, useSearchParams, useFetcher, NavLink } from "@remix-run/react";
 import {
   RangeOption,
   getDateForReport,
@@ -181,9 +181,12 @@ export default function Index() {
   }, [timeRange, propertyType, municipality, distributionType]);
 
   return (
-    <Page mobile={mobile}>
-      <Line mobile={mobile}>
-        <Column size={5}>
+    <TPage mobile={mobile}>
+      <TLine columns={1}>
+        <TColumn span={1}>
+          <div className="text-center mb-2 underline">
+            <NavLink to={lang === "en" ? "/dashboard/?lang=sr" : "/dashboard/?lang=en"}>{lang === "en" ? "srpska verzija" : "english version"}</NavLink>
+          </div>
           <DashboardControls
             validUntil={reports[reports.length - 1].date_to}
             changeParams={changeSearchParam}
@@ -192,10 +195,10 @@ export default function Index() {
             currentRange={timeRange}
             currentType={propertyType}
           />
-        </Column>
-      </Line>
-      <Line mobile={mobile}>
-        <Column size={mobile ? 5 : 3}>
+        </TColumn>
+      </TLine>
+      <TLine columns={mobile ? 1 : 10} gap={4}>
+        <TColumn span={mobile ? 10 : 6} start={1}>
           <Loader
             open={fetcher.state === "loading" && paramChangeType === "all"}
           />
@@ -217,8 +220,8 @@ export default function Index() {
             ),
             [JSON.stringify(fetcher.data?.reports), reports.length]
           )}
-        </Column>
-        <Column size={mobile ? 5 : 2}>
+        </TColumn>
+        <TColumn span={mobile ? 10 : 4} start={mobile ? 1 : 7}>
           <Loader open={fetcher.state === "loading"} />
           {useMemo(() => {
             return (
@@ -244,9 +247,9 @@ export default function Index() {
             reports.length,
             distributionType,
           ])}
-        </Column>
-      </Line>
-    </Page>
+        </TColumn>
+      </TLine>
+    </TPage>
   );
 }
 

@@ -38,7 +38,7 @@
   max-width: 100%;
   overflow-x: auto;
   overflow-y: scroll;
-  max-height: 536px;
+  max-height: 518px;
   /* START data table content */
 }
 
@@ -132,7 +132,8 @@
   .data-table-header
   tr
   td {
-  color: #fcd535;
+  color: #fff;
+  background: rgb(49 46 129);
   font-size: 14px;
   font-weight: 400;
   font-family: "Nunito Sans Variable", sans-serif;
@@ -259,14 +260,14 @@
 }
 .triangle-top {
   visibility: hidden;
-  border-bottom: 8px solid #f0b90b;
+  border-bottom: 8px solid #fff;
   position: absolute;
   right: 18px;
   top: 0px;
 }
 .triangle-bottom {
   visibility: hidden;
-  border-top: 8px solid #f0b90b;
+  border-top: 8px solid #fff;
   position: absolute;
   right: 18px;
   top: 0px;
@@ -276,14 +277,16 @@
   cursor: pointer;
 }
 
-.sortable:hover > .triangle-bottom, .sortable:hover > .triangle-top {
+.sortable:hover > .triangle-bottom,
+.sortable:hover > .triangle-top {
   visibility: visible;
 }
 
-.active-sort > .triangle-bottom, .active-sort > .triangle-top {
+.active-sort > .triangle-bottom,
+.active-sort > .triangle-top {
   visibility: visible;
 }
 
-.odd-row{
-    background-color: rgba(188, 188, 223, 0.2);
+.odd-row {
+  background-color: rgba(188, 188, 223, 0.2);
 }

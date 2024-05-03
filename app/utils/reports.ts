@@ -16,7 +16,7 @@ import {
   PieReportType,
   PropertyType,
 } from "../types/dashboard.types";
-import { RangeOption, formatDate } from "./dateTime";
+import { RangeOption, excludeDayFromDateString, formatDate, getMonthAndYear, getMonthAndYearStart, getYear, setDateString } from "./dateTime";
 import { makeNumberCurrency, roundNumberToDecimal } from "./numbers";
 
 const getListAverage = (list: number[], divider: number): number => {
@@ -243,14 +243,35 @@ export const getSingleLineDataset = (
         label: label,
         data: calculateLineData(data, timeRange, lang).data,
         fill: true,
-        backgroundColor: "rgba(240, 185, 11, 0.5)",
-        borderColor: "rgba(240, 185, 11, 1)",
+        backgroundColor: "rgba(165, 180, 252, 0.6)",
+        borderColor: "rgb(99 102 241)",
       },
     ],
   };
 
   return dataSet;
 };
+
+export const getRangeDates = (data: MainReportType[], timeRange: RangeOption, lang: LangType): {start: string; end: string } => {
+  if(dividerMap[timeRange] > 1 && dividerMap[timeRange] < 12) {
+    const startSlice = data.filter((item) => item.municipality.id === 1).slice(0, dividerMap[timeRange]);
+    const endSlice = data.filter((item) => item.municipality.id === 1).slice(-Math.abs(dividerMap[timeRange]));
+    return {
+      start: `${getMonthAndYearStart(startSlice[0].date_to)} - ${getMonthAndYear(startSlice[startSlice.length - 1].date_to)}`,
+      end:`${getMonthAndYearStart(endSlice[0].date_to)} - ${getMonthAndYear(endSlice[endSlice.length - 1].date_to)}`
+    }
+  } else if (dividerMap[timeRange] === 12) {
+    return {
+      start: getYear(data[0].date_to).toString(),
+      end: getYear(data[data.length - 1].date_to).toString()
+    }
+  }
+
+  return {
+    start: excludeDayFromDateString(setDateString(data[0].date_to, lang)),
+    end: excludeDayFromDateString(setDateString(data[data.length - 1].date_to, lang))
+  }
+}
 
 const prepareCardReportData = (data: MainReportType[]) => {
   const result: Record<string, MainReportType[]> = {};
@@ -297,7 +318,7 @@ const prepareCardReportData = (data: MainReportType[]) => {
   });
 
   return final;
-}
+};
 
 export const getCardEffects = (
   data: MainReportType[],
@@ -311,20 +332,27 @@ export const getCardEffects = (
   result.forEach((item, index) => {
     if (dividerMap[timeRange] > 1) {
       if ((index + 1) % dividerMap[timeRange] === 0) {
-        const count = rangeData.reduce((a: number, b: CardsDataInfo) => a + b.count, 0);
+        const count = rangeData.reduce(
+          (a: number, b: CardsDataInfo) => a + b.count,
+          0
+        );
         completeData.push({
           count,
           sum_price:
-          rangeData.reduce((a: number, b: CardsDataInfo) => a + b.sum_price, 0) /
-          rangeData.length,
+            rangeData.reduce(
+              (a: number, b: CardsDataInfo) => a + b.sum_price,
+              0
+            ) / rangeData.length,
           average_meter_price:
-          rangeData.reduce(
+            rangeData.reduce(
               (a: number, b: CardsDataInfo) => a + b.average_meter_price,
               0
             ) / rangeData.length,
           sum_size:
-          rangeData.reduce((a: number, b: CardsDataInfo) => a + b.sum_size, 0) /
-          rangeData.length,
+            rangeData.reduce(
+              (a: number, b: CardsDataInfo) => a + b.sum_size,
+              0
+            ) / rangeData.length,
         });
       } else {
         rangeData.push(item);
@@ -338,28 +366,45 @@ export const getCardEffects = (
     return {
       sum_price: {
         value:
-        completeData.reduce((a: number, b: CardsDataInfo) => a + b.sum_price, 0) /
-        completeData.length,
+          completeData.reduce(
+            (a: number, b: CardsDataInfo) => a + b.sum_price,
+            0
+          ) / completeData.length,
         difference:
-          ((completeData[completeData.length - 1].sum_price - completeData[0].sum_price) / completeData[0].sum_price) * 100,
+          ((completeData[completeData.length - 1].sum_price -
+            completeData[0].sum_price) /
+            completeData[0].sum_price) *
+          100,
+        start: completeData[0].sum_price,
+        end: completeData[completeData.length - 1].sum_price,
       },
       average_meter_price: {
         value:
-        completeData.reduce(
+          completeData.reduce(
             (a: number, b: CardsDataInfo) => a + b.average_meter_price,
             0
           ) / completeData.length,
         difference:
-          ((completeData[completeData.length - 1].average_meter_price - completeData[0].average_meter_price) /
-          completeData[0].average_meter_price) *
+          ((completeData[completeData.length - 1].average_meter_price -
+            completeData[0].average_meter_price) /
+            completeData[0].average_meter_price) *
           100,
+        start: completeData[0].average_meter_price,
+        end: completeData[completeData.length - 1].average_meter_price,
       },
       sum_size: {
         value:
-        completeData.reduce((a: number, b: CardsDataInfo) => a + b.sum_size, 0) /
-        completeData.length,
+          completeData.reduce(
+            (a: number, b: CardsDataInfo) => a + b.sum_size,
+            0
+          ) / completeData.length,
         difference:
-          ((completeData[completeData.length - 1].sum_size - completeData[0].sum_size) / completeData[0].sum_size) * 100,
+          ((completeData[completeData.length - 1].sum_size -
+            completeData[0].sum_size) /
+            completeData[0].sum_size) *
+          100,
+        start: completeData[0].sum_size,
+        end: completeData[completeData.length - 1].sum_size,
       },
     };
   }
@@ -386,18 +431,21 @@ export const prepareCardDataForDisplay = (data: CardsData): CardsReport => {
       labelKey: "cardAverageM2",
       changeValue: roundNumberToDecimal(data.average_meter_price.difference, 0),
       value: makeNumberCurrency(
-        roundNumberToDecimal(
-          data.average_meter_price.value,
-          0
-        )
+        roundNumberToDecimal(data.average_meter_price.value, 0),
+      ),
+      start: makeNumberCurrency(
+        roundNumberToDecimal(data.average_meter_price.start!, 0),
+      ),
+      end: makeNumberCurrency(
+        roundNumberToDecimal(data.average_meter_price.end!, 0),
       ),
     },
     averagePrice: {
       labelKey: "cardAveragePrice",
       changeValue: roundNumberToDecimal(data.sum_price.difference, 0),
-      value: makeNumberCurrency(
-        roundNumberToDecimal(data.sum_price.value, 0)
-      ),
+      value: makeNumberCurrency(roundNumberToDecimal(data.sum_price.value, 0)),
+      start: makeNumberCurrency(roundNumberToDecimal(data.sum_price.start!, 0)),
+      end: makeNumberCurrency(roundNumberToDecimal(data.sum_price.end!, 0)),
     },
     averageSize: {
       labelKey: "cardAverageSize",
@@ -406,6 +454,14 @@ export const prepareCardDataForDisplay = (data: CardsData): CardsReport => {
         roundNumberToDecimal(data.sum_size.value, 0),
         " m2"
       ),
+      start: makeNumberCurrency(
+        roundNumberToDecimal(data.sum_size.start!, 0),
+        " m2"
+      ),
+      end: makeNumberCurrency(
+        roundNumberToDecimal(data.sum_size.end!, 0),
+        " m2"
+      ),
     },
   };
-}
+};

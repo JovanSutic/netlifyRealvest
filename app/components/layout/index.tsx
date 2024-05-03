@@ -1,111 +1,123 @@
-import { Box, SxProps } from "@mui/material";
-import { ColumnSizeType } from "../../types/component.types";
-
-export const Page = ({
-  children,
-  mobile,
-  style = {},
-  color = "#EAECEF",
-}: {
-  children: JSX.Element | JSX.Element[];
-  mobile: boolean;
-  style?: SxProps;
-  color?: string;
-}) => {
-  return (
-    <Box
-      sx={{
-        backgroundColor: color,
-        paddingTop: "20px",
-        paddingBottom: "28px",
-        boxSizing: "border-box",
-        width: "100%",
-      }}
-    >
-      <Box
-        sx={{
-          width: mobile ? "100%" : "1366px",
-          margin: "auto",
-          display: "block",
-          position: "relative",
-          ...style,
-        }}
-      >
-        {children}
-      </Box>
-    </Box>
-  );
+const columnsMap: Record<number, string> = {
+  "1": "grid-cols-1",
+  "2": "grid-cols-2",
+  "3": "grid-cols-3",
+  "4": "grid-cols-4",
+  "5": "grid-cols-5",
+  "6": "grid-cols-6",
+  "7": "grid-cols-7",
+  "8": "grid-cols-8",
+  "9": "grid-cols-9",
+  "10": "grid-cols-10",
+  "11": "grid-cols-11",
+  "12": "grid-cols-12",
 };
 
-export const Line = ({
-  children,
-  mobile,
-  style = {},
-}: {
-  children: JSX.Element | JSX.Element[];
-  mobile: boolean,
-  style?: SxProps;
-}) => {
-  return (
-    <Box
-      sx={{
-        width: "100%",
-        display: "flex",
-        flexDirection: mobile ? "column" : "row",
-        boxSizing: "border-box",
-        ...style,
-      }}
-    >
-      {children}
-    </Box>
-  );
+const gapsMap: Record<number, string> = {
+  "1": "gap-1",
+  "2": "gap-2",
+  "3": "gap-3",
+  "4": "gap-4",
+  "5": "gap-5",
+  "6": "gap-6",
+  "7": "gap-7",
+  "8": "gap-8",
+  "9": "gap-9",
+  "10": "gap-10",
+  "11": "gap-11",
+  "12": "gap-12",
 };
 
-export const Column = ({
-  children,
-  size,
-}: {
-  children: JSX.Element | JSX.Element[];
-  size: ColumnSizeType;
-}) => {
-  const width = size * 20;
-  return (
-    <Box
-      sx={{
-        padding: "0px 12px",
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        position: 'relative',
-        width: `${width}%`
-      }}
-    >
-      {children}
-    </Box>
-  );
+const spanMap: Record<number, string> = {
+  "1": "col-span-1",
+  "2": "col-span-2",
+  "3": "col-span-3",
+  "4": "col-span-4",
+  "5": "col-span-5",
+  "6": "col-span-6",
+  "7": "col-span-7",
+  "8": "col-span-8",
+  "9": "col-span-9",
+  "10": "col-span-10",
+  "11": "col-span-11",
+  "12": "col-span-12",
+};
+
+const startMap: Record<number, string> = {
+  "1": "col-start-1",
+  "2": "col-start-2",
+  "3": "col-start-3",
+  "4": "col-start-4",
+  "5": "col-start-5",
+  "6": "col-start-6",
+  "7": "col-start-7",
+  "8": "col-start-8",
+  "9": "col-start-9",
+  "10": "col-start-10",
 };
 
 export const WidgetWrapper = ({
   children,
-  style = {},
 }: {
   children: JSX.Element | JSX.Element[];
-  style?: SxProps;
 }) => {
   return (
-    <Box
-      sx={{
-        backgroundColor: "#fff",
-        position: 'relative',
-        padding: "20px",
-        borderRadius: "8px",
-        boxSizing: "border-box",
-        boxShadow: "0px 6px 10px -8px rgba(48,48,48,0.85)",
-        marginBottom: "20px",
-        ...style,
-      }}
+    <div className="bg-white relative box-border rounded-lg p-5 mb-5 shadow-lg">
+      {children}
+    </div>
+  );
+};
+
+export const TLine = ({
+  children,
+  columns,
+  gap = 2,
+}: {
+  children: JSX.Element | JSX.Element[];
+  columns: number;
+  gap?: number;
+}) => {
+  return (
+    <div className={`grid ${columnsMap[columns]} grid-rows-1 ${gapsMap[gap]}`}>
+      {children}
+    </div>
+  );
+};
+
+export const TColumn = ({
+  children,
+  span,
+  start = 1,
+}: {
+  children: JSX.Element | JSX.Element[];
+  span: number;
+  start?: number;
+}) => {
+  return (
+    <div
+      className={`${spanMap[span]} ${startMap[start]} flex flex-col relative box-border px-1 py-0`}
     >
       {children}
-    </Box>
+    </div>
+  );
+};
+
+export const TPage = ({
+  children,
+  color,
+  mobile,
+}: {
+  children: JSX.Element | JSX.Element[];
+  color?: string;
+  mobile?: boolean;
+}) => {
+  return (
+    <div className={`w-full px-2 lg:px-0 box-border ${color || "bg-gray-200"} py-4`}>
+      <div
+        className={`${mobile ? "w-full" : "w-[1366px]"} block relative  m-auto`}
+      >
+        {children}
+      </div>
+    </div>
   );
 };
