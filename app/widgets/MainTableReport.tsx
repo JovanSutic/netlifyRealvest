@@ -4,15 +4,18 @@ import Table from "../components/table/Table";
 import { listMainReportData } from "../utils/reports";
 import { Translator } from "../data/language/translator";
 import { LangType, MainReportTableData } from "../types/dashboard.types";
+import Loader from '../components/loader';
 
 const MainTableReport = ({
   data,
   mobile,
   lang,
+  isLoading = false,
 }: {
   data: Record<string, MainReportTableData>;
   mobile: boolean;
   lang: LangType;
+  isLoading?: boolean;
 }) => {
   const translator = new Translator("dashboard");
   const tableHeaders = [
@@ -47,6 +50,7 @@ const MainTableReport = ({
   ];
   return (
     <WidgetWrapper>
+      <Loader open={isLoading} />
       <Box
         sx={{
           display: "flex",
