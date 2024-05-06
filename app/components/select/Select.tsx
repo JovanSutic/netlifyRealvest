@@ -1,4 +1,4 @@
-import { DropdownOptions } from "~/types/component.types";
+import { DropdownOptions } from "../../types/component.types";
 import styles from "./styles.module.css";
 
 const Select = ({

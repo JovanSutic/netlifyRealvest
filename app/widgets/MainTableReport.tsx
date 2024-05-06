@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { WidgetWrapper } from "../components/layout";
 import Table from "../components/table/Table";
 import { listMainReportData } from "../utils/reports";
@@ -51,24 +51,8 @@ const MainTableReport = ({
   return (
     <WidgetWrapper>
       <Loader open={isLoading} />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          boxSizing: "border-box",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: "100%",
-            marginBottom: "16px",
-          }}
-        >
+      <div className="flex flex-col items-center box-border">
+        <div className="flex flex-row items-center w-full mb-4 justify-between">
           <Typography
             component="h6"
             variant={mobile ? "subtitle1" : "h6"}
@@ -76,18 +60,11 @@ const MainTableReport = ({
           >
             {translator.getTranslation(lang!, "mainTableTitle")}
           </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignSelf: "flex-start",
-            width: "100%",
-          }}
-        >
+        </div>
+        <div className="flex flex-col self-start w-full">
           <Table headers={tableHeaders} data={listMainReportData(data)} />
-        </Box>
-      </Box>
+        </div>
+      </div>
     </WidgetWrapper>
   );
 };

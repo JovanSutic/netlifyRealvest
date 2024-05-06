@@ -212,7 +212,6 @@ export default function Index() {
             () => (
               <>
                 <DashboardCards
-                  mobile={mobile}
                   lang={lang}
                   data={fetcher.data?.reports || reports}
                   timeRange={timeRange}

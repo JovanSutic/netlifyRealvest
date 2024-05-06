@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { WidgetWrapper } from "../components/layout";
 import { LangType, PropertyType } from "../types/dashboard.types";
 import { RangeOption, formatDate } from "../utils/dateTime";
@@ -27,46 +27,15 @@ const DashboardControls = ({
 
   return (
     <WidgetWrapper>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: mobile ? "column" : "row",
-          width: "100%",
-        }}
-      >
-        <Box
-          sx={{
-            justifyContent: "space-between",
-            display: "flex",
-            flexDirection: mobile ? "column" : "row",
-            alignItems: mobile ? "start" : "center",
-            width: "100%",
-            mb: mobile ? "8px" : "0px",
-          }}
-        >
+      <div className="flex flex-col w-full lg:flex-row">
+        <div className="flex flex-col w-full mb-2 items-center justify-between lg:flex-row">
           <Typography variant={mobile ? "h6" : "h5"} component="h5">
             {translator.getTranslation(lang!, "widgetTitle")}
           </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            alignItems: mobile ? "center" : "flex-end",
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: mobile ? "column" : "row",
-              gap: mobile ? "8px" : "16px",
-            }}
-          >
-            <Box sx={{
-              display: "flex",
-              gap: "4px"
-            }}>
+        </div>
+        <div className="flex flex-col w-full items-center lg:items-end">
+          <div className="flex flex-col gap-2 lg:flex-row lg:gap-4">
+            <div className="flex gap-1">
               <Select
                 value={currentType!}
                 isFullWidth={mobile!}
@@ -89,12 +58,9 @@ const DashboardControls = ({
                 ]}
               />
               <InfoTooltip text={translator.getTranslation(lang, "tooltipType")} direction="left" />
-            </Box>
+            </div>
 
-            <Box sx={{
-              display: "flex",
-              gap: "4px"
-            }}>
+            <div className="flex gap-1">
               <ToggleButtons
                 value={currentRange!}
                 onChange={(value) => {
@@ -106,24 +72,18 @@ const DashboardControls = ({
                 }))}
               />
               <InfoTooltip text={translator.getTranslation(lang, "timeRangeType")} direction="left" />
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              marginTop: "8px",
-            }}
-          >
+            </div>
+          </div>
+          <div className="flex flex-col mt-2">
             <Typography variant="body2" component="h6">
               {`${translator.getTranslation(lang!, "lastDate")} ${formatDate(
                 validUntil,
                 lang!
               )}`}
             </Typography>
-          </Box>
-        </Box>
-      </Box>
+          </div>
+        </div>
+      </div>
     </WidgetWrapper>
   );
 };

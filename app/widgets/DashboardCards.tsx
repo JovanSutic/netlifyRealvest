@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import Card from "../components/card";
 import {
   CardsReport,
@@ -7,16 +6,18 @@ import {
 } from "../types/dashboard.types";
 import { Translator } from "../data/language/translator";
 import { RangeOption } from "../utils/dateTime";
-import { getCardEffects, getRangeDates, prepareCardDataForDisplay } from "../utils/reports";
+import {
+  getCardEffects,
+  getRangeDates,
+  prepareCardDataForDisplay,
+} from "../utils/reports";
 
 const DashboardCards = ({
-  mobile,
   data,
   timeRange,
   lang,
   isLoading = false,
 }: {
-  mobile: boolean;
   data: MainReportType[];
   timeRange: RangeOption;
   lang: LangType;
@@ -28,40 +29,27 @@ const DashboardCards = ({
   const cards = prepareCardDataForDisplay(cardEffects);
 
   return (
-    <Box
-      sx={{
-        position: "relative",
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: mobile ? "column" : "row",
-          justifyContent: "space-between",
-          alignSelf: "center",
-          width: "100%",
-          gap: mobile ? "20px" : "0px",
-          mb: "20px",
-        }}
-      >
-        {(Object.keys(cards) as unknown as Array<keyof CardsReport>)?.map(
-          (item) => (
-            <Card
-              key={item}
-              label={translator.getTranslation(lang!, cards[item].labelKey)}
-              value={cards[item].value}
-              changeValue={cards[item].changeValue!}
-              isMobile={mobile}
-              start={cards[item].start!}
-              end={cards[item].end!}
-              startDate={rangeDates.start}
-              endDate={rangeDates.end}
-              isLoading={isLoading}
-            />
-          )
-        )}
-      </Box>
-    </Box>
+    <div className="relative">
+      <div className="flex flex-col justify-between self-center w-full gap-5 mb-5 lg:flex-row lg:gap-0">
+        <div className="grid grid-cols-12 gap-4">
+          {(Object.keys(cards) as unknown as Array<keyof CardsReport>)?.map(
+            (item) => (
+              <Card
+                key={item}
+                label={translator.getTranslation(lang!, cards[item].labelKey)}
+                value={cards[item].value}
+                changeValue={cards[item].changeValue!}
+                start={cards[item].start!}
+                end={cards[item].end!}
+                startDate={rangeDates.start}
+                endDate={rangeDates.end}
+                isLoading={isLoading}
+              />
+            )
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
