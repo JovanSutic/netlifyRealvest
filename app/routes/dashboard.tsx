@@ -3,7 +3,12 @@ import { TColumn, TLine, TPage } from "../components/layout";
 import MainTableReport from "../widgets/MainTableReport";
 import { json } from "@remix-run/node";
 import { createClient } from "@supabase/supabase-js";
-import { useLoaderData, useSearchParams, useFetcher, NavLink } from "@remix-run/react";
+import {
+  useLoaderData,
+  useSearchParams,
+  useFetcher,
+  NavLink,
+} from "@remix-run/react";
 import {
   RangeOption,
   getDateForReport,
@@ -185,7 +190,11 @@ export default function Index() {
       <TLine columns={1}>
         <TColumn span={1}>
           <div className="text-center mb-2 underline">
-            <NavLink to={lang === "en" ? "/dashboard/?lang=sr" : "/dashboard/?lang=en"}>{lang === "en" ? "srpska verzija" : "english version"}</NavLink>
+            <NavLink
+              to={lang === "en" ? "/dashboard/?lang=sr" : "/dashboard/?lang=en"}
+            >
+              {lang === "en" ? "srpska verzija" : "english version"}
+            </NavLink>
           </div>
           <DashboardControls
             validUntil={reports[reports.length - 1].date_to}
@@ -199,9 +208,6 @@ export default function Index() {
       </TLine>
       <TLine columns={mobile ? 1 : 10} gap={4}>
         <TColumn span={mobile ? 10 : 6} start={1}>
-          <Loader
-            open={fetcher.state === "loading" && paramChangeType === "all"}
-          />
           {useMemo(
             () => (
               <>
@@ -210,15 +216,26 @@ export default function Index() {
                   lang={lang}
                   data={fetcher.data?.reports || reports}
                   timeRange={timeRange}
+                  isLoading={
+                    fetcher.state === "loading" && paramChangeType === "all"
+                  }
                 />
                 <MainTableReport
                   data={getDataForMainReport(fetcher.data?.reports || reports)}
                   mobile={mobile}
                   lang={lang}
+                  isLoading={
+                    fetcher.state === "loading" && paramChangeType === "all"
+                  }
                 />
               </>
             ),
-            [JSON.stringify(fetcher.data?.reports), reports.length]
+            [
+              JSON.stringify(fetcher.data?.reports),
+              reports.length,
+              fetcher.state,
+              paramChangeType,
+            ]
           )}
         </TColumn>
         <TColumn span={mobile ? 10 : 4} start={mobile ? 1 : 7}>
