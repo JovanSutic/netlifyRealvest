@@ -1,72 +1,100 @@
-import { ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { ButtonSizeType, DropdownOptions } from "../../types/component.types";
+import { DropdownOptions } from "../../types/component.types";
 
 const ToggleButtons = ({
   options,
   onChange,
   value,
-  size = 'medium'
 }: {
   options: DropdownOptions[];
   onChange: (value: string) => void;
   value: string;
-  size?: ButtonSizeType
 }) => {
-  const sizeMap: Record<ButtonSizeType, {padding:string; fontSize: string}> = {
-    small: {
-      padding: "2px 6px",
-      fontSize: "12px"
-    },
-    medium: {
-      padding: "4px 8px",
-      fontSize: "14px"
-    },
-    big: {
-      padding: "6px 12px",
-      fontSize: "14px"
-    },
-  };
+
   return (
-    <ToggleButtonGroup
-      value={value}
-      exclusive
-      onChange={(event, value) => {
-        onChange(value);
-      }}
-      aria-label="Platform"
-      sx={{
-        padding: "4px 0px",
-      }}
-    >
-      {options.map((option) => (
-        <ToggleButton
-          disableRipple={true}
-          key={option.value}
-          value={option.value}
-          sx={{
-            padding: sizeMap[size].padding,
-            fontSize: sizeMap[size].fontSize,
-            borderColor: "rgb(165 180 252)",
-            background: "rgb(224 231 255)",
-            color: "#13182d",
-            "&:hover": {
-              background: "rgb(165 180 252)",
-              color: "#13182d",
-            },
-            "&.Mui-selected": {
-              color: " #fff",
-              background: "rgb(49 46 129)",
-              "&:hover": {
-                color: " #fff",
-                background: "rgb(79 70 229)",
-              },
-            },
-          }}
-        >
-          {option.text}
-        </ToggleButton>
-      ))}
-    </ToggleButtonGroup>
+    <div className="px-1">
+      {options.map((option, index) => {
+        if (index === 0) {
+          if (option.value === value) {
+            return (
+              <button
+                className="bg-indigo-900 font-medium rounded-s hover:bg-indigo-700 text-white px-1.5 py-1 border-solid border-t-[1px] border-b-[1px] border-l-[1px] border-indigo-900"
+                onClick={() => {
+                  onChange(option.value);
+                }}
+                key={option.value}
+              >
+                {option.text}
+              </button>
+            );
+          }
+
+          return (
+            <button
+              className="bg-indigo-100 rounded-s font-medium hover:bg-indigo-200 text-slate-700 px-1.5 py-1 border-solid border-t-[1px] border-b-[1px] border-l-[1px] border-indigo-900"
+              onClick={() => {
+                onChange(option.value);
+              }}
+              key={option.value}
+            >
+              {option.text}
+            </button>
+          );
+        }
+
+        if (index === options.length - 1) {
+          if (option.value === value) {
+            return (
+              <button
+                className="bg-indigo-900 font-medium rounded-e hover:bg-indigo-700 text-white px-1.5 py-1 border-solid border-[1px] border-indigo-900"
+                onClick={() => {
+                  onChange(option.value);
+                }}
+                key={option.value}
+              >
+                {option.text}
+              </button>
+            );
+          }
+
+          return (
+            <button
+              className="bg-indigo-100 rounded-e font-medium hover:bg-indigo-200 text-slate-700 px-1.5 py-1  border-[1px] border-indigo-900"
+              onClick={() => {
+                onChange(option.value);
+              }}
+              key={option.value}
+            >
+              {option.text}
+            </button>
+          );
+        }
+
+        if (option.value === value) {
+          return (
+            <button
+              className="bg-indigo-900 font-medium hover:bg-indigo-700 text-white px-1.5 py-1 border-solid border-t-[1px] border-b-[1px] border-l-[1px] border-indigo-900"
+              onClick={() => {
+                onChange(option.value);
+              }}
+              key={option.value}
+            >
+              {option.text}
+            </button>
+          );
+        }
+        return (
+          <button
+            className="bg-indigo-100 font-medium hover:bg-indigo-200 text-slate-700 px-1.5 py-1 border-solid border-t-[1px] border-b-[1px] border-l-[1px] border-indigo-900"
+            onClick={() => {
+              onChange(option.value);
+            }}
+            key={option.value}
+          >
+            {option.text}
+          </button>
+        );
+      })}
+    </div>
   );
 };
 

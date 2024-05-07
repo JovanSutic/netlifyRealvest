@@ -1,5 +1,3 @@
-import { Typography } from "@mui/material";
-
 const EmptyChart = ({
   title,
   subtitle,
@@ -9,31 +7,12 @@ const EmptyChart = ({
 }) => {
   return (
     <div className="w-full flex flex-col justify-center h-[208px]">
-      <Typography
-        component="h6"
-        variant="subtitle1"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          textAlign: "center",
-          marginBottom: "16px",
-          fontWeight: "500",
-        }}
-      >
+      <p className="text-sm flex flex-col text-center mb-4">
         {title}
-      </Typography>
-      <Typography
-        component="h6"
-        variant="subtitle2"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          textAlign: "center",
-          fontWeight: "400",
-        }}
-      >
+      </p>
+      <p className="text-xs flex flex-col text-center">
         {subtitle}
-      </Typography>
+      </p>
     </div>
   );
 };

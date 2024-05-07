@@ -1,5 +1,5 @@
-import { Divider, Typography } from "@mui/material";
 import Chip from "../chip";
+import Divider from "../divider";
 import Loader from "../loader";
 
 const Card = ({
@@ -34,34 +34,18 @@ const Card = ({
         <Loader open={isLoading} />
         <div className="flex flex-row w-full items-center gap-2">
           <div className="flex flex-row w-full gap-1">
-            <Typography
-              variant="subtitle1"
-              sx={{
-                fontSize: "12px",
-                fontWeight: "400",
-                lineHeight: "15px",
-                fontStyle: "italic",
-                marginBottom: "4px",
-              }}
-            >
+            <p className="text-xs font-normal italic mb-1">
               {label}
-            </Typography>
+            </p>
           </div>
           <div className="flex flex-col w-full">
-            <Typography
-              variant="h4"
-              sx={{
-                fontSize: "28px",
-                fontWeight: "600",
-                textAlign: "end",
-              }}
-            >
+            <h4 className="text-2xl font-semibold text-end">
               {value}
-            </Typography>
+            </h4>
           </div>
         </div>
 
-        <div className="flex flex-col px-2 py-0">
+        <div className="flex flex-col">
           <Divider />
         </div>
 
@@ -69,44 +53,20 @@ const Card = ({
           <div className="flex flex-col">
             <div className="flex flex-row justify-around">
               <div className="flex flex-col self-center gap-0.5 text-center">
-                <Typography
-                  variant="h4"
-                  sx={{
-                    fontSize: "9px",
-                    fontWeight: "300",
-                  }}
-                >
+                <p className="text-xs font-light font-sans">
                   {startDate}
-                </Typography>
-                <Typography
-                  variant="h4"
-                  sx={{
-                    fontSize: "18px",
-                    fontWeight: "500",
-                  }}
-                >
+                </p>
+                <p className="text-lg font-medium">
                   {start}
-                </Typography>
+                </p>
               </div>
               <div className="flex flex-col self-center gap-0.5 text-center">
-                <Typography
-                  variant="h4"
-                  sx={{
-                    fontSize: "9px",
-                    fontWeight: "300",
-                  }}
-                >
+                <p className="text-xs font-light font-sans">
                   {endDate}
-                </Typography>
-                <Typography
-                  variant="h4"
-                  sx={{
-                    fontSize: "18px",
-                    fontWeight: "500",
-                  }}
-                >
+                </p>
+                <p className="text-lg font-medium">
                   {end}
-                </Typography>
+                </p>
               </div>
               <div className="flex flex-col self-center">
                 <Chip

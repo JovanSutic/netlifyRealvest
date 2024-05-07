@@ -1,4 +1,3 @@
-import { Typography } from "@mui/material";
 import { WidgetWrapper } from "../components/layout";
 import Table from "../components/table/Table";
 import { listMainReportData } from "../utils/reports";
@@ -8,12 +7,10 @@ import Loader from '../components/loader';
 
 const MainTableReport = ({
   data,
-  mobile,
   lang,
   isLoading = false,
 }: {
   data: Record<string, MainReportTableData>;
-  mobile: boolean;
   lang: LangType;
   isLoading?: boolean;
 }) => {
@@ -53,13 +50,9 @@ const MainTableReport = ({
       <Loader open={isLoading} />
       <div className="flex flex-col items-center box-border">
         <div className="flex flex-row items-center w-full mb-4 justify-between">
-          <Typography
-            component="h6"
-            variant={mobile ? "subtitle1" : "h6"}
-            sx={{ fontWeight: "400" }}
-          >
+          <p className="text-xl">
             {translator.getTranslation(lang!, "mainTableTitle")}
-          </Typography>
+          </p>
         </div>
         <div className="flex flex-col self-start w-full">
           <Table headers={tableHeaders} data={listMainReportData(data)} />

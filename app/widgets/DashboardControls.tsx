@@ -1,4 +1,3 @@
-import { Typography } from "@mui/material";
 import { WidgetWrapper } from "../components/layout";
 import { LangType, PropertyType } from "../types/dashboard.types";
 import { RangeOption, formatDate } from "../utils/dateTime";
@@ -29,9 +28,9 @@ const DashboardControls = ({
     <WidgetWrapper>
       <div className="flex flex-col w-full lg:flex-row">
         <div className="flex flex-col w-full mb-2 items-center justify-between lg:flex-row">
-          <Typography variant={mobile ? "h6" : "h5"} component="h5">
+          <p className="text-2xl">
             {translator.getTranslation(lang!, "widgetTitle")}
-          </Typography>
+          </p>
         </div>
         <div className="flex flex-col w-full items-center lg:items-end">
           <div className="flex flex-col gap-2 lg:flex-row lg:gap-4">
@@ -75,12 +74,12 @@ const DashboardControls = ({
             </div>
           </div>
           <div className="flex flex-col mt-2">
-            <Typography variant="body2" component="h6">
+            <p className="text-sm">
               {`${translator.getTranslation(lang!, "lastDate")} ${formatDate(
                 validUntil,
                 lang!
               )}`}
-            </Typography>
+            </p>
           </div>
         </div>
       </div>

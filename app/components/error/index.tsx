@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+
 import { NavLink } from "@remix-run/react";
 
 export const ErrorPage = ({
@@ -15,10 +15,10 @@ export const ErrorPage = ({
   return (
     <div className="flex flex-col w-full">
       <div className="flex flex-row justify-center pt-4">
-        <Typography variant="h3">{title}</Typography>
+        <p className="text-4xl">{title}</p>
       </div>
       <div className="flex flex-row justify-center">
-        <Typography variant="body2">{subtitle}</Typography>
+        <p className="text-base">{subtitle}</p>
       </div>
       <div className="flex flex-row justify-center pt-5">
         <button className="inline-flex mb-1 items-center px-3 py-2 text-sm font-medium text-center text-white bg-indigo-900 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
