@@ -1,4 +1,3 @@
-import { Box, Divider, Typography } from "@mui/material";
 import { WidgetWrapper } from "../components/layout";
 import Select from "../components/select/Select";
 import {
@@ -21,6 +20,7 @@ import {
 } from "../types/dashboard.types";
 import { DropdownOptions } from "../types/component.types";
 import { RangeOption } from "../utils/dateTime";
+import Divider from "../components/divider";
 
 const PieReport = ({
   municipalityList,
@@ -54,39 +54,12 @@ const PieReport = ({
 
   return (
     <WidgetWrapper>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          boxSizing: "border-box",
-          width: "100%",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "100%",
-              marginBottom: "16px",
-            }}
-          >
-            <Typography
-              component="h6"
-              variant={mobile ? "subtitle1" : "h6"}
-              sx={{ fontWeight: "400" }}
-            >
+      <div className="flex flex-col w-full box-border items-center">
+        <div className="flex flex-col w-full">
+          <div className="flex flex-row w-full mb-4 items-center justify-between">
+            <p className="text-xl">
               {translator.getTranslation(lang!, "pieTitle")}
-            </Typography>
+            </p>
             <Select
               value={municipality}
               setValue={(value) => {
@@ -94,18 +67,11 @@ const PieReport = ({
               }}
               options={municipalityList || []}
             />
-          </Box>
+          </div>
           <Divider />
-        </Box>
+        </div>
 
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            marginTop: "20px",
-          }}
-        >
+        <div className="flex flex-col w-full mt-5">
           <Line
             data={getSingleLineDataset(
               lineData,
@@ -132,32 +98,12 @@ const PieReport = ({
               },
             }}
           />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignSelf: "flex-start",
-            width: "100%",
-            marginTop: "28px",
-            marginBottom: "28px",
-          }}
-        >
+        </div>
+        <div className="flex flex-col w-full self-start my-7">
           <Divider />
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "end",
-              alignItems: "center",
-              width: "100%",
-              marginTop: "24px",
-              marginBottom: "20px",
-            }}
-          >
+          <div className="flex flex-row w-full mt-6 mb-5 items-center justify-end">
             <ToggleButtons
               value={distributionType!}
-              size="small"
               onChange={(value) => {
                 changeParams(value, "distributionType");
               }}
@@ -172,16 +118,10 @@ const PieReport = ({
                 },
               ]}
             />
-          </Box>
+          </div>
           {chartData.labels.length ? (
             <>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  width: "100%",
-                }}
-              >
+              <div className="flex flex-row w-full">
                 <DoughnutChart
                   ratio={mobile ? 1.5 : 2}
                   id="salesDistribution"
@@ -193,17 +133,16 @@ const PieReport = ({
                       : translator.getTranslation(lang!, "pieAverageLabel")
                   }
                 />
-              </Box>
+              </div>
             </>
           ) : (
             <EmptyChart
-              height={208}
               title={translator.getTranslation(lang!, "pieEmptyTitle")}
               subtitle={translator.getTranslation(lang!, "pieEmptySubtitle")}
             />
           )}
-        </Box>
-      </Box>
+        </div>
+      </div>
     </WidgetWrapper>
   );
 };

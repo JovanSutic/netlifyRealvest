@@ -185,6 +185,8 @@ export default function Index() {
     );
   }, [timeRange, propertyType, municipality, distributionType]);
 
+  console.log(timeRange);
+
   return (
     <TPage mobile={mobile}>
       <TLine columns={1}>
@@ -212,7 +214,6 @@ export default function Index() {
             () => (
               <>
                 <DashboardCards
-                  mobile={mobile}
                   lang={lang}
                   data={fetcher.data?.reports || reports}
                   timeRange={timeRange}
@@ -222,7 +223,6 @@ export default function Index() {
                 />
                 <MainTableReport
                   data={getDataForMainReport(fetcher.data?.reports || reports)}
-                  mobile={mobile}
                   lang={lang}
                   isLoading={
                     fetcher.state === "loading" && paramChangeType === "all"
