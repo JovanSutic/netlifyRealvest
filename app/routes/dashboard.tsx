@@ -7,7 +7,7 @@ import {
   useLoaderData,
   useSearchParams,
   useFetcher,
-  NavLink,
+  Link,
 } from "@remix-run/react";
 import {
   RangeOption,
@@ -185,18 +185,17 @@ export default function Index() {
     );
   }, [timeRange, propertyType, municipality, distributionType]);
 
-  console.log(timeRange);
-
   return (
     <TPage mobile={mobile}>
       <TLine columns={1}>
         <TColumn span={1}>
           <div className="text-center mb-2 underline">
-            <NavLink
+            <Link
               to={lang === "en" ? "/dashboard/?lang=sr" : "/dashboard/?lang=en"}
+              reloadDocument
             >
               {lang === "en" ? "srpska verzija" : "english version"}
-            </NavLink>
+            </Link>
           </div>
           <DashboardControls
             validUntil={reports[reports.length - 1].date_to}
