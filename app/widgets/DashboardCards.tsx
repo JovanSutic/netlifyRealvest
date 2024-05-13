@@ -31,7 +31,7 @@ const DashboardCards = ({
   return (
     <div className="relative">
       <div className="flex flex-col justify-between self-center w-full gap-5 mb-5 lg:flex-row lg:gap-0">
-        <div className="grid grid-cols-12 gap-4">
+        <div className="w-full grid grid-cols-12 gap-4">
           {(Object.keys(cards) as unknown as Array<keyof CardsReport>)?.map(
             (item) => (
               <Card
