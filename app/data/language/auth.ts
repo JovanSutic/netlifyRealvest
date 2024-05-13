@@ -1,0 +1,46 @@
+export const authMap: Record<string, Record<string, string>> = {
+  en: {
+    signTitle: "Sign in",
+    signDescription: "Please enter your credentials to sign in.",
+    googleSign: "Continue with Google",
+    magicLink: "Magic link",
+    password: "Password",
+    emailInput: "Enter email",
+    passInput: "Enter password",
+    nameInput: "Enter name",
+    passForgot: "Forgot Password?",
+    sendLink: "Send magic link",
+    noAccount: "Don't have an account?",
+    yesAccount: "Already have an account?",
+    register: "Register here",
+    registerTitle: "Create an account",
+    registerDescription:
+      "We are happy that you want to join us. Please fill in the form below to create your account.",
+    passDescription:
+      "Please enter your email address and we will send you a link to reset your password.",
+    linkBtn: "Send link",
+    backTo: "Go back? ",
+  },
+  sr: {
+    signTitle: "Prijavite se",
+    signDescription: "Molimo vas upišite vaše podatke za prijavu.",
+    googleSign: "Google prijava",
+    magicLink: "Magični link",
+    password: "Lozinka",
+    emailInput: "Upišite email",
+    passInput: "Upišite lozinku",
+    nameInput: "Upišite ime",
+    passForgot: "Zaboravili ste lozinku?",
+    sendLink: "Pošalji magični link",
+    noAccount: "Nemate nalog?",
+    yesAccount: "Već imate nalog?",
+    register: "Registrujte se",
+    registerTitle: "Napravite nalog",
+    registerDescription:
+      "Drago nam je da želite da nam se priključite. Molimo vas popunite formular i napravite vaš nalog.",
+    passDescription:
+      "Molimo vas upišite email i poslaćemo vam link za resetovanje lozinke.",
+    linkBtn: "Pošalji link",
+    backTo: "Nazad? ",
+  },
+};
