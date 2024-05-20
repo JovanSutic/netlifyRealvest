@@ -1,8 +1,20 @@
-import type { MetaFunction } from "@remix-run/node";
-import { Form, Link, useSearchParams } from "@remix-run/react";
+import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import {
+  Form,
+  Link,
+  json,
+  redirect,
+  useActionData,
+  useNavigate,
+  useNavigation,
+  useSearchParams,
+} from "@remix-run/react";
 import { Translator } from "../data/language/translator";
 import Tabs from "../components/tabs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { magicSchema, passwordSchema } from "../data/schema/validators";
+import { ZodError, ZodIssue } from "zod";
+import { createSupabaseServerClient } from "../supabase.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -14,16 +26,99 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const { supabaseClient } = createSupabaseServerClient(request);
+  const lang = new URL(request.url).searchParams.get("lang") || "sr";
+  const user = await supabaseClient.auth.getUser();
+  if (user?.data?.user?.role === "authenticated") {
+    throw redirect(`/report?lang=${lang}`);
+  }
+
+  return null;
+};
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const formData = await request.formData();
+  const lang = new URL(request.url).searchParams.get("lang") || "sr";
+  const email = formData.get("email");
+  const type = formData.get("type");
+  const password = formData.get("password");
+
+  try {
+    if (type === "2") {
+      passwordSchema.parse({
+        email,
+        type,
+        password,
+      });
+
+      const { supabaseClient, headers } = createSupabaseServerClient(request);
+
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email: String(email),
+        password: String(password),
+      });
+
+      if (error) {
+        return json({ success: false, error }, { headers, status: 400 });
+      } else {
+        return redirect(`/report?lang=${lang}`, { headers });
+      }
+    } else {
+      magicSchema.parse({
+        email,
+        type,
+      });
+    }
+  } catch (error) {
+    return error as ZodError;
+  }
+
+  return null;
+};
+
 export default function AuthSign() {
+  const [searchParams] = useSearchParams();
+  const lang = searchParams.get("lang") || "sr";
+
+  const navigate = useNavigate();
+  const navigation = useNavigation();
+
   const [signInType, setSignInType] = useState<string>("2");
   const [showPass, setShowPass] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
-  const [searchParams] = useSearchParams();
+  const [email, setEmail] = useState<string>("");
+
+  const actionData = useActionData<typeof action>();
+  let emailError: ZodIssue[] = [];
+  let passwordError: ZodIssue[] = [];
+
+  if (actionData && "issues" in actionData) {
+    emailError = actionData?.issues.filter((issue) =>
+      issue.path?.includes("email")
+    ) as ZodIssue[];
+    passwordError = actionData?.issues.filter((issue) =>
+      issue.path?.includes("password")
+    ) as ZodIssue[];
+  }
+
   const translator = new Translator("auth");
-  const lang = searchParams.get("lang");
+
+  useEffect(() => {
+    return () => {
+      window.history.replaceState({}, "");
+    };
+  }, []);
+
+  useEffect(() => {
+    if (actionData && "success" in actionData && actionData.success) {
+      navigate(`/dashboard?lang=${lang}`);
+    }
+  }, [actionData, lang, navigate]);
+
   return (
     <div className="w-full flex justify-center items-center bg-gray-100 font-[sans-serif] text-[#333] h-full md:min-h-screen p-4">
-      <div className="w-1/4 md:w-1/3 sm:w-full justify-center mx-auto">
+      <div className="lg:w-1/3 md:w-1/2 sm:w-full justify-center mx-auto">
         <div className=" bg-white rounded-2xl p-6 -mt-24 relative z-10 shadow-lg">
           <div className="mb-10">
             <h3 className="text-3xl font-extrabold text-slate-800 mb-3">
@@ -79,23 +174,36 @@ export default function AuthSign() {
             <hr className="mb-2 border-gray-300" />
             <Tabs
               options={[
-                { text: translator.getTranslation(lang!, "magicLink"), value: "1" },
-                { text: translator.getTranslation(lang!, "password"), value: "2" },
+                {
+                  text: translator.getTranslation(lang!, "password"),
+                  value: "2",
+                },
+                {
+                  text: translator.getTranslation(lang!, "magicLink"),
+                  value: "1",
+                },
               ]}
               value={signInType}
-              onChange={setSignInType}
+              onChange={(value) => {
+                setSignInType(value);
+                setEmail("");
+                setPassword("");
+              }}
             />
           </div>
           {signInType === "2" ? (
-            <Form>
-              <div className="mt-8">
+            <Form method="post">
+              <div className="pt-5 h-[76px]">
                 <div className="relative flex items-center">
+                  <input name="type" type="hidden" value={signInType} />
                   <input
                     name="email"
                     type="text"
                     required
                     className="w-full text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none"
                     placeholder={translator.getTranslation(lang!, "emailInput")}
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
                   />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -130,8 +238,13 @@ export default function AuthSign() {
                     </g>
                   </svg>
                 </div>
+                {(emailError || [])?.length > 0 && (
+                  <span className="text-red-500 text-sm block">
+                    {emailError?.[0].message}
+                  </span>
+                )}
               </div>
-              <div className="mt-8">
+              <div className="pt-5 h-[76px]">
                 <div className="relative flex items-center">
                   <input
                     name="password"
@@ -183,8 +296,13 @@ export default function AuthSign() {
                     )}
                   </button>
                 </div>
+                {(passwordError || [])?.length > 0 && (
+                  <span className="text-red-500 text-sm block">
+                    {passwordError?.[0].message}
+                  </span>
+                )}
               </div>
-              <div className="flex items-center justify-between gap-2 mt-4">
+              <div className="flex items-center justify-between gap-2 mt-6">
                 <div>
                   <Link
                     to={`/auth/forgot_password?lang=${lang}`}
@@ -196,23 +314,41 @@ export default function AuthSign() {
               </div>
               <div className="mt-10">
                 <button
-                  type="button"
+                  type="submit"
+                  disabled={navigation.state === "submitting"}
                   className="w-full py-2.5 px-4 text-sm font-semibold rounded text-white bg-indigo-900 hover:bg-indigo-800 focus:outline-none"
                 >
                   {translator.getTranslation(lang!, "signTitle")}
+                  {navigation.state === "submitting" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18px"
+                      fill="#fff"
+                      className="ml-2 inline animate-spin"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M12 22c5.421 0 10-4.579 10-10h-2c0 4.337-3.663 8-8 8s-8-3.663-8-8c0-4.336 3.663-8 8-8V2C6.579 2 2 6.58 2 12c0 5.421 4.579 10 10 10z"
+                        data-original="#000000"
+                      />
+                    </svg>
+                  )}
                 </button>
               </div>
             </Form>
           ) : (
-            <Form>
-              <div className="mt-8">
+            <Form method="post">
+              <div className="pt-5 h-[76px]">
                 <div className="relative flex items-center">
+                  <input name="type" type="hidden" value={signInType} />
                   <input
                     name="email"
                     type="text"
                     required
                     className="w-full text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none"
                     placeholder={translator.getTranslation(lang!, "emailInput")}
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
                   />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -247,10 +383,15 @@ export default function AuthSign() {
                     </g>
                   </svg>
                 </div>
+                {(emailError || [])?.length > 0 && (
+                  <span className="text-red-500 text-sm block">
+                    {emailError?.[0].message}
+                  </span>
+                )}
               </div>
               <div className="mt-10">
                 <button
-                  type="button"
+                  type="submit"
                   className="w-full py-2.5 px-4 text-sm font-semibold rounded text-white bg-indigo-900 hover:bg-indigo-800 focus:outline-none"
                 >
                   {translator.getTranslation(lang!, "sendLink")}

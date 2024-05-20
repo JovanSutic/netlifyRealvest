@@ -1,8 +1,7 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { TColumn, TLine, TPage } from "../components/layout";
 import MainTableReport from "../widgets/MainTableReport";
-import { json } from "@remix-run/node";
-import { createClient } from "@supabase/supabase-js";
+import { json, redirect } from "@remix-run/node";
 import {
   useLoaderData,
   useSearchParams,
@@ -30,6 +29,7 @@ import DashboardCards from "../widgets/DashboardCards";
 import { default as ErrorPage } from "../components/error";
 import { useState, useMemo, useCallback, useEffect } from "react";
 import Loader from "../components/loader";
+import { createSupabaseServerClient } from "../supabase.server";
 
 const mandatorySearchParams: DashboardParamsUI = {
   lang: "sr",
@@ -47,6 +47,12 @@ export const meta: MetaFunction = () => {
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const {supabaseClient } = createSupabaseServerClient(request);
+  const user = await supabaseClient.auth.getUser();
+  if(user?.data?.user?.role !== "authenticated") {
+    throw redirect("/auth");
+  }
+
   const userAgent = request.headers.get("user-agent");
   const searchType = new URL(request.url).searchParams.get("property_type");
   const searchRange = new URL(request.url).searchParams.get("time_range");
@@ -58,12 +64,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     (searchRange || mandatorySearchParams.time_range) as RangeOption
   );
 
-  const supabase = createClient(
-    process.env.SUPABASE_URL_LOCAL!,
-    process.env.SUPABASE_KEY_LOCAL!
-  );
+  
+  
 
-  const { data: mainReports, error: mainError } = await supabase
+  const { data: mainReports, error: mainError } = await supabaseClient
     .from("contract_report")
     .select(
       `id, count, sum_price, average_meter_price, min_average, sum_size, max_average, date_to, municipality(
@@ -77,7 +81,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     console.log(mainError);
   }
 
-  const { data: pieReports, error: pieError } = await supabase
+  const { data: pieReports, error: pieError } = await supabaseClient
     .from("pie_contract_report")
     .select(
       `id, price_map, average_price_map, date_to, municipality(
@@ -95,7 +99,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     console.log(pieError);
   }
 
-  const { data: municipalities, error: municipalitiesError } = await supabase
+  const { data: municipalities, error: municipalitiesError } = await supabaseClient
     .from("municipalities")
     .select();
 

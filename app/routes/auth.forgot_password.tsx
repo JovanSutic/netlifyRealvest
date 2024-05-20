@@ -1,6 +1,8 @@
-import type { MetaFunction } from "@remix-run/node";
-import { Form, Link, useSearchParams } from "@remix-run/react";
+import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
+import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 import { Translator } from "../data/language/translator";
+import { useState } from "react";
+import { ZodError, z } from "zod";
 
 export const meta: MetaFunction = () => {
   return [
@@ -12,13 +14,40 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const formData = await request.formData();
+  const email = formData.get("email");
+
+  const schema = z.object({
+    email: z.string().email({ message: "Please provide valid email." }),
+  })
+
+  try {
+    schema.parse({
+      email,
+    });
+  } catch (error) {
+    return error as ZodError;
+  }
+
+  return null;
+};
+
 export default function AuthForgetPass() {
   const [searchParams] = useSearchParams();
+
+  const [email, setEmail] = useState<string>("");
+  
+  const actionData = useActionData<typeof action>();
+  const emailError = actionData?.issues.filter((issue) =>
+    issue.path?.includes("email")
+  );
+
   const translator = new Translator("auth");
   const lang = searchParams.get("lang");
   return (
     <div className="w-full flex justify-center items-center bg-gray-100 font-[sans-serif] text-[#333] h-full md:min-h-screen p-4">
-      <div className="w-1/4 md:w-1/3 sm:w-full justify-center mx-auto">
+      <div className="lg:w-1/3 md:w-1/2 sm:w-full justify-center mx-auto">
         <div className=" bg-white rounded-2xl p-6 -mt-24 relative z-10 shadow-lg">
           <div className="mb-10">
             <h3 className="text-3xl font-extrabold text-slate-800 mb-3">
@@ -29,8 +58,8 @@ export default function AuthForgetPass() {
             </h3>
           </div>
           <div>
-            <Form>
-              <div className="mt-8">
+            <Form method="post">
+              <div className="pt-5 h-[76px]">
                 <div className="relative flex items-center">
                   <input
                     name="email"
@@ -38,6 +67,8 @@ export default function AuthForgetPass() {
                     required
                     className="w-full text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none"
                     placeholder={translator.getTranslation(lang!, "emailInput")}
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
                   />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -72,10 +103,15 @@ export default function AuthForgetPass() {
                     </g>
                   </svg>
                 </div>
+                {(emailError || [])?.length > 0 && (
+                  <span className="text-red-500 text-sm block">
+                    {emailError?.[0].message}
+                  </span>
+                )}
               </div>
               <div className="mt-10">
                 <button
-                  type="button"
+                  type="submit"
                   className="w-full py-2.5 px-4 text-sm font-semibold rounded text-white bg-indigo-900 hover:bg-indigo-800 focus:outline-none"
                 >
                   {translator.getTranslation(lang!, "linkBtn")}
