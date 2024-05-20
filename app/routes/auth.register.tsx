@@ -1,4 +1,4 @@
-import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import {
   Form,
   Link,
@@ -23,6 +23,17 @@ export const meta: MetaFunction = () => {
       content: "Register to Estate Insights to get best property insights",
     },
   ];
+};
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const { supabaseClient } = createSupabaseServerClient(request);
+  const lang = new URL(request.url).searchParams.get("lang") || "sr";
+  const user = await supabaseClient.auth.getUser();
+  if (user?.data?.user?.role === "authenticated") {
+    throw redirect(`/report?lang=${lang}`);
+  }
+
+  return null;
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
