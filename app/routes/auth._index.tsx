@@ -1,10 +1,20 @@
 import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
-import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  json,
+  redirect,
+  useActionData,
+  useNavigate,
+  useNavigation,
+  useSearchParams,
+} from "@remix-run/react";
 import { Translator } from "../data/language/translator";
 import Tabs from "../components/tabs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { magicSchema, passwordSchema } from "../data/schema/validators";
-import { ZodError } from "zod";
+import { ZodError, ZodIssue } from "zod";
+import { createSupabaseServerClient } from "../supabase.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -18,6 +28,7 @@ export const meta: MetaFunction = () => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
+  const lang = new URL(request.url).searchParams.get("lang") || "sr";
   const email = formData.get("email");
   const type = formData.get("type");
   const password = formData.get("password");
@@ -29,6 +40,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         type,
         password,
       });
+
+      const { supabaseClient, headers } = createSupabaseServerClient(request);
+
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email: String(email),
+        password: String(password),
+      });
+
+      if (error) {
+        return json({ success: false, error }, { headers, status: 400 });
+      } else {
+        return redirect(`/report?lang=${lang}`, { headers });
+      }
     } else {
       magicSchema.parse({
         email,
@@ -44,6 +68,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function AuthSign() {
   const [searchParams] = useSearchParams();
+  const lang = searchParams.get("lang") || "sr";
+
+  const navigate = useNavigate();
+  const navigation = useNavigation();
 
   const [signInType, setSignInType] = useState<string>("2");
   const [showPass, setShowPass] = useState<boolean>(false);
@@ -51,16 +79,31 @@ export default function AuthSign() {
   const [email, setEmail] = useState<string>("");
 
   const actionData = useActionData<typeof action>();
-  const emailError = actionData?.issues.filter((issue) =>
-    issue.path?.includes("email")
-  );
-  const passwordError = actionData?.issues.filter((issue) =>
-    issue.path?.includes("password")
-  );
+  let emailError: ZodIssue[] = [];
+  let passwordError: ZodIssue[] = [];
+
+  if (actionData && "issues" in actionData) {
+    emailError = actionData?.issues.filter((issue) =>
+      issue.path?.includes("email")
+    ) as ZodIssue[];
+    passwordError = actionData?.issues.filter((issue) =>
+      issue.path?.includes("password")
+    ) as ZodIssue[];
+  }
 
   const translator = new Translator("auth");
-  const lang = searchParams.get("lang");
 
+  useEffect(() => {
+    return () => {
+      window.history.replaceState({}, "");
+    };
+  }, []);
+
+  useEffect(() => {
+    if (actionData && "success" in actionData && actionData.success) {
+      navigate(`/dashboard?lang=${lang}`);
+    }
+  }, [actionData, lang, navigate]);
 
   return (
     <div className="w-full flex justify-center items-center bg-gray-100 font-[sans-serif] text-[#333] h-full md:min-h-screen p-4">
@@ -121,19 +164,19 @@ export default function AuthSign() {
             <Tabs
               options={[
                 {
-                  text: translator.getTranslation(lang!, "magicLink"),
-                  value: "1",
-                },
-                {
                   text: translator.getTranslation(lang!, "password"),
                   value: "2",
+                },
+                {
+                  text: translator.getTranslation(lang!, "magicLink"),
+                  value: "1",
                 },
               ]}
               value={signInType}
               onChange={(value) => {
                 setSignInType(value);
-                setEmail('');
-                setPassword('');
+                setEmail("");
+                setPassword("");
               }}
             />
           </div>
@@ -261,9 +304,24 @@ export default function AuthSign() {
               <div className="mt-10">
                 <button
                   type="submit"
+                  disabled={navigation.state === "submitting"}
                   className="w-full py-2.5 px-4 text-sm font-semibold rounded text-white bg-indigo-900 hover:bg-indigo-800 focus:outline-none"
                 >
                   {translator.getTranslation(lang!, "signTitle")}
+                  {navigation.state === "submitting" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18px"
+                      fill="#fff"
+                      className="ml-2 inline animate-spin"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M12 22c5.421 0 10-4.579 10-10h-2c0 4.337-3.663 8-8 8s-8-3.663-8-8c0-4.336 3.663-8 8-8V2C6.579 2 2 6.58 2 12c0 5.421 4.579 10 10 10z"
+                        data-original="#000000"
+                      />
+                    </svg>
+                  )}
                 </button>
               </div>
             </Form>

@@ -1,9 +1,19 @@
 import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
-import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  json,
+  redirect,
+  useActionData,
+  useNavigation,
+  useSearchParams,
+} from "@remix-run/react";
 import { Translator } from "../data/language/translator";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { registrationSchema } from "../data/schema/validators";
 import { ZodError } from "zod";
+import { createSupabaseServerClient } from "../supabase.server";
+import Alert from "../components/alert";
 
 export const meta: MetaFunction = () => {
   return [
@@ -16,10 +26,11 @@ export const meta: MetaFunction = () => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+  const lang = new URL(request.url).searchParams.get("lang") || "sr";
   const formData = await request.formData();
-  const email = formData.get("email");
+  const email = String(formData.get("email"));
   const name = formData.get("name");
-  const password = formData.get("password");
+  const password = String(formData.get("password"));
 
   try {
     registrationSchema.parse({
@@ -27,6 +38,27 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       name,
       password,
     });
+
+    const { supabaseClient, headers } = createSupabaseServerClient(request);
+
+    const { error } = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          display_name: name,
+        },
+      },
+    });
+
+    if (error) {
+      return json(
+        { success: false, error: error.message },
+        { headers, status: 400 }
+      );
+    } else {
+      return redirect(`/auth/success?lang=${lang}`, { headers });
+    }
   } catch (error) {
     return error as ZodError;
   }
@@ -36,27 +68,62 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function AuthRegister() {
   const [searchParams] = useSearchParams();
+  const lang = searchParams.get("lang");
 
+  const navigation = useNavigation();
+
+  const [apiError, setApiError] = useState<string>();
   const [showPass, setShowPass] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
 
+  const [nameError, setNameError] = useState<string>("");
+  const [emailError, setEmailError] = useState<string>("");
+  const [passwordError, setPasswordError] = useState<string>("");
+
   const actionData = useActionData<typeof action>();
-  const nameError = actionData?.issues.filter((issue) =>
-    issue.path?.includes("name")
-  );
-  const emailError = actionData?.issues.filter((issue) =>
-    issue.path?.includes("email")
-  );
-  const passwordError = actionData?.issues.filter((issue) =>
-    issue.path?.includes("password")
-  );
+
+  useEffect(() => {
+    if (actionData && "issues" in actionData) {
+      const nameErrorCatch = actionData?.issues.filter((issue) =>
+        issue.path?.includes("name")
+      );
+      const emailErrorCatch = actionData?.issues.filter((issue) =>
+        issue.path?.includes("email")
+      );
+      const passwordErrorCatch = actionData?.issues.filter((issue) =>
+        issue.path?.includes("password")
+      );
+
+      if (nameErrorCatch.length) setNameError(nameErrorCatch[0].message);
+      if (emailErrorCatch.length) setEmailError(emailErrorCatch[0].message);
+      if (passwordErrorCatch.length) setPasswordError(passwordErrorCatch[0].message);
+    }
+
+    if ((nameError || emailError || passwordError) && !("issues" in actionData!)) {
+      if(nameError) setNameError("");
+      if(emailError) setEmailError("");
+      if(passwordError) setPasswordError("");
+    }
+
+    if (actionData && "error" in actionData) {
+      setApiError(actionData.error);
+    }
+  }, [actionData, emailError, nameError, passwordError]);
+
   
+
   const translator = new Translator("auth");
-  const lang = searchParams.get("lang");
   return (
     <div className="w-full flex justify-center items-center bg-gray-100 font-[sans-serif] text-[#333] h-full md:min-h-screen p-4">
+      <Alert
+        type="error"
+        isOpen={apiError !== undefined}
+        title="Error"
+        text={apiError || ""}
+        close={() => setApiError(undefined)}
+      />
       <div className="lg:w-1/3 md:w-1/2 sm:w-full justify-center mx-auto">
         <div className=" bg-white rounded-2xl p-6 -mt-24 relative z-10 shadow-lg">
           <div className="mb-10">
@@ -101,7 +168,7 @@ export default function AuthRegister() {
                 </div>
                 {(nameError || [])?.length > 0 && (
                   <span className="text-red-500 text-sm block">
-                    {nameError?.[0].message}
+                    {nameError}
                   </span>
                 )}
               </div>
@@ -151,7 +218,7 @@ export default function AuthRegister() {
                 </div>
                 {(emailError || [])?.length > 0 && (
                   <span className="text-red-500 text-sm block">
-                    {emailError?.[0].message}
+                    {emailError}
                   </span>
                 )}
               </div>
@@ -209,16 +276,31 @@ export default function AuthRegister() {
                 </div>
                 {(passwordError || [])?.length > 0 && (
                   <span className="text-red-500 text-sm block">
-                    {passwordError?.[0].message}
+                    {passwordError}
                   </span>
                 )}
               </div>
               <div className="mt-10">
                 <button
                   type="submit"
+                  disabled={navigation.state === "submitting"}
                   className="w-full py-2.5 px-4 text-sm font-semibold rounded text-white bg-indigo-900 hover:bg-indigo-800 focus:outline-none"
                 >
                   {translator.getTranslation(lang!, "registerTitle")}
+                  {navigation.state === "submitting" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18px"
+                      fill="#fff"
+                      className="ml-2 inline animate-spin"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M12 22c5.421 0 10-4.579 10-10h-2c0 4.337-3.663 8-8 8s-8-3.663-8-8c0-4.336 3.663-8 8-8V2C6.579 2 2 6.58 2 12c0 5.421 4.579 10 10 10z"
+                        data-original="#000000"
+                      />
+                    </svg>
+                  )}
                 </button>
               </div>
             </Form>
