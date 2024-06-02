@@ -14,7 +14,7 @@ const MainTableReport = ({
   lang: LangType;
   isLoading?: boolean;
 }) => {
-  const translator = new Translator("dashboard");
+  const translator = new Translator("report");
   const tableHeaders = [
     {
       key: "municipality",

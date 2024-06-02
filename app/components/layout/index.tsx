@@ -112,12 +112,28 @@ export const TPage = ({
   mobile?: boolean;
 }) => {
   return (
-    <div className={`w-full px-2 lg:px-0 box-border ${color || "bg-gray-200"} py-4`}>
+    <div
+      className={`w-full px-2 lg:px-0 box-border ${
+        color || "bg-gray-200"
+      } py-4`}
+    >
       <div
         className={`${mobile ? "w-full" : "w-[1366px]"} block relative  m-auto`}
       >
         {children}
       </div>
+    </div>
+  );
+};
+
+export const DashboardPage = ({
+  children,
+}: {
+  children: JSX.Element | JSX.Element[];
+}) => {
+  return (
+    <div className="pl-[260px] min-h-screen bg-gray-200">
+      <div className="px-5">{children}</div>
     </div>
   );
 };

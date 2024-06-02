@@ -23,7 +23,7 @@ const DashboardCards = ({
   lang: LangType;
   isLoading?: boolean;
 }) => {
-  const translator = new Translator("dashboard");
+  const translator = new Translator("report");
   const cardEffects = getCardEffects(data, timeRange);
   const rangeDates = getRangeDates(data, timeRange, lang);
   const cards = prepareCardDataForDisplay(cardEffects);

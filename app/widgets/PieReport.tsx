@@ -45,7 +45,7 @@ const PieReport = ({
   timeRange: RangeOption;
   municipality: string;
 }) => {
-  const translator = new Translator("dashboard");
+  const translator = new Translator("report");
   const chartData: PieChartData = getDataForPie(
     data,
     distributionType,
@@ -61,6 +61,7 @@ const PieReport = ({
               {translator.getTranslation(lang!, "pieTitle")}
             </p>
             <Select
+              name="municipality"
               value={municipality}
               setValue={(value) => {
                 changeParams(value, "municipality");

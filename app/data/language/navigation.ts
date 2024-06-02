@@ -7,7 +7,9 @@ export const navigationMap: Record<string, Record<string, string>> = {
     partnershipNav: "Partnership",
     dashboardNav: "Dashboard",
     loginNav: "Login",
-    logoutNav: "Logout"
+    logoutNav: "Logout",
+    areaSearch: "Area search",
+    insights: "Insights"
   },
   sr: {
     portfolioHeader: "Dobrodošli na Portfolio",
@@ -17,6 +19,8 @@ export const navigationMap: Record<string, Record<string, string>> = {
     partnershipNav: "Saradnja",
     dashboardNav: "Pregled",
     loginNav: "Prijavi se",
-    logoutNav: "Odjavi se"
+    logoutNav: "Odjava",
+    areaSearch: "Pretraga oblasti",
+    insights: "Uvidi"
   },
 };

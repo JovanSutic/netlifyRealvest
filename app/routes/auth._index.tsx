@@ -31,7 +31,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const lang = new URL(request.url).searchParams.get("lang") || "sr";
   const user = await supabaseClient.auth.getUser();
   if (user?.data?.user?.role === "authenticated") {
-    throw redirect(`/report?lang=${lang}`);
+    throw redirect(`/dashboard?lang=${lang}`);
   }
 
   return null;
@@ -62,7 +62,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       if (error) {
         return json({ success: false, error }, { headers, status: 400 });
       } else {
-        return redirect(`/report?lang=${lang}`, { headers });
+        return redirect(`/dashboard?lang=${lang}`, { headers });
       }
     } else {
       magicSchema.parse({
@@ -88,20 +88,10 @@ export default function AuthSign() {
   const [showPass, setShowPass] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
   const [email, setEmail] = useState<string>("");
+  const [emailError, setEmailError] = useState<string>();
+  const [passwordError, setPasswordError] = useState<string>();
 
   const actionData = useActionData<typeof action>();
-  let emailError: ZodIssue[] = [];
-  let passwordError: ZodIssue[] = [];
-
-  if (actionData && "issues" in actionData) {
-    emailError = actionData?.issues.filter((issue) =>
-      issue.path?.includes("email")
-    ) as ZodIssue[];
-    passwordError = actionData?.issues.filter((issue) =>
-      issue.path?.includes("password")
-    ) as ZodIssue[];
-  }
-
   const translator = new Translator("auth");
 
   useEffect(() => {
@@ -114,7 +104,27 @@ export default function AuthSign() {
     if (actionData && "success" in actionData && actionData.success) {
       navigate(`/dashboard?lang=${lang}`);
     }
-  }, [actionData, lang, navigate]);
+
+    if (actionData && "issues" in actionData) {
+      const errorEmail = actionData?.issues.filter((issue) =>
+        issue.path?.includes("email")
+      ) as ZodIssue[];
+      if (errorEmail) { 
+        setEmailError(errorEmail[0].message)
+      }
+
+      const errorPassword = actionData?.issues.filter((issue) =>
+        issue.path?.includes("password")
+      ) as ZodIssue[];
+      if (errorPassword) {
+        setPasswordError(errorPassword[0].message)
+      }
+    }
+
+    if(actionData && "success" in actionData && !actionData.success) {
+      setPasswordError("Your password is not correct. Please provide correct password.")
+    }
+  }, [actionData, lang]);
 
   return (
     <div className="w-full flex justify-center items-center bg-gray-100 font-[sans-serif] text-[#333] h-full md:min-h-screen p-4">
@@ -238,9 +248,9 @@ export default function AuthSign() {
                     </g>
                   </svg>
                 </div>
-                {(emailError || [])?.length > 0 && (
+                {emailError && (
                   <span className="text-red-500 text-sm block">
-                    {emailError?.[0].message}
+                    {emailError}
                   </span>
                 )}
               </div>
@@ -296,9 +306,9 @@ export default function AuthSign() {
                     )}
                   </button>
                 </div>
-                {(passwordError || [])?.length > 0 && (
+                {passwordError && (
                   <span className="text-red-500 text-sm block">
-                    {passwordError?.[0].message}
+                    {passwordError}
                   </span>
                 )}
               </div>
@@ -383,9 +393,9 @@ export default function AuthSign() {
                     </g>
                   </svg>
                 </div>
-                {(emailError || [])?.length > 0 && (
+                {emailError && (
                   <span className="text-red-500 text-sm block">
-                    {emailError?.[0].message}
+                    {emailError}
                   </span>
                 )}
               </div>

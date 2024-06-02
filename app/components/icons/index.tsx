@@ -18,7 +18,7 @@ export const InfoTooltip = ({
   direction: TooltipDirection;
 }) => {
   return (
-    <div className={styles.tooltip}>
+    <div className="relative flex self-start">
       <Tooltip text={text} direction={direction}>
         <InfoIcon />
       </Tooltip>
