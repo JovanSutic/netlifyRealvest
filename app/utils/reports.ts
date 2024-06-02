@@ -19,7 +19,7 @@ import {
 import { RangeOption, excludeDayFromDateString, formatDate, getMonthAndYear, getMonthAndYearStart, getYear, setDateString } from "./dateTime";
 import { makeNumberCurrency, roundNumberToDecimal } from "./numbers";
 
-const getListAverage = (list: number[], divider: number): number => {
+export const getListAverage = (list: number[], divider: number): number => {
   return list?.length
     ? (list || []).reduce((a: number, b: number) => a + b, 0) / divider
     : 0;

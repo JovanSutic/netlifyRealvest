@@ -130,3 +130,26 @@ export type DashboardParamsUI = {
   municipality: string;
   distribution_type: DistributionTypeKey;
 };
+
+export interface DashboardSearchType {
+  id: number;
+  lng: number; 
+  lat: number; 
+  municipality: string;
+  city: string;
+  price: number; 
+  size: number;
+  type: string;
+}
+
+export interface AreaReportType {
+  address: string;
+  averagePrice: number;
+  averageM2Price: number;
+  averageSize: number;
+  highestPrice: number;
+  highestM2Price: number;
+  lowestPrice: number;
+  lowestM2Price: number;
+  count: number;
+}
