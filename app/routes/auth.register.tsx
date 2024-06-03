@@ -1,4 +1,8 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
 import {
   Form,
   Link,
@@ -44,7 +48,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const password = String(formData.get("password"));
 
   try {
-    registrationSchema.parse({
+    const { success, error: zError } = registrationSchema.safeParse({
       email,
       name,
       password,
@@ -52,23 +56,24 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
     const { supabaseClient, headers } = createSupabaseServerClient(request);
 
-    const { error } = await supabaseClient.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          display_name: name,
+    if (success) {
+      const { error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            display_name: name,
+          },
         },
-      },
-    });
+      });
 
-    if (error) {
-      return json(
-        { success: false, error: error.message },
-        { headers, status: 400 }
-      );
+      if (error) {
+        return json({ success: false, error: error }, { headers, status: 400 });
+      } else {
+        return redirect(`/auth/success?lang=${lang}`, { headers });
+      }
     } else {
-      return redirect(`/auth/success?lang=${lang}`, { headers });
+      return json({ success: false, error: zError }, { headers, status: 400 });
     }
   } catch (error) {
     return error as ZodError;
@@ -94,38 +99,52 @@ export default function AuthRegister() {
   const [passwordError, setPasswordError] = useState<string>("");
 
   const actionData = useActionData<typeof action>();
+  const translator = new Translator("auth");
 
   useEffect(() => {
-    if (actionData && "issues" in actionData) {
-      const nameErrorCatch = actionData?.issues.filter((issue) =>
+    if (actionData && "error" in actionData && "issues" in actionData.error) {
+      const nameErrorCatch = actionData?.error?.issues.filter((issue) =>
         issue.path?.includes("name")
       );
-      const emailErrorCatch = actionData?.issues.filter((issue) =>
+      const emailErrorCatch = actionData?.error.issues.filter((issue) =>
         issue.path?.includes("email")
       );
-      const passwordErrorCatch = actionData?.issues.filter((issue) =>
+      const passwordErrorCatch = actionData?.error.issues.filter((issue) =>
         issue.path?.includes("password")
       );
 
-      if (nameErrorCatch.length) setNameError(nameErrorCatch[0].message);
-      if (emailErrorCatch.length) setEmailError(emailErrorCatch[0].message);
-      if (passwordErrorCatch.length) setPasswordError(passwordErrorCatch[0].message);
+      if (nameErrorCatch.length)
+        setNameError(
+          translator.getTranslation(lang!, nameErrorCatch[0].message)
+        );
+      if (emailErrorCatch.length)
+        setEmailError(
+          translator.getTranslation(lang!, emailErrorCatch[0].message)
+        );
+      if (passwordErrorCatch.length)
+        setPasswordError(
+          translator.getTranslation(lang!, passwordErrorCatch[0].message)
+        );
     }
 
-    if ((nameError || emailError || passwordError) && !("issues" in actionData!)) {
-      if(nameError) setNameError("");
-      if(emailError) setEmailError("");
-      if(passwordError) setPasswordError("");
+    if (
+      (nameError || emailError || passwordError) &&
+      !("issues" in actionData!)
+    ) {
+      if (nameError) setNameError("");
+      if (emailError) setEmailError("");
+      if (passwordError) setPasswordError("");
     }
 
-    if (actionData && "error" in actionData) {
-      setApiError(actionData.error);
+    if (
+      actionData &&
+      "error" in actionData &&
+      !actionData.success &&
+      actionData.error?.name === "AuthApiError"
+    ) {
+      setApiError(translator.getTranslation(lang!, "registrationApiError"));
     }
-  }, [actionData, emailError, nameError, passwordError]);
-
-  
-
-  const translator = new Translator("auth");
+  }, [actionData]);
   return (
     <div className="w-full flex justify-center items-center bg-gray-100 font-[sans-serif] text-[#333] h-full md:min-h-screen p-4">
       <Alert
@@ -147,7 +166,7 @@ export default function AuthRegister() {
           </div>
           <div>
             <Form method="post">
-              <div className="pt-5 h-[76px]">
+              <div className="pt-5 h-[82px]">
                 <div className="relative flex items-center">
                   <input
                     name="name"
@@ -183,7 +202,7 @@ export default function AuthRegister() {
                   </span>
                 )}
               </div>
-              <div className="pt-5 h-[76px]">
+              <div className="pt-5 h-[82px]">
                 <div className="relative flex items-center">
                   <input
                     name="email"
@@ -233,7 +252,7 @@ export default function AuthRegister() {
                   </span>
                 )}
               </div>
-              <div className="pt-5 h-[76px]">
+              <div className="pt-5 h-[82px]">
                 <div className="relative flex items-center">
                   <input
                     name="password"

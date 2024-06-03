@@ -20,6 +20,15 @@ export const authMap: Record<string, Record<string, string>> = {
       "Please enter your email address and we will send you a link to reset your password.",
     linkBtn: "Send link",
     backTo: "Go back? ",
+    passwordLength: "Password must have at least 8 characters.",
+    passwordSpecial: "Password must have at least 1 special character.",
+    passwordLowercase: "Password must have at least 1 lowercase letter.",
+    passwordUppercase: "Password must have at least 1 uppercase letter.",
+    passwordDigit: "Password must have at least 1 digit.",
+    authApiError: "Your password is not correct. Please provide correct password.",
+    emailError: "Please provide valid email.",
+    nameError: "Name must have at least 3 characters.",
+    registrationApiError: "The user with this email already exists. Please sign in."
   },
   sr: {
     signTitle: "Prijavite se",
@@ -42,5 +51,15 @@ export const authMap: Record<string, Record<string, string>> = {
       "Molimo vas upišite email i poslaćemo vam link za resetovanje lozinke.",
     linkBtn: "Pošalji link",
     backTo: "Nazad? ",
+    passwordLength: "Lozinka mora imati najmanje 8 karaktera.",
+    passwordSpecial: "Lozinka mora imati nejmanje 1 specijalni karakter.",
+    passwordLowercase: "Lozinka mora imati nejmanje 1 malo slovo.",
+    passwordUppercase: "Lozinka mora imati nejmanje 1 veliko slovo.",
+    passwordDigit: "Lozinka mora imati nejmanje 1 broj.",
+    authApiError: "Netačna lozinka. Molim vas upišite tačnu lozinku.",
+    emailError: "Molim vas upišite valid email.",
+    nameError: "Ime mora imati najmanje 3 slova.",
+    registrationApiError: "Korisnik sa ovim email već postoji. Molim vas da se prijavite."
   },
 };
+
