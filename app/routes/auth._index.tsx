@@ -1,4 +1,8 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
 import {
   Form,
   Link,
@@ -27,42 +31,54 @@ export const meta: MetaFunction = () => {
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { supabaseClient } = createSupabaseServerClient(request);
-  const lang = new URL(request.url).searchParams.get("lang") || "sr";
-  const user = await supabaseClient.auth.getUser();
-  if (user?.data?.user?.role === "authenticated") {
-    throw redirect(`/dashboard?lang=${lang}`);
+  try {
+    const { supabaseClient } = createSupabaseServerClient(request);
+    const lang = new URL(request.url).searchParams.get("lang") || "sr";
+    const user = await supabaseClient.auth.getUser();
+    if (user?.data?.user?.role === "authenticated") {
+      throw redirect(`/dashboard?lang=${lang}`);
+    }
+  } catch (error) {
+    console.log(error);
   }
 
   return null;
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const formData = await request.formData();
-  const lang = new URL(request.url).searchParams.get("lang") || "sr";
-  const email = formData.get("email");
-  const type = formData.get("type");
-  const password = formData.get("password");
-
   try {
+    const formData = await request.formData();
+    const lang = new URL(request.url).searchParams.get("lang") || "sr";
+    const email = formData.get("email");
+    const type = formData.get("type");
+    const password = formData.get("password");
+
     if (type === "2") {
-      passwordSchema.parse({
+      const { supabaseClient, headers } = createSupabaseServerClient(request);
+
+      const { success, error: zError } = passwordSchema.safeParse({
         email,
         type,
         password,
       });
 
-      const { supabaseClient, headers } = createSupabaseServerClient(request);
+      if (success) {
+        const { error } = await supabaseClient.auth.signInWithPassword({
+          email: String(email),
+          password: String(password),
+        });
 
-      const { error } = await supabaseClient.auth.signInWithPassword({
-        email: String(email),
-        password: String(password),
-      });
-
-      if (error) {
-        return json({ success: false, error }, { headers, status: 400 });
+        if (error) {
+          console.log(error);
+          return json({ success: false, error }, { headers, status: 400 });
+        } else {
+          return redirect(`/dashboard?lang=${lang}`, { headers });
+        }
       } else {
-        return redirect(`/dashboard?lang=${lang}`, { headers });
+        return json(
+          { success: false, error: zError },
+          { headers, status: 400 }
+        );
       }
     } else {
       magicSchema.parse({
@@ -94,6 +110,8 @@ export default function AuthSign() {
   const actionData = useActionData<typeof action>();
   const translator = new Translator("auth");
 
+  console.log(actionData);
+
   useEffect(() => {
     return () => {
       window.history.replaceState({}, "");
@@ -105,24 +123,31 @@ export default function AuthSign() {
       navigate(`/dashboard?lang=${lang}`);
     }
 
-    if (actionData && "issues" in actionData) {
-      const errorEmail = actionData?.issues.filter((issue) =>
+    if (actionData && "error" in actionData && "issues" in actionData.error) {
+      const errorEmail = actionData?.error.issues.filter((issue) =>
         issue.path?.includes("email")
       ) as ZodIssue[];
-      if (errorEmail) { 
-        setEmailError(errorEmail[0].message)
+      if (errorEmail) {
+        setEmailError(translator.getTranslation(lang, errorEmail[0]?.message));
       }
 
-      const errorPassword = actionData?.issues.filter((issue) =>
+      const errorPassword = actionData?.error.issues.filter((issue) =>
         issue.path?.includes("password")
       ) as ZodIssue[];
       if (errorPassword) {
-        setPasswordError(errorPassword[0].message)
+        setPasswordError(
+          translator.getTranslation(lang, errorPassword[0]?.message)
+        );
       }
     }
 
-    if(actionData && "success" in actionData && !actionData.success) {
-      setPasswordError("Your password is not correct. Please provide correct password.")
+    if (
+      actionData &&
+      "success" in actionData &&
+      !actionData.success &&
+      actionData.error?.name === "AuthApiError"
+    ) {
+      setPasswordError(translator.getTranslation(lang, "authApiError"));
     }
   }, [actionData, lang]);
 
@@ -202,8 +227,8 @@ export default function AuthSign() {
             />
           </div>
           {signInType === "2" ? (
-            <Form method="post">
-              <div className="pt-5 h-[76px]">
+            <Form method="post" action={`/auth?lang=${lang}`}>
+              <div className="pt-5 h-[82px]">
                 <div className="relative flex items-center">
                   <input name="type" type="hidden" value={signInType} />
                   <input
@@ -254,7 +279,7 @@ export default function AuthSign() {
                   </span>
                 )}
               </div>
-              <div className="pt-5 h-[76px]">
+              <div className="pt-5 h-[82px]">
                 <div className="relative flex items-center">
                   <input
                     name="password"
@@ -348,7 +373,7 @@ export default function AuthSign() {
             </Form>
           ) : (
             <Form method="post">
-              <div className="pt-5 h-[76px]">
+              <div className="pt-5 h-[82px]">
                 <div className="relative flex items-center">
                   <input name="type" type="hidden" value={signInType} />
                   <input

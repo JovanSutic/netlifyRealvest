@@ -2,31 +2,31 @@ import { z } from "zod";
 
 const password = z
   .string()
-  .min(8, { message: "Password must have at least 8 characters." })
+  .min(8, { message: "passwordLength" })
   .regex(/[a-z]/, {
-    message: "Password must have at least 1 lowercase letter.",
+    message: "passwordLowercase",
   })
   .regex(/[A-Z]/, {
-    message: "Password must have at least 1 uppercase letter.",
+    message: "passwordUppercase",
   })
   .regex(/[#?!@$%^&*-]/, {
-    message: "Password must have at least 1 special character.",
+    message: "passwordSpecial",
   })
-  .regex(/[0-9]/, { message: "Password must have at least 1 digit." });
+  .regex(/[0-9]/, { message: "passwordDigit" });
 
 export const passwordSchema = z.object({
-  email: z.string().email({ message: "Please provide valid email." }),
+  email: z.string().email({ message: "emailError" }),
   type: z.string().max(1),
   password: password,
 });
 
 export const magicSchema = z.object({
-  email: z.string().email({ message: "Please provide valid email." }),
+  email: z.string().email({ message: "emailError" }),
   type: z.string().max(1),
 });
 
 export const registrationSchema = z.object({
-  name: z.string().min(3, { message: "Name must have at least 3 characters." }).trim(),
-  email: z.string().email({ message: "Please provide valid email." }),
+  name: z.string().min(3, { message: "registrationApiError" }).trim(),
+  email: z.string().email({ message: "emailError" }),
   password: password,
 });
