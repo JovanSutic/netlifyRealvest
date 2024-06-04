@@ -48,10 +48,14 @@ export const meta: MetaFunction = () => {
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const {supabaseClient } = createSupabaseServerClient(request);
-  const user = await supabaseClient.auth.getUser();
-  if(user?.data?.user?.role !== "authenticated") {
-    throw redirect("/auth");
+  const { supabaseClient } = createSupabaseServerClient(request);
+  try {
+    const user = await supabaseClient.auth.getUser();
+    if (user?.data?.user?.role !== "authenticated") {
+      throw redirect("/auth");
+    }
+  } catch (error) {
+    console.log(error);
   }
 
   const userAgent = request.headers.get("user-agent");
@@ -65,53 +69,56 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     (searchRange || mandatorySearchParams.time_range) as RangeOption
   );
 
-  const { data: mainReports, error: mainError } = await supabaseClient
-    .from("contract_report")
-    .select(
-      `id, count, sum_price, average_meter_price, min_average, sum_size, max_average, date_to, municipality(
+  try {
+    const { data: mainReports, error: mainError } = await supabaseClient
+      .from("contract_report")
+      .select(
+        `id, count, sum_price, average_meter_price, min_average, sum_size, max_average, date_to, municipality(
     id, name
   )`
-    )
-    .eq("type", `${searchType || mandatorySearchParams.property_type}`)
-    .gt("date_from", getDbDateString(startDate!, "en"))
-    .returns<MainReportType[]>();
-  if (mainError) {
-    console.log(mainError);
-  }
+      )
+      .eq("type", `${searchType || mandatorySearchParams.property_type}`)
+      .gt("date_from", getDbDateString(startDate!, "en"))
+      .returns<MainReportType[]>();
+    if (mainError) {
+      console.log(mainError);
+    }
 
-  const { data: pieReports, error: pieError } = await supabaseClient
-    .from("pie_contract_report")
-    .select(
-      `id, price_map, average_price_map, date_to, municipality(
+    const { data: pieReports, error: pieError } = await supabaseClient
+      .from("pie_contract_report")
+      .select(
+        `id, price_map, average_price_map, date_to, municipality(
     id, name
   )`
-    )
-    .eq("type", `${searchType || mandatorySearchParams.property_type}`)
-    .eq(
-      "municipality",
-      `${searchMunicipality || mandatorySearchParams.municipality}`
-    )
-    .gt("date_from", getDbDateString(startDate!, "en"));
+      )
+      .eq("type", `${searchType || mandatorySearchParams.property_type}`)
+      .eq(
+        "municipality",
+        `${searchMunicipality || mandatorySearchParams.municipality}`
+      )
+      .gt("date_from", getDbDateString(startDate!, "en"));
 
-  if (pieError) {
-    console.log(pieError);
-  }
+    if (pieError) {
+      console.log(pieError);
+    }
 
-  const { data: municipalities, error: municipalitiesError } = await supabaseClient
-    .from("municipalities")
-    .select();
+    const { data: municipalities, error: municipalitiesError } =
+      await supabaseClient.from("municipalities").select();
 
-  if (municipalitiesError) {
-    console.log(municipalitiesError);
-  }
+    if (municipalitiesError) {
+      console.log(municipalitiesError);
+    }
 
-  if (mainReports?.length) {
-    return json({
-      mobile: isMobile(userAgent!),
-      reports: mainReports,
-      pieReportData: pieReports || [],
-      municipalities: municipalities || [],
-    });
+    if (mainReports?.length) {
+      return json({
+        mobile: isMobile(userAgent!),
+        reports: mainReports,
+        pieReportData: pieReports || [],
+        municipalities: municipalities || [],
+      });
+    }
+  } catch (error) {
+    console.log(error);
   }
 
   return json({ ok: true, mobile: isMobile(userAgent!) });

@@ -30,14 +30,20 @@ export async function loader({ request }: LoaderFunctionArgs) {
       }
     );
 
-    const { error } = await supabase.auth.verifyOtp({
-      type,
-      token_hash,
-    });
-
-    if (!error) {
-      return redirect(`/report?lang=${lang}`, { headers });
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        type,
+        token_hash,
+      });
+  
+      if (!error) {
+        return redirect(`/report?lang=${lang}`, { headers });
+      }
+  
+    } catch (error) {
+      console.log(error);
     }
+
   }
 
   // return the user to an error page with instructions
