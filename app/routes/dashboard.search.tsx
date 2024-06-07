@@ -34,6 +34,20 @@ import {
 } from "../utils/dashboard";
 import AreaReport from "../widgets/AreaReport";
 import Loader from "../components/loader";
+import Tabs from "../components/tabs";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  PointElement,
+  LineElement,
+  Filler,
+} from "chart.js";
+import AreaLineReport from "../widgets/AreaLineReport";
 
 export const links: LinksFunction = () => [
   {
@@ -81,7 +95,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       const { supabaseClient } = createSupabaseServerClient(request);
       const { data, error } = await supabaseClient
         .from("contracts")
-        .select(`id, lng, lat, municipality, city, price, size, type`)
+        .select(`id, lng, lat, municipality, city, price, size, type, date`)
         .eq("type", `${searchTypeMap[searchType]}`)
         .eq("for_view", true)
         .in("subtype", setSubtypeGroup(searchType))
@@ -90,6 +104,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         .lt("lat", uniq[0])
         .gt("lng", uniq[3])
         .lt("lng", uniq[2])
+        .order("date")
         .returns<DashboardSearchType[]>();
       if (error) {
         console.log(error);
@@ -128,6 +143,7 @@ const DashboardSearch = () => {
   const [center, setCenter] = useState<number[]>();
   const [propertyType, setPropertyType] = useState<PropertyType>("residential");
   const [timeRange, setTimeRange] = useState<RangeOption>("3m");
+  const [tab, setTab] = useState<string>("1");
 
   const reportTranslate = new Translator("report");
   const translate = new Translator("dashboard");
@@ -139,6 +155,8 @@ const DashboardSearch = () => {
     key: "search_contracts",
   });
 
+  console.log(fetcher.data?.list);
+
   useEffect(() => {
     if (center) {
       const [lat, lng] = center;
@@ -148,10 +166,24 @@ const DashboardSearch = () => {
     }
   }, [center, range, timeRange, propertyType]);
 
+  useEffect(() => {
+    ChartJS.register(
+      CategoryScale,
+      LinearScale,
+      BarElement,
+      PointElement,
+      LineElement,
+      Title,
+      Tooltip,
+      Legend,
+      Filler
+    );
+  }, []);
+
   return (
     <DashboardPage>
-      <div className="grid grid-cols-6 grid-rows-1 gap-4">
-        <div className="col-span-4 row-start-2">
+      <div className="grid grid-cols-12 grid-rows-1 gap-4">
+        <div className="col-span-7 row-start-2">
           <WidgetWrapper>
             <Loader open={fetcher.state === "loading"} />
             <div className="mb-4">
@@ -332,28 +364,59 @@ const DashboardSearch = () => {
             </div>
           </WidgetWrapper>
         </div>
-        <div className="col-span-2 col-start-5 row-start-2">
+        <div className="col-span-5 col-start-8 row-start-2">
           <WidgetWrapper>
             <Loader open={fetcher.state === "loading"} />
-            <div className="mb-4">
-              <h2 className="text-xl font-semibold">
-                {translate.getTranslation(lang, "areaTitle")}
-              </h2>
-              <p className="text-sm text-slate-700">
-                {translate.getTranslation(lang, "areaDescription")}
-              </p>
-            </div>
-            <div>
-              {center ? (
-                <AreaReport data={fetcher.data?.data} lang={lang} />
-              ) : (
+            <Tabs
+              options={[
+                {
+                  text: translate.getTranslation(lang, "tabReport"),
+                  value: "1",
+                },
+                {
+                  text: translate.getTranslation(lang, "tabLine"),
+                  value: "2",
+                },
+                {
+                  text: translate.getTranslation(lang, "tabDoughnut"),
+                  value: "3",
+                },
+              ]}
+              value={tab}
+              onChange={(value) => {
+                setTab(value);
+              }}
+            />
+            <div className="mt-4">
+              {tab === "1" && (
                 <div>
-                  <div className="flex flex-column w-full justify-center h-[200px]">
-                    <p className="flex items-center text-center text-slate-400 font-sm">
-                      {translate.getTranslation(lang, "areaNoData")}
+                  <div className="mb-4">
+                    <p className="text-sm text-slate-700">
+                      {translate.getTranslation(lang, "areaDescription")}
                     </p>
                   </div>
+                  <div>
+                    {center ? (
+                      <AreaReport data={fetcher.data?.data} lang={lang} />
+                    ) : (
+                      <div>
+                        <div className="flex flex-column w-full justify-center h-[200px]">
+                          <p className="flex items-center text-center text-slate-400 font-sm">
+                            {translate.getTranslation(lang, "areaNoData")}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
+              )}
+              {tab === "2" && (
+                <AreaLineReport
+                  isLine={center !== undefined}
+                  data={fetcher.data?.list || []}
+                  lang={lang}
+                  timeRange={timeRange}
+                />
               )}
             </div>
           </WidgetWrapper>

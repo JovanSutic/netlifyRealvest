@@ -7,8 +7,17 @@ const Tabs = ({
 }: {
   options: DropdownOptions[];
   value: string;
-  onChange: (value: string) => void
+  onChange: (value: string) => void;
 }) => {
+  const gridMap = [
+    "",
+    "",
+    "grid grid-cols-2 font-sans",
+    "grid grid-cols-3 font-sans",
+    "grid grid-cols-4 font-sans",
+    "grid grid-cols-5 font-sans",
+    "grid grid-cols-6 font-sans",
+  ];
   const styleMap = {
     active:
       "text-indigo-800 font-bold text-base text-center py-2 px-4 border-b-2 border-indigo-800 cursor-pointer transition-all",
@@ -17,7 +26,7 @@ const Tabs = ({
   };
   return (
     <div>
-      <ul className="grid grid-cols-2 font-sans">
+      <ul className={gridMap[options.length]}>
         {options.map((item) => (
           <li
             key={item.value}

@@ -34,7 +34,7 @@ import { Translator } from "../data/language/translator";
 
 const mandatorySearchParams: DashboardParamsUI = {
   lang: "sr",
-  time_range: "3m",
+  time_range: "6m",
   property_type: "residential",
   municipality: "1",
   distribution_type: "price_map",

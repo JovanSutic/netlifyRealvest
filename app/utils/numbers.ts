@@ -9,8 +9,10 @@ export const isNumber = (value: string | number): boolean => {
 };
 
 export const makeNumberCurrency = (num: number, currency: string = "€") => {
-  return `${(num || 0).toLocaleString(undefined, { maximumFractionDigits: 0 })}${currency}`;
-}
+  return `${(num || 0).toLocaleString(undefined, {
+    maximumFractionDigits: 0,
+  })}${currency}`;
+};
 
 export const roundNumberToDecimal = (
   num: number,
@@ -20,7 +22,10 @@ export const roundNumberToDecimal = (
   return Number((Math.round(num * 100) / 100).toFixed(decimalPlace));
 };
 
-export const createLayoutClasses = (limit: number, type: LayoutClass): Record<number, string> => {
+export const createLayoutClasses = (
+  limit: number,
+  type: LayoutClass
+): Record<number, string> => {
   const classMap: Record<LayoutClass, string> = {
     grid: "grid-cols-",
     gap: "gap-",
@@ -36,5 +41,12 @@ export const createLayoutClasses = (limit: number, type: LayoutClass): Record<nu
   }
 
   return result;
+};
 
-}
+export const getAverageOfList = (data: number[]): number => {
+  let total = 0;
+  for (let i = 0; i < data.length; i++) {
+    total += data[i];
+  }
+  return total / data.length;
+};

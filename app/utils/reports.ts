@@ -16,7 +16,15 @@ import {
   PieReportType,
   PropertyType,
 } from "../types/dashboard.types";
-import { RangeOption, excludeDayFromDateString, formatDate, getMonthAndYear, getMonthAndYearStart, getYear, setDateString } from "./dateTime";
+import {
+  RangeOption,
+  excludeDayFromDateString,
+  formatDate,
+  getMonthAndYear,
+  getMonthAndYearStart,
+  getYear,
+  setDateString,
+} from "./dateTime";
 import { makeNumberCurrency, roundNumberToDecimal } from "./numbers";
 
 export const getListAverage = (list: number[], divider: number): number => {
@@ -176,13 +184,16 @@ export const getDataForPie = (
   };
 };
 
-const getAverage = (list: MainReportType[]): number => {
+const getAverage = <T>(
+  list: T[],
+  field: string = "average_meter_price"
+): number => {
   let sum = 0;
   let empty = 0;
 
   list.forEach((item) => {
-    if (item.average_meter_price > 0) {
-      sum = sum + item.average_meter_price;
+    if (Number(item[field as keyof T]) > 0) {
+      sum = sum + Number(item[field as keyof T]);
     } else {
       empty = empty + 1;
     }
@@ -191,13 +202,22 @@ const getAverage = (list: MainReportType[]): number => {
   return sum / (list.length - empty) || 0;
 };
 
-const dividerMap: Record<string, number> = {
+export const dividerMap: Record<string, number> = {
   "3m": 1,
   "6m": 1,
   "1y": 1,
   "3y": 3,
   "5y": 6,
   "10y": 12,
+};
+
+export const monthsMap: Record<string, number> = {
+  "3m": 3,
+  "6m": 6,
+  "1y": 12,
+  "3y": 12,
+  "5y": 12,
+  "10y": 10,
 };
 
 const calculateLineData = (
@@ -252,26 +272,40 @@ export const getSingleLineDataset = (
   return dataSet;
 };
 
-export const getRangeDates = (data: MainReportType[], timeRange: RangeOption, lang: LangType): {start: string; end: string } => {
-  if(dividerMap[timeRange] > 1 && dividerMap[timeRange] < 12) {
-    const startSlice = data.filter((item) => item.municipality.id === 1).slice(0, dividerMap[timeRange]);
-    const endSlice = data.filter((item) => item.municipality.id === 1).slice(-Math.abs(dividerMap[timeRange]));
+export const getRangeDates = (
+  data: MainReportType[],
+  timeRange: RangeOption,
+  lang: LangType
+): { start: string; end: string } => {
+  if (dividerMap[timeRange] > 1 && dividerMap[timeRange] < 12) {
+    const startSlice = data
+      .filter((item) => item.municipality.id === 1)
+      .slice(0, dividerMap[timeRange]);
+    const endSlice = data
+      .filter((item) => item.municipality.id === 1)
+      .slice(-Math.abs(dividerMap[timeRange]));
     return {
-      start: `${getMonthAndYearStart(startSlice[0].date_to)} - ${getMonthAndYear(startSlice[startSlice.length - 1].date_to)}`,
-      end:`${getMonthAndYearStart(endSlice[0].date_to)} - ${getMonthAndYear(endSlice[endSlice.length - 1].date_to)}`
-    }
+      start: `${getMonthAndYearStart(
+        startSlice[0].date_to
+      )} - ${getMonthAndYear(startSlice[startSlice.length - 1].date_to)}`,
+      end: `${getMonthAndYearStart(endSlice[0].date_to)} - ${getMonthAndYear(
+        endSlice[endSlice.length - 1].date_to
+      )}`,
+    };
   } else if (dividerMap[timeRange] === 12) {
     return {
       start: getYear(data[0].date_to).toString(),
-      end: getYear(data[data.length - 1].date_to).toString()
-    }
+      end: getYear(data[data.length - 1].date_to).toString(),
+    };
   }
 
   return {
     start: excludeDayFromDateString(setDateString(data[0].date_to, lang)),
-    end: excludeDayFromDateString(setDateString(data[data.length - 1].date_to, lang))
-  }
-}
+    end: excludeDayFromDateString(
+      setDateString(data[data.length - 1].date_to, lang)
+    ),
+  };
+};
 
 const prepareCardReportData = (data: MainReportType[]) => {
   const result: Record<string, MainReportType[]> = {};
@@ -431,13 +465,13 @@ export const prepareCardDataForDisplay = (data: CardsData): CardsReport => {
       labelKey: "cardAverageM2",
       changeValue: roundNumberToDecimal(data.average_meter_price.difference, 0),
       value: makeNumberCurrency(
-        roundNumberToDecimal(data.average_meter_price.value, 0),
+        roundNumberToDecimal(data.average_meter_price.value, 0)
       ),
       start: makeNumberCurrency(
-        roundNumberToDecimal(data.average_meter_price.start!, 0),
+        roundNumberToDecimal(data.average_meter_price.start!, 0)
       ),
       end: makeNumberCurrency(
-        roundNumberToDecimal(data.average_meter_price.end!, 0),
+        roundNumberToDecimal(data.average_meter_price.end!, 0)
       ),
     },
     averagePrice: {
