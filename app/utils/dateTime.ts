@@ -51,7 +51,7 @@ export const getDateForReport = (
 
     date.setMonth(
       date.getMonth() -
-        (isLastMonthLoaded ? rangeMap[range] : rangeMap[range] + 1)
+        (isLastMonthLoaded ? rangeMap[range] : rangeMap[range] - 1)
     );
     date.setDate(1);
 
@@ -61,23 +61,30 @@ export const getDateForReport = (
   return undefined;
 };
 
+export const dateToDateString = (date: Date): string => {
+  const month =
+    date.getMonth() < 9 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`;
+
+  return `${date.getFullYear()}-${month}-${date.getDate()}`;
+};
+
 export const excludeDayFromDateString = (date: string): string => {
   const isEnglish = date.includes("-");
-  const divider = isEnglish ? "-" : '.';
+  const divider = isEnglish ? "-" : ".";
   const split = date.split(divider);
 
-  if(isEnglish) {
+  if (isEnglish) {
     return `${split[0]}-${split[1]}`;
   }
 
   return `${split[1]}.${split[2]}`;
-}
+};
 
 export const setDateString = (date: string, language: string): string => {
   const d = new Date(date);
   const month =
     d.getMonth() < 9 ? `0${d.getMonth() + 1}` : `${d.getMonth() + 1}`;
-  if(language === "en") {
+  if (language === "en") {
     return `${d.getFullYear()}-${month}-${d.getDate()}`;
   }
   return `${d.getDate()}.${month}.${d.getFullYear()}`;
@@ -95,10 +102,10 @@ export const getDayInYear = (): number => {
 };
 
 export const getYear = (date: string): number => {
- const d = new Date(date);
+  const d = new Date(date);
 
- return d.getFullYear();
-}
+  return d.getFullYear();
+};
 
 export const getMonthAndYear = (date: string): string => {
   const d = new Date(date);
@@ -106,12 +113,11 @@ export const getMonthAndYear = (date: string): string => {
     d.getMonth() < 9 ? `0${d.getMonth() + 1}` : `${d.getMonth() + 1}`;
 
   return `${month}.${d.getFullYear()}`;
-}
+};
 
 export const getMonthAndYearStart = (date: string): string => {
   const d = new Date(date);
-  const month =
-    d.getMonth() < 9 ? `0${d.getMonth()}` : `${d.getMonth()}`;
+  const month = d.getMonth() < 9 ? `0${d.getMonth()}` : `${d.getMonth()}`;
 
   return `${month}.${d.getFullYear()}`;
-}
+};

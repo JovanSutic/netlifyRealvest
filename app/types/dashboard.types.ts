@@ -136,6 +136,7 @@ export interface DashboardSearchType {
   lng: number; 
   lat: number; 
   municipality: string;
+  date: string;
   city: string;
   price: number; 
   size: number;

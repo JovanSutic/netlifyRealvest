@@ -1,9 +1,21 @@
 import {
   AreaReportType,
   DashboardSearchType,
+  DistributionTypeKey,
+  LangType,
+  LineChartPreparedData,
+  LineDataset,
   PropertyType,
 } from "../types/dashboard.types";
-import { getListAverage } from "./reports";
+import {
+  RangeOption,
+  dateToDateString,
+  formatDate,
+  getDateForReport,
+  rangeMap,
+} from "./dateTime";
+import { getAverageOfList } from "./numbers";
+import { dividerMap, getListAverage } from "./reports";
 
 export const generateAreaReport = (
   data: DashboardSearchType[],
@@ -136,4 +148,141 @@ export const cyrillicToLatin = (word: string): string => {
       return map[char as string] || char;
     })
     .join("");
+};
+
+const setReportMonths = (start: Date, timeRange: RangeOption): string[] => {
+  const result: string[] = [];
+  const duration = rangeMap[timeRange] - 1;
+
+  if (duration < 13) {
+    for (let index = 0; index < duration; index++) {
+      let dateString = "";
+      if (index === 0) {
+        dateString = dateToDateString(start);
+      } else {
+        const nextDate = new Date(result[result.length - 1]);
+        nextDate.setMonth(nextDate.getMonth() + 1);
+        dateString = dateToDateString(nextDate);
+      }
+
+      result.push(dateString);
+    }
+  } else {
+    let limit = 0;
+    let lastMonth = start;
+    while (duration > limit) {
+      const nextMonth = new Date(lastMonth);
+      nextMonth.setMonth(nextMonth.getMonth() + dividerMap[timeRange]);
+      result.push(
+        `${dateToDateString(lastMonth)}:${dateToDateString(nextMonth)}`
+      );
+      lastMonth = nextMonth;
+      limit = limit + dividerMap[timeRange];
+    }
+  }
+
+  return result;
+};
+
+const calculateLineData = (
+  data: DashboardSearchType[],
+  timeRange: RangeOption,
+  type: DistributionTypeKey,
+  lang: LangType
+): LineChartPreparedData => {
+  const preResult: Record<string, number[]> = {};
+  const result: Record<string, number> = {};
+  const startDate = getDateForReport(timeRange);
+  const months = setReportMonths(startDate!, timeRange);
+
+  if (rangeMap[timeRange] < 14) {
+    months.forEach((month) => {
+      preResult[month] = [];
+    });
+
+    data.forEach((item) => {
+      const key = Object.keys(preResult).find(
+        (key) => key.split("-")[1] === item.date.split("-")[1]
+      )!;
+      if (preResult[key]) {
+        preResult[key].push(
+          type === "price_map"
+            ? Number(item.price)
+            : Number(item.price) / Number(item.size)
+        );
+      }
+    });
+
+    Object.keys(preResult).forEach((key) => {
+      result[formatDate(key, lang, false)] = preResult[key].length
+        ? getAverageOfList(preResult[key])
+        : 0;
+    });
+  } else {
+    let limit: number = 0;
+    months.forEach((month) => {
+      preResult[month] = [];
+    });
+
+    data.forEach((item) => {
+      const itemDate = new Date(item.date);
+      const currentKey = Object.keys(preResult)[limit];
+
+      const startDate = new Date(currentKey.split(":")[0]);
+      const endDate = new Date(currentKey.split(":")[1]);
+
+      if (itemDate >= startDate && itemDate < endDate) {
+        preResult[currentKey].push(
+          type === "price_map"
+            ? Number(item.price)
+            : Number(item.price) / Number(item.size)
+        );
+      } else {
+        limit = limit + 1;
+        const nextKey = Object.keys(preResult)[limit];
+        if (preResult[nextKey]) {
+          preResult[nextKey].push(
+            type === "price_map"
+              ? Number(item.price)
+              : Number(item.price) / Number(item.size)
+          );
+        }
+      }
+    });
+
+    Object.keys(preResult).forEach((key) => {
+      const start = key.split(":")[0];
+      result[formatDate(start, lang, false)] = preResult[key].length
+        ? getAverageOfList(preResult[key])
+        : 0;
+    });
+  }
+
+  return {
+    labels: Object.keys(result),
+    data: Object.values(result),
+  };
+};
+
+export const getAreaLineData = (
+  data: DashboardSearchType[],
+  label: string,
+  timeRange: RangeOption,
+  type: DistributionTypeKey,
+  lang: LangType = "sr"
+): LineDataset => {
+  const dataSet = {
+    labels: calculateLineData(data, timeRange, type, lang).labels,
+    datasets: [
+      {
+        label: label,
+        data: calculateLineData(data, timeRange, type, lang).data,
+        fill: true,
+        backgroundColor: "rgba(165, 180, 252, 0.6)",
+        borderColor: "rgb(99 102 241)",
+      },
+    ],
+  };
+
+  return dataSet;
 };

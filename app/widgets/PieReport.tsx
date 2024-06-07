@@ -8,6 +8,7 @@ import {
 import ToggleButtons from "../components/toggleButtons";
 import DoughnutChart from "../components/doughnutChart";
 import { Line } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import EmptyChart from "../components/emptyChart";
 import { Translator } from "../data/language/translator";
 import {
@@ -21,6 +22,7 @@ import {
 import { DropdownOptions } from "../types/component.types";
 import { RangeOption } from "../utils/dateTime";
 import Divider from "../components/divider";
+import { useEffect } from "react";
 
 const PieReport = ({
   municipalityList,
@@ -51,6 +53,10 @@ const PieReport = ({
     distributionType,
     propertyType!
   );
+
+  useEffect(() => {
+    ChartJS.register(ArcElement, Tooltip, Legend);
+  }, []);
 
   return (
     <WidgetWrapper>

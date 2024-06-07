@@ -8,7 +8,8 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     searchDescription:
       "To generate report, click on the specific place on the map that you are interested in. Use dropdown options to refine the report.",
     areaTitle: "Area report",
-    areaDescription: "Sales details about the highlighted area",
+    areaDescription: "Sales details about the highlighted area.",
+    areaLineDescription: "Prices line chart for the highlighted area.",
     areaNoData: "Area not marked. Click on the map to generate report.",
     areaEmptyData:
       "Selected area does not have recorded sales in the chosen time frame. Change dropdown values or mark a different area on the map.",
@@ -27,6 +28,9 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     lowestM2Price: "Lowest m2 price:",
     averageSize: "Average size:",
     salesCount: "Number of sales:",
+    tabReport: "Area report",
+    tabLine: "Price flow",
+    tabDoughnut: "Price spread",
   },
   sr: {
     meters: "metara",
@@ -38,6 +42,7 @@ export const dashboardMap: Record<string, Record<string, string>> = {
       "Da biste generisali izveštaj, kliknite na oblast na mapi za koju ste zainteresovani. Koristite padajuće menije da podesite izveštaj.",
     areaTitle: "Izveštaj za oblast",
     areaDescription: "Prodajni detalji o odabranoj oblasti",
+    areaLineDescription: "Kretanje cena za odabranu oblast u izabranom periodu.",
     areaNoData:
       "Oblast nije označena. Kliknite na mapu da biste generisali izveštaj.",
     areaEmptyData:
@@ -57,5 +62,8 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     lowestM2Price: "Najmanja cena kvadrata:",
     averageSize: "Procečna veličina:",
     salesCount: "Broj prodaja:",
+    tabReport: "Izveštaj",
+    tabLine: "Kretanje cena",
+    tabDoughnut: "Raspodela cena",
   },
 };
