@@ -295,11 +295,6 @@ export const getDataForAreaPie = (
   propertyType: PropertyType
 ): PieChartData => {
   const total: number[] = [];
-  list.forEach((item) => {
-    if(Number(item.price) < 50000) {
-      console.log(item.id);
-    }
-  })
   list?.forEach((item) => total.push(distributionType === "price_map" ? Number(item.price) : Number(item.price) / Number(item.size)));
   total.sort((a: number, b: number) => a - b);
   const spread = getPieSpread(distributionType, propertyType === "parking");
