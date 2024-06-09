@@ -5,6 +5,7 @@ import {
   LangType,
   LineChartPreparedData,
   LineDataset,
+  PieChartData,
   PropertyType,
 } from "../types/dashboard.types";
 import {
@@ -14,8 +15,8 @@ import {
   getDateForReport,
   rangeMap,
 } from "./dateTime";
-import { getAverageOfList } from "./numbers";
-import { dividerMap, getListAverage } from "./reports";
+import { getAverageOfList, makeNumberCurrency } from "./numbers";
+import { dividerMap, getListAverage, getPieSpread } from "./reports";
 
 export const generateAreaReport = (
   data: DashboardSearchType[],
@@ -285,4 +286,39 @@ export const getAreaLineData = (
   };
 
   return dataSet;
+};
+
+
+export const getDataForAreaPie = (
+  list: DashboardSearchType[],
+  distributionType: DistributionTypeKey,
+  propertyType: PropertyType
+): PieChartData => {
+  const total: number[] = [];
+  list.forEach((item) => {
+    if(Number(item.price) < 50000) {
+      console.log(item.id);
+    }
+  })
+  list?.forEach((item) => total.push(distributionType === "price_map" ? Number(item.price) : Number(item.price) / Number(item.size)));
+  total.sort((a: number, b: number) => a - b);
+  const spread = getPieSpread(distributionType, propertyType === "parking");
+  const result: Record<string, number[]> = {};
+  for (let index = 0; index < spread.length; index++) {
+    const element = spread[index];
+    const previousElement = index === 0 ? 0 : spread[index - 1];
+    const equal = total.filter((item) => item <= element && item > previousElement);
+    if (equal.length) {
+      result[
+        `${makeNumberCurrency(previousElement)} - ${makeNumberCurrency(
+          element
+        )}`
+      ] = equal;
+    }
+  }
+
+  return {
+    labels: Object.keys(result),
+    data: Object.keys(result).map((key) => result[key].length),
+  };
 };
