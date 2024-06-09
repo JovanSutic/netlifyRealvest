@@ -110,8 +110,6 @@ export default function AuthSign() {
   const actionData = useActionData<typeof action>();
   const translator = new Translator("auth");
 
-  console.log(actionData);
-
   useEffect(() => {
     return () => {
       window.history.replaceState({}, "");
