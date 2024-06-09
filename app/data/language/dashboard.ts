@@ -10,6 +10,7 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     areaTitle: "Area report",
     areaDescription: "Sales details about the highlighted area.",
     areaLineDescription: "Prices line chart for the highlighted area.",
+    areaDoughnutDescription: "Prices distribution chart for the highlighted area",
     areaNoData: "Area not marked. Click on the map to generate report.",
     areaEmptyData:
       "Selected area does not have recorded sales in the chosen time frame. Change dropdown values or mark a different area on the map.",
@@ -43,6 +44,7 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     areaTitle: "Izveštaj za oblast",
     areaDescription: "Prodajni detalji o odabranoj oblasti",
     areaLineDescription: "Kretanje cena za odabranu oblast u izabranom periodu.",
+    areaDoughnutDescription: "Raspodela cena za odabranu oblast u izabranom periodu.",
     areaNoData:
       "Oblast nije označena. Kliknite na mapu da biste generisali izveštaj.",
     areaEmptyData:

@@ -135,7 +135,7 @@ export const getOptions = (list: GeneralObject[]): DropdownOptions[] => {
   return list?.map((item) => ({ value: `${item.id}`, text: item.name }));
 };
 
-const getPieSpread = (
+export const getPieSpread = (
   key: DistributionTypeKey,
   isParking: boolean
 ): number[] => {

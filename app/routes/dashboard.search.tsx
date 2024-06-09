@@ -48,6 +48,7 @@ import {
   Filler,
 } from "chart.js";
 import AreaLineReport from "../widgets/AreaLineReport";
+import AreaDoughnutReport from "../widgets/AreaDoughnutReport";
 
 export const links: LinksFunction = () => [
   {
@@ -154,8 +155,6 @@ const DashboardSearch = () => {
   }>({
     key: "search_contracts",
   });
-
-  console.log(fetcher.data?.list);
 
   useEffect(() => {
     if (center) {
@@ -416,6 +415,14 @@ const DashboardSearch = () => {
                   data={fetcher.data?.list || []}
                   lang={lang}
                   timeRange={timeRange}
+                />
+              )}
+              {tab === "3" && (
+                <AreaDoughnutReport
+                  isShown={center !== undefined}
+                  data={fetcher.data?.list || []}
+                  lang={lang}
+                  propertyType={propertyType}
                 />
               )}
             </div>
