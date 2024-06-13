@@ -181,8 +181,8 @@ const DashboardSearch = () => {
 
   return (
     <DashboardPage>
-      <div className="grid grid-cols-12 grid-rows-1 gap-4">
-        <div className="col-span-7 row-start-2">
+      <div className="grid grid-cols-12 lg:grid-rows-1 gap-4 pt-5 lg:pt-0">
+        <div className="col-span-12 lg:col-span-7 lg:row-start-2">
           <WidgetWrapper>
             <Loader open={fetcher.state === "loading"} />
             <div className="mb-4">
@@ -363,7 +363,7 @@ const DashboardSearch = () => {
             </div>
           </WidgetWrapper>
         </div>
-        <div className="col-span-5 col-start-8 row-start-2">
+        <div className="col-span-12 lg:col-span-5 col-start-1 lg:col-start-8 lg:row-start-2">
           <WidgetWrapper>
             <Loader open={fetcher.state === "loading"} />
             <Tabs
