@@ -132,7 +132,7 @@ export const DashboardPage = ({
   children: JSX.Element | JSX.Element[];
 }) => {
   return (
-    <div className="pl-[260px] min-h-screen bg-gray-200">
+    <div className="pl-0 lg:pl-[260px] min-h-screen bg-gray-200">
       <div className="px-5">{children}</div>
     </div>
   );

@@ -150,9 +150,9 @@ export default function AuthSign() {
   }, [actionData, lang]);
 
   return (
-    <div className="w-full flex justify-center items-center bg-gray-100 font-[sans-serif] text-[#333] h-full md:min-h-screen p-4">
-      <div className="lg:w-1/3 md:w-1/2 sm:w-full justify-center mx-auto">
-        <div className=" bg-white rounded-2xl p-6 -mt-24 relative z-10 shadow-lg">
+    <div className="w-full flex justify-center items-center bg-gray-100 font-[sans-serif] text-[#333] h-full md:min-h-screen p-4 sm:h-auto h-screen">
+      <div className="lg:w-1/3 md:w-1/2 sm:w-3/4 w-full justify-center mx-auto">
+        <div className=" bg-white rounded-2xl p-6 sm:mt-4 relative z-10 shadow-lg">
           <div className="mb-10">
             <h3 className="text-3xl font-extrabold text-slate-800 mb-3">
               {translator.getTranslation(lang!, "signTitle")}
