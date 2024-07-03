@@ -26,11 +26,13 @@ const AreaLineReport = ({
   isLine,
   data,
   timeRange,
+  date = "",
 }: {
   lang: LangType;
   isLine: boolean;
   data: DashboardSearchType[];
   timeRange: RangeOption;
+  date: string;
 }) => {
   const [distributionType, setDistributionType] =
     useState<DistributionTypeKey>("price_map");
@@ -100,7 +102,8 @@ const AreaLineReport = ({
                 ),
                 timeRange,
                 distributionType,
-                lang
+                lang,
+                date
               )}
               options={{
                 responsive: true,

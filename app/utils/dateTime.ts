@@ -61,6 +61,22 @@ export const getDateForReport = (
   return undefined;
 };
 
+export const getLastRecordedReportDate = (range: RangeOption | null, dateString: string) => {
+  if (range) {
+    const date = new Date(dateString);
+
+    date.setMonth(
+      date.getMonth() -
+        (rangeMap[range] - 1)
+    );
+    date.setDate(1);
+
+    return date;
+  }
+
+  return undefined;
+}
+
 export const dateToDateString = (date: Date): string => {
   const month =
     date.getMonth() < 9 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`;
