@@ -6,6 +6,7 @@ export const loader = async ({ request }: ActionFunctionArgs) => {
   const lang = new URL(request.url).searchParams.get("lang") || "sr";
   const { supabaseClient, headers } = createSupabaseServerClient(request);
   try {
+    await supabaseClient.auth.getUser();
     const {
       data: { session },
     } = await supabaseClient.auth.getSession();

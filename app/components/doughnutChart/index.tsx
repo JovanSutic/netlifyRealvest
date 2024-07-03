@@ -1,5 +1,6 @@
 import { Doughnut } from "react-chartjs-2";
 import "chart.js/auto";
+import { useEffect, useState } from "react";
 
 const DoughnutChart = ({
   labels,
@@ -14,8 +15,15 @@ const DoughnutChart = ({
   id: string;
   label: string;
 }) => {
+  const [currentId, setCurrentId] = useState<string>();
+  useEffect(() => {
+    if (currentId !== id) {
+      setCurrentId(id);
+    }
+  }, [id]);
   return (
     <Doughnut
+      redraw={currentId !== id}
       datasetIdKey={id}
       data={{
         labels: labels,
@@ -67,10 +75,10 @@ const DoughnutChart = ({
           tooltip: {
             displayColors: false,
             callbacks: {
-              label: function(context) {
+              label: function (context) {
                 return `${context.formattedValue}%`;
-              }
-            }
+              },
+            },
           },
         },
       }}

@@ -76,7 +76,7 @@ const AreaDoughnutReport = ({
             <div className="flex flex-row w-full">
                 <DoughnutChart
                   ratio={2}
-                  id="areaSalesDistribution"
+                  id={`areaSalesDistribution-${distributionType}`}
                   labels={chartData.labels}
                   data={numbersToPercentage(chartData.data)}
                   label={

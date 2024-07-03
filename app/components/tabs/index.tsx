@@ -34,7 +34,7 @@ const Tabs = ({
               item.value === value ? styleMap.active : styleMap.regular
             }
           >
-            <button type="button" onClick={() => onChange(item.value)}>
+            <button type="button" className="w-full h-full" onClick={() => onChange(item.value)}>
               {item.text}
             </button>
           </li>

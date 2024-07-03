@@ -11,8 +11,10 @@ import {
 import {
   RangeOption,
   dateToDateString,
+  excludeDayFromDateString,
   formatDate,
   getDateForReport,
+  getLastRecordedReportDate,
   rangeMap,
 } from "./dateTime";
 import { getAverageOfList, makeNumberCurrency } from "./numbers";
@@ -155,7 +157,7 @@ const setReportMonths = (start: Date, timeRange: RangeOption): string[] => {
   const result: string[] = [];
   const duration = rangeMap[timeRange] - 1;
 
-  if (duration < 13) {
+  if (duration < 14) {
     for (let index = 0; index < duration; index++) {
       let dateString = "";
       if (index === 0) {
@@ -171,7 +173,7 @@ const setReportMonths = (start: Date, timeRange: RangeOption): string[] => {
   } else {
     let limit = 0;
     let lastMonth = start;
-    while (duration > limit) {
+    while (duration + 1 > limit) {
       const nextMonth = new Date(lastMonth);
       nextMonth.setMonth(nextMonth.getMonth() + dividerMap[timeRange]);
       result.push(
@@ -189,11 +191,14 @@ const calculateLineData = (
   data: DashboardSearchType[],
   timeRange: RangeOption,
   type: DistributionTypeKey,
-  lang: LangType
+  lang: LangType,
+  date: string = ""
 ): LineChartPreparedData => {
   const preResult: Record<string, number[]> = {};
   const result: Record<string, number> = {};
-  const startDate = getDateForReport(timeRange);
+  const startDate = date
+    ? getLastRecordedReportDate(timeRange, date)
+    : getDateForReport(timeRange);
   const months = setReportMonths(startDate!, timeRange);
 
   if (rangeMap[timeRange] < 14) {
@@ -203,7 +208,7 @@ const calculateLineData = (
 
     data.forEach((item) => {
       const key = Object.keys(preResult).find(
-        (key) => key.split("-")[1] === item.date.split("-")[1]
+        (key) => key?.split("-")?.[1] === item?.date?.split("-")?.[1]
       )!;
       if (preResult[key]) {
         preResult[key].push(
@@ -229,8 +234,8 @@ const calculateLineData = (
       const itemDate = new Date(item.date);
       const currentKey = Object.keys(preResult)[limit];
 
-      const startDate = new Date(currentKey.split(":")[0]);
-      const endDate = new Date(currentKey.split(":")[1]);
+      const startDate = new Date(currentKey?.split(":")[0]);
+      const endDate = new Date(currentKey?.split(":")[1]);
 
       if (itemDate >= startDate && itemDate < endDate) {
         preResult[currentKey].push(
@@ -270,14 +275,15 @@ export const getAreaLineData = (
   label: string,
   timeRange: RangeOption,
   type: DistributionTypeKey,
-  lang: LangType = "sr"
+  lang: LangType = "sr",
+  date: string = ""
 ): LineDataset => {
   const dataSet = {
-    labels: calculateLineData(data, timeRange, type, lang).labels,
+    labels: calculateLineData(data, timeRange, type, lang, date).labels,
     datasets: [
       {
         label: label,
-        data: calculateLineData(data, timeRange, type, lang).data,
+        data: calculateLineData(data, timeRange, type, lang, date).data,
         fill: true,
         backgroundColor: "rgba(165, 180, 252, 0.6)",
         borderColor: "rgb(99 102 241)",
@@ -288,21 +294,28 @@ export const getAreaLineData = (
   return dataSet;
 };
 
-
 export const getDataForAreaPie = (
   list: DashboardSearchType[],
   distributionType: DistributionTypeKey,
   propertyType: PropertyType
 ): PieChartData => {
   const total: number[] = [];
-  list?.forEach((item) => total.push(distributionType === "price_map" ? Number(item.price) : Number(item.price) / Number(item.size)));
+  list?.forEach((item) =>
+    total.push(
+      distributionType === "price_map"
+        ? Number(item.price)
+        : Number(item.price) / Number(item.size)
+    )
+  );
   total.sort((a: number, b: number) => a - b);
   const spread = getPieSpread(distributionType, propertyType === "parking");
   const result: Record<string, number[]> = {};
   for (let index = 0; index < spread.length; index++) {
     const element = spread[index];
     const previousElement = index === 0 ? 0 : spread[index - 1];
-    const equal = total.filter((item) => item <= element && item > previousElement);
+    const equal = total.filter(
+      (item) => item <= element && item > previousElement
+    );
     if (equal.length) {
       result[
         `${makeNumberCurrency(previousElement)} - ${makeNumberCurrency(
@@ -315,5 +328,80 @@ export const getDataForAreaPie = (
   return {
     labels: Object.keys(result),
     data: Object.keys(result).map((key) => result[key].length),
+  };
+};
+
+export const getDataForAreaTimePie = (
+  list: DashboardSearchType[],
+  date: string = "",
+  timeRange: RangeOption,
+  lang: LangType,
+): PieChartData => {
+  if (list.length) {
+    const longLabels: string[] = [];
+    const longData: number[] = [];
+    const labels: string[] = [];
+    const dataPreset: Record<string, number[]> = {};
+    const newDate = new Date(date);
+
+    for (let index = 0; index < rangeMap[timeRange] - 1; index++) {
+      newDate.setMonth(newDate?.getMonth() - 1);
+      const labelItem = excludeDayFromDateString(dateToDateString(newDate));
+      labels.push(labelItem);
+      dataPreset[labelItem] = [];
+    }
+
+    list.forEach((item) => {
+      if (dataPreset[`${item.date?.split("-")[0]}-${item.date?.split("-")[1]}`]) {
+        dataPreset[
+          `${item.date?.split("-")[0]}-${item.date?.split("-")[1]}`
+        ].push(item.price);
+      }
+    });
+
+    if (labels.length > 12) {
+      const num = labels.length / dividerMap[timeRange];
+      for (let index = 0; index < num; index++) {
+        const base = index * dividerMap[timeRange];
+        longLabels.push(
+          `${formatDate(labels[base + (dividerMap[timeRange] - 1)], lang, false)} - ${formatDate(labels[base], lang, false)}`
+        );
+        const particleKeys = Object.keys(dataPreset).slice(
+          base,
+          base + dividerMap[timeRange]
+        );
+        const particle = particleKeys
+          .map((key) => dataPreset[key].length)
+          .reduce((a: number, b: number) => a + b, 0);
+        longData.push(particle);
+      }
+    }
+
+    return {
+      labels:
+        labels.length > 12
+          ? longLabels
+              .map((item, index) => `${item}: ${longData[index]}`)
+              .reverse()
+          : labels
+              .map(
+                (item, index) =>
+                  `${formatDate(item, lang, false)}: ${
+                    dataPreset[Object.keys(dataPreset)[index]].length
+                  }`
+              )
+              .reverse(),
+      data:
+        labels.length > 12
+          ? longData.reverse()
+          : Object.keys(dataPreset)
+              .map((key) => dataPreset[key].length)
+              .reverse(),
+    };
+  }
+
+  return {
+    labels: [],
+    data: [],
   };
 };

@@ -22,8 +22,9 @@ import {
 } from "../types/dashboard.types";
 import {
   RangeOption,
-  getDateForReport,
+  formatDate,
   getDbDateString,
+  getLastRecordedReportDate,
 } from "../utils/dateTime";
 import { Translator } from "../data/language/translator";
 import {
@@ -49,6 +50,7 @@ import {
 } from "chart.js";
 import AreaLineReport from "../widgets/AreaLineReport";
 import AreaDoughnutReport from "../widgets/AreaDoughnutReport";
+import AreaDoughnutTimeReport from "../widgets/AreaDoughnutTimeReport";
 
 export const links: LinksFunction = () => [
   {
@@ -72,9 +74,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     commercial: "commercial",
   };
 
-  const startDate = getDateForReport((searchRange || "3m") as RangeOption);
-
-  if (lat && lng && range && startDate && searchType) {
+  if (lat && lng && range && searchType) {
     // isPointInCircle is calculating if the point is in the circle
     const center = point([Number(lat), Number(lng)]);
     const circle = ellipse(center, Number(range), Number(range), {
@@ -94,6 +94,24 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
     try {
       const { supabaseClient } = createSupabaseServerClient(request);
+
+      const { data: lastData, error: lastError } = await supabaseClient
+        .from("contracts")
+        .select("id, date")
+        .limit(1)
+        .order("date", { ascending: false });
+
+      if (lastError) {
+        throw new Response("Last date error.", {
+          status: 500,
+        });
+      }
+
+      const startDate = getLastRecordedReportDate(
+        (searchRange || "3m") as RangeOption,
+        lastData[0].date
+      );
+
       const { data, error } = await supabaseClient
         .from("contracts")
         .select(`id, lng, lat, municipality, city, price, size, type, date`)
@@ -108,7 +126,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         .order("date")
         .returns<DashboardSearchType[]>();
       if (error) {
-        console.log(error);
+        throw new Response("Contracts data error.", {
+          status: 500,
+        });
       }
       const finalData = (data || []).filter((item) => {
         const inter = point([item.lat, item.lng]);
@@ -126,6 +146,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           cyrillicToLatin(locationData[0].display_name)
         ),
         list: finalData,
+        lastDate: lastData[0].date,
       });
     } catch (error) {
       // throw new Error(error);
@@ -152,6 +173,7 @@ const DashboardSearch = () => {
   const fetcher = useFetcher<{
     data: AreaReportType;
     list: DashboardSearchType[];
+    lastDate: string;
   }>({
     key: "search_contracts",
   });
@@ -380,6 +402,10 @@ const DashboardSearch = () => {
                   text: translate.getTranslation(lang, "tabDoughnut"),
                   value: "3",
                 },
+                {
+                  text: translate.getTranslation(lang, "tabDoughnutTime"),
+                  value: "4",
+                },
               ]}
               value={tab}
               onChange={(value) => {
@@ -415,6 +441,7 @@ const DashboardSearch = () => {
                   data={fetcher.data?.list || []}
                   lang={lang}
                   timeRange={timeRange}
+                  date={fetcher.data?.lastDate || ""}
                 />
               )}
               {tab === "3" && (
@@ -425,6 +452,23 @@ const DashboardSearch = () => {
                   propertyType={propertyType}
                 />
               )}
+              {tab === "4" && (
+                <AreaDoughnutTimeReport
+                  isShown={center !== undefined}
+                  data={fetcher.data?.list || []}
+                  lang={lang}
+                  timeRange={timeRange}
+                  date={fetcher.data?.lastDate || ""}
+                />
+              )}
+              <p className="mt-4 text-sm font-medium">
+                {fetcher.data?.lastDate
+                  ? `${reportTranslate.getTranslation(
+                      lang!,
+                      "lastDate"
+                    )} ${formatDate(fetcher.data?.lastDate, lang!)}`
+                  : ""}
+              </p>
             </div>
           </WidgetWrapper>
         </div>

@@ -11,6 +11,7 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     areaDescription: "Sales details about the highlighted area.",
     areaLineDescription: "Prices line chart for the highlighted area.",
     areaDoughnutDescription: "Prices distribution chart for the highlighted area",
+    areaDoughnutTimeDescription: "Number of sales through time periods",
     areaNoData: "Area not marked. Click on the map to generate report.",
     areaEmptyData:
       "Selected area does not have recorded sales in the chosen time frame. Change dropdown values or mark a different area on the map.",
@@ -32,6 +33,8 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     tabReport: "Area report",
     tabLine: "Price flow",
     tabDoughnut: "Price spread",
+    tabDoughnutTime: "Sales spread",
+
   },
   sr: {
     meters: "metara",
@@ -45,6 +48,7 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     areaDescription: "Prodajni detalji o odabranoj oblasti",
     areaLineDescription: "Kretanje cena za odabranu oblast u izabranom periodu.",
     areaDoughnutDescription: "Raspodela cena za odabranu oblast u izabranom periodu.",
+    areaDoughnutTimeDescription: "Broj prodaja rasporedjenih po periodima.",
     areaNoData:
       "Oblast nije označena. Kliknite na mapu da biste generisali izveštaj.",
     areaEmptyData:
@@ -67,5 +71,6 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     tabReport: "Izveštaj",
     tabLine: "Kretanje cena",
     tabDoughnut: "Raspodela cena",
+    tabDoughnutTime: "Raspodela prodaja"
   },
 };
