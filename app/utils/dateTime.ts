@@ -1,4 +1,5 @@
 import { LangType } from "../types/dashboard.types";
+import { subMonths, getYear, format } from "date-fns";
 
 export const rangeOptions = ["3m", "6m", "1y", "3y", "5y", "10y"] as const;
 export type RangeOption = (typeof rangeOptions)[number];
@@ -61,21 +62,29 @@ export const getDateForReport = (
   return undefined;
 };
 
-export const getLastRecordedReportDate = (range: RangeOption | null, dateString: string) => {
-  if (range) {
-    const date = new Date(dateString);
+export const getTimeRangeString = (start: string, end: string, full = false): string => {
+  const monthFormat = full ? 'MM' : 'M';
+  const yearFormat = full ? 'yyyy' : 'yyyy';
+  const isSameYear = getYear(start) === getYear(end);
 
-    date.setMonth(
-      date.getMonth() -
-        (rangeMap[range] - 1)
-    );
-    date.setDate(1);
+  if(isSameYear) return `${format(start, monthFormat)}-${format(end, `${monthFormat}.${yearFormat}`)}`;
+
+  return `${format(start, `${monthFormat}.${yearFormat}`)}-${format(end, `${monthFormat}.${yearFormat}`)}`;
+
+}
+
+export const getLastRecordedReportDate = (
+  range: RangeOption | null,
+  dateString: string
+) => {
+  if (range) {
+    const date = subMonths(dateString, (rangeMap[range] - 1));
 
     return date;
   }
 
   return undefined;
-}
+};
 
 export const dateToDateString = (date: Date): string => {
   const month =
@@ -115,12 +124,6 @@ export const getDayInYear = (): number => {
     (start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000;
   const oneDay = 1000 * 60 * 60 * 24;
   return Math.floor(diff / oneDay);
-};
-
-export const getYear = (date: string): number => {
-  const d = new Date(date);
-
-  return d.getFullYear();
 };
 
 export const getMonthAndYear = (date: string): string => {

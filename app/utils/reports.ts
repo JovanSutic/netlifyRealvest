@@ -1,3 +1,4 @@
+import { getYear } from "date-fns";
 import { DropdownOptions } from "../types/component.types";
 import {
   CardsData,
@@ -22,7 +23,6 @@ import {
   formatDate,
   getMonthAndYear,
   getMonthAndYearStart,
-  getYear,
   setDateString,
 } from "./dateTime";
 import { makeNumberCurrency, roundNumberToDecimal } from "./numbers";

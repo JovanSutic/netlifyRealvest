@@ -15,10 +15,12 @@ import {
   formatDate,
   getDateForReport,
   getLastRecordedReportDate,
+  getTimeRangeString,
   rangeMap,
 } from "./dateTime";
 import { getAverageOfList, makeNumberCurrency } from "./numbers";
 import { dividerMap, getListAverage, getPieSpread } from "./reports";
+import { addMonths, format, setDate } from "date-fns";
 
 export const generateAreaReport = (
   data: DashboardSearchType[],
@@ -155,32 +157,25 @@ export const cyrillicToLatin = (word: string): string => {
 
 const setReportMonths = (start: Date, timeRange: RangeOption): string[] => {
   const result: string[] = [];
-  const duration = rangeMap[timeRange] - 1;
+  const duration = rangeMap[timeRange];
 
   if (duration < 14) {
     for (let index = 0; index < duration; index++) {
-      let dateString = "";
-      if (index === 0) {
-        dateString = dateToDateString(start);
-      } else {
-        const nextDate = new Date(result[result.length - 1]);
-        nextDate.setMonth(nextDate.getMonth() + 1);
-        dateString = dateToDateString(nextDate);
-      }
-
-      result.push(dateString);
+      const nextDate = addMonths(start, index);
+      result.push(dateToDateString(nextDate));
     }
+    result.shift();
   } else {
-    let limit = 0;
-    let lastMonth = start;
-    while (duration + 1 > limit) {
-      const nextMonth = new Date(lastMonth);
-      nextMonth.setMonth(nextMonth.getMonth() + dividerMap[timeRange]);
-      result.push(
-        `${dateToDateString(lastMonth)}:${dateToDateString(nextMonth)}`
-      );
-      lastMonth = nextMonth;
-      limit = limit + dividerMap[timeRange];
+    const months = [];
+    for (let index = 0; index < duration; index++) {
+      const nextDate = addMonths(start, index);
+      months.push(dateToDateString(nextDate));
+    }
+    months.shift();
+
+    for (let index = 0; index < months.length / dividerMap[timeRange]; index++) {
+      const base = index * dividerMap[timeRange];
+      result.push(`${format(setDate(months[base], 1), 'yyyy-MM-dd')}:${months[base + (dividerMap[timeRange] - 1)]}`)
     }
   }
 
@@ -234,6 +229,7 @@ const calculateLineData = (
       const itemDate = new Date(item.date);
       const currentKey = Object.keys(preResult)[limit];
 
+
       const startDate = new Date(currentKey?.split(":")[0]);
       const endDate = new Date(currentKey?.split(":")[1]);
 
@@ -258,7 +254,8 @@ const calculateLineData = (
 
     Object.keys(preResult).forEach((key) => {
       const start = key.split(":")[0];
-      result[formatDate(start, lang, false)] = preResult[key].length
+      const end = key.split(":")[1];
+      result[getTimeRangeString(start, end)] = preResult[key].length
         ? getAverageOfList(preResult[key])
         : 0;
     });
@@ -307,6 +304,7 @@ export const getDataForAreaPie = (
         : Number(item.price) / Number(item.size)
     )
   );
+  
   total.sort((a: number, b: number) => a - b);
   const spread = getPieSpread(distributionType, propertyType === "parking");
   const result: Record<string, number[]> = {};
@@ -323,6 +321,12 @@ export const getDataForAreaPie = (
         )}`
       ] = equal;
     }
+  }
+
+  const aboveSpread = total.filter((item) => item > spread[spread.length - 1]);
+
+  if (aboveSpread.length) {
+    result[`+${makeNumberCurrency(spread[spread.length - 1])}`] = aboveSpread
   }
 
   return {
