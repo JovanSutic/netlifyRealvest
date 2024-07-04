@@ -187,6 +187,8 @@ const DashboardSearch = () => {
     }
   }, [center, range, timeRange, propertyType]);
 
+  // console.log(fetcher?.data?.list);
+
   useEffect(() => {
     ChartJS.register(
       CategoryScale,
@@ -463,9 +465,9 @@ const DashboardSearch = () => {
               )}
               <p className="mt-4 text-sm font-medium">
                 {fetcher.data?.lastDate
-                  ? `${reportTranslate.getTranslation(
+                  ? `${translate.getTranslation(
                       lang!,
-                      "lastDate"
+                      "lastInputDate"
                     )} ${formatDate(fetcher.data?.lastDate, lang!)}`
                   : ""}
               </p>

@@ -34,7 +34,7 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     tabLine: "Price flow",
     tabDoughnut: "Price spread",
     tabDoughnutTime: "Sales spread",
-
+    lastInputDate: "Date of the last saved record:"
   },
   sr: {
     meters: "metara",
@@ -71,6 +71,7 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     tabReport: "Izveštaj",
     tabLine: "Kretanje cena",
     tabDoughnut: "Raspodela cena",
-    tabDoughnutTime: "Raspodela prodaja"
+    tabDoughnutTime: "Raspodela prodaja",
+    lastInputDate: "Datum poslednjeg sačuvanog podataka:"
   },
 };
