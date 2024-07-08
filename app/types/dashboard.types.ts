@@ -154,3 +154,23 @@ export interface AreaReportType {
   lowestM2Price: number;
   count: number;
 }
+
+export type ListedAd = {
+  id?: number;
+  name: string;
+  link: string;
+  size: number;
+  price: number;
+  city?: string;
+  city_part: string;
+  source_id: string;
+  room_number?: number;
+  room_ratio?: number;
+  is_agency?: boolean;
+  average_price?: number;
+  date_signed: Date;
+  date_updated?: Date;
+  date_created?: Date;
+  is_details?: boolean;
+  comm_type?: string;
+};
