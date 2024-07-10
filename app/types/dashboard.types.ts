@@ -143,6 +143,21 @@ export interface DashboardSearchType {
   type: string;
 }
 
+export interface DashboardRentalType {
+  city: string;
+city_part:string;
+date_created: string;
+id: number; 
+link_id: {
+  lat: number;
+  lng: number;
+  description: string;
+},
+name: string;
+price: number;
+size: number;
+}
+
 export interface AreaReportType {
   address: string;
   averagePrice: number;

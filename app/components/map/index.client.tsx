@@ -73,7 +73,7 @@ const Map = ({
 }) => {
   const position: LatLngTuple = [44.8064, 20.4828];
   return (
-    <div className="h-[400px] w-full" id="mapContainer">
+    <div className="h-[400px] w-full shadow-md" id="mapContainer">
       <MapContainer
         style={{
           height: "100%",

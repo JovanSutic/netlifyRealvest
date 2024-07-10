@@ -17,11 +17,13 @@ const AreaDoughnutReport = ({
     isShown,
     data,
     propertyType,
+    rental = false,
   }: {
     lang: LangType;
     isShown: boolean;
     data: DashboardSearchType[];
     propertyType: PropertyType;
+    rental?: boolean;
   }) => {
     const [distributionType, setDistributionType] =
     useState<DistributionTypeKey>("price_map");
@@ -31,7 +33,8 @@ const AreaDoughnutReport = ({
   const chartData: PieChartData = getDataForAreaPie(
     data,
     distributionType,
-    propertyType!
+    propertyType!,
+    rental
   );
 
   const isEmpty = isShown && data.length === 0;

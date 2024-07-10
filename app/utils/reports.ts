@@ -146,6 +146,17 @@ export const getPieSpread = (
   return [50000, 100000, 150000, 200000, 250000, 300000, 350000, 400000];
 };
 
+export const getPieSpreadRental = (
+  key: DistributionTypeKey,
+  isParking: boolean
+): number[] => {
+  if (isParking && key !== "average_price_map")
+    return [250, 500, 750, 1000, 1500, 2000, 2500, 3000];
+  if (key === "average_price_map")
+    return [5, 8, 10, 12, 15, 20, 25, 30];
+  return [250, 500, 750, 1000, 1500, 2000, 2500, 3000];
+};
+
 export const getDataForPie = (
   list: PieReportType[],
   numericKey: DistributionTypeKey,
