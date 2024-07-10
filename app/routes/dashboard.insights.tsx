@@ -6,6 +6,7 @@ import { useLoaderData } from "@remix-run/react";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     // const matches = await getArchiveMatches2(request);
+    console.log(request);
 
     return json({
       matches: [],

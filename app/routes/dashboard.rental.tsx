@@ -1,8 +1,5 @@
 import { DashboardPage, WidgetWrapper } from "../components/layout";
-import {
-  point,
-  booleanIntersects,
-} from "@turf/turf";
+import { point, booleanIntersects } from "@turf/turf";
 import Map from "../components/map/index.client";
 import { ClientOnly } from "../components/helpers/ClientOnly";
 import { LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
@@ -12,13 +9,13 @@ import { useFetcher, useSearchParams } from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
 import {
   AreaReportType,
+  DashboardRentalType,
   DashboardSearchType,
   LangType,
   PropertyType,
 } from "../types/dashboard.types";
 import {
   RangeOption,
-  formatDate,
   getDbDateString,
   getLastRecordedReportDate,
 } from "../utils/dateTime";
@@ -28,7 +25,7 @@ import {
   fetchData,
   generateAreaReport,
   getMapCircle,
-  setSubtypeGroup,
+  transformDashboardRental,
 } from "../utils/dashboard";
 import AreaReport from "../widgets/AreaReport";
 import Loader from "../components/loader";
@@ -47,7 +44,8 @@ import {
 } from "chart.js";
 import AreaLineReport from "../widgets/AreaLineReport";
 import AreaDoughnutReport from "../widgets/AreaDoughnutReport";
-import AreaDoughnutTimeReport from "../widgets/AreaDoughnutTimeReport";
+// import AreaDoughnutTimeReport from "../widgets/AreaDoughnutTimeReport";
+import { format } from "date-fns";
 
 export const links: LinksFunction = () => [
   {
@@ -65,58 +63,50 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     "property_type"
   ) as PropertyType;
 
-  const searchTypeMap: Record<PropertyType, string> = {
-    residential: "apartment",
-    parking: "garage",
-    commercial: "commercial",
-  };
-
   if (lat && lng && range && searchType) {
-    const {uniq, circle } = getMapCircle(Number(lat), Number(lng), Number(range));
+    const { uniq, circle } = getMapCircle(
+      Number(lat),
+      Number(lng),
+      Number(range)
+    );
 
     try {
       const { supabaseClient } = createSupabaseServerClient(request);
 
-      const { data: lastData, error: lastError } = await supabaseClient
-        .from("contracts")
-        .select("id, date")
-        .limit(1)
-        .order("date", { ascending: false });
-
-      if (lastError) {
-        throw new Response("Last date error.", {
-          status: 500,
-        });
-      }
-
+      const today = new Date();
       const startDate = getLastRecordedReportDate(
         (searchRange || "3m") as RangeOption,
-        lastData[0].date
+        format(today, "yyyy-MM-dd")
       );
 
       const { data, error } = await supabaseClient
-        .from("contracts")
-        .select(`id, lng, lat, municipality, city, price, size, type, date`)
-        .eq("type", `${searchTypeMap[searchType]}`)
-        .eq("for_view", true)
-        .in("subtype", setSubtypeGroup(searchType))
-        .gt("date", getDbDateString(startDate!, "en"))
-        .gt("lat", uniq[1])
-        .lt("lat", uniq[0])
-        .gt("lng", uniq[3])
-        .lt("lng", uniq[2])
-        .order("date")
-        .returns<DashboardSearchType[]>();
+        .from("apartments_archive")
+        .select(
+          `id, name, city, price, date_created, size, city_part, link_id (lat, lng, description)`
+        )
+        .eq("type", "rental")
+        .not("link_id", "is", null)
+        .gt("date_created", getDbDateString(startDate!, "en"))
+        .gt("link_id.lat", 0)
+        .gt("link_id.lng", 0)
+        .gt("link_id.lat", uniq[1])
+        .lt("link_id.lat", uniq[0])
+        .gt("link_id.lng", uniq[3])
+        .lt("link_id.lng", uniq[2])
+        .returns<DashboardRentalType[]>();
       if (error) {
-        throw new Response("Contracts data error.", {
+        throw new Response("Archive data error.", {
           status: 500,
         });
       }
-      const finalData = (data || []).filter((item) => {
-        const inter = point([item.lat, item.lng]);
+
+      const finalData = (data || []).map((item) => {
+        const inter = point([item.link_id.lat, item.link_id.lng]);
         const isPointInCircle = booleanIntersects(inter, circle.geometry);
-        if (isPointInCircle) return item;
-      });
+        if (isPointInCircle) {
+          return transformDashboardRental(item, searchType);
+        }
+      }).filter((item) => item !== undefined);
 
       const locationData = await fetchData(
         `https://nominatim.openstreetmap.org/search.php?q=${lat}+${lng}&format=jsonv2`
@@ -124,11 +114,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
       return json({
         data: generateAreaReport(
-          finalData,
+          finalData as unknown as DashboardSearchType[],
           cyrillicToLatin(locationData[0].display_name)
         ),
-        list: finalData,
-        lastDate: lastData[0].date,
+        list: finalData as unknown as DashboardSearchType[],
       });
     } catch (error) {
       // throw new Error(error);
@@ -154,19 +143,20 @@ const DashboardSearch = () => {
   const fetcher = useFetcher<{
     data: AreaReportType;
     list: DashboardSearchType[];
-    lastDate: string;
   }>({
-    key: "search_contracts",
+    key: "search_rentals",
   });
 
   useEffect(() => {
     if (center) {
       const [lat, lng] = center;
       fetcher.load(
-        `/dashboard/search?lat=${lat}&lng=${lng}&city=1&range=${range}&time_range=${timeRange}&property_type=${propertyType}`
+        `/dashboard/rental?lat=${lat}&lng=${lng}&city=1&range=${range}&time_range=${timeRange}&property_type=${propertyType}`
       );
     }
   }, [center, range, timeRange, propertyType]);
+
+  console.log(fetcher?.data);
 
   useEffect(() => {
     ChartJS.register(
@@ -284,14 +274,6 @@ const DashboardSearch = () => {
                       value: "1y",
                       text: translate.getTranslation(lang, "1y"),
                     },
-                    {
-                      value: "3y",
-                      text: translate.getTranslation(lang, "3y"),
-                    },
-                    {
-                      value: "5y",
-                      text: translate.getTranslation(lang, "5y"),
-                    },
                   ]}
                 />
               </div>
@@ -355,10 +337,10 @@ const DashboardSearch = () => {
                   text: translate.getTranslation(lang, "tabDoughnut"),
                   value: "3",
                 },
-                {
-                  text: translate.getTranslation(lang, "tabDoughnutTime"),
-                  value: "4",
-                },
+                // {
+                //   text: translate.getTranslation(lang, "tabDoughnutTime"),
+                //   value: "4",
+                // },
               ]}
               value={tab}
               onChange={(value) => {
@@ -394,7 +376,7 @@ const DashboardSearch = () => {
                   data={fetcher.data?.list || []}
                   lang={lang}
                   timeRange={timeRange}
-                  date={fetcher.data?.lastDate || ""}
+                  date={""}
                 />
               )}
               {tab === "3" && (
@@ -403,25 +385,18 @@ const DashboardSearch = () => {
                   data={fetcher.data?.list || []}
                   lang={lang}
                   propertyType={propertyType}
+                  rental
                 />
               )}
-              {tab === "4" && (
+              {/* {tab === "4" && (
                 <AreaDoughnutTimeReport
                   isShown={center !== undefined}
                   data={fetcher.data?.list || []}
                   lang={lang}
                   timeRange={timeRange}
-                  date={fetcher.data?.lastDate || ""}
+                  date={""}
                 />
-              )}
-              <p className="mt-4 text-sm font-medium">
-                {fetcher.data?.lastDate
-                  ? `${translate.getTranslation(
-                      lang!,
-                      "lastInputDate"
-                    )} ${formatDate(fetcher.data?.lastDate, lang!)}`
-                  : ""}
-              </p>
+              )} */}
             </div>
           </WidgetWrapper>
         </div>

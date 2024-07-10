@@ -1,5 +1,6 @@
 import {
   AreaReportType,
+  DashboardRentalType,
   DashboardSearchType,
   DistributionTypeKey,
   LangType,
@@ -19,8 +20,9 @@ import {
   rangeMap,
 } from "./dateTime";
 import { getAverageOfList, makeNumberCurrency } from "./numbers";
-import { dividerMap, getListAverage, getPieSpread } from "./reports";
+import { dividerMap, getListAverage, getPieSpread, getPieSpreadRental } from "./reports";
 import { addMonths, format, setDate } from "date-fns";
+import { ellipse, point, lineString, bbox, bboxPolygon } from "@turf/turf";
 
 export const generateAreaReport = (
   data: DashboardSearchType[],
@@ -173,9 +175,17 @@ const setReportMonths = (start: Date, timeRange: RangeOption): string[] => {
     }
     months.shift();
 
-    for (let index = 0; index < months.length / dividerMap[timeRange]; index++) {
+    for (
+      let index = 0;
+      index < months.length / dividerMap[timeRange];
+      index++
+    ) {
       const base = index * dividerMap[timeRange];
-      result.push(`${format(setDate(months[base], 1), 'yyyy-MM-dd')}:${months[base + (dividerMap[timeRange] - 1)]}`)
+      result.push(
+        `${format(setDate(months[base], 1), "yyyy-MM-dd")}:${
+          months[base + (dividerMap[timeRange] - 1)]
+        }`
+      );
     }
   }
 
@@ -214,6 +224,8 @@ const calculateLineData = (
       }
     });
 
+    console.log(preResult)
+
     Object.keys(preResult).forEach((key) => {
       result[formatDate(key, lang, false)] = preResult[key].length
         ? getAverageOfList(preResult[key])
@@ -228,7 +240,6 @@ const calculateLineData = (
     data.forEach((item) => {
       const itemDate = new Date(item.date);
       const currentKey = Object.keys(preResult)[limit];
-
 
       const startDate = new Date(currentKey?.split(":")[0]);
       const endDate = new Date(currentKey?.split(":")[1]);
@@ -294,7 +305,8 @@ export const getAreaLineData = (
 export const getDataForAreaPie = (
   list: DashboardSearchType[],
   distributionType: DistributionTypeKey,
-  propertyType: PropertyType
+  propertyType: PropertyType,
+  rental: boolean = false,
 ): PieChartData => {
   const total: number[] = [];
   list?.forEach((item) =>
@@ -304,9 +316,9 @@ export const getDataForAreaPie = (
         : Number(item.price) / Number(item.size)
     )
   );
-  
+
   total.sort((a: number, b: number) => a - b);
-  const spread = getPieSpread(distributionType, propertyType === "parking");
+  const spread = rental ? getPieSpreadRental(distributionType, propertyType === "parking") : getPieSpread(distributionType, propertyType === "parking");
   const result: Record<string, number[]> = {};
   for (let index = 0; index < spread.length; index++) {
     const element = spread[index];
@@ -326,7 +338,7 @@ export const getDataForAreaPie = (
   const aboveSpread = total.filter((item) => item > spread[spread.length - 1]);
 
   if (aboveSpread.length) {
-    result[`+${makeNumberCurrency(spread[spread.length - 1])}`] = aboveSpread
+    result[`+${makeNumberCurrency(spread[spread.length - 1])}`] = aboveSpread;
   }
 
   return {
@@ -339,7 +351,7 @@ export const getDataForAreaTimePie = (
   list: DashboardSearchType[],
   date: string = "",
   timeRange: RangeOption,
-  lang: LangType,
+  lang: LangType
 ): PieChartData => {
   if (list.length) {
     const longLabels: string[] = [];
@@ -356,7 +368,9 @@ export const getDataForAreaTimePie = (
     }
 
     list.forEach((item) => {
-      if (dataPreset[`${item.date?.split("-")[0]}-${item.date?.split("-")[1]}`]) {
+      if (
+        dataPreset[`${item.date?.split("-")[0]}-${item.date?.split("-")[1]}`]
+      ) {
         dataPreset[
           `${item.date?.split("-")[0]}-${item.date?.split("-")[1]}`
         ].push(item.price);
@@ -368,7 +382,11 @@ export const getDataForAreaTimePie = (
       for (let index = 0; index < num; index++) {
         const base = index * dividerMap[timeRange];
         longLabels.push(
-          `${formatDate(labels[base + (dividerMap[timeRange] - 1)], lang, false)} - ${formatDate(labels[base], lang, false)}`
+          `${formatDate(
+            labels[base + (dividerMap[timeRange] - 1)],
+            lang,
+            false
+          )} - ${formatDate(labels[base], lang, false)}`
         );
         const particleKeys = Object.keys(dataPreset).slice(
           base,
@@ -409,3 +427,42 @@ export const getDataForAreaTimePie = (
     data: [],
   };
 };
+
+export const getMapCircle = (lat: number, lng: number, range: number) => {
+  // isPointInCircle is calculating if the point is in the circle
+  const center = point([Number(lat), Number(lng)]);
+  const circle = ellipse(center, Number(range), Number(range), {
+    units: "meters",
+  });
+
+  // uniq is giving me values that I can use for the db
+  const line = lineString(circle.geometry.coordinates[0]);
+  const bbox1 = bbox(line);
+  const bboxPolygon1 = bboxPolygon(bbox1);
+
+  const uniq = [...new Set(bboxPolygon1.geometry.coordinates[0].flat())].sort(
+    function (a, b) {
+      return b - a;
+    }
+  );
+
+  return {
+    uniq,
+    circle,
+  };
+};
+
+export const transformDashboardRental = (
+  rental: DashboardRentalType,
+  type: PropertyType
+): DashboardSearchType => ({
+  id: rental.id,
+  lng: rental.link_id.lng,
+  lat: rental.link_id.lat,
+  municipality: "",
+  date: rental.date_created,
+  city: rental.city,
+  price: rental.price,
+  size: rental.size,
+  type,
+});

@@ -21,22 +21,24 @@ const SideNavigation = ({
 
   const nextLang = lang === "sr" ? "en" : "sr";
 
-  const translate = new Translator('navigation');
+  const translate = new Translator("navigation");
   return (
-    <nav className="bg-indigo-900 shadow-lg h-screen fixed top-0 left-0 min-w-[260px] py-6 px-6 font-[sans-serif] flex flex-col overflow-auto">
+    <nav className="bg-gray-700 shadow-lg h-screen fixed top-0 left-0 min-w-[260px] py-6 px-6 font-[sans-serif] flex flex-col overflow-auto">
       <div className="flex flex-wrap items-center">
         <div className="w-full mb-2">
           <p className="text-lg text-center text-gray-300">{name}</p>
         </div>
         <div className="w-full mb-2 text-indigo-300 text-center text-sm underline">
-          <Link to={`${url}?lang=${nextLang}`}>{nextLang === "sr" ? "srpska verzija" : "english version"}</Link>
+          <Link to={`${url}?lang=${nextLang}`}>
+            {nextLang === "sr" ? "srpski" : "english"}
+          </Link>
         </div>
       </div>
 
       <hr />
 
       <ul className="flex-1 mt-4 mb-10">
-        <li className="py-4 mb-0.5s">
+        <li className="py-3 mb-0.5s">
           <Link
             to="/dashboard/search"
             className={
@@ -45,8 +47,8 @@ const SideNavigation = ({
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              fill="#FFFFFF"
-              className="w-4 mr-4 inline"
+              fill="currentColor"
+              className="w-5 mr-3 inline"
               viewBox="0 0 118.783 118.783"
             >
               <path
@@ -57,7 +59,26 @@ const SideNavigation = ({
             <span>{translate.getTranslation(lang, "areaSearch")}</span>
           </Link>
         </li>
-        <li>
+        <li className="py-3 mb-0.5s">
+          <Link
+            to="/dashboard/rental"
+            className={
+              url === "/dashboard/rental" ? styleMap.itemActive : styleMap.item
+            }
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              className="w-5 mr-3 inline"
+              viewBox="0 0 20 20"
+            >
+              <path d="M18 2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2ZM2 18V7h6.7l.4-.409A4.309 4.309 0 0 1 15.753 7H18v11H2Z" />
+              <path d="M8.139 10.411 5.289 13.3A1 1 0 0 0 5 14v2a1 1 0 0 0 1 1h2a1 1 0 0 0 .7-.288l2.886-2.851-3.447-3.45ZM14 8a2.463 2.463 0 0 0-3.484 0l-.971.983 3.468 3.468.987-.971A2.463 2.463 0 0 0 14 8Z" />
+            </svg>
+            <span>{translate.getTranslation(lang, "rental")}</span>
+          </Link>
+        </li>
+        <li className="py-3 mb-0.5s">
           <Link
             to="/dashboard/insights"
             className={
@@ -69,7 +90,7 @@ const SideNavigation = ({
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
-              className="w-[18px] h-[18px] mr-4"
+              className="w-5 mr-3 inline"
               viewBox="0 0 16 16"
             >
               <path
