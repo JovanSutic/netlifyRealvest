@@ -30,3 +30,8 @@ export const registrationSchema = z.object({
   email: z.string().email({ message: "emailError" }),
   password: password,
 });
+
+export const connectionSchema = z.object({
+  archiveId: z.string().regex(/^\d+$/),
+  detailId: z.string().regex(/^\d+$/),
+});
