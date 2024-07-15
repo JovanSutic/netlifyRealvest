@@ -4,6 +4,7 @@ import {
     LangType,
     PieChartData,
     PropertyType,
+    RentalPropertyType,
   } from "../types/dashboard.types";
   import { Translator } from "../data/language/translator";
   import DoughnutChart from "../components/doughnutChart";
@@ -22,7 +23,7 @@ const AreaDoughnutReport = ({
     lang: LangType;
     isShown: boolean;
     data: DashboardSearchType[];
-    propertyType: PropertyType;
+    propertyType: PropertyType | RentalPropertyType;
     rental?: boolean;
   }) => {
     const [distributionType, setDistributionType] =

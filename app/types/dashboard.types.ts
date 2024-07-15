@@ -1,6 +1,8 @@
 import { RangeOption } from "../utils/dateTime";
 
 export type GeneralObject = { id: number; name: string };
+export const rentalPropertyType = ["rental", "garage_rental", "commercial_rental"] as const;
+export type RentalPropertyType = (typeof rentalPropertyType)[number];
 export const propertyType = ["residential", "parking", "commercial"] as const;
 export type PropertyType = (typeof propertyType)[number];
 

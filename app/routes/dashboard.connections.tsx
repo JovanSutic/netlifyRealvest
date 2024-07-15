@@ -21,9 +21,21 @@ import {
   bbox,
   bboxPolygon,
 } from "@turf/turf";
-import { ConnectionDetails, ListedAd, MapItem } from "../types/dashboard.types";
+import { ConnectionDetails, ListedAd, MapItem, PropertyType, RentalPropertyType } from "../types/dashboard.types";
 import { ZodError } from "zod";
 import { connectionSchema } from "../data/schema/validators";
+
+const currentPropType: RentalPropertyType | PropertyType = 'garage_rental';
+
+const getRentalBaseTable = (rentalType: RentalPropertyType | PropertyType): string => {
+  if(rentalType === 'commercial_rental') return 'commercials_rentals';
+  if(rentalType === 'garage_rental') return 'garages_rentals';
+  if(rentalType === 'rental') return 'rentals';
+  if(rentalType === 'parking') return 'garages';
+  if(rentalType === 'commercial') return 'commercials';
+
+  return 'apartments';
+}
 
 const prepareCityPart = (cityPart: string): string => {
   if (cityPart === "") return "";
@@ -73,7 +85,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         .from("apartments_archive")
         .select()
         .eq("city_part", cityPart)
-        .eq("type", "rental")
+        .eq("type", currentPropType)
         .is("link_id", null)
         .order("id");
       if (archiveError) {
@@ -104,7 +116,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
             const { data: usedIds, error: usedError } = await supabaseClient
               .from("apartments_archive")
               .select("link_id")
-              .eq("type", "rental")
+              .eq("type", currentPropType)
               .not("link_id", "is", null);
 
             if (usedError) {
@@ -167,14 +179,29 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           return b - a;
         });
 
+        const rentalBaseTable = getRentalBaseTable(currentPropType);
+
+        const {data: currentData, error: currentError} = await supabaseClient.from(rentalBaseTable).select('id').order('id');
+
+        if (currentError) {
+          throw new Response("Current error.", {
+            status: 500,
+          });
+        }
+
+        const currentAdIds = currentData.map((item) => item.id);
+
         const { data: searchData, error: searchError } = await supabaseClient
           .from("ad_details")
           .select("id, description, type, lat, lng")
-          .eq("type", "rental")
+          .eq("type", currentPropType)
+          .not("ad_id", "in", `(${currentAdIds.toString()})`)
           .gt("lat", uniq[1])
           .lt("lat", uniq[0])
           .gt("lng", uniq[3])
           .lt("lng", uniq[2]);
+
+          console.log(searchData?.length)
 
         if (searchError) {
           throw new Response("Search error.", {
@@ -190,7 +217,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           await supabaseClient
             .from("apartments_archive")
             .select()
-            .eq("type", "rental")
+            .eq("type", currentPropType)
             .is("link_id", null)
             .ilike("name", `%${location}%`)
             .order("id");
@@ -273,7 +300,7 @@ const DashboardInsights = () => {
   const actionData = useActionData<typeof action>();
 
   useEffect(() => {
-    fetcher.load(`/dashboard/connections?part=${cityPart}&type=rental`);
+    fetcher.load(`/dashboard/connections?part=${cityPart}&type=${currentPropType}`);
   }, [cityPart]);
 
   useEffect(() => {

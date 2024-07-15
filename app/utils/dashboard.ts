@@ -8,6 +8,7 @@ import {
   LineDataset,
   PieChartData,
   PropertyType,
+  RentalPropertyType,
 } from "../types/dashboard.types";
 import {
   RangeOption,
@@ -305,7 +306,7 @@ export const getAreaLineData = (
 export const getDataForAreaPie = (
   list: DashboardSearchType[],
   distributionType: DistributionTypeKey,
-  propertyType: PropertyType,
+  propertyType: PropertyType | RentalPropertyType,
   rental: boolean = false,
 ): PieChartData => {
   const total: number[] = [];
@@ -318,7 +319,7 @@ export const getDataForAreaPie = (
   );
 
   total.sort((a: number, b: number) => a - b);
-  const spread = rental ? getPieSpreadRental(distributionType, propertyType === "parking") : getPieSpread(distributionType, propertyType === "parking");
+  const spread = rental ? getPieSpreadRental(distributionType, propertyType === "garage_rental") : getPieSpread(distributionType, propertyType === "parking");
   const result: Record<string, number[]> = {};
   for (let index = 0; index < spread.length; index++) {
     const element = spread[index];
@@ -454,7 +455,7 @@ export const getMapCircle = (lat: number, lng: number, range: number) => {
 
 export const transformDashboardRental = (
   rental: DashboardRentalType,
-  type: PropertyType
+  type: PropertyType | RentalPropertyType
 ): DashboardSearchType => ({
   id: rental.id,
   lng: rental.link_id.lng,
