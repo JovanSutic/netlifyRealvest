@@ -12,7 +12,7 @@ import {
   DashboardRentalType,
   DashboardSearchType,
   LangType,
-  PropertyType,
+  RentalPropertyType,
 } from "../types/dashboard.types";
 import {
   RangeOption,
@@ -61,7 +61,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const searchRange = new URL(request.url).searchParams.get("time_range");
   const searchType = new URL(request.url).searchParams.get(
     "property_type"
-  ) as PropertyType;
+  ) as RentalPropertyType;
 
   if (lat && lng && range && searchType) {
     const { uniq, circle } = getMapCircle(
@@ -84,7 +84,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         .select(
           `id, name, city, price, date_created, size, city_part, link_id (lat, lng, description)`
         )
-        .eq("type", "rental")
+        .eq("type", searchType)
         .not("link_id", "is", null)
         .gt("date_created", getDbDateString(startDate!, "en"))
         .gt("link_id.lat", 0)
@@ -133,7 +133,7 @@ const DashboardSearch = () => {
   const lang = (searchParams.get("lang") as LangType) || "sr";
   const [range, setRange] = useState<string>("250");
   const [center, setCenter] = useState<number[]>();
-  const [propertyType, setPropertyType] = useState<PropertyType>("residential");
+  const [propertyType, setPropertyType] = useState<RentalPropertyType>("rental");
   const [timeRange, setTimeRange] = useState<RangeOption>("3m");
   const [tab, setTab] = useState<string>("1");
 
@@ -290,25 +290,25 @@ const DashboardSearch = () => {
                   value={propertyType!}
                   isFullWidth={true}
                   setValue={(value) => {
-                    setPropertyType(value as PropertyType);
+                    setPropertyType(value as RentalPropertyType);
                   }}
                   options={[
                     {
-                      value: "residential",
+                      value: "rental",
                       text: reportTranslate.getTranslation(
                         lang!,
                         "residentialType"
                       ),
                     },
                     {
-                      value: "commercial",
+                      value: "commercial_rental",
                       text: reportTranslate.getTranslation(
                         lang!,
                         "commercialType"
                       ),
                     },
                     {
-                      value: "parking",
+                      value: "garage_rental",
                       text: reportTranslate.getTranslation(
                         lang!,
                         "parkingType"
