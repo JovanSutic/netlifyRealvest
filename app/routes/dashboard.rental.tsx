@@ -11,6 +11,7 @@ import {
   AreaReportType,
   DashboardRentalType,
   DashboardSearchType,
+  Details,
   LangType,
   RentalPropertyType,
 } from "../types/dashboard.types";
@@ -22,8 +23,10 @@ import {
 import { Translator } from "../data/language/translator";
 import {
   cyrillicToLatin,
+  extractAddress,
   fetchData,
   generateAreaReport,
+  getFeaturesReport,
   getMapCircle,
   transformDashboardRental,
 } from "../utils/dashboard";
@@ -44,8 +47,8 @@ import {
 } from "chart.js";
 import AreaLineReport from "../widgets/AreaLineReport";
 import AreaDoughnutReport from "../widgets/AreaDoughnutReport";
-// import AreaDoughnutTimeReport from "../widgets/AreaDoughnutTimeReport";
 import { format } from "date-fns";
+import FeatureReport from "../widgets/FeatureReport";
 
 export const links: LinksFunction = () => [
   {
@@ -82,9 +85,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       const { data, error } = await supabaseClient
         .from("apartments_archive")
         .select(
-          `id, name, city, price, date_created, size, city_part, link_id (lat, lng, description)`
+          `id, name, city, price, date_created, size, city_part, link_id (lat, lng, description, furnished, security, additional, technical, rest)`
         )
         .eq("type", searchType)
+        .eq("is_active", false)
         .not("link_id", "is", null)
         .gt("date_created", getDbDateString(startDate!, "en"))
         .gt("link_id.lat", 0)
@@ -112,12 +116,21 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         `https://nominatim.openstreetmap.org/search.php?q=${lat}+${lng}&format=jsonv2`
       );
 
+      const featuresData = (data || []).map((item) => {
+        const inter = point([item.link_id.lat, item.link_id.lng]);
+        const isPointInCircle = booleanIntersects(inter, circle.geometry);
+        if (isPointInCircle) {
+          return item;
+        }
+      }).filter((item) => item !== undefined);
+
       return json({
         data: generateAreaReport(
           finalData as unknown as DashboardSearchType[],
-          cyrillicToLatin(locationData[0].display_name)
+          extractAddress(cyrillicToLatin(locationData[0].display_name))
         ),
         list: finalData as unknown as DashboardSearchType[],
+        features: getFeaturesReport(featuresData.map((item) => item?.link_id as Details))
       });
     } catch (error) {
       // throw new Error(error);
@@ -140,10 +153,7 @@ const DashboardSearch = () => {
   const reportTranslate = new Translator("report");
   const translate = new Translator("dashboard");
 
-  const fetcher = useFetcher<{
-    data: AreaReportType;
-    list: DashboardSearchType[];
-  }>({
+  const fetcher = useFetcher<typeof loader>({
     key: "search_rentals",
   });
 
@@ -155,8 +165,6 @@ const DashboardSearch = () => {
       );
     }
   }, [center, range, timeRange, propertyType]);
-
-  console.log(fetcher?.data);
 
   useEffect(() => {
     ChartJS.register(
@@ -337,10 +345,10 @@ const DashboardSearch = () => {
                   text: translate.getTranslation(lang, "tabDoughnut"),
                   value: "3",
                 },
-                // {
-                //   text: translate.getTranslation(lang, "tabDoughnutTime"),
-                //   value: "4",
-                // },
+                {
+                  text: translate.getTranslation(lang, "rentalFeatures"),
+                  value: "4",
+                },
               ]}
               value={tab}
               onChange={(value) => {
@@ -352,12 +360,12 @@ const DashboardSearch = () => {
                 <div>
                   <div className="mb-4">
                     <p className="text-sm text-slate-700">
-                      {translate.getTranslation(lang, "areaDescription")}
+                      {translate.getTranslation(lang, "areaDescriptionRental")}
                     </p>
                   </div>
                   <div>
                     {center ? (
-                      <AreaReport data={fetcher.data?.data} lang={lang} />
+                      <AreaReport data={fetcher.data?.data as AreaReportType} lang={lang} isRental />
                     ) : (
                       <div>
                         <div className="flex flex-column w-full justify-center h-[200px]">
@@ -388,15 +396,13 @@ const DashboardSearch = () => {
                   rental
                 />
               )}
-              {/* {tab === "4" && (
-                <AreaDoughnutTimeReport
-                  isShown={center !== undefined}
-                  data={fetcher.data?.list || []}
+              {tab === "4" && (
+                <FeatureReport
+                  data={fetcher.data?.features}
                   lang={lang}
-                  timeRange={timeRange}
-                  date={""}
+                  isRental
                 />
-              )} */}
+              )}
             </div>
           </WidgetWrapper>
         </div>

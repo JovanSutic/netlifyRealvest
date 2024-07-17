@@ -85,6 +85,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         .from("apartments_archive")
         .select()
         .eq("city_part", cityPart)
+        .eq("is_active", false)
         .eq("type", currentPropType)
         .is("link_id", null)
         .order("id");
@@ -218,6 +219,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
             .from("apartments_archive")
             .select()
             .eq("type", currentPropType)
+            .eq("is_active", false)
             .is("link_id", null)
             .ilike("name", `%${location}%`)
             .order("id");
