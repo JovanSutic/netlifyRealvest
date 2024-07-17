@@ -25,6 +25,7 @@ import {
 import { Translator } from "../data/language/translator";
 import {
   cyrillicToLatin,
+  extractAddress,
   fetchData,
   generateAreaReport,
   getMapCircle,
@@ -125,7 +126,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       return json({
         data: generateAreaReport(
           finalData,
-          cyrillicToLatin(locationData[0].display_name)
+          extractAddress(cyrillicToLatin(locationData[0].display_name))
         ),
         list: finalData,
         lastDate: lastData[0].date,

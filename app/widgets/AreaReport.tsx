@@ -5,9 +5,11 @@ import { Translator } from "../data/language/translator";
 const AreaReport = ({
   data,
   lang,
+  isRental = false,
 }: {
   data?: AreaReportType;
   lang: LangType;
+  isRental?: boolean;
 }) => {
   const translate = new Translator("dashboard");
   if (data) {
@@ -128,7 +130,7 @@ const AreaReport = ({
           <div className="flex w-full p-2">
             <div className="w-[40%]">
               <p className="text-sm">
-                {translate.getTranslation(lang, "salesCount")}
+                {translate.getTranslation(lang, isRental ? "rentalCount" : "salesCount")}
               </p>
             </div>
             <div className="w-[60%]">
@@ -144,7 +146,7 @@ const AreaReport = ({
     <div>
       <div className="flex flex-column w-full justify-center h-[200px]">
         <p className="flex items-center text-slate-400 text-center font-sm">
-          {translate.getTranslation(lang, "areaEmptyData")}
+          {translate.getTranslation(lang, isRental ? "areaEmptyDataRental" : "areaEmptyData")}
         </p>
       </div>
     </div>
