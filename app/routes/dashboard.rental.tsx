@@ -104,25 +104,29 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         });
       }
 
-      const finalData = (data || []).map((item) => {
-        const inter = point([item.link_id.lat, item.link_id.lng]);
-        const isPointInCircle = booleanIntersects(inter, circle.geometry);
-        if (isPointInCircle) {
-          return transformDashboardRental(item, searchType);
-        }
-      }).filter((item) => item !== undefined);
+      const finalData = (data || [])
+        .map((item) => {
+          const inter = point([item.link_id.lat, item.link_id.lng]);
+          const isPointInCircle = booleanIntersects(inter, circle.geometry);
+          if (isPointInCircle) {
+            return transformDashboardRental(item, searchType);
+          }
+        })
+        .filter((item) => item !== undefined);
 
       const locationData = await fetchData(
         `https://nominatim.openstreetmap.org/search.php?q=${lat}+${lng}&format=jsonv2`
       );
 
-      const featuresData = (data || []).map((item) => {
-        const inter = point([item.link_id.lat, item.link_id.lng]);
-        const isPointInCircle = booleanIntersects(inter, circle.geometry);
-        if (isPointInCircle) {
-          return item;
-        }
-      }).filter((item) => item !== undefined);
+      const featuresData = (data || [])
+        .map((item) => {
+          const inter = point([item.link_id.lat, item.link_id.lng]);
+          const isPointInCircle = booleanIntersects(inter, circle.geometry);
+          if (isPointInCircle) {
+            return item;
+          }
+        })
+        .filter((item) => item !== undefined);
 
       return json({
         data: generateAreaReport(
@@ -130,7 +134,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           extractAddress(cyrillicToLatin(locationData[0].display_name))
         ),
         list: finalData as unknown as DashboardSearchType[],
-        features: getFeaturesReport(featuresData.map((item) => item?.link_id as Details))
+        features: getFeaturesReport(
+          featuresData.map((item) => item?.link_id as Details)
+        ),
       });
     } catch (error) {
       // throw new Error(error);
@@ -146,7 +152,8 @@ const DashboardSearch = () => {
   const lang = (searchParams.get("lang") as LangType) || "sr";
   const [range, setRange] = useState<string>("250");
   const [center, setCenter] = useState<number[]>();
-  const [propertyType, setPropertyType] = useState<RentalPropertyType>("rental");
+  const [propertyType, setPropertyType] =
+    useState<RentalPropertyType>("rental");
   const [timeRange, setTimeRange] = useState<RangeOption>("3m");
   const [tab, setTab] = useState<string>("1");
 
@@ -183,18 +190,145 @@ const DashboardSearch = () => {
   return (
     <DashboardPage>
       <div className="grid grid-cols-12 lg:grid-rows-1 gap-4 pt-5 lg:pt-0">
+        <div className="col-span-7 lg:row-start-1">
+          <div className="my-2 flex h-full flex-row items-center">
+            <h2 className="text-2xl font-semibold">
+              {translate.getTranslation(lang, "searchTitleRental")}
+            </h2>
+          </div>
+        </div>
+        <div className="col-span-5 lg:row-start-1">
+          <div className="grid grid-cols-3 grid-rows-1 gap-4 col-start-2 mt-4">
+            <div className="col-span-1 col-start-2">
+              <label
+                htmlFor="mapCity"
+                className="text-slate-800 ml-1 text-sm font-semibold"
+              >
+                {translate.getTranslation(lang, "timeRange")}
+              </label>
+              <Select
+                name="timeRange"
+                value={timeRange}
+                isFullWidth={true}
+                setValue={(value) => {
+                  setTimeRange(value as RangeOption);
+                }}
+                options={[
+                  {
+                    value: "3m",
+                    text: translate.getTranslation(lang, "3m"),
+                  },
+                  {
+                    value: "6m",
+                    text: translate.getTranslation(lang, "6m"),
+                  },
+                  {
+                    value: "1y",
+                    text: translate.getTranslation(lang, "1y"),
+                  },
+                ]}
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="propertyType"
+                className="text-slate-800 ml-1 text-sm font-semibold"
+              >
+                {translate.getTranslation(lang, "propertyType")}
+              </label>
+              <Select
+                name="propertyType"
+                value={propertyType!}
+                isFullWidth={true}
+                setValue={(value) => {
+                  setPropertyType(value as RentalPropertyType);
+                }}
+                options={[
+                  {
+                    value: "rental",
+                    text: reportTranslate.getTranslation(
+                      lang!,
+                      "residentialType"
+                    ),
+                  },
+                  // {
+                  //   value: "commercial_rental",
+                  //   text: reportTranslate.getTranslation(
+                  //     lang!,
+                  //     "commercialType"
+                  //   ),
+                  // },
+                  // {
+                  //   value: "garage_rental",
+                  //   text: reportTranslate.getTranslation(lang!, "parkingType"),
+                  // },
+                ]}
+              />
+            </div>
+          </div>
+        </div>
         <div className="col-span-12 lg:col-span-7 lg:row-start-2">
           <WidgetWrapper>
             <Loader open={fetcher.state === "loading"} />
-            <div className="mb-6">
-              <h2 className="text-2xl font-semibold mb-3">
-                {translate.getTranslation(lang, "searchTitle")}
-              </h2>
-              <p className="text-md text-slate-700">
-                {translate.getTranslation(lang, "searchDescription")}
-              </p>
+            <div className="grid grid-cols-3 grid-rows-1 gap-1 mb-4">
+              <div className="col-span-3 col-start-1 lg:col-span-1">
+                <div>
+                  <label
+                    htmlFor="mapCity"
+                    className="text-slate-800 ml-1 text-sm font-semibold"
+                  >
+                    {translate.getTranslation(lang, "areaRange")}
+                  </label>
+                  <div className="width-44">
+                    <Select
+                      name="mapRange"
+                      value={range}
+                      isFullWidth={true}
+                      setValue={(value) => {
+                        setRange(value);
+                      }}
+                      options={[
+                        {
+                          value: "250",
+                          text: `250 ${translate.getTranslation(
+                            lang,
+                            "meters"
+                          )}`,
+                        },
+                        {
+                          value: "500",
+                          text: `500 ${translate.getTranslation(
+                            lang,
+                            "meters"
+                          )}`,
+                        },
+                        {
+                          value: "1000",
+                          text: `1000 ${translate.getTranslation(
+                            lang,
+                            "meters"
+                          )}`,
+                        },
+                        {
+                          value: "1500",
+                          text: `1500 ${translate.getTranslation(
+                            lang,
+                            "meters"
+                          )}`,
+                        },
+                        {
+                          value: "2000",
+                          text: `2000 ${translate.getTranslation(
+                            lang,
+                            "meters"
+                          )}`,
+                        },
+                      ]}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
-
             <ClientOnly
               fallback={
                 <div
@@ -205,126 +339,10 @@ const DashboardSearch = () => {
             >
               {() => <Map range={Number(range)} setCenter={setCenter} />}
             </ClientOnly>
-            <div className="grid grid-cols-3 grid-rows-1 gap-1 mt-8">
-              <div>
-                <label
-                  htmlFor="mapCity"
-                  className="text-slate-600 ml-2 text-sm"
-                >
-                  {translate.getTranslation(lang, "areaRange")}
-                </label>
-                <div className="width-44">
-                  <Select
-                    name="mapRange"
-                    value={range}
-                    isFullWidth={true}
-                    setValue={(value) => {
-                      setRange(value);
-                    }}
-                    options={[
-                      {
-                        value: "250",
-                        text: `250 ${translate.getTranslation(lang, "meters")}`,
-                      },
-                      {
-                        value: "500",
-                        text: `500 ${translate.getTranslation(lang, "meters")}`,
-                      },
-                      {
-                        value: "1000",
-                        text: `1000 ${translate.getTranslation(
-                          lang,
-                          "meters"
-                        )}`,
-                      },
-                      {
-                        value: "1500",
-                        text: `1500 ${translate.getTranslation(
-                          lang,
-                          "meters"
-                        )}`,
-                      },
-                      {
-                        value: "2000",
-                        text: `2000 ${translate.getTranslation(
-                          lang,
-                          "meters"
-                        )}`,
-                      },
-                    ]}
-                  />
-                </div>
-              </div>
-              <div>
-                <label
-                  htmlFor="mapCity"
-                  className="text-slate-600 ml-2 text-sm"
-                >
-                  {translate.getTranslation(lang, "timeRange")}
-                </label>
-                <Select
-                  name="timeRange"
-                  value={timeRange}
-                  isFullWidth={true}
-                  setValue={(value) => {
-                    setTimeRange(value as RangeOption);
-                  }}
-                  options={[
-                    {
-                      value: "3m",
-                      text: translate.getTranslation(lang, "3m"),
-                    },
-                    {
-                      value: "6m",
-                      text: translate.getTranslation(lang, "6m"),
-                    },
-                    {
-                      value: "1y",
-                      text: translate.getTranslation(lang, "1y"),
-                    },
-                  ]}
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="propertyType"
-                  className="text-slate-600 ml-2 text-sm"
-                >
-                  {translate.getTranslation(lang, "propertyType")}
-                </label>
-                <Select
-                  name="propertyType"
-                  value={propertyType!}
-                  isFullWidth={true}
-                  setValue={(value) => {
-                    setPropertyType(value as RentalPropertyType);
-                  }}
-                  options={[
-                    {
-                      value: "rental",
-                      text: reportTranslate.getTranslation(
-                        lang!,
-                        "residentialType"
-                      ),
-                    },
-                    {
-                      value: "commercial_rental",
-                      text: reportTranslate.getTranslation(
-                        lang!,
-                        "commercialType"
-                      ),
-                    },
-                    {
-                      value: "garage_rental",
-                      text: reportTranslate.getTranslation(
-                        lang!,
-                        "parkingType"
-                      ),
-                    },
-                  ]}
-                />
-              </div>
+            <div className="w-full mt-4">
+              <p className="text-sm text-slate-700 font-serif">
+                {translate.getTranslation(lang, "searchDescription")}
+              </p>
             </div>
           </WidgetWrapper>
         </div>
@@ -365,7 +383,11 @@ const DashboardSearch = () => {
                   </div>
                   <div>
                     {center ? (
-                      <AreaReport data={fetcher.data?.data as AreaReportType} lang={lang} isRental />
+                      <AreaReport
+                        data={fetcher.data?.data as AreaReportType}
+                        lang={lang}
+                        isRental
+                      />
                     ) : (
                       <div>
                         <div className="flex flex-column w-full justify-center h-[200px]">
