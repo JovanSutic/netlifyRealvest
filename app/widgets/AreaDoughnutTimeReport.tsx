@@ -31,8 +31,8 @@ const AreaDoughnutTimeReport = ({
   return (
     <div>
       <div className="mb-4">
-        <p className="text-sm text-slate-700">
-          {translate.getTranslation(lang, "areaDoughnutTimeDescription")}
+        <p className="text-sm text-slate-700 font-serif">
+          {data.length > 0 && translate.getTranslation(lang, "areaDoughnutTimeDescription")}
         </p>
       </div>
       <div>

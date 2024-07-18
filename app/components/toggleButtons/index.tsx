@@ -17,7 +17,7 @@ const ToggleButtons = ({
           if (option.value === value) {
             return (
               <button
-                className="bg-indigo-900 font-medium rounded-s hover:bg-indigo-700 text-white px-1.5 py-1 border-solid border-t-[1px] border-b-[1px] border-l-[1px] border-indigo-900"
+                className="bg-blue-500 text-sm font-medium rounded-s text-white px-1.5 py-1 border-solid border-t-[1px] border-b-[1px] border-l-[1px] border-blue-200"
                 onClick={() => {
                   onChange(option.value);
                 }}
@@ -30,7 +30,7 @@ const ToggleButtons = ({
 
           return (
             <button
-              className="bg-indigo-100 rounded-s font-medium hover:bg-indigo-200 text-slate-700 px-1.5 py-1 border-solid border-t-[1px] border-b-[1px] border-l-[1px] border-indigo-900"
+              className="bg-slate-100 text-sm rounded-s font-medium hover:bg-slate-200 text-slate-700 px-1.5 py-1 border-solid border-t-[1px] border-b-[1px] border-l-[1px] border-blue-200"
               onClick={() => {
                 onChange(option.value);
               }}
@@ -45,7 +45,7 @@ const ToggleButtons = ({
           if (option.value === value) {
             return (
               <button
-                className="bg-indigo-900 font-medium rounded-e hover:bg-indigo-700 text-white px-1.5 py-1 border-solid border-[1px] border-indigo-900"
+                className="bg-blue-500 text-sm font-medium rounded-e text-white px-1.5 py-1 border-solid border-[1px] border-blue-200"
                 onClick={() => {
                   onChange(option.value);
                 }}
@@ -58,7 +58,7 @@ const ToggleButtons = ({
 
           return (
             <button
-              className="bg-indigo-100 rounded-e font-medium hover:bg-indigo-200 text-slate-700 px-1.5 py-1  border-[1px] border-indigo-900"
+              className="bg-slate-100 text-sm rounded-e font-medium hover:bg-slate-200 text-slate-700 px-1.5 py-1  border-[1px] border-blue-200"
               onClick={() => {
                 onChange(option.value);
               }}
@@ -72,7 +72,7 @@ const ToggleButtons = ({
         if (option.value === value) {
           return (
             <button
-              className="bg-indigo-900 font-medium hover:bg-indigo-700 text-white px-1.5 py-1 border-solid border-t-[1px] border-b-[1px] border-l-[1px] border-indigo-900"
+              className="bg-blue-500 text-sm font-medium text-white px-1.5 py-1 border-solid border-t-[1px] border-b-[1px] border-l-[1px] border-blue-200"
               onClick={() => {
                 onChange(option.value);
               }}
@@ -84,7 +84,7 @@ const ToggleButtons = ({
         }
         return (
           <button
-            className="bg-indigo-100 font-medium hover:bg-indigo-200 text-slate-700 px-1.5 py-1 border-solid border-t-[1px] border-b-[1px] border-l-[1px] border-indigo-900"
+            className="bg-slate-100 text-sm font-medium hover:bg-slate-200 text-slate-700 px-1.5 py-1 border-solid border-t-[1px] border-b-[1px] border-l-[1px] border-blue-200"
             onClick={() => {
               onChange(option.value);
             }}

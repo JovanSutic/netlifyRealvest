@@ -11,68 +11,72 @@ const FeatureReport = ({
   isRental: boolean;
 }) => {
   const translate = new Translator("dashboard");
-  if (data) {
+  if (data?.essentials.length || data?.benefits.length) {
     return (
-      <ul className="">
-        {data.essentials.length > 0 && (
-          <>
-            <li className="py-1">
-              <div className="flex w-full border-solid border-b-[1px] border-slate-300 p-2">
-                <div className="w-[100%]">
-                  <p className="text-md font-bold">
-                    {translate.getTranslation(lang, "featureEssentials")}
-                  </p>
-                </div>
-              </div>
-            </li>
-            {data.essentials.map((item) => (
-              <li className="py-1" key={Object.keys(item)[0]}>
-                <div className="flex w-full border-solid border-b-[1px] border-slate-300 p-2">
-                  <div className="w-[40%]">
-                    <p className="text-sm">
-                      {translate.getTranslation(lang, Object.keys(item)[0])}
-                    </p>
+      <>
+        <p className="text-sm font-serif mb-3">
+          {data.essentials.length > 0 && translate.getTranslation(lang, "featureEssentials")}
+        </p>
+        <ul className="border-solid border-[1px] border-slate-200 rounded-md mb-6">
+          {data.essentials.length > 0 && (
+            <>
+              {data.essentials.map((item, index) => (
+                <li key={Object.keys(item)[0]}>
+                  <div
+                    className={
+                      index % 2 !== 0
+                        ? "flex w-full bg-slate-100 p-3"
+                        : "flex w-full p-3"
+                    }
+                  >
+                    <div className="w-[40%]">
+                      <p className="text-sm">
+                        {translate.getTranslation(lang, Object.keys(item)[0])}
+                      </p>
+                    </div>
+                    <div className="w-[60%]">
+                      <p className="font-bold text-sm">{`${
+                        item[Object.keys(item)[0]]
+                      }%`}</p>
+                    </div>
                   </div>
-                  <div className="w-[60%]">
-                    <p className="font-bold text-sm">{`${
-                      item[Object.keys(item)[0]]
-                    }%`}</p>
+                </li>
+              ))}
+            </>
+          )}
+        </ul>
+        <p className="text-sm font-serif mb-3">
+          {data.benefits.length > 0 && translate.getTranslation(lang, "featureBenefits")}
+        </p>
+        <ul className="border-solid border-[1px] border-slate-200 rounded-md">
+          {data.benefits.length > 0 && (
+            <>
+              {data.benefits.map((item, index) => (
+                <li key={Object.keys(item)[0]}>
+                  <div
+                    className={
+                      index % 2 !== 0
+                        ? "flex w-full bg-slate-100 p-3"
+                        : "flex w-full p-3"
+                    }
+                  >
+                    <div className="w-[40%]">
+                      <p className="text-sm">
+                        {translate.getTranslation(lang, Object.keys(item)[0])}
+                      </p>
+                    </div>
+                    <div className="w-[60%]">
+                      <p className="font-bold text-sm">{`${
+                        item[Object.keys(item)[0]]
+                      }%`}</p>
+                    </div>
                   </div>
-                </div>
-              </li>
-            ))}
-          </>
-        )}
-        {data.benefits.length > 0 && (
-          <>
-            <li className="py-1">
-              <div className="flex w-full border-solid border-b-[1px] border-slate-300 p-2">
-                <div className="w-[100%]">
-                  <p className="text-md font-bold">
-                    {translate.getTranslation(lang, "featureBenefits")}
-                  </p>
-                </div>
-              </div>
-            </li>
-            {data.benefits.map((item) => (
-              <li className="py-1" key={Object.keys(item)[0]}>
-                <div className="flex w-full border-solid border-b-[1px] border-slate-300 p-2">
-                  <div className="w-[40%]">
-                    <p className="text-sm">
-                      {translate.getTranslation(lang, Object.keys(item)[0])}
-                    </p>
-                  </div>
-                  <div className="w-[60%]">
-                    <p className="font-bold text-sm">{`${
-                      item[Object.keys(item)[0]]
-                    }%`}</p>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </>
-        )}
-      </ul>
+                </li>
+              ))}
+            </>
+          )}
+        </ul>
+      </>
     );
   }
 
