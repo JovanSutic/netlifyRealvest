@@ -378,7 +378,7 @@ const DashboardSearch = () => {
                 <div>
                   <div className="mb-4">
                     <p className="text-sm text-slate-700">
-                      {translate.getTranslation(lang, "areaDescriptionRental")}
+                      {fetcher.data?.data?.count && translate.getTranslation(lang, "areaDescriptionRental")}
                     </p>
                   </div>
                   <div>
@@ -407,6 +407,7 @@ const DashboardSearch = () => {
                   lang={lang}
                   timeRange={timeRange}
                   date={""}
+                  rental
                 />
               )}
               {tab === "3" && (

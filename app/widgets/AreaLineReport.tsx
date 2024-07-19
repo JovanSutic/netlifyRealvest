@@ -27,12 +27,14 @@ const AreaLineReport = ({
   data,
   timeRange,
   date = "",
+  rental = false,
 }: {
   lang: LangType;
   isLine: boolean;
   data: DashboardSearchType[];
   timeRange: RangeOption;
   date: string;
+  rental?: boolean;
 }) => {
   const [distributionType, setDistributionType] =
     useState<DistributionTypeKey>("price_map");
@@ -57,8 +59,8 @@ const AreaLineReport = ({
   return (
     <div>
       <div className="mb-4">
-        <p className="text-sm text-slate-700">
-          {translate.getTranslation(lang, "areaLineDescription")}
+        <p className="text-sm text-slate-700 font-serif">
+          {data.length > 0 && translate.getTranslation(lang, "areaLineDescription")}
         </p>
       </div>
       <div>
@@ -66,7 +68,7 @@ const AreaLineReport = ({
           <div>
             <div className="flex flex-column w-full justify-center h-[200px]">
               <p className="flex items-center text-center text-slate-400 font-sm">
-                {translate.getTranslation(lang, "areaEmptyData")}
+                {translate.getTranslation(lang, rental ? "areaEmptyDataRental" : "areaEmptyData")}
               </p>
             </div>
           </div>

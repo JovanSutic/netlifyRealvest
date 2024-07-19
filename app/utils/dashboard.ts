@@ -302,8 +302,8 @@ export const getAreaLineData = (
         label: label,
         data: calculateLineData(data, timeRange, type, lang, date).data,
         fill: true,
-        backgroundColor: "rgba(165, 180, 252, 0.6)",
-        borderColor: "rgb(99 102 241)",
+        backgroundColor: "rgb(219, 234, 254, 0.7)",
+        borderColor: "rgb(96 165 250)",
       },
     ],
   };
@@ -562,8 +562,8 @@ const getFeaturesData = (details: Details[]): Features => {
     security: Math.round((security / details.length) * 100),
     lift: Math.round((lift / details.length) * 100),
     terrace:
-      (Math.min(Math.round((terrace / details.length) * 100) +
-      Math.round((balcony / details.length) * 100)), 100),
+      Math.min(Math.round((terrace / details.length) * 100) +
+      Math.round((balcony / details.length) * 100), 100),
     reception: Math.round((reception / details.length) * 100),
     parking:
       Math.round((parking / details.length) * 100) +

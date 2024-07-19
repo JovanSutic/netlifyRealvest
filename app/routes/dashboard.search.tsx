@@ -382,8 +382,8 @@ const DashboardSearch = () => {
               {tab === "1" && (
                 <div>
                   <div className="mb-4">
-                    <p className="text-sm text-slate-700">
-                      {translate.getTranslation(lang, "areaDescription")}
+                    <p className="text-sm text-slate-700 font-serif">
+                      {(fetcher.data?.list || []).length > 0 && translate.getTranslation(lang, "areaDescription")}
                     </p>
                   </div>
                   <div>

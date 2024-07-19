@@ -52,6 +52,7 @@ function LocationMarker({
         <Circle
           center={position!}
           radius={radius}
+          color={"rgb(96 165 250)"}
           ref={(ref) => {
             circleRefs.current = ref as CircleMarker;
           }}
@@ -73,13 +74,14 @@ const Map = ({
 }) => {
   const position: LatLngTuple = [44.8064, 20.4828];
   return (
-    <div className="h-[400px] w-full shadow-md" id="mapContainer">
+    <div className="h-[400px] w-full" id="mapContainer">
       <MapContainer
         style={{
           height: "100%",
         }}
         center={position}
         zoom={12}
+        attributionControl={false}
         scrollWheelZoom={false}
       >
         <TileLayer

@@ -28,9 +28,9 @@ const SideNavigation = ({
         <div className="w-full mb-2">
           <p className="text-lg text-center text-gray-300">{name}</p>
         </div>
-        <div className="w-full mb-2 text-indigo-300 text-center text-sm underline">
+        <div className="w-full mb-4 text-blue-400 text-center text-sm underline">
           <Link to={`${url}?lang=${nextLang}`}>
-            {nextLang === "sr" ? "srpski" : "english"}
+            {nextLang === "sr" ? "srpska verzija" : "english version"}
           </Link>
         </div>
       </div>
@@ -47,15 +47,19 @@ const SideNavigation = ({
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              className="w-5 mr-3 inline"
-              viewBox="0 0 118.783 118.783"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6 w-6 mr-3 inline"
             >
               <path
-                d="M115.97 101.597 88.661 74.286a47.75 47.75 0 0 0 7.333-25.488c0-26.509-21.49-47.996-47.998-47.996S0 22.289 0 48.798c0 26.51 21.487 47.995 47.996 47.995a47.776 47.776 0 0 0 27.414-8.605l26.984 26.986a9.574 9.574 0 0 0 6.788 2.806 9.58 9.58 0 0 0 6.791-2.806 9.602 9.602 0 0 0-.003-13.577zM47.996 81.243c-17.917 0-32.443-14.525-32.443-32.443s14.526-32.444 32.443-32.444c17.918 0 32.443 14.526 32.443 32.444S65.914 81.243 47.996 81.243z"
-                data-original="#000000"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
               />
             </svg>
+
             <span>{translate.getTranslation(lang, "areaSearch")}</span>
           </Link>
         </li>
@@ -68,17 +72,23 @@ const SideNavigation = ({
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              className="w-5 mr-3 inline"
-              viewBox="0 0 20 20"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6 w-6 mr-3 inline"
             >
-              <path d="M18 2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2ZM2 18V7h6.7l.4-.409A4.309 4.309 0 0 1 15.753 7H18v11H2Z" />
-              <path d="M8.139 10.411 5.289 13.3A1 1 0 0 0 5 14v2a1 1 0 0 0 1 1h2a1 1 0 0 0 .7-.288l2.886-2.851-3.447-3.45ZM14 8a2.463 2.463 0 0 0-3.484 0l-.971.983 3.468 3.468.987-.971A2.463 2.463 0 0 0 14 8Z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"
+              />
             </svg>
+
             <span>{translate.getTranslation(lang, "rental")}</span>
           </Link>
         </li>
-        <li className="py-3 mb-0.5s">
+        {/* <li className="py-3 mb-0.5s">
           <Link
             to="/dashboard/connections"
             className={
@@ -123,7 +133,7 @@ const SideNavigation = ({
             </svg>
             <span>{translate.getTranslation(lang, "insights")}</span>
           </Link>
-        </li>
+        </li> */}
       </ul>
 
       <ul>

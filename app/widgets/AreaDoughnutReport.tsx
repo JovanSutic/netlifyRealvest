@@ -39,11 +39,12 @@ const AreaDoughnutReport = ({
   );
 
   const isEmpty = isShown && data.length === 0;
+
     return(
         <div>
       <div className="mb-4">
-        <p className="text-sm text-slate-700">
-          {translate.getTranslation(lang, "areaDoughnutDescription")}
+        <p className="text-sm text-slate-700 font-serif">
+          {data.length > 0 && translate.getTranslation(lang, "areaDoughnutDescription")}
         </p>
       </div>
       <div>
@@ -51,7 +52,7 @@ const AreaDoughnutReport = ({
           <div>
             <div className="flex flex-column w-full justify-center h-[200px]">
               <p className="flex items-center text-center text-slate-400 font-sm">
-                {translate.getTranslation(lang, "areaEmptyData")}
+                {translate.getTranslation(lang, rental ? "areaEmptyDataRental" : "areaEmptyData")}
               </p>
             </div>
           </div>

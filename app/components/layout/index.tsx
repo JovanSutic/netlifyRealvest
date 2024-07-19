@@ -13,6 +13,24 @@ const columnsMap: Record<number, string> = {
   "12": "grid-cols-12",
 };
 
+const marginBottomMap: Record<number, string> = {
+  "2": "mb-2",
+  "4": "mb-4",
+  "6": "mb-6",
+  "8": "mb-8",
+  "10": "mb-10",
+  "12": "mb-12",
+};
+
+const marginTopMap: Record<number, string> = {
+  "2": "mt-2",
+  "4": "mt-4",
+  "6": "mt-6",
+  "8": "mt-8",
+  "10": "mt-10",
+  "12": "mt-12",
+};
+
 const gapsMap: Record<number, string> = {
   "1": "gap-1",
   "2": "gap-2",
@@ -72,13 +90,17 @@ export const TLine = ({
   children,
   columns,
   gap = 2,
+  mb = 0,
+  mt = 0,
 }: {
   children: JSX.Element | JSX.Element[];
   columns: number;
   gap?: number;
+  mb?: number;
+  mt?: number;
 }) => {
   return (
-    <div className={`grid ${columnsMap[columns]} grid-rows-1 ${gapsMap[gap]}`}>
+    <div className={`grid ${columnsMap[columns]} ${marginBottomMap[mb]} ${marginTopMap[mt]} grid-rows-1 ${gapsMap[gap]}`}>
       {children}
     </div>
   );

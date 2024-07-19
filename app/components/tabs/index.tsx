@@ -20,9 +20,9 @@ const Tabs = ({
   ];
   const styleMap = {
     active:
-      "text-indigo-800 font-bold text-base text-center py-2 px-4 border-b-2 border-indigo-800 cursor-pointer transition-all leading-5",
+      "text-slate-700 font-bold text-base text-center py-2 px-4 border-b-2 border-slate-700 cursor-pointer transition-all leading-5",
     regular:
-      "text-gray-600 font-bold text-base text-center hover:bg-gray-50 py-2 border-b-2 px-4 cursor-pointer transition-all leading-5",
+      "text-slate-500 font-semibold text-base text-center hover:bg-gray-50 py-2 border-b-2 px-4 cursor-pointer transition-all leading-5",
   };
   return (
     <div>
