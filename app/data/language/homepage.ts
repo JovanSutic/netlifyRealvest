@@ -1,52 +1,33 @@
 export const homepageMap: Record<string, Record<string, string>> = {
   en: {
-    pageTop: "REAL ESTATE DATA THAT YOUR CUSTOMERS NEED",
-    pageTitle: "Help your customers make confident decisions",
-    pageSubtitle:
-      "Increase customer lifetime value (CLV) by connecting your clients with information they need to make better buying and selling decisions.",
-    emailPlaceholder: "Enter your email",
-    ctaText: "Join the Waiting List",
-    bottomTitle: "Get early access with 35% discount",
-    bottomSubtitle:
-      "Secure your spot on our exclusive waiting list for early access. Join now to be first in line for groundbreaking real estate data insights!",
-    soon: "Coming soon",
-    pricingTitle: "Accurate pricing",
-    pricingExplain:
-      "Help your clients make right pricing decision by giving them insight into accurate market data. Embrace data centric approach and stay professional by present your clients the right market movements relevant for their use case.",
-    investmentTitle: "Investment focus",
-    investmentExplain:
-      "Be more specific when you are showing your clients the investment potential of your properties. Data on our platform will help you to be more effective when you present revenue potential and property appreciation.",
-    reportTitle: "General report",
-    reportExplain:
-      "General sales report for Belgrade serves as an example and is presenting general price trends mainly average values. Platform will present more insights and more detailed and precise information.",
-    reportButton: "Show me",
-    negotiateTitle: "Decrease objection",
-    negotiateExplain:
-      "Direct your clients to an objective and neutral information source with relevant detailed data. Avoid to be perceived as selling for the commission. Give your clients option to learn more about the market.",
+    heroTitle: "Giving you more confidence with data",
+    heroSubtitle: "Realvest is connecting you with relevant market data that will help you to make better decisions while buying, selling or renting real estate.",
+    heroCta: "Create free account",
+    howTitle: "Useful data, completely free available in just 3 clicks.",
+    howTime: "Select the time frame for the data and reports that will be generated.",
+    howSize: "Select the specific size of the city zone that you are interested in.",
+    howCenter: "Click on the point on the map that you want to be the center of your zone.",
+    howResult: "Consider our real estate market data visualizations.",
+    benefitFinancial: "Real estate financial potential",
+    benefitFinancialText: "We show data that can show you whether a property in a certain area, with certain characteristics, would be a good investment or purchase. The primary information we monitor is the movement of real estate sales prices over time. But we also monitor the property's potential to generate income through letting.",
+    benefitData: "Fast and clear information",
+    benefitDataText: "We generate graphs, tables and reports that show the dynamics of prices, sales numbers, square footage prices, the existence of certain features, etc. in the marked zone. Each visualization consists of specific information that is relevant to the case that you are looking for. Also, the data is continuously processed with the aim of presenting even more specific and useful conclusions.",
+    faq: "Frequently Asked Questions:",
   },
   sr: {
-    pageTop: "PODACI O NEKRETNINAMA KOJE VAŠI KLIJENTI ŽELE",
-    pageTitle: "Za sigurnije odluke vaših klijenata",
-    pageSubtitle:
-      "Povećajte životnu vrendost vaših klijenata (CLV) tako što ćete ih povezati sa infromacijama uz koje će donositi kvalitetnije kupovne i prodajne odluke.",
-    emailPlaceholder: "Upišite email",
-    ctaText: "Pristupite listi čekanja",
-    bottomTitle: "Rani pristup uz 35% manju cenu.",
-    bottomSubtitle:
-      "Osigurajte mesto na listi čekanja za rani pristup. Pristupite i budite prvi koji će svojim klijentima omogućiti jedinstvene uvide sa tržišta nekretnina.",
-    soon: "Uskoro",
-    pricingTitle: "Lakše odredite cene",
-    pricingExplain:
-      "Pomozite vašim klijentima da usklade svoja cenovna očekivanja uvidom u tržišne trendove. Prikažite podatke usklađene njihovoj specifičnoj situaciji i efikasnije pregovarajte o kupovnoj ili prodajnoj ceni.",
-    investmentTitle: "Prodajte investicije",
-    investmentExplain:
-      "Preciznije ukažite klijentima na investicioni potencijal nekretnina u vašoj ponudi. Podaci na platformi pomoćiće vam da prikažete prihodni potencijal nekretnina kao i trend kretanja realne vrednosti nekretnina.",
-    reportTitle: "Opšti pregled",
-    reportExplain:
-      "Opšti prodajni pregled za Beograd je tu kao primer i može vam dati samo generalnu sliku kretanja cena (uglavnom prosečne vrednosti). Platforma daje mnogo više uvida, detaljnije i preciznije informacije.",
-    reportButton: "Pogledajte",
-    negotiateTitle: "Umanjite prigovore",
-    negotiateExplain:
-      "Usmerite vaše klijente na objektivne i detaljne informacijama iz neutralnog izvora i na taj način izbegnite poziciju prodaje iz koristi. Dajte vašim klijentima mogućnost da nauče više o tržištu.",
+    heroTitle: "Podaci koji daju veće samopouzdanje",
+    heroSubtitle: "Realvest vas povezuje sa relevantnim tržišnim podacima koji olakšavaju proces donošenja odluka pri kupovini, prodaji ili izdavanju nekretinina.",
+    heroCta: "Napravite nalog besplatno",
+    howTitle: "Korisni podaci, potpuno besplatno dostupni uz samo 3 klika.",
+    howTime: "Izaberite koliko stare podatke treba uzeti u obzir prilikom generisanja izveštaja.",
+    howSize: "Izaberite konkretnu veličinu gradske zone koja vas interesuje.",
+    howCenter: "Kliknite na tačku na mapi za koju želite da vam bude centar zone.",
+    howResult: "Razmotrite naše vizualizacije podataka o tržištu nekretnina.",
+    benefitFinancial: "Finansijski potencijal nekretnine",
+    benefitFinancialText: "Prikazujemo podatake koji mogu da vam ukažu da li bi nekretnina u određenoj zoni, sa određenim karakteristikama bila dobra investicija ili kupovina. Primarna informacija koju pratimo je kretanje prodajne cene nekretnina kroz vreme. Ali pratimo i potencijal nekretnine da generiše prihod kroz izdavanje.",
+    benefitData: "Brze i jasne informacije",
+    benefitDataText: "Generišemo grafikone, tabele i izveštaje koji pokazuju dinamiku cena, broja prodaje, cena kvadrata, postojanja određenih odlika itd. u označenoj zoni. Svaka vizuelizacije se sastoji iz konkretnih informacija koje su relevantne za vaš odabrani slučaj, za ono što vi tražite. Takođe, podaci se kontinuirano obrađuju sa težnjom prikaza još konkretnijih i korisnijih zaključaka.",
+    faq: "Često Postavljna Pitanja:",
   },
+
 };
