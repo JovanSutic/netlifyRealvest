@@ -5,6 +5,32 @@ import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import { default as ErrorPage } from "../components/error";
 import { isMobile } from "../utils/params";
 import { Translator } from "../data/language/translator";
+import Accordion from "../components/accordion";
+import { AccordionData } from "../types/component.types";
+import { useState } from "react";
+
+const accordionData: AccordionData[] = [
+  {
+    id: 1,
+    title: "Title 1",
+    text: "TextIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+  },
+  {
+    id: 2,
+    title: "Title 2",
+    text: "TextIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+  },
+  {
+    id: 3,
+    title: "Title 3",
+    text: "TextIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+  },
+  {
+    id: 4,
+    title: "Title 4",
+    text: "TextIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+  },
+];
 
 export const meta: MetaFunction = () => {
   return [
@@ -22,6 +48,7 @@ export default function Index() {
   const [searchParams] = useSearchParams();
   const lang = searchParams.get("lang") || "sr";
   const translator = new Translator("homepage");
+  const [activeFaq, setActiveFaq] = useState<number>(1);
 
   const {
     mobile,
@@ -64,18 +91,16 @@ export default function Index() {
             <div className="flex flex-row items-center h-full">
               <div className="flex flex-col items-center py-10">
                 <h1 className="text-[42px] font-extrabold text-center leading-[50px] mb-10">
-                  Podaci koji ulivaju samopouzdanje
+                  {translator.getTranslation(lang, "heroTitle")}
                 </h1>
                 <h3 className="text-[20px] text-gray-600 leading-8 mb-12">
-                  Realvest vas povezuje sa relevantnim tržišnim podacima koji
-                  olakšavaju proces donošenja odluka pri kupovini, prodaji ili
-                  izdavanju nekretinina.
+                  {translator.getTranslation(lang, "heroSubtitle")}
                 </h3>
                 <Link
                   to={`auth/register/?lang=${lang}`}
                   className="px-6 py-3 text-md font-semibold text-white bg-blue-500 rounded-full  transition-all duration-300 transform hover:bg-blue-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
                 >
-                  Napravi nalog besplatno
+                  {translator.getTranslation(lang, "heroCta")}
                 </Link>
               </div>
             </div>
@@ -94,7 +119,7 @@ export default function Index() {
           <TColumn span={1}>
             <div className="w-[70%] m-auto py-2 mt-10 mb-[72px]">
               <h3 className="w-full text-3xl font-bold text-center text-white">
-                Korisni podaci, potpuno besplatno dostupni uz samo 3 klika.
+                {translator.getTranslation(lang, "howTitle")}
               </h3>
             </div>
           </TColumn>
@@ -120,8 +145,7 @@ export default function Index() {
               </div>
               <div className="flex flex-row mt-6">
                 <p className="text-white text-xl text-center">
-                  Izaberite koliko stare podatke treba uzeti u obzir prilikom
-                  generisanja izveštaja.
+                  {translator.getTranslation(lang, "howTime")}
                 </p>
               </div>
             </div>
@@ -146,7 +170,7 @@ export default function Index() {
               </div>
               <div className="flex flex-row mt-6">
                 <p className="text-white text-xl text-center">
-                  Izaberite konkretnu veličinu gradske zone koja vas interesuje.
+                  {translator.getTranslation(lang, "howSize")}
                 </p>
               </div>
             </div>
@@ -171,8 +195,7 @@ export default function Index() {
               </div>
               <div className="flex flex-row mt-6">
                 <p className="text-white text-xl text-center">
-                  Kliknite na tačku na mapi za koju želite da vam bude centar
-                  zone.
+                  {translator.getTranslation(lang, "howCenter")}
                 </p>
               </div>
             </div>
@@ -197,8 +220,7 @@ export default function Index() {
               </div>
               <div className="flex flex-row mt-6">
                 <p className="text-white text-xl text-center">
-                  Pred vama su detaljni podaci o tržištu nekretnina, specifični
-                  za izabranu gradsku zonu.
+                  {translator.getTranslation(lang, "howResult")}
                 </p>
               </div>
             </div>
@@ -222,30 +244,22 @@ export default function Index() {
           <TColumn span={1} start={2}>
             <div className="py-16 px-6 font-[sans-serif]">
               <h6 className="text-3xl font-bold mb-10 text-slate-800">
-                Finansijski potencijal nekretnine
+                {translator.getTranslation(lang, "benefitFinancial")}
               </h6>
               <p className="text-xl text-slate-600 leading-2xl">
-                Prikazujemo podatake koji mogu da vam ukažu da li bi nekretnina
-                u određenoj zoni, sa određenim karakteristikama bila dobra
-                investicija ili kupovina. Primarna informacija koju pratimo je
-                kretanje prodajne cene nekretnina kroz vreme. Ali pratimo i
-                potencijal nekretnine da generiše prihod kroz izdavanje.
+                {translator.getTranslation(lang, "benefitFinancialText")}
               </p>
             </div>
           </TColumn>
         </TLine>
-        <TLine columns={2} mb={8}>
+        <TLine columns={2} mb={1}>
           <TColumn span={1}>
             <div className="py-16 px-6 font-[sans-serif]">
               <h6 className="text-3xl font-bold mb-10 text-slate-800">
-                Brze i konkretne informacije
+                {translator.getTranslation(lang, "benefitData")}
               </h6>
               <p className="text-xl text-slate-600 leading-2xl">
-                Generišemo grafikone, tabele i izveštaje koji pokazuju dinamiku
-                cena, broja prodaje, cena kvadrata itd. u označenoj zoni. Svaki
-                prikaz se sastoji iz konkretnih informacija koje su relevantne
-                za filtere koje ste odabrali. Podaci se kontinuirano obrađuju sa
-                težnjom prikaza što konkretnijih informacija.
+                {translator.getTranslation(lang, "benefitDataText")}
               </p>
             </div>
           </TColumn>
@@ -259,6 +273,34 @@ export default function Index() {
                 />
                 <div className="absolute w-full h-full block top-0 shadow-[inset_-10px_-10px_60px_40px_rgb(255,255,255)]"></div>
               </div>
+            </div>
+          </TColumn>
+        </TLine>
+        <TLine columns={1} mb={10}>
+          <TColumn span={1}>
+            <div className="flex flex-col items-center w-full mt-12 mb-6">
+              <Link
+                to={`auth/register/?lang=${lang}`}
+                className="px-6 py-3 text-2xl font-semibold text-white bg-blue-500 rounded-full  transition-all duration-300 transform hover:bg-blue-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+              >
+                {translator.getTranslation(lang, "heroCta")}
+              </Link>
+            </div>
+          </TColumn>
+        </TLine>
+      </TPage>
+      <TPage mobile={mobile}>
+        <TLine columns={1}>
+          <TColumn span={1}>
+            <div className="w-full py-10 mb-4">
+              <h3 className="text-slate-800 font-bold text-3xl mb-8">
+                {translator.getTranslation(lang, "faq")}
+              </h3>
+              <Accordion
+                active={activeFaq}
+                changeActive={setActiveFaq}
+                data={accordionData}
+              />
             </div>
           </TColumn>
         </TLine>
