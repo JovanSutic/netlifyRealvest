@@ -46,6 +46,7 @@ import {
 import AreaLineReport from "../widgets/AreaLineReport";
 import AreaDoughnutReport from "../widgets/AreaDoughnutReport";
 import AreaDoughnutTimeReport from "../widgets/AreaDoughnutTimeReport";
+import { isMobile } from "../utils/params";
 
 export const links: LinksFunction = () => [
   {
@@ -55,6 +56,7 @@ export const links: LinksFunction = () => [
 ];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const userAgent = request.headers.get("user-agent");
   const lat = new URL(request.url).searchParams.get("lat");
   const lng = new URL(request.url).searchParams.get("lng");
   const range = new URL(request.url).searchParams.get("range");
@@ -131,6 +133,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         ),
         list: finalData,
         lastDate: lastData[0].date,
+        mobile: isMobile(userAgent!),
       });
     } catch (error) {
       // throw new Error(error);
@@ -138,7 +141,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     }
   }
 
-  return null;
+  return json({
+    data: [],
+    list: [],
+    lastDate: '',
+    mobile: isMobile(userAgent!),
+  });
 };
 
 const DashboardSearch = () => {
@@ -186,17 +194,17 @@ const DashboardSearch = () => {
 
   return (
     <DashboardPage>
-      <div className="grid grid-cols-12 lg:grid-rows-1 gap-4 pt-5 lg:pt-0">
-        <div className="col-span-7 lg:row-start-1">
+      <div className="grid grid-cols-12 gap-4 pt-5 lg:pt-0">
+        <div className="row-start-1 col-span-12 xl:col-span-7 lg:row-start-1">
           <div className="my-2 flex h-full flex-row items-center">
-            <h2 className="text-2xl font-semibold">
+            <h2 className="text-center xl:text-left text-2xl font-semibold">
               {translate.getTranslation(lang, "searchTitle")}
             </h2>
           </div>
         </div>
-        <div className="col-span-5 lg:row-start-1">
-          <div className="grid grid-cols-3 grid-rows-1 gap-4 col-start-2 mt-4">
-            <div className="col-span-1 col-start-2">
+        <div className="row-start-2 col-span-12 xl:col-span-5 lg:row-start-1">
+          <div className="grid grid-cols-12 xl:grid-cols-3 grid-rows-1 gap-4 col-start-1 xl:col-start-2 mt-4">
+            <div className="col-span-6 xl:col-span-1 xl:col-start-2">
               <label
                 htmlFor="mapCity"
                 className="text-slate-800 ml-1 text-sm font-semibold"
@@ -234,7 +242,7 @@ const DashboardSearch = () => {
                 ]}
               />
             </div>
-            <div>
+            <div className="col-span-6 xl:col-span-1 col-start-7 xl:col-start-3">
               <label
                 htmlFor="propertyType"
                 className="text-slate-800 ml-1 text-sm font-semibold"
@@ -272,7 +280,7 @@ const DashboardSearch = () => {
             </div>
           </div>
         </div>
-        <div className="col-span-12 lg:col-span-7 lg:row-start-2">
+        <div className="row-start-3 col-span-12 lg:col-span-7 lg:row-start-2">
           <WidgetWrapper>
             <Loader open={fetcher.state === "loading"} />
             <div className="grid grid-cols-3 grid-rows-1 gap-1 mb-4">
@@ -351,7 +359,7 @@ const DashboardSearch = () => {
             </div>
           </WidgetWrapper>
         </div>
-        <div className="col-span-12 lg:col-span-5 col-start-1 lg:col-start-8 lg:row-start-2">
+        <div className="row-start-4 col-span-12 lg:col-span-5 col-start-1 lg:col-start-8 lg:row-start-2 mb-6">
           <WidgetWrapper>
             <Loader open={fetcher.state === "loading"} />
             <Tabs
@@ -383,7 +391,8 @@ const DashboardSearch = () => {
                 <div>
                   <div className="mb-4">
                     <p className="text-sm text-slate-700 font-serif">
-                      {(fetcher.data?.list || []).length > 0 && translate.getTranslation(lang, "areaDescription")}
+                      {(fetcher.data?.list || []).length > 0 &&
+                        translate.getTranslation(lang, "areaDescription")}
                     </p>
                   </div>
                   <div>

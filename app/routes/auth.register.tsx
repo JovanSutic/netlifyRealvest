@@ -314,7 +314,7 @@ export default function AuthRegister() {
                 <button
                   type="submit"
                   disabled={navigation.state === "submitting"}
-                  className="w-full py-2.5 px-4 text-sm font-semibold rounded text-white bg-indigo-900 hover:bg-indigo-800 focus:outline-none"
+                  className="w-full py-2.5 px-4 text-sm font-semibold rounded-xl text-white bg-blue-500 hover:bg-blue-600 focus:outline-none"
                 >
                   {translator.getTranslation(lang!, "registerTitle")}
                   {navigation.state === "submitting" && (
@@ -341,7 +341,7 @@ export default function AuthRegister() {
               {translator.getTranslation(lang!, "yesAccount")}
               <Link
                 to={`/auth/?lang=${lang}`}
-                className="text-indigo-800 font-semibold hover:underline ml-1 whitespace-nowrap"
+                className="text-blue-500 font-semibold hover:underline ml-1 whitespace-nowrap"
               >
                 {translator.getTranslation(lang!, "signTitle")}
               </Link>

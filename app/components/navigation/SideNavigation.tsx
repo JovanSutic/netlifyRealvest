@@ -40,7 +40,7 @@ const SideNavigation = ({
       <ul className="flex-1 mt-4 mb-10">
         <li className="py-3 mb-0.5s">
           <Link
-            to="/dashboard/search"
+            to={`/dashboard/search?lang=${lang}`}
             className={
               url === "/dashboard/search" ? styleMap.itemActive : styleMap.item
             }
@@ -65,7 +65,7 @@ const SideNavigation = ({
         </li>
         <li className="py-3 mb-0.5s">
           <Link
-            to="/dashboard/rental"
+            to={`/dashboard/rental?lang=${lang}`}
             className={
               url === "/dashboard/rental" ? styleMap.itemActive : styleMap.item
             }

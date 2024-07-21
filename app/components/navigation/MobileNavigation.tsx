@@ -25,8 +25,11 @@ const MobileNavigation = ({
 
   const translate = new Translator("navigation");
   return (
-    <header className="flex shadow-sm bg-indigo-900 font-[sans-serif] min-h-[70px]">
+    <header className="flex shadow-sm bg-gray-700 font-[sans-serif] min-h-[70px]">
       <div className="flex flex-wrap items-center justify-between sm:px-10 px-6 py-3 relative lg:gap-y-4 gap-y-6 gap-x-4 w-full">
+        <div className="w-[120px] flex">
+          <img src="/logo3.png" alt="logo" />
+        </div>
         <div className="flex">
           <button id="toggleOpen" onClick={toggleOpen}>
             <svg
@@ -70,23 +73,22 @@ const MobileNavigation = ({
             </svg>
           </button>
 
-          <ul className="block space-x-4 space-y-3 fixed bg-indigo-900 w-1/2 min-w-[300px] top-0 left-0 p-4 h-full shadow-md overflow-auto z-[9998]">
+          <ul className="block space-x-4 space-y-3 fixed bg-gray-700 w-1/2 min-w-[300px] top-0 left-0 p-4 h-full shadow-md overflow-auto z-[9998]">
             <li>
               <div className="flex flex-wrap items-center">
-                <div className="w-full mb-2">
+                <div className="w-[120px] m-auto">
+                  <img src="/logo3.png" alt="logo" />
+                </div>
+                <div className="w-full mb-2 mt-4">
                   <p className="text-lg text-center text-gray-300">{name}</p>
                 </div>
-                <div className="w-full mb-2 text-indigo-300 text-center text-sm underline">
-                  <Link to={`${url}?lang=${nextLang}`}>
-                    {nextLang === "sr" ? "srpska verzija" : "english version"}
-                  </Link>
-                </div>
               </div>
+              <hr />
             </li>
 
-            <li className="border-b py-3 px-3">
+            <li className="py-3 px-3">
               <Link
-                to="/dashboard/search"
+                to={`/dashboard/search?lang=${lang}`}
                 className={
                   url === "/dashboard/search"
                     ? styleMap.itemActive
@@ -95,43 +97,75 @@ const MobileNavigation = ({
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  fill="#FFFFFF"
-                  className="w-4 mr-4 inline"
-                  viewBox="0 0 118.783 118.783"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6 w-6 mr-3 inline"
                 >
                   <path
-                    d="M115.97 101.597 88.661 74.286a47.75 47.75 0 0 0 7.333-25.488c0-26.509-21.49-47.996-47.998-47.996S0 22.289 0 48.798c0 26.51 21.487 47.995 47.996 47.995a47.776 47.776 0 0 0 27.414-8.605l26.984 26.986a9.574 9.574 0 0 0 6.788 2.806 9.58 9.58 0 0 0 6.791-2.806 9.602 9.602 0 0 0-.003-13.577zM47.996 81.243c-17.917 0-32.443-14.525-32.443-32.443s14.526-32.444 32.443-32.444c17.918 0 32.443 14.526 32.443 32.444S65.914 81.243 47.996 81.243z"
-                    data-original="#000000"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
                   />
                 </svg>
                 <span>{translate.getTranslation(lang, "areaSearch")}</span>
               </Link>
             </li>
-            <li className="border-b py-3 px-3">
+            <li className="py-3 px-3">
               <Link
-                to="/dashboard/insights"
+                to={`/dashboard/rental?lang=${lang}`}
                 className={
-                  url === "/dashboard/insights"
+                  url === "/dashboard/rental"
                     ? styleMap.itemActive
                     : styleMap.item
                 }
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  className="w-[18px] h-[18px] mr-4"
-                  viewBox="0 0 16 16"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6 w-6 mr-3 inline"
                 >
                   <path
-                    d="M13 .5H3A2.503 2.503 0 0 0 .5 3v10A2.503 2.503 0 0 0 3 15.5h10a2.503 2.503 0 0 0 2.5-2.5V3A2.503 2.503 0 0 0 13 .5ZM14.5 13a1.502 1.502 0 0 1-1.5 1.5H3A1.502 1.502 0 0 1 1.5 13v-.793l3.5-3.5 1.647 1.647a.5.5 0 0 0 .706 0L10.5 7.207V8a.5.5 0 0 0 1 0V6a.502.502 0 0 0-.5-.5H9a.5.5 0 0 0 0 1h.793L7 9.293 5.354 7.647a.5.5 0 0 0-.707 0L1.5 10.793V3A1.502 1.502 0 0 1 3 1.5h10A1.502 1.502 0 0 1 14.5 3Z"
-                    data-original="#000000"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"
                   />
                 </svg>
-                <span>{translate.getTranslation(lang, "insights")}</span>
+                <span>{translate.getTranslation(lang, "rental")}</span>
               </Link>
             </li>
 
-            <li className="fixed bottom-8">
+            <li className="fixed bottom-20 py-3 px-3">
+              <Link
+                to={`${url}?lang=${nextLang}`}
+                className="text-blue-300 hover:text-blue-400 text-sm flex items-center rounded-md"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-[18px] h-[18px] mr-4"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m10.5 21 5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 0 1 6-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 0 1-3.827-5.802"
+                  />
+                </svg>
+
+                <span>
+                  {nextLang === "sr" ? "srpska verzija" : "english version"}
+                </span>
+              </Link>
+            </li>
+
+            <li className="fixed bottom-8 py-3 px-3">
               <Link
                 to={signOutLink}
                 className="text-gray-300 hover:text-white text-lg flex items-center rounded-md"

@@ -339,7 +339,7 @@ export default function AuthSign() {
                 <div>
                   <Link
                     to={`/auth/forgot_password?lang=${lang}`}
-                    className="text-indigo-800 text-sm hover:underline"
+                    className="text-slate-500 text-sm hover:underline"
                   >
                     {translator.getTranslation(lang!, "passForgot")}
                   </Link>
@@ -349,7 +349,7 @@ export default function AuthSign() {
                 <button
                   type="submit"
                   disabled={navigation.state === "submitting"}
-                  className="w-full py-2.5 px-4 text-sm font-semibold rounded text-white bg-indigo-900 hover:bg-indigo-800 focus:outline-none"
+                  className="w-full py-2.5 px-4 text-sm font-semibold rounded-xl text-white bg-blue-500 hover:bg-blue-600 focus:outline-none"
                 >
                   {translator.getTranslation(lang!, "signTitle")}
                   {navigation.state === "submitting" && (
@@ -425,7 +425,7 @@ export default function AuthSign() {
               <div className="mt-10">
                 <button
                   type="submit"
-                  className="w-full py-2.5 px-4 text-sm font-semibold rounded text-white bg-indigo-900 hover:bg-indigo-800 focus:outline-none"
+                  className="w-full py-2.5 px-4 text-sm font-semibold rounded-xl text-white bg-blue-500 hover:bg-blue-600 focus:outline-none"
                 >
                   {translator.getTranslation(lang!, "sendLink")}
                 </button>
@@ -438,7 +438,7 @@ export default function AuthSign() {
               {translator.getTranslation(lang!, "noAccount")}
               <Link
                 to={`/auth/register/?lang=${lang}`}
-                className="text-indigo-800 font-semibold hover:underline ml-1 whitespace-nowrap"
+                className="text-blue-500 font-semibold hover:underline ml-1 whitespace-nowrap"
               >
                 {translator.getTranslation(lang!, "register")}
               </Link>
