@@ -45,12 +45,12 @@ const Accordion = ({
               </svg>
             )}
 
-            <span className="mr-8 text-[24px] text-gray-700">{item.title}</span>
+            <span className="mr-8 text-xl xl:text-[20px] text-gray-700">{item.title}</span>
           </button>
 
           {active === item.id && (
             <div className="py-4 px-6 bg-gray-100">
-              <p className="text-xl font-light text-gray-600">
+              <p className="text:md xl:text-xl font-light text-gray-600">
                 {item.text}
               </p>
             </div>

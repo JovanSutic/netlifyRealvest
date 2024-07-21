@@ -9,29 +9,6 @@ import Accordion from "../components/accordion";
 import { AccordionData } from "../types/component.types";
 import { useState } from "react";
 
-const accordionData: AccordionData[] = [
-  {
-    id: 1,
-    title: "Title 1",
-    text: "TextIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
-  },
-  {
-    id: 2,
-    title: "Title 2",
-    text: "TextIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
-  },
-  {
-    id: 3,
-    title: "Title 3",
-    text: "TextIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
-  },
-  {
-    id: 4,
-    title: "Title 4",
-    text: "TextIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
-  },
-];
-
 export const meta: MetaFunction = () => {
   return [
     { title: "Realvest" },
@@ -49,6 +26,39 @@ export default function Index() {
   const lang = searchParams.get("lang") || "sr";
   const translator = new Translator("homepage");
   const [activeFaq, setActiveFaq] = useState<number>(1);
+
+  const accordionData: AccordionData[] = [
+    {
+      id: 1,
+      title: translator.getTranslation(lang, "faq1Title"),
+      text: translator.getTranslation(lang, "faq1Text"),
+    },
+    {
+      id: 2,
+      title: translator.getTranslation(lang, "faq2Title"),
+      text: translator.getTranslation(lang, "faq2Text"),
+    },
+    {
+      id: 3,
+      title: translator.getTranslation(lang, "faq3Title"),
+      text: translator.getTranslation(lang, "faq3Text"),
+    },
+    {
+      id: 4,
+      title: translator.getTranslation(lang, "faq4Title"),
+      text: translator.getTranslation(lang, "faq4Text"),
+    },
+    {
+      id: 5,
+      title: translator.getTranslation(lang, "faq5Title"),
+      text: translator.getTranslation(lang, "faq5Text"),
+    },
+    {
+      id: 6,
+      title: translator.getTranslation(lang, "faq6Title"),
+      text: translator.getTranslation(lang, "faq6Text"),
+    },
+  ];
 
   const {
     mobile,
@@ -86,26 +96,26 @@ export default function Index() {
         </TLine>
       </TPage>
       <TPage mobile={mobile}>
-        <TLine columns={12} gap={4}>
-          <TColumn span={5}>
+        <TLine columns={12} gap={2}>
+          <TColumn span={mobile ? 12 : 5}>
             <div className="flex flex-row items-center h-full">
-              <div className="flex flex-col items-center py-10">
-                <h1 className="text-[42px] font-extrabold text-center leading-[50px] mb-10">
+              <div className="flex flex-col items-center pt-8 pb-2 lg:pb-10">
+                <h1 className="text-[34px] md:text-[42px] font-extrabold text-center leading-[40px] md:leading-[50px] mb-10">
                   {translator.getTranslation(lang, "heroTitle")}
                 </h1>
-                <h3 className="text-[20px] text-gray-600 leading-8 mb-12">
+                <h3 className="text-[18px] md:text-[20px] text-center lg:text-left text-gray-600 leading-8 mb-12">
                   {translator.getTranslation(lang, "heroSubtitle")}
                 </h3>
                 <Link
                   to={`auth/register/?lang=${lang}`}
-                  className="px-6 py-3 text-md font-semibold text-white bg-blue-500 rounded-full  transition-all duration-300 transform hover:bg-blue-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                  className="px-6 py-3 text-md font-semibold text-white bg-blue-500 rounded-xl  transition-all duration-300 transform hover:bg-blue-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
                 >
                   {translator.getTranslation(lang, "heroCta")}
                 </Link>
               </div>
             </div>
           </TColumn>
-          <TColumn span={7} start={6}>
+          <TColumn span={mobile ? 12 : 7} start={mobile ? 1 : 6}>
             <div className="flex flex-col items-center py-10">
               <div className="w-full border-[1px] border-solid border-slate-300 rounded-xl overflow-hidden">
                 <img src="firstLineGif.gif" alt="Realvest demo gif" />
@@ -117,16 +127,16 @@ export default function Index() {
       <TPage color="bg-gray-700" mobile={mobile}>
         <TLine columns={1}>
           <TColumn span={1}>
-            <div className="w-[70%] m-auto py-2 mt-10 mb-[72px]">
-              <h3 className="w-full text-3xl font-bold text-center text-white">
+            <div className="w-full md:w-[70%] m-auto py-2 mt-5 xl:mt-10 mb-10 xl:mb-[72px]">
+              <h3 className="w-full text-2xl md:text-3xl font-semibold text-center text-white">
                 {translator.getTranslation(lang, "howTitle")}
               </h3>
             </div>
           </TColumn>
         </TLine>
         <TLine columns={4} gap={6}>
-          <TColumn span={1}>
-            <div className="mb-12">
+          <TColumn span={mobile ? 4 : 1}>
+            <div className="w-full md:w-[60%] xl:w-full m-auto mb-5 xl:mb-0 xl:mt-0">
               <div className="flex flex-col items-center">
                 <div className="text-blue-200 text-center">
                   <svg
@@ -143,15 +153,15 @@ export default function Index() {
                   </svg>
                 </div>
               </div>
-              <div className="flex flex-row mt-6">
-                <p className="text-white text-xl text-center">
+              <div className="flex flex-row mt-2 xl:mt-6 xl:pb-6">
+                <p className="w-full text-white text-[18px] md:text-xl text-center">
                   {translator.getTranslation(lang, "howTime")}
                 </p>
               </div>
             </div>
           </TColumn>
-          <TColumn span={1} start={2}>
-            <div className="mb-12">
+          <TColumn span={mobile ? 4 : 1} start={mobile ? 1 : 2}>
+            <div className="w-full md:w-[60%] xl:w-full m-auto mb-5 xl:mb-0 xl:mt-0">
               <div className="flex flex-col items-center">
                 <div className="text-blue-300 text-center">
                   <svg
@@ -168,15 +178,15 @@ export default function Index() {
                   </svg>
                 </div>
               </div>
-              <div className="flex flex-row mt-6">
-                <p className="text-white text-xl text-center">
+              <div className="flex flex-row mt-2 xl:mt-6">
+                <p className="w-full text-white text-[18px] md:text-xl text-center">
                   {translator.getTranslation(lang, "howSize")}
                 </p>
               </div>
             </div>
           </TColumn>
-          <TColumn span={1} start={3}>
-            <div className="mb-12">
+          <TColumn span={mobile ? 4 : 1} start={mobile ? 1 : 3}>
+            <div className="w-full md:w-[60%] xl:w-full m-auto mb-5 xl:mb-0 xl:mt-0">
               <div className="flex flex-col items-center">
                 <div className="text-blue-300 text-center">
                   <svg
@@ -193,15 +203,15 @@ export default function Index() {
                   </svg>
                 </div>
               </div>
-              <div className="flex flex-row mt-6">
-                <p className="text-white text-xl text-center">
+              <div className="flex flex-row mt-2 xl:mt-6">
+                <p className="w-full text-white text-[18px] md:text-xl text-center">
                   {translator.getTranslation(lang, "howCenter")}
                 </p>
               </div>
             </div>
           </TColumn>
-          <TColumn span={1} start={4}>
-            <div className="mb-12">
+          <TColumn span={mobile ? 4 : 1} start={mobile ? 1 : 4}>
+            <div className="w-full md:w-[60%] xl:w-full m-auto mb-12 xl:mb-0 xl:mt-0">
               <div className="flex flex-col items-center">
                 <div className="text-blue-200 text-center">
                   <svg
@@ -218,8 +228,8 @@ export default function Index() {
                   </svg>
                 </div>
               </div>
-              <div className="flex flex-row mt-6">
-                <p className="text-white text-xl text-center">
+              <div className="flex flex-row mt-2 xl:mt-6">
+                <p className="w-full text-white text-[18px] md:text-xl text-center">
                   {translator.getTranslation(lang, "howResult")}
                 </p>
               </div>
@@ -228,10 +238,10 @@ export default function Index() {
         </TLine>
       </TPage>
       <TPage color="bg-white" mobile={mobile}>
-        <TLine columns={2} mt={8}>
-          <TColumn span={1}>
-            <div className="py-10 px-6">
-              <div className="relative w-full flex flex-col h-[340px]">
+        <TLine columns={2} mt={mobile ? 5 : 8}>
+          <TColumn span={mobile ? 2 : 1}>
+            <div className="py-6 xl:py-10 px-4 md:px-6 mt-6 xl:mt-0">
+              <div className="relative w-full flex flex-col h-[200px] md:h-[340px]">
                 <img
                   src="place_map.png"
                   alt="Location focus"
@@ -241,47 +251,71 @@ export default function Index() {
               </div>
             </div>
           </TColumn>
-          <TColumn span={1} start={2}>
-            <div className="py-16 px-6 font-[sans-serif]">
-              <h6 className="text-3xl font-bold mb-10 text-slate-800">
+          <TColumn span={mobile ? 2 : 1} start={mobile ? 1 : 2}>
+            <div className="py-2 xl:py-16 px-4 xl:px-6 mb-8 xl:mb-0 font-[sans-serif]">
+              <h6 className="text-center xl:text-left text-2xl md:text-3xl font-bold mb-4 xl:mb-10 text-slate-800">
                 {translator.getTranslation(lang, "benefitFinancial")}
               </h6>
-              <p className="text-xl text-slate-600 leading-2xl">
+              <p className="text-center xl:text-left text-[18px] xl:text-xl text-slate-600 leading-2xl">
                 {translator.getTranslation(lang, "benefitFinancialText")}
               </p>
             </div>
           </TColumn>
         </TLine>
         <TLine columns={2} mb={1}>
-          <TColumn span={1}>
-            <div className="py-16 px-6 font-[sans-serif]">
-              <h6 className="text-3xl font-bold mb-10 text-slate-800">
-                {translator.getTranslation(lang, "benefitData")}
-              </h6>
-              <p className="text-xl text-slate-600 leading-2xl">
-                {translator.getTranslation(lang, "benefitDataText")}
-              </p>
-            </div>
-          </TColumn>
-          <TColumn span={1} start={2}>
-            <div className="py-10 px-6">
-              <div className="relative w-full flex flex-col h-[340px]">
-                <img
-                  src="data_img.jpeg"
-                  alt="Data focus"
-                  className="rounded-3xl max-w-full h-full object-fill"
-                />
-                <div className="absolute w-full h-full block top-0 shadow-[inset_-10px_-10px_60px_40px_rgb(255,255,255)]"></div>
+          <TColumn span={mobile ? 2 : 1}>
+            {mobile ? (
+              <div className="py-6 xl:py-10 px-4 md:px-6">
+                <div className="relative w-full flex flex-col h-[200px] md:h-[340px]">
+                  <img
+                    src="data_img.jpeg"
+                    alt="Data focus"
+                    className="rounded-3xl max-w-full h-full object-fill"
+                  />
+                  <div className="absolute w-full h-full block top-0 shadow-[inset_-10px_-10px_60px_40px_rgb(255,255,255)]"></div>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="py-2 xl:py-16 px-4 md:px-6 font-[sans-serif]">
+                <h6 className="text-center xl:text-left text-2xl md:text-3xl font-bold mb-4 xl:mb-10 text-slate-800">
+                  {translator.getTranslation(lang, "benefitData")}
+                </h6>
+                <p className="text-center xl:text-left text-[18px] xl:text-xl text-slate-600 leading-2xl">
+                  {translator.getTranslation(lang, "benefitDataText")}
+                </p>
+              </div>
+            )}
+          </TColumn>
+          <TColumn span={mobile ? 2 : 1} start={mobile ? 1 : 2}>
+            {mobile ? (
+              <div className="py-2 xl:py-16 px-4 md:px-6 font-[sans-serif]">
+                <h6 className="text-center xl:text-left text-2xl md:text-3xl font-bold mb-4 xl:mb-10 text-slate-800">
+                  {translator.getTranslation(lang, "benefitData")}
+                </h6>
+                <p className="text-center xl:text-left text-[18px] xl:text-xl text-slate-600 leading-2xl">
+                  {translator.getTranslation(lang, "benefitDataText")}
+                </p>
+              </div>
+            ) : (
+              <div className="py-6 xl:py-10 px-4 md:px-6">
+                <div className="relative w-full flex flex-col h-[200px] md:h-[340px]">
+                  <img
+                    src="data_img.jpeg"
+                    alt="Data focus"
+                    className="rounded-3xl max-w-full h-full object-fill"
+                  />
+                  <div className="absolute w-full h-full block top-0 shadow-[inset_-10px_-10px_60px_40px_rgb(255,255,255)]"></div>
+                </div>
+              </div>
+            )}
           </TColumn>
         </TLine>
         <TLine columns={1} mb={10}>
           <TColumn span={1}>
-            <div className="flex flex-col items-center w-full mt-12 mb-6">
+            <div className="flex flex-col items-center w-full mt-12 mb-0 xl:mb-6">
               <Link
                 to={`auth/register/?lang=${lang}`}
-                className="px-6 py-3 text-2xl font-semibold text-white bg-blue-500 rounded-full  transition-all duration-300 transform hover:bg-blue-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                className="px-6 py-3 text-md md:text-xl xl:text-2xl font-semibold text-white bg-blue-500 rounded-xl  transition-all duration-300 transform hover:bg-blue-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
               >
                 {translator.getTranslation(lang, "heroCta")}
               </Link>
@@ -292,8 +326,8 @@ export default function Index() {
       <TPage mobile={mobile}>
         <TLine columns={1}>
           <TColumn span={1}>
-            <div className="w-full py-10 mb-4">
-              <h3 className="text-slate-800 font-bold text-3xl mb-8">
+            <div className="w-full py-10 mb-0 md:mb-4">
+              <h3 className="text-slate-800 font-bold text-2xl md:text-3xl mb-6 md:mb-8">
                 {translator.getTranslation(lang, "faq")}
               </h3>
               <Accordion

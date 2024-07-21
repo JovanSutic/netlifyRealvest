@@ -112,7 +112,7 @@ export default function AuthForgetPass() {
               <div className="mt-10">
                 <button
                   type="submit"
-                  className="w-full py-2.5 px-4 text-sm font-semibold rounded text-white bg-indigo-900 hover:bg-indigo-800 focus:outline-none"
+                  className="w-full py-2.5 px-4 text-sm font-semibold rounded text-white bg-blue-500 hover:bg-blue-600 focus:outline-none"
                 >
                   {translator.getTranslation(lang!, "linkBtn")}
                 </button>
@@ -125,7 +125,7 @@ export default function AuthForgetPass() {
               {translator.getTranslation(lang!, "backTo")}
               <Link
                 to={`/auth/?lang=${lang}`}
-                className="text-indigo-800 font-semibold hover:underline ml-1 whitespace-nowrap"
+                className="text-blue-500 font-semibold hover:underline ml-1 whitespace-nowrap"
               >
                 {translator.getTranslation(lang!, "signTitle")}
               </Link>
