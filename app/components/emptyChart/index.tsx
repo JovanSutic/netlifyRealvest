@@ -1,50 +1,19 @@
-import { Box, Typography } from "@mui/material";
-
 const EmptyChart = ({
-  height,
   title,
   subtitle,
 }: {
-  height: number;
   title: string;
   subtitle: string;
 }) => {
   return (
-    <Box
-      sx={{
-        height: `${height}px`,
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-      }}
-    >
-      <Typography
-        component="h6"
-        variant="subtitle1"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          textAlign: "center",
-          marginBottom: "16px",
-          fontWeight: "500",
-        }}
-      >
+    <div className="w-full flex flex-col justify-center h-[208px]">
+      <p className="text-sm flex flex-col text-center mb-4">
         {title}
-      </Typography>
-      <Typography
-        component="h6"
-        variant="subtitle2"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          textAlign: "center",
-          fontWeight: "400",
-        }}
-      >
+      </p>
+      <p className="text-xs flex flex-col text-center">
         {subtitle}
-      </Typography>
-    </Box>
+      </p>
+    </div>
   );
 };
 

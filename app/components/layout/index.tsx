@@ -13,6 +13,24 @@ const columnsMap: Record<number, string> = {
   "12": "grid-cols-12",
 };
 
+const marginBottomMap: Record<number, string> = {
+  "2": "mb-2",
+  "4": "mb-4",
+  "6": "mb-6",
+  "8": "mb-8",
+  "10": "mb-10",
+  "12": "mb-12",
+};
+
+const marginTopMap: Record<number, string> = {
+  "2": "mt-2",
+  "4": "mt-4",
+  "6": "mt-6",
+  "8": "mt-8",
+  "10": "mt-10",
+  "12": "mt-12",
+};
+
 const gapsMap: Record<number, string> = {
   "1": "gap-1",
   "2": "gap-2",
@@ -72,13 +90,17 @@ export const TLine = ({
   children,
   columns,
   gap = 2,
+  mb = 0,
+  mt = 0,
 }: {
   children: JSX.Element | JSX.Element[];
   columns: number;
   gap?: number;
+  mb?: number;
+  mt?: number;
 }) => {
   return (
-    <div className={`grid ${columnsMap[columns]} grid-rows-1 ${gapsMap[gap]}`}>
+    <div className={`grid ${columnsMap[columns]} ${marginBottomMap[mb]} ${marginTopMap[mt]} grid-rows-1 ${gapsMap[gap]}`}>
       {children}
     </div>
   );
@@ -112,12 +134,28 @@ export const TPage = ({
   mobile?: boolean;
 }) => {
   return (
-    <div className={`w-full px-2 lg:px-0 box-border ${color || "bg-gray-200"} py-4`}>
+    <div
+      className={`w-full px-2 lg:px-0 box-border ${
+        color || "bg-gray-200"
+      } py-4`}
+    >
       <div
         className={`${mobile ? "w-full" : "w-[1366px]"} block relative  m-auto`}
       >
         {children}
       </div>
+    </div>
+  );
+};
+
+export const DashboardPage = ({
+  children,
+}: {
+  children: JSX.Element | JSX.Element[];
+}) => {
+  return (
+    <div className="pl-0 lg:pl-[260px] min-h-screen bg-gray-100">
+      <div className="px-5">{children}</div>
     </div>
   );
 };

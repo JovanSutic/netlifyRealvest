@@ -1,4 +1,5 @@
 import { LangType } from "../types/dashboard.types";
+import { subMonths, getYear, format } from "date-fns";
 
 export const rangeOptions = ["3m", "6m", "1y", "3y", "5y", "10y"] as const;
 export type RangeOption = (typeof rangeOptions)[number];
@@ -47,11 +48,11 @@ export const getDateForReport = (
 ): Date | undefined => {
   if (range) {
     const date = new Date();
-    const isLastMonthLoaded = date.getDate() > 12;
+    const isLastMonthLoaded = date.getDate() > 22;
 
     date.setMonth(
       date.getMonth() -
-        (isLastMonthLoaded ? rangeMap[range] : rangeMap[range] + 1)
+        (isLastMonthLoaded ? rangeMap[range] : rangeMap[range] - 1)
     );
     date.setDate(1);
 
@@ -61,23 +62,54 @@ export const getDateForReport = (
   return undefined;
 };
 
+export const getTimeRangeString = (start: string, end: string, full = false): string => {
+  const monthFormat = full ? 'MM' : 'M';
+  const yearFormat = full ? 'yyyy' : 'yyyy';
+  const isSameYear = getYear(start) === getYear(end);
+
+  if(isSameYear) return `${format(start, monthFormat)}-${format(end, `${monthFormat}.${yearFormat}`)}`;
+
+  return `${format(start, `${monthFormat}.${yearFormat}`)}-${format(end, `${monthFormat}.${yearFormat}`)}`;
+
+}
+
+export const getLastRecordedReportDate = (
+  range: RangeOption | null,
+  dateString: string
+) => {
+  if (range) {
+    const date = subMonths(dateString, (rangeMap[range] - 1));
+
+    return date;
+  }
+
+  return undefined;
+};
+
+export const dateToDateString = (date: Date): string => {
+  const month =
+    date.getMonth() < 9 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`;
+
+  return `${date.getFullYear()}-${month}-${date.getDate()}`;
+};
+
 export const excludeDayFromDateString = (date: string): string => {
   const isEnglish = date.includes("-");
-  const divider = isEnglish ? "-" : '.';
+  const divider = isEnglish ? "-" : ".";
   const split = date.split(divider);
 
-  if(isEnglish) {
+  if (isEnglish) {
     return `${split[0]}-${split[1]}`;
   }
 
   return `${split[1]}.${split[2]}`;
-}
+};
 
 export const setDateString = (date: string, language: string): string => {
   const d = new Date(date);
   const month =
     d.getMonth() < 9 ? `0${d.getMonth() + 1}` : `${d.getMonth() + 1}`;
-  if(language === "en") {
+  if (language === "en") {
     return `${d.getFullYear()}-${month}-${d.getDate()}`;
   }
   return `${d.getDate()}.${month}.${d.getFullYear()}`;
@@ -94,24 +126,17 @@ export const getDayInYear = (): number => {
   return Math.floor(diff / oneDay);
 };
 
-export const getYear = (date: string): number => {
- const d = new Date(date);
-
- return d.getFullYear();
-}
-
 export const getMonthAndYear = (date: string): string => {
   const d = new Date(date);
   const month =
     d.getMonth() < 9 ? `0${d.getMonth() + 1}` : `${d.getMonth() + 1}`;
 
   return `${month}.${d.getFullYear()}`;
-}
+};
 
 export const getMonthAndYearStart = (date: string): string => {
   const d = new Date(date);
-  const month =
-    d.getMonth() < 9 ? `0${d.getMonth()}` : `${d.getMonth()}`;
+  const month = d.getMonth() < 9 ? `0${d.getMonth()}` : `${d.getMonth()}`;
 
   return `${month}.${d.getFullYear()}`;
-}
+};

@@ -1,4 +1,3 @@
-import { Box, Typography } from "@mui/material";
 import { WidgetWrapper } from "../components/layout";
 import { LangType, PropertyType } from "../types/dashboard.types";
 import { RangeOption, formatDate } from "../utils/dateTime";
@@ -8,66 +7,36 @@ import Select from "../components/select/Select";
 import { InfoTooltip } from "../components/icons";
 
 const DashboardControls = ({
-  validUntil,
+  validUntil = "",
+  title,
   mobile,
   changeParams,
   lang,
   currentRange,
   currentType,
 }: {
-  validUntil: string;
+  validUntil?: string;
   mobile: boolean;
+  title: string;
   changeParams: (value: string, type: string) => void;
   lang: LangType;
   currentRange: RangeOption;
   currentType: PropertyType;
 }) => {
   const timeRangeOptions = ["3m", "6m", "1y", "3y", "5y", "10y"];
-  const translator = new Translator("dashboard");
+  const translator = new Translator("report");
 
   return (
     <WidgetWrapper>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: mobile ? "column" : "row",
-          width: "100%",
-        }}
-      >
-        <Box
-          sx={{
-            justifyContent: "space-between",
-            display: "flex",
-            flexDirection: mobile ? "column" : "row",
-            alignItems: mobile ? "start" : "center",
-            width: "100%",
-            mb: mobile ? "8px" : "0px",
-          }}
-        >
-          <Typography variant={mobile ? "h6" : "h5"} component="h5">
-            {translator.getTranslation(lang!, "widgetTitle")}
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            alignItems: mobile ? "center" : "flex-end",
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: mobile ? "column" : "row",
-              gap: mobile ? "8px" : "16px",
-            }}
-          >
-            <Box sx={{
-              display: "flex",
-              gap: "4px"
-            }}>
+      <div className="flex flex-col w-full lg:flex-row">
+        <div className="flex flex-col w-full mb-2 items-center justify-between lg:flex-row">
+          <p className="text-2xl">{title}</p>
+        </div>
+        <div className="flex flex-col w-full items-center lg:items-end">
+          <div className="flex flex-col gap-2 lg:flex-row lg:gap-4">
+            <div className="flex gap-1">
               <Select
+                name="propertyType"
                 value={currentType!}
                 isFullWidth={mobile!}
                 setValue={(value) => {
@@ -88,13 +57,13 @@ const DashboardControls = ({
                   },
                 ]}
               />
-              <InfoTooltip text={translator.getTranslation(lang, "tooltipType")} direction="left" />
-            </Box>
+              <InfoTooltip
+                text={translator.getTranslation(lang, "tooltipType")}
+                direction="left"
+              />
+            </div>
 
-            <Box sx={{
-              display: "flex",
-              gap: "4px"
-            }}>
+            <div className="flex gap-1 items-center">
               <ToggleButtons
                 value={currentRange!}
                 onChange={(value) => {
@@ -105,25 +74,24 @@ const DashboardControls = ({
                   text: translator.getTranslation(lang!, item),
                 }))}
               />
-              <InfoTooltip text={translator.getTranslation(lang, "timeRangeType")} direction="left" />
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              marginTop: "8px",
-            }}
-          >
-            <Typography variant="body2" component="h6">
-              {`${translator.getTranslation(lang!, "lastDate")} ${formatDate(
-                validUntil,
-                lang!
-              )}`}
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
+              <InfoTooltip
+                text={translator.getTranslation(lang, "timeRangeType")}
+                direction="left"
+              />
+            </div>
+          </div>
+          {validUntil && (
+            <div className="flex flex-col mt-2">
+              <p className="text-sm">
+                {`${translator.getTranslation(lang!, "lastDate")} ${formatDate(
+                  validUntil,
+                  lang!
+                )}`}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
     </WidgetWrapper>
   );
 };
