@@ -3,21 +3,25 @@ import type {
   LoaderFunctionArgs,
   MetaFunction,
 } from "@remix-run/node";
+import {redirect} from "@remix-run/node";
+
 import {
   Form,
   Link,
   json,
-  redirect,
   useActionData,
   useNavigation,
   useSearchParams,
+  useSubmit,
+
 } from "@remix-run/react";
 import { Translator } from "../data/language/translator";
 import { useEffect, useState } from "react";
 import { registrationSchema } from "../data/schema/validators";
-import { ZodError } from "zod";
 import { createSupabaseServerClient } from "../supabase.server";
 import Alert from "../components/alert";
+import { AuthError } from "@supabase/supabase-js";
+
 
 export const meta: MetaFunction = () => {
   return [
@@ -45,7 +49,38 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const email = String(formData.get("email"));
   const name = formData.get("name");
+  const type = formData.get("type");
   const password = String(formData.get("password"));
+  const { supabaseClient, headers } = createSupabaseServerClient(request);
+
+  if (type == "3") {
+    try {
+      const { data: googleAuthData, error: googleAuthError } =
+        await supabaseClient.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: "/auth/callback",
+          },
+        });
+
+      if (googleAuthError) {
+        return json(
+          { success: false, error: googleAuthError as AuthError },
+          { headers, status: 400 }
+        );
+      }
+
+      if (googleAuthData.url) {
+        throw redirect(googleAuthData.url);
+      }
+    } catch (error) {
+      return json(
+        { success: false, error: error as AuthError },
+        { headers, status: 500 }
+      );
+    }
+  }
+
 
   try {
     const { success, error: zError } = registrationSchema.safeParse({
@@ -54,18 +89,31 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       password,
     });
 
-    const { supabaseClient, headers } = createSupabaseServerClient(request);
 
     if (success) {
-      const { error } = await supabaseClient.auth.signUp({
+      const { data, error } = await supabaseClient.auth.signUp({
         email,
         password,
         options: {
           data: {
             display_name: name,
+            language: lang,
           },
         },
       });
+
+      if (
+        !data?.user?.identities?.length ||
+        data?.user?.role === "authenticated"
+      ) {
+        return json(
+          {
+            success: false,
+            error: { name: "AuthApiExistingUser" } as AuthError,
+          },
+          { headers, status: 409 }
+        );
+      }
 
       if (error) {
         return json({ success: false, error: error }, { headers, status: 400 });
@@ -76,7 +124,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       return json({ success: false, error: zError }, { headers, status: 400 });
     }
   } catch (error) {
-    return error as ZodError;
+    return json(
+      { success: false, error: error as AuthError },
+      { headers, status: 400 }
+    );
   }
 
   return null;
@@ -84,6 +135,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function AuthRegister() {
   const [searchParams] = useSearchParams();
+  const submit = useSubmit();
+
   const lang = searchParams.get("lang");
 
   const navigation = useNavigation();
@@ -93,6 +146,8 @@ export default function AuthRegister() {
   const [password, setPassword] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
+  const [conditions, setConditions] = useState<boolean>(false);
+
 
   const [nameError, setNameError] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
@@ -113,27 +168,58 @@ export default function AuthRegister() {
         issue.path?.includes("password")
       );
 
-      if (nameErrorCatch.length)
+      if (nameErrorCatch.length) {
         setNameError(
           translator.getTranslation(lang!, nameErrorCatch[0].message)
         );
-      if (emailErrorCatch.length)
+      }
+      if (!nameErrorCatch.length && nameError) {
+        setNameError("");
+      }
+      if (emailErrorCatch.length) {
         setEmailError(
           translator.getTranslation(lang!, emailErrorCatch[0].message)
         );
-      if (passwordErrorCatch.length)
+      }
+      if (!emailErrorCatch.length && emailError) {
+        setEmailError("");
+      }
+      if (passwordErrorCatch.length) {
         setPasswordError(
           translator.getTranslation(lang!, passwordErrorCatch[0].message)
         );
+      }
+      if (!passwordErrorCatch.length && passwordError) {
+        setPasswordError("");
+      }
     }
 
     if (
-      (nameError || emailError || passwordError) &&
-      !("issues" in actionData!)
+      actionData &&
+      "error" in actionData &&
+      !("issues" in actionData.error) &&
+      (passwordError || emailError || nameError)
     ) {
-      if (nameError) setNameError("");
-      if (emailError) setEmailError("");
-      if (passwordError) setPasswordError("");
+      if (passwordError) {
+        setPasswordError("");
+      }
+      if (emailError) {
+        setEmailError("");
+      }
+      if (nameError) {
+        setNameError("");
+      }
+    }
+
+    if (
+      actionData &&
+      "error" in actionData &&
+      !actionData.success &&
+      actionData.error?.name === "AuthApiExistingUser"
+    ) {
+      setApiError(
+        translator.getTranslation(lang!, "registrationApiExistingError")
+      );
     }
 
     if (
@@ -146,23 +232,83 @@ export default function AuthRegister() {
     }
   }, [actionData]);
   return (
-    <div className="w-full flex justify-center items-center bg-gray-100 font-[sans-serif] text-[#333] h-full md:min-h-screen p-4 sm:h-auto h-screen">
+    <div className="w-full flex justify-center bg-gray-100 font-[sans-serif] text-[#333] h-full md:min-h-screen p-4 sm:h-auto h-screen">
       <Alert
         type="error"
         isOpen={apiError !== undefined}
-        title="Error"
+        title={translator.getTranslation(lang!, "errorTitle")}
         text={apiError || ""}
         close={() => setApiError(undefined)}
       />
-      <div className="lg:w-1/3 md:w-1/2 sm:w-3/4 w-full justify-center mx-auto">
-        <div className=" bg-white rounded-2xl p-6 -mt-24 relative z-10 shadow-lg">
+      <div className="lg:w-1/3 md:w-1/2 sm:w-3/4 w-full">
+        <div className="w-full">
+          <div className="w-[140px] mx-auto">
+            <Link to={`/?lang=${lang}`}>
+              <img
+                src="/logo2.png"
+                alt="Realvest logo"
+                className="max-w-full"
+              />
+            </Link>
+          </div>
+        </div>
+
+        <div className=" bg-white rounded-2xl p-6 mt-4 relative z-10 shadow-lg">
           <div className="mb-10">
-            <h3 className="text-3xl font-extrabold text-slate-800 mb-3">
+            <h3 className="text-3xl text-center font-extrabold text-slate-800 mb-3">
               {translator.getTranslation(lang!, "registerTitle")}
             </h3>
-            <h3 className="text-sm text-slate-400">
+            <h3 className="text-sm text-center text-slate-400">
               {translator.getTranslation(lang!, "registerDescription")}
             </h3>
+          </div>
+          <div>
+            <div>
+              <button
+                className="w-full py-2 px-4 text-sm center rounded border-[1px] border-solid border-slate-300 mb-4"
+                onClick={() => submit({ type: "3" }, { method: "post" })}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20px"
+                  className="inline mr-2"
+                  viewBox="0 0 512 512"
+                >
+                  <path
+                    fill="#fbbd00"
+                    d="M120 256c0-25.367 6.989-49.13 19.131-69.477v-86.308H52.823C18.568 144.703 0 198.922 0 256s18.568 111.297 52.823 155.785h86.308v-86.308C126.989 305.13 120 281.367 120 256z"
+                    data-original="#fbbd00"
+                  />
+                  <path
+                    fill="#0f9d58"
+                    d="m256 392-60 60 60 60c57.079 0 111.297-18.568 155.785-52.823v-86.216h-86.216C305.044 385.147 281.181 392 256 392z"
+                    data-original="#0f9d58"
+                  />
+                  <path
+                    fill="#31aa52"
+                    d="m139.131 325.477-86.308 86.308a260.085 260.085 0 0 0 22.158 25.235C123.333 485.371 187.62 512 256 512V392c-49.624 0-93.117-26.72-116.869-66.523z"
+                    data-original="#31aa52"
+                  />
+                  <path
+                    fill="#3c79e6"
+                    d="M512 256a258.24 258.24 0 0 0-4.192-46.377l-2.251-12.299H256v120h121.452a135.385 135.385 0 0 1-51.884 55.638l86.216 86.216a260.085 260.085 0 0 0 25.235-22.158C485.371 388.667 512 324.38 512 256z"
+                    data-original="#3c79e6"
+                  />
+                  <path
+                    fill="#cf2d48"
+                    d="m352.167 159.833 10.606 10.606 84.853-84.852-10.606-10.606C388.668 26.629 324.381 0 256 0l-60 60 60 60c36.326 0 70.479 14.146 96.167 39.833z"
+                    data-original="#cf2d48"
+                  />
+                  <path
+                    fill="#eb4132"
+                    d="M256 120V0C187.62 0 123.333 26.629 74.98 74.98a259.849 259.849 0 0 0-22.158 25.235l86.308 86.308C162.883 146.72 206.376 120 256 120z"
+                    data-original="#eb4132"
+                  />
+                </svg>
+                {translator.getTranslation(lang!, "googleSign")}
+              </button>
+            </div>
+            <hr className="mb-2 border-gray-300" />
           </div>
           <div>
             <Form method="post">
@@ -310,11 +456,34 @@ export default function AuthRegister() {
                   </span>
                 )}
               </div>
+              <div className="flex items-center mt-2">
+                <input
+                  id="checkbox1"
+                  type="checkbox"
+                  className="w-4 h-4 mr-3"
+                  onClick={() => setConditions(!conditions)}
+                />
+                <label htmlFor="checkbox1" className="text-slate-500 text-sm">
+                  {translator.getTranslation(lang!, "accept")} {"  "}
+                  <Link
+                    to={`/?lang=${lang}`}
+                    className="text-blue-500 text-sm underline"
+                  >
+                    {translator.getTranslation(lang!, "terms")}
+                  </Link>
+                </label>
+              </div>
               <div className="mt-10">
                 <button
                   type="submit"
-                  disabled={navigation.state === "submitting"}
-                  className="w-full py-2.5 px-4 text-sm font-semibold rounded-xl text-white bg-blue-500 hover:bg-blue-600 focus:outline-none"
+                  disabled={
+                    navigation.state === "submitting" ||
+                    !conditions ||
+                    !email ||
+                    !name ||
+                    !password
+                  }
+                  className="w-full py-2.5 px-4 text-sm font-semibold rounded-xl text-white bg-blue-500 hover:bg-blue-600 disabled:bg-slate-300 disabled:cursor-no-drop focus:outline-none"
                 >
                   {translator.getTranslation(lang!, "registerTitle")}
                   {navigation.state === "submitting" && (

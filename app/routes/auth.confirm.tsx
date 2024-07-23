@@ -37,7 +37,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       });
   
       if (!error) {
-        return redirect(`/report?lang=${lang}`, { headers });
+        return redirect(`/dashboard/search?lang=${lang}`, { headers });
       }
   
     } catch (error) {

@@ -4,21 +4,26 @@ import type {
   MetaFunction,
 } from "@remix-run/node";
 import {
+  redirect
+} from "@remix-run/node";
+import {
   Form,
   Link,
   json,
-  redirect,
   useActionData,
   useNavigate,
   useNavigation,
+  useSubmit,
   useSearchParams,
 } from "@remix-run/react";
 import { Translator } from "../data/language/translator";
-import Tabs from "../components/tabs";
+// import Tabs from "../components/tabs";
 import { useEffect, useState } from "react";
 import { magicSchema, passwordSchema } from "../data/schema/validators";
-import { ZodError, ZodIssue } from "zod";
+import { ZodError } from "zod";
 import { createSupabaseServerClient } from "../supabase.server";
+import Alert from "../components/alert";
+import { AuthError } from "@supabase/supabase-js";
 
 export const meta: MetaFunction = () => {
   return [
@@ -35,8 +40,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const { supabaseClient } = createSupabaseServerClient(request);
     const lang = new URL(request.url).searchParams.get("lang") || "sr";
     const user = await supabaseClient.auth.getUser();
+
+    const session = await supabaseClient.auth.getSession();
+    console.log(session);
     if (user?.data?.user?.role === "authenticated") {
-      throw redirect(`/dashboard?lang=${lang}`);
+      return redirect(`/dashboard?lang=${lang}`);
+
     }
   } catch (error) {
     console.log(error);
@@ -47,14 +56,43 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   try {
+    const { supabaseClient, headers } = createSupabaseServerClient(request);
     const formData = await request.formData();
     const lang = new URL(request.url).searchParams.get("lang") || "sr";
     const email = formData.get("email");
     const type = formData.get("type");
     const password = formData.get("password");
 
+    if (type == "3") {
+      try {
+        const { data: googleAuthData, error: googleAuthError } =
+          await supabaseClient.auth.signInWithOAuth({
+            provider: "google",
+            options: {
+              redirectTo: "/auth/callback",
+            },
+          });
+
+        if (googleAuthError) {
+          return json(
+            { success: false, error: googleAuthError as AuthError },
+            { headers, status: 400 }
+          );
+        }
+
+        if (googleAuthData.url) {
+          console.log(googleAuthData.url);
+          throw redirect(googleAuthData.url);
+        }
+      } catch (error) {
+        return json(
+          { success: false, error: error as AuthError },
+          { headers, status: 500 }
+        );
+      }
+    }
+
     if (type === "2") {
-      const { supabaseClient, headers } = createSupabaseServerClient(request);
 
       const { success, error: zError } = passwordSchema.safeParse({
         email,
@@ -95,12 +133,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function AuthSign() {
   const [searchParams] = useSearchParams();
+  const submit = useSubmit();
   const lang = searchParams.get("lang") || "sr";
 
   const navigate = useNavigate();
   const navigation = useNavigation();
 
-  const [signInType, setSignInType] = useState<string>("2");
+  const [signInType] = useState<string>("2");
+  const [apiError, setApiError] = useState<string>();
+
   const [showPass, setShowPass] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -122,20 +163,42 @@ export default function AuthSign() {
     }
 
     if (actionData && "error" in actionData && "issues" in actionData.error) {
-      const errorEmail = actionData?.error.issues.filter((issue) =>
+      const emailErrorCatch = actionData?.error.issues.filter((issue) =>
         issue.path?.includes("email")
-      ) as ZodIssue[];
-      if (errorEmail) {
-        setEmailError(translator.getTranslation(lang, errorEmail[0]?.message));
-      }
-
-      const errorPassword = actionData?.error.issues.filter((issue) =>
+      );
+      const passwordErrorCatch = actionData?.error.issues.filter((issue) =>
         issue.path?.includes("password")
-      ) as ZodIssue[];
-      if (errorPassword) {
-        setPasswordError(
-          translator.getTranslation(lang, errorPassword[0]?.message)
+      );
+
+      if (emailErrorCatch.length) {
+        setEmailError(
+          translator.getTranslation(lang!, emailErrorCatch[0].message)
         );
+      }
+      if (!emailErrorCatch.length && emailError) {
+        setEmailError("");
+      }
+      if (passwordErrorCatch.length) {
+        setPasswordError(
+          translator.getTranslation(lang!, passwordErrorCatch[0].message)
+        );
+      }
+      if (!passwordErrorCatch.length && passwordError) {
+        setPasswordError("");
+      }
+    }
+
+    if (
+      actionData &&
+      "error" in actionData &&
+      !("issues" in actionData.error) &&
+      (passwordError || emailError)
+    ) {
+      if (passwordError) {
+        setPasswordError("");
+      }
+      if (emailError) {
+        setEmailError("");
       }
     }
 
@@ -145,25 +208,46 @@ export default function AuthSign() {
       !actionData.success &&
       actionData.error?.name === "AuthApiError"
     ) {
-      setPasswordError(translator.getTranslation(lang, "authApiError"));
+      setApiError(translator.getTranslation(lang, "authApiError"));
     }
   }, [actionData, lang]);
 
   return (
-    <div className="w-full flex justify-center items-center bg-gray-100 font-[sans-serif] text-[#333] h-full md:min-h-screen p-4 sm:h-auto h-screen">
-      <div className="lg:w-1/3 md:w-1/2 sm:w-3/4 w-full justify-center mx-auto">
-        <div className=" bg-white rounded-2xl p-6 sm:mt-4 relative z-10 shadow-lg">
+    <div className="w-full flex justify-center bg-gray-100 font-[sans-serif] text-[#333] h-full md:min-h-screen p-4 sm:h-auto h-screen">
+      <Alert
+        type="error"
+        isOpen={apiError !== undefined}
+        title={translator.getTranslation(lang, "errorTitle")}
+        text={apiError || ""}
+        close={() => setApiError(undefined)}
+      />
+      <div className="lg:w-1/3 md:w-1/2 sm:w-3/4 w-full">
+        <div className="w-full">
+          <div className="w-[140px] mx-auto">
+            <Link to={`/?lang=${lang}`}>
+              <img
+                src="/logo2.png"
+                alt="Realvest logo"
+                className="max-w-full"
+              />
+            </Link>
+          </div>
+        </div>
+        <div className="bg-white rounded-2xl p-6 mt-4 relative z-10 shadow-lg">
           <div className="mb-10">
-            <h3 className="text-3xl font-extrabold text-slate-800 mb-3">
+            <h3 className="text-3xl font-extrabold text-center text-slate-800 mb-3">
               {translator.getTranslation(lang!, "signTitle")}
             </h3>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-center text-slate-400">
               {translator.getTranslation(lang!, "signDescription")}
             </p>
           </div>
           <div>
             <div>
-              <button className="w-full py-2 px-4 text-sm center rounded border-[1px] border-solid border-slate-300 mb-4">
+              <button
+                className="w-full py-2 px-4 text-sm center rounded border-[1px] border-solid border-slate-300 mb-4"
+                onClick={() => submit({ type: "3" }, { method: "post" })}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20px"
@@ -201,10 +285,11 @@ export default function AuthSign() {
                     data-original="#eb4132"
                   />
                 </svg>
-                {translator.getTranslation(lang!, "googleSign")}
+                {translator.getTranslation(lang!, "googleLogin")}
               </button>
             </div>
             <hr className="mb-2 border-gray-300" />
+            {/* 
             <Tabs
               options={[
                 {
@@ -222,7 +307,8 @@ export default function AuthSign() {
                 setEmail("");
                 setPassword("");
               }}
-            />
+            /> */}
+
           </div>
           {signInType === "2" ? (
             <Form method="post" action={`/auth?lang=${lang}`}>
@@ -335,11 +421,11 @@ export default function AuthSign() {
                   </span>
                 )}
               </div>
-              <div className="flex items-center justify-between gap-2 mt-6">
+              <div className="flex items-center justify-between gap-2 mt-2">
                 <div>
                   <Link
                     to={`/auth/forgot_password?lang=${lang}`}
-                    className="text-slate-500 text-sm hover:underline"
+                    className="text-slate-500 text-sm underline"
                   >
                     {translator.getTranslation(lang!, "passForgot")}
                   </Link>
@@ -348,8 +434,11 @@ export default function AuthSign() {
               <div className="mt-10">
                 <button
                   type="submit"
-                  disabled={navigation.state === "submitting"}
-                  className="w-full py-2.5 px-4 text-sm font-semibold rounded-xl text-white bg-blue-500 hover:bg-blue-600 focus:outline-none"
+                  disabled={
+                    navigation.state === "submitting" || !email || !password
+                  }
+                  className="w-full py-2.5 px-4 text-sm font-semibold rounded-xl text-white bg-blue-500 hover:bg-blue-600 disabled:bg-slate-300 disabled:cursor-no-drop focus:outline-none"
+
                 >
                   {translator.getTranslation(lang!, "signTitle")}
                   {navigation.state === "submitting" && (
