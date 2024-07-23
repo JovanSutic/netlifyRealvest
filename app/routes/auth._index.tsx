@@ -40,10 +40,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const { supabaseClient } = createSupabaseServerClient(request);
     const lang = new URL(request.url).searchParams.get("lang") || "sr";
     const user = await supabaseClient.auth.getUser();
+
     const session = await supabaseClient.auth.getSession();
     console.log(session);
     if (user?.data?.user?.role === "authenticated") {
       return redirect(`/dashboard?lang=${lang}`);
+
     }
   } catch (error) {
     console.log(error);
@@ -91,6 +93,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
 
     if (type === "2") {
+
       const { success, error: zError } = passwordSchema.safeParse({
         email,
         type,
@@ -138,6 +141,7 @@ export default function AuthSign() {
 
   const [signInType] = useState<string>("2");
   const [apiError, setApiError] = useState<string>();
+
   const [showPass, setShowPass] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -285,7 +289,8 @@ export default function AuthSign() {
               </button>
             </div>
             <hr className="mb-2 border-gray-300" />
-            {/* <Tabs
+            {/* 
+            <Tabs
               options={[
                 {
                   text: translator.getTranslation(lang!, "password"),
@@ -303,6 +308,7 @@ export default function AuthSign() {
                 setPassword("");
               }}
             /> */}
+
           </div>
           {signInType === "2" ? (
             <Form method="post" action={`/auth?lang=${lang}`}>
@@ -432,6 +438,7 @@ export default function AuthSign() {
                     navigation.state === "submitting" || !email || !password
                   }
                   className="w-full py-2.5 px-4 text-sm font-semibold rounded-xl text-white bg-blue-500 hover:bg-blue-600 disabled:bg-slate-300 disabled:cursor-no-drop focus:outline-none"
+
                 >
                   {translator.getTranslation(lang!, "signTitle")}
                   {navigation.state === "submitting" && (

@@ -4,6 +4,7 @@ import type {
   MetaFunction,
 } from "@remix-run/node";
 import {redirect} from "@remix-run/node";
+
 import {
   Form,
   Link,
@@ -12,6 +13,7 @@ import {
   useNavigation,
   useSearchParams,
   useSubmit,
+
 } from "@remix-run/react";
 import { Translator } from "../data/language/translator";
 import { useEffect, useState } from "react";
@@ -19,6 +21,7 @@ import { registrationSchema } from "../data/schema/validators";
 import { createSupabaseServerClient } from "../supabase.server";
 import Alert from "../components/alert";
 import { AuthError } from "@supabase/supabase-js";
+
 
 export const meta: MetaFunction = () => {
   return [
@@ -78,12 +81,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
   }
 
+
   try {
     const { success, error: zError } = registrationSchema.safeParse({
       email,
       name,
       password,
     });
+
 
     if (success) {
       const { data, error } = await supabaseClient.auth.signUp({
@@ -131,6 +136,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function AuthRegister() {
   const [searchParams] = useSearchParams();
   const submit = useSubmit();
+
   const lang = searchParams.get("lang");
 
   const navigation = useNavigation();
@@ -141,6 +147,7 @@ export default function AuthRegister() {
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [conditions, setConditions] = useState<boolean>(false);
+
 
   const [nameError, setNameError] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
