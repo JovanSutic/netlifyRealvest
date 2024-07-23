@@ -1,3 +1,4 @@
+
 import { Link, useSearchParams } from "@remix-run/react";
 import { Translator } from "../data/language/translator";
 

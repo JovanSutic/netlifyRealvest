@@ -22,6 +22,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     email: z.string().email({ message: "Please provide valid email." }),
   });
 
+
   try {
     schema.parse({
       email,
@@ -69,7 +70,6 @@ export default function AuthForgetPass() {
             </h3>
             <hr className="mt-4 border-gray-300" />
           </div>
-          
           <div>
             <Form method="post">
               <div className="pt-5 h-[76px]">
