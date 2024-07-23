@@ -37,10 +37,6 @@ export const authMap: Record<string, Record<string, string>> = {
     successText: "You have successfully signed up, now you need to confirm your email. We have sent you an email with the confirmation link. Please, check your inbox and confirm your email.",
     alreadyConfirm: "Email already confirmed?",
     errorTitle: "Error",
-    authApiError: "Your password is not correct. Please provide correct password.",
-    emailError: "Please provide valid email.",
-    nameError: "Name must have at least 3 characters.",
-    registrationApiError: "The user with this email already exists. Please sign in."
   },
   sr: {
     signTitle: "Prijavite se",
@@ -80,14 +76,6 @@ export const authMap: Record<string, Record<string, string>> = {
     successText: "Uspešno ste se registrovali, sada je potrebno da potvrdite vaš email kako bi mogli da pristupate platformi. Na vašu email adresu je poslat konfirmacioni email sa linkom. Molimo vas, proverite vaše sanduče i potvrdite email klikom na link.",
     alreadyConfirm: "Već ste potvrdili email?",
     errorTitle: "Greška",
-    passwordSpecial: "Lozinka mora imati nejmanje 1 specijalni karakter.",
-    passwordLowercase: "Lozinka mora imati nejmanje 1 malo slovo.",
-    passwordUppercase: "Lozinka mora imati nejmanje 1 veliko slovo.",
-    passwordDigit: "Lozinka mora imati nejmanje 1 broj.",
-    authApiError: "Netačna lozinka. Molim vas upišite tačnu lozinku.",
-    emailError: "Molim vas upišite valid email.",
-    nameError: "Ime mora imati najmanje 3 slova.",
-    registrationApiError: "Korisnik sa ovim email već postoji. Molim vas da se prijavite."
   },
 };
 

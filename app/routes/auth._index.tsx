@@ -289,11 +289,7 @@ export default function AuthSign() {
               </button>
             </div>
             <hr className="mb-2 border-gray-300" />
-            {/* <Tabs
-                {translator.getTranslation(lang!, "googleSign")}
-              </button>
-            </div>
-            <hr className="mb-2 border-gray-300" />
+            {/* 
             <Tabs
               options={[
                 {
