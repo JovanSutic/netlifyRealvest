@@ -38,7 +38,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const lang = new URL(request.url).searchParams.get("lang") || "sr";
   const user = await supabaseClient.auth.getUser();
   if (user?.data?.user?.role === "authenticated") {
-    throw redirect(`/dashboard?lang=${lang}`);
+    return redirect(`/dashboard?lang=${lang}`);
   }
 
   return null;
@@ -64,6 +64,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         });
 
       if (googleAuthError) {
+        console.log(googleAuthError);
         return json(
           { success: false, error: googleAuthError as AuthError },
           { headers, status: 400 }
@@ -71,7 +72,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       }
 
       if (googleAuthData.url) {
-        throw redirect(googleAuthData.url);
+        console.log('ovde')
+        return redirect(googleAuthData.url);
       }
     } catch (error) {
       return json(

@@ -19,14 +19,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const lang = currentUrl.searchParams.get("lang") || "sr";
   const user = await supabaseClient.auth.getUser();
   if (user?.data?.user?.role !== "authenticated") {
-    throw redirect(`/auth?lang=${lang}`);
+    return redirect(`/auth?lang=${lang}`);
   }
 
   if (
     user?.data?.user?.role === "authenticated" &&
     currentUrl.pathname === "/dashboard"
   ) {
-    throw redirect(`/dashboard/search?lang=${lang}`);
+    return redirect(`/dashboard/search?lang=${lang}`);
   }
 
   return {

@@ -52,7 +52,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     const user = await supabaseClient.auth.getUser();
     if (user?.data?.user?.role !== "authenticated") {
-      throw redirect("/auth");
+      return redirect("/auth");
     }
   } catch (error) {
     console.log(error);
