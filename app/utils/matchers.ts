@@ -314,9 +314,6 @@ export const getArchiveMatches2 = async (request: Request) => {
       { archive: ListedAd[]; details: ShortDetail[] }
     > = {};
 
-    console.log(archiveData.length);
-    console.log(detailsData.length);
-
     archiveData.forEach((item) => {
       const m2index = getIndicesOf("m2", item.name)[0];
       const numeral = item.name
