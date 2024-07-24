@@ -82,7 +82,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
         if (googleAuthData.url) {
           console.log(googleAuthData.url);
-          throw redirect(googleAuthData.url);
+          return redirect(googleAuthData.url);
         }
       } catch (error) {
         return json(
