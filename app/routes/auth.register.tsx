@@ -59,12 +59,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         await supabaseClient.auth.signInWithOAuth({
           provider: "google",
           options: {
-            redirectTo: "/auth/callback",
+            redirectTo: `${process.env.BASE_URL}auth/callback`,
+            queryParams: {
+              access_type: "offline",
+              prompt: "consent select_account",
+            },
           },
         });
 
       if (googleAuthError) {
-        console.log(googleAuthError);
         return json(
           { success: false, error: googleAuthError as AuthError },
           { headers, status: 400 }
@@ -72,7 +75,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       }
 
       if (googleAuthData.url) {
-        console.log('ovde')
         return redirect(googleAuthData.url);
       }
     } catch (error) {
