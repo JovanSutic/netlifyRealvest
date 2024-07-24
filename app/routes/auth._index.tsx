@@ -69,7 +69,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           await supabaseClient.auth.signInWithOAuth({
             provider: "google",
             options: {
-              redirectTo: "/auth/callback",
+              redirectTo: `${process.env.BASE_URL}auth/callback`,
+              queryParams: {
+                access_type: "offline",
+                prompt: "consent select_account",
+              },
             },
           });
 
@@ -81,7 +85,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         }
 
         if (googleAuthData.url) {
-          console.log(googleAuthData.url);
           return redirect(googleAuthData.url);
         }
       } catch (error) {

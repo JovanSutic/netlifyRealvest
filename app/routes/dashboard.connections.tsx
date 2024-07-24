@@ -202,8 +202,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           .gt("lng", uniq[3])
           .lt("lng", uniq[2]);
 
-          console.log(searchData?.length)
-
         if (searchError) {
           throw new Response("Search error.", {
             status: 500,

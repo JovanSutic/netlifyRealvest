@@ -233,8 +233,6 @@ const calculateLineData = (
       }
     });
 
-    console.log(preResult);
-
     Object.keys(preResult).forEach((key) => {
       result[formatDate(key, lang, false)] = preResult[key].length
         ? getAverageOfList(preResult[key])
