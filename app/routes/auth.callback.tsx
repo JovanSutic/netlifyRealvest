@@ -15,10 +15,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
         return redirect(next, { headers });
       }
     } catch (error) {
-      console.log(error);
+      return redirect(`/?code=${code}`, { headers });
     }
-    
-
    
   }
 
