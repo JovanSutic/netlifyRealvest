@@ -3,17 +3,14 @@ import type {
   LoaderFunctionArgs,
   MetaFunction,
 } from "@remix-run/node";
-import {
-  redirect
-} from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import {
   Form,
   Link,
   json,
   useActionData,
-  useNavigate,
   useNavigation,
-  useSubmit,
+  // useSubmit,
   useSearchParams,
 } from "@remix-run/react";
 import { Translator } from "../data/language/translator";
@@ -41,11 +38,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const lang = new URL(request.url).searchParams.get("lang") || "sr";
     const user = await supabaseClient.auth.getUser();
 
-    const session = await supabaseClient.auth.getSession();
-    console.log(session);
     if (user?.data?.user?.role === "authenticated") {
       return redirect(`/dashboard?lang=${lang}`);
-
     }
   } catch (error) {
     console.log(error);
@@ -96,7 +90,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
 
     if (type === "2") {
-
       const { success, error: zError } = passwordSchema.safeParse({
         email,
         type,
@@ -113,7 +106,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           console.log(error);
           return json({ success: false, error }, { headers, status: 400 });
         } else {
-          return redirect(`/dashboard?lang=${lang}`, { headers });
+          return redirect(`/dashboard/search?lang=${lang}`, { headers });
         }
       } else {
         return json(
@@ -136,10 +129,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function AuthSign() {
   const [searchParams] = useSearchParams();
-  const submit = useSubmit();
+  // const submit = useSubmit();
   const lang = searchParams.get("lang") || "sr";
 
-  const navigate = useNavigate();
   const navigation = useNavigation();
 
   const [signInType] = useState<string>("2");
@@ -162,7 +154,8 @@ export default function AuthSign() {
 
   useEffect(() => {
     if (actionData && "success" in actionData && actionData.success) {
-      navigate(`/dashboard?lang=${lang}`);
+      setPassword("");
+      setEmail("");
     }
 
     if (actionData && "error" in actionData && "issues" in actionData.error) {
@@ -246,7 +239,7 @@ export default function AuthSign() {
             </p>
           </div>
           <div>
-            <div>
+            {/* <div>
               <button
                 className="w-full py-2 px-4 text-sm center rounded border-[1px] border-solid border-slate-300 mb-4"
                 onClick={() => submit({ type: "3" }, { method: "post" })}
@@ -290,7 +283,7 @@ export default function AuthSign() {
                 </svg>
                 {translator.getTranslation(lang!, "googleLogin")}
               </button>
-            </div>
+            </div> */}
             <hr className="mb-2 border-gray-300" />
             {/* 
             <Tabs
@@ -311,7 +304,6 @@ export default function AuthSign() {
                 setPassword("");
               }}
             /> */}
-
           </div>
           {signInType === "2" ? (
             <Form method="post" action={`/auth?lang=${lang}`}>
@@ -441,7 +433,6 @@ export default function AuthSign() {
                     navigation.state === "submitting" || !email || !password
                   }
                   className="w-full py-2.5 px-4 text-sm font-semibold rounded-xl text-white bg-blue-500 hover:bg-blue-600 disabled:bg-slate-300 disabled:cursor-no-drop focus:outline-none"
-
                 >
                   {translator.getTranslation(lang!, "signTitle")}
                   {navigation.state === "submitting" && (
