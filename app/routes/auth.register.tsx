@@ -3,7 +3,7 @@ import type {
   LoaderFunctionArgs,
   MetaFunction,
 } from "@remix-run/node";
-import {redirect} from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 
 import {
   Form,
@@ -12,8 +12,7 @@ import {
   useActionData,
   useNavigation,
   useSearchParams,
-  useSubmit,
-
+  // useSubmit,
 } from "@remix-run/react";
 import { Translator } from "../data/language/translator";
 import { useEffect, useState } from "react";
@@ -21,7 +20,6 @@ import { registrationSchema } from "../data/schema/validators";
 import { createSupabaseServerClient } from "../supabase.server";
 import Alert from "../components/alert";
 import { AuthError } from "@supabase/supabase-js";
-
 
 export const meta: MetaFunction = () => {
   return [
@@ -85,14 +83,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
   }
 
-
   try {
     const { success, error: zError } = registrationSchema.safeParse({
       email,
       name,
       password,
     });
-
 
     if (success) {
       const { data, error } = await supabaseClient.auth.signUp({
@@ -107,7 +103,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       });
 
       if (
-        !data?.user?.identities?.length ||
+        !data?.user?.identities?.length &&
         data?.user?.role === "authenticated"
       ) {
         return json(
@@ -120,6 +116,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       }
 
       if (error) {
+        if (error.message === "User already registered") {
+          return json(
+            {
+              success: false,
+              error: { name: "AuthApiExistingUser" } as AuthError,
+            },
+            { headers, status: 409 }
+          );
+        }
         return json({ success: false, error: error }, { headers, status: 400 });
       } else {
         return redirect(`/auth/success?lang=${lang}`, { headers });
@@ -133,13 +138,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       { headers, status: 400 }
     );
   }
-
-  return null;
 };
 
 export default function AuthRegister() {
   const [searchParams] = useSearchParams();
-  const submit = useSubmit();
+  // const submit = useSubmit();
 
   const lang = searchParams.get("lang");
 
@@ -151,7 +154,6 @@ export default function AuthRegister() {
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [conditions, setConditions] = useState<boolean>(false);
-
 
   const [nameError, setNameError] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
@@ -234,7 +236,14 @@ export default function AuthRegister() {
     ) {
       setApiError(translator.getTranslation(lang!, "registrationApiError"));
     }
-  }, [actionData]);
+
+    if (actionData && "success" in actionData && actionData.success) {
+      setPassword("");
+      setName("");
+      setEmail("");
+      setConditions(false);
+    }
+  }, [actionData, lang]);
   return (
     <div className="w-full flex justify-center bg-gray-100 font-[sans-serif] text-[#333] h-full md:min-h-screen p-4 sm:h-auto h-screen">
       <Alert
@@ -267,7 +276,7 @@ export default function AuthRegister() {
             </h3>
           </div>
           <div>
-            <div>
+            {/* <div>
               <button
                 className="w-full py-2 px-4 text-sm center rounded border-[1px] border-solid border-slate-300 mb-4"
                 onClick={() => submit({ type: "3" }, { method: "post" })}
@@ -311,7 +320,7 @@ export default function AuthRegister() {
                 </svg>
                 {translator.getTranslation(lang!, "googleSign")}
               </button>
-            </div>
+            </div> */}
             <hr className="mb-2 border-gray-300" />
           </div>
           <div>
@@ -464,6 +473,7 @@ export default function AuthRegister() {
                 <input
                   id="checkbox1"
                   type="checkbox"
+                  checked={conditions}
                   className="w-4 h-4 mr-3"
                   onClick={() => setConditions(!conditions)}
                 />

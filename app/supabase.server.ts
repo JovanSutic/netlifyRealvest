@@ -1,23 +1,59 @@
-import { createServerClient, parse, serialize } from '@supabase/ssr'
+import {
+  createServerClient,
+  parseCookieHeader,
+  serializeCookieHeader,
+} from "@supabase/ssr";
+import { SupportedStorage } from "@supabase/supabase-js";
+
+const customStorageAdapter: SupportedStorage = {
+  getItem: (key) => {
+    // if (!supportsLocalStorage()) {
+    //     // Configure alternate storage
+    //     return null
+    // }
+    return globalThis.localStorage.getItem(key);
+  },
+  setItem: (key, value) => {
+    // if (!supportsLocalStorage()) {
+    //     // Configure alternate storage here
+    //     return
+    // }
+    globalThis.localStorage.setItem(key, value);
+  },
+  removeItem: (key) => {
+    // if (!supportsLocalStorage()) {
+    //     // Configure alternate storage here
+    //     return
+    // }
+    globalThis.localStorage.removeItem(key);
+  },
+};
+
 export const createSupabaseServerClient = (request: Request) => {
-  const cookies = parse(request.headers.get('Cookie') ?? '')
-  const headers = new Headers()
+  const headers = new Headers();
   const supabaseClient = createServerClient(
     process.env.SUPABASE_URL_LOCAL!,
     process.env.SUPABASE_KEY_LOCAL!,
     {
       cookies: {
-        get(key) {
-          return cookies[key]
+        getAll() {
+          return parseCookieHeader(request.headers.get("Cookie") ?? "");
         },
-        set(key, value, options) {
-          headers.append('Set-Cookie', serialize(key, value, options))
-        },
-        remove(key, options) {
-          headers.append('Set-Cookie', serialize(key, '', options))
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            headers.append(
+              "Set-Cookie",
+              serializeCookieHeader(name, value, options)
+            )
+          );
         },
       },
-    },
-  )
-  return { supabaseClient, headers }
-}
+      auth: {
+        detectSessionInUrl: true,
+        flowType: "pkce",
+        storage: customStorageAdapter,
+      },
+    }
+  );
+  return { supabaseClient, headers };
+};

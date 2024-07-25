@@ -1,5 +1,9 @@
 import { redirect, type LoaderFunctionArgs } from "@remix-run/node";
-import { createServerClient, parse, serialize } from "@supabase/ssr";
+import {
+  createServerClient,
+  parseCookieHeader,
+  serializeCookieHeader,
+} from "@supabase/ssr";
 import { type EmailOtpType } from "@supabase/supabase-js";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -10,21 +14,21 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const headers = new Headers();
 
   if (token_hash && type) {
-    const cookies = parse(request.headers.get("Cookie") ?? "");
-
     const supabase = createServerClient(
       process.env.SUPABASE_URL_LOCAL!,
       process.env.SUPABASE_KEY_LOCAL!,
       {
         cookies: {
-          get(key) {
-            return cookies[key];
+          getAll() {
+            return parseCookieHeader(request.headers.get("Cookie") ?? "");
           },
-          set(key, value, options) {
-            headers.append("Set-Cookie", serialize(key, value, options));
-          },
-          remove(key, options) {
-            headers.append("Set-Cookie", serialize(key, "", options));
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              headers.append(
+                "Set-Cookie",
+                serializeCookieHeader(name, value, options)
+              )
+            );
           },
         },
       }
@@ -35,15 +39,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
         type,
         token_hash,
       });
-  
+
       if (!error) {
         return redirect(`/dashboard/search?lang=${lang}`, { headers });
       }
-  
     } catch (error) {
       console.log(error);
     }
-
   }
 
   // return the user to an error page with instructions
