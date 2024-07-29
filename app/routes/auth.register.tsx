@@ -36,7 +36,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const lang = new URL(request.url).searchParams.get("lang") || "sr";
   const user = await supabaseClient.auth.getUser();
   if (user?.data?.user?.role === "authenticated") {
-    return redirect(`/dashboard?lang=${lang}`);
+    return redirect(`/dashboard/search?lang=${lang}`);
   }
 
   return null;
@@ -127,7 +127,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         }
         return json({ success: false, error: error }, { headers, status: 400 });
       } else {
-        return redirect(`/auth/success?lang=${lang}`, { headers });
+        return redirect(`/auth/success?lang=${lang}&referer=registration`, { headers });
       }
     } else {
       return json({ success: false, error: zError }, { headers, status: 400 });
@@ -144,7 +144,7 @@ export default function AuthRegister() {
   const [searchParams] = useSearchParams();
   // const submit = useSubmit();
 
-  const lang = searchParams.get("lang");
+  const lang = searchParams.get("lang") || 'sr';
 
   const navigation = useNavigation();
 

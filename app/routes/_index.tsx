@@ -19,6 +19,7 @@ export const meta: MetaFunction = () => {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userAgent = request.headers.get("user-agent");
   return json({ ok: true, mobile: isMobile(userAgent!) });
+
 };
 
 export default function Index() {
