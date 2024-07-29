@@ -1,8 +1,23 @@
-import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
-import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
+import type {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
+import { redirect } from "@remix-run/node";
+import {
+  Form,
+  json,
+  Link,
+  useActionData,
+  useNavigation,
+  useSearchParams,
+} from "@remix-run/react";
 import { Translator } from "../data/language/translator";
-import { useState } from "react";
-import { ZodError, z } from "zod";
+import { useEffect, useState } from "react";
+import Alert from "../components/alert";
+import { createSupabaseServerClient } from "../supabase.server";
+import { AuthError} from "@supabase/supabase-js";
+import { forgetSchema } from "../data/schema/validators";
 
 export const meta: MetaFunction = () => {
   return [
@@ -14,21 +29,59 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const lang = new URL(request.url).searchParams.get("lang") || "sr";
+  try {
+    const { supabaseClient } = createSupabaseServerClient(request);
+    const user = await supabaseClient.auth.getUser();
+
+    if (user?.data?.user?.role === "authenticated") {
+      return redirect(`/dashboard/search?lang=${lang}`);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
+  return null;
+};
+
 export const action = async ({ request }: ActionFunctionArgs) => {
+  const lang = new URL(request.url).searchParams.get("lang") || "sr";
   const formData = await request.formData();
+  const { supabaseClient, headers } = createSupabaseServerClient(request);
   const email = formData.get("email");
 
-  const schema = z.object({
-    email: z.string().email({ message: "Please provide valid email." }),
-  });
-
-
   try {
-    schema.parse({
+    const { success, error: zError } = forgetSchema.safeParse({
       email,
     });
+
+    if (zError) {
+      return json({ success: false, error: zError }, { headers, status: 400 });
+    }
+
+    if (success) {
+      const { error: resetError } =
+        await supabaseClient.auth.resetPasswordForEmail(email as string, {
+          redirectTo: `${process.env.BASE_URL}/auth/redirect`,
+        });
+
+      if (resetError) {
+        return json(
+          { success: false, error: resetError as AuthError },
+          { headers, status: 500 }
+        );
+      } else {
+        return redirect(`/auth/success?lang=${lang}&referer=recovery`, {
+          headers,
+        });
+      }
+    }
   } catch (error) {
-    return error as ZodError;
+    return json(
+      { success: false, error: error as AuthError },
+      { headers, status: 500 }
+    );
   }
 
   return null;
@@ -36,18 +89,67 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function AuthForgetPass() {
   const [searchParams] = useSearchParams();
+  const navigation = useNavigation();
 
   const [email, setEmail] = useState<string>("");
+  const [emailError, setEmailError] = useState<string>();
+  const [apiError, setApiError] = useState<string>();
 
   const actionData = useActionData<typeof action>();
-  const emailError = actionData?.issues.filter((issue) =>
-    issue.path?.includes("email")
-  );
 
   const translator = new Translator("auth");
   const lang = searchParams.get("lang");
+
+  useEffect(() => {
+    if (actionData && "success" in actionData && actionData.success) {
+      setEmail("");
+    }
+
+    if (actionData && "error" in actionData && "issues" in actionData.error) {
+      const emailErrorCatch = actionData?.error.issues.filter((issue) =>
+        issue.path?.includes("email")
+      );
+
+      if (emailErrorCatch.length) {
+        setEmailError(
+          translator.getTranslation(lang!, emailErrorCatch[0].message)
+        );
+      }
+      if (!emailErrorCatch.length && emailError) {
+        setEmailError("");
+      }
+    }
+
+    if (
+      actionData &&
+      "error" in actionData &&
+      !("issues" in actionData.error) &&
+      emailError
+    ) {
+      if (emailError) {
+        setEmailError("");
+      }
+    }
+
+    if (
+      actionData &&
+      "success" in actionData &&
+      !actionData.success &&
+      actionData.error?.name === "AuthApiError"
+    ) {
+      setApiError(translator.getTranslation(lang!, "authApiError"));
+    }
+  }, [actionData, lang]);
+
   return (
     <div className="w-full flex justify-center bg-gray-100 font-[sans-serif] text-[#333] h-full md:min-h-screen p-4 sm:h-auto h-screen">
+      <Alert
+        type="error"
+        isOpen={apiError !== undefined}
+        title={translator.getTranslation(lang!, "errorTitle")}
+        text={apiError || ""}
+        close={() => setApiError(undefined)}
+      />
       <div className="lg:w-1/3 md:w-1/2 sm:w-3/4 w-full">
         <div className="w-full">
           <div className="w-[140px] mx-auto">
@@ -116,18 +218,33 @@ export default function AuthForgetPass() {
                     </g>
                   </svg>
                 </div>
-                {(emailError || [])?.length > 0 && (
+                {emailError && (
                   <span className="text-red-500 text-sm block">
-                    {emailError?.[0].message}
+                    {emailError}
                   </span>
                 )}
               </div>
               <div className="mt-10">
                 <button
                   type="submit"
-                  className="w-full py-2.5 px-4 text-sm font-semibold rounded text-white bg-blue-500 hover:bg-blue-600 focus:outline-none"
+                  disabled={navigation.state === "submitting" || !email}
+                  className="w-full py-2.5 px-4 text-sm font-semibold rounded text-white bg-blue-500 hover:bg-blue-600 disabled:bg-slate-300 disabled:cursor-no-drop focus:outline-none"
                 >
                   {translator.getTranslation(lang!, "linkBtn")}
+                  {navigation.state === "submitting" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18px"
+                      fill="#fff"
+                      className="ml-2 inline animate-spin"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M12 22c5.421 0 10-4.579 10-10h-2c0 4.337-3.663 8-8 8s-8-3.663-8-8c0-4.336 3.663-8 8-8V2C6.579 2 2 6.58 2 12c0 5.421 4.579 10 10 10z"
+                        data-original="#000000"
+                      />
+                    </svg>
+                  )}
                 </button>
               </div>
             </Form>
