@@ -39,7 +39,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const user = await supabaseClient.auth.getUser();
 
     if (user?.data?.user?.role === "authenticated") {
-      return redirect(`/dashboard?lang=${lang}`);
+      return redirect(`/dashboard/search?lang=${lang}`);
     }
   } catch (error) {
     console.log(error);
@@ -131,11 +131,13 @@ export default function AuthSign() {
   const [searchParams] = useSearchParams();
   // const submit = useSubmit();
   const lang = searchParams.get("lang") || "sr";
+  const success = searchParams.get("success");
 
   const navigation = useNavigation();
 
   const [signInType] = useState<string>("2");
   const [apiError, setApiError] = useState<string>();
+  const [recoverySuccess, setRecoverySuccess] = useState<boolean>(false);
 
   const [showPass, setShowPass] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
@@ -151,6 +153,12 @@ export default function AuthSign() {
       window.history.replaceState({}, "");
     };
   }, []);
+
+  useEffect(() => {
+    if (success === "recovery") {
+      setRecoverySuccess(true);
+    }
+  }, [success]);
 
   useEffect(() => {
     if (actionData && "success" in actionData && actionData.success) {
@@ -210,6 +218,13 @@ export default function AuthSign() {
 
   return (
     <div className="w-full flex justify-center bg-gray-100 font-[sans-serif] text-[#333] h-full md:min-h-screen p-4 sm:h-auto h-screen">
+      <Alert
+        type="success"
+        isOpen={recoverySuccess}
+        title={translator.getTranslation(lang, "successTitle")}
+        text={translator.getTranslation(lang, "recoverySuccess")}
+        close={() => setRecoverySuccess(false)}
+      />
       <Alert
         type="error"
         isOpen={apiError !== undefined}

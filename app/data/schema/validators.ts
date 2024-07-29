@@ -35,3 +35,20 @@ export const connectionSchema = z.object({
   archiveId: z.string().regex(/^\d+$/),
   detailId: z.string().regex(/^\d+$/),
 });
+
+export const forgetSchema = z.object({
+  email: z.string().email({ message: "emailError" }),
+});
+
+export const changePassSchema = z.object({
+  password: password,
+  confirmPass: password,
+}).superRefine(({ confirmPass, password }, ctx) => {
+  if (confirmPass !== password) {
+    ctx.addIssue({
+      code: "custom",
+      message: "confirmError",
+      path: ['confirmPass']
+    });
+  }
+});

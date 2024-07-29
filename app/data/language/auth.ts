@@ -8,6 +8,7 @@ export const authMap: Record<string, Record<string, string>> = {
     password: "Password",
     emailInput: "Enter email",
     passInput: "Enter password",
+    passConfirmInput: "Confirm password",
     nameInput: "Enter name",
     passForgot: "Forgot Password?",
     sendLink: "Send magic link",
@@ -37,6 +38,15 @@ export const authMap: Record<string, Record<string, string>> = {
     successText: "You have successfully signed up, now you need to confirm your email. We have sent you an email with the confirmation link. Please, check your inbox and confirm your email.",
     alreadyConfirm: "Email already confirmed?",
     errorTitle: "Error",
+    confirmError: "Passwords are not identical. Please both input fields should contain the same password.",
+    changePass: "Change password",
+    changePassText: "Please input new password and confirm it, so that passwords from the both fields are identical.",
+    recoverySend: "You have successfully started the password change process. We have send you a link for the password change, so please check your inbox and click on the link we have sent.",
+    recoveryErrorText: "You are using invalid password change link. Please check you inbox for newer emails with active link. If you don't find it, start the password change process again.",
+    noActiveRecoveryLink: "You do not have active password change link?",
+    forgotPassAgain: "Start the process again",
+    successTitle: "Success!",
+    recoverySuccess: "You have changed the password. Now you can login using that new password."
   },
   sr: {
     signTitle: "Prijavite se",
@@ -47,6 +57,7 @@ export const authMap: Record<string, Record<string, string>> = {
     password: "Lozinka",
     emailInput: "Upišite email",
     passInput: "Upišite lozinku",
+    passConfirmInput: "Potvrdite lozinku",
     nameInput: "Upišite ime",
     passForgot: "Zaboravili ste lozinku?",
     sendLink: "Pošalji magični link",
@@ -76,6 +87,15 @@ export const authMap: Record<string, Record<string, string>> = {
     successText: "Uspešno ste se registrovali, sada je potrebno da potvrdite vaš email kako bi mogli da pristupate platformi. Na vašu email adresu je poslat konfirmacioni email sa linkom. Molimo vas, proverite vaše sanduče i potvrdite email klikom na link.",
     alreadyConfirm: "Već ste potvrdili email?",
     errorTitle: "Greška",
+    confirmError: "Lozinke nisu identične. Molimo vas u oba polja upišite istu lozinku.",
+    changePass: "Promenite lozinku",
+    changePassText: "Molimo vas upišite novu lozinku i potvrdite je, tako da lozinke u oba polja budu identične.",
+    recoverySend: "Uspešno ste započeli proces zamene lozinke. Na vaš email je poslat link za zamenu lozinke. Molimo vas proverite vaše email sanduče i kliknite na link koji smo vam poslali.",
+    recoveryErrorText: "Koristite link za promenu lozinke koji više nije aktivan. Molimo vas da u vašem email sandučetu proverite da li imate noviji email sa aktivnim linkom za promenu lozinke. Ukoliko nemate ponovo započnite proces zamene lozinke.",
+    noActiveRecoveryLink: "Nemate link za promenu lozinke?",
+    forgotPassAgain: "Ponovite proces zamene lozinke",
+    successTitle: "Uspešno!",
+    recoverySuccess: "Promenili ste lozinku, sada možete da se prijavite koristeći novu lozinku."
   },
 };
 
