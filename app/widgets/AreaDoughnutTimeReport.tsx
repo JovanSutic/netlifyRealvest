@@ -14,13 +14,15 @@ const AreaDoughnutTimeReport = ({
   isShown,
   data,
   date,
-  timeRange
+  timeRange,
+  mobile= false,
 }: {
   lang: LangType;
   isShown: boolean;
   data: DashboardSearchType[];
   date: string;
   timeRange: RangeOption;
+  mobile?: boolean;
 }) => {
   const reportTranslate = new Translator("report");
   const translate = new Translator("dashboard");
@@ -54,6 +56,7 @@ const AreaDoughnutTimeReport = ({
                 labels={chartData.labels}
                 data={numbersToPercentage(chartData.data)}
                 label={reportTranslate.getTranslation(lang!, "pieUnitLabel")}
+                mobile={mobile}
               />
             </div>
           </>

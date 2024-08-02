@@ -38,7 +38,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const accessToken = await authCookie.parse(cookie);
     const refreshToken = await refreshCookie.parse(cookie);
     if (accessToken && refreshToken) {
-      const { data, error: sessionError } =
+      const { error: sessionError } =
         await supabaseClient.auth.setSession({
           access_token: accessToken || "",
           refresh_token: refreshToken || "",
@@ -46,8 +46,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       if (sessionError) {
         console.log(sessionError);
       }
-
-      console.log(data);
     } else {
       return redirect(`/?lang=${lang}`);
     }
