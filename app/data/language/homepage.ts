@@ -1,7 +1,7 @@
 export const homepageMap: Record<string, Record<string, string>> = {
   en: {
     heroTitle: "Data that is giving you more confidence",
-    haveAccount: "You have an account? Log in",
+    haveAccount: "Have an account? Log in",
     heroSubtitle: "Realvest is connecting you with relevant market data that will help you to make better decisions while buying, selling or renting real estate.",
     heroCta: "Create free account",
     howTitle: "Useful data, completely free available in just 3 clicks.",
