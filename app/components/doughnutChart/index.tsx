@@ -8,12 +8,14 @@ const DoughnutChart = ({
   id,
   data,
   label,
+  mobile = false,
 }: {
   labels: string[];
   data: number[] | string[];
   ratio: number;
   id: string;
   label: string;
+  mobile?: boolean;
 }) => {
   const [currentId, setCurrentId] = useState<string>();
   useEffect(() => {
@@ -76,7 +78,7 @@ const DoughnutChart = ({
             position: "left",
             labels: {
               boxPadding: 10,
-              padding: 8,
+              padding: mobile ? 4 : 8,
             },
           },
           tooltip: {

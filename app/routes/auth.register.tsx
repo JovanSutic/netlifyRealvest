@@ -12,6 +12,7 @@ import {
   useActionData,
   useNavigation,
   useSearchParams,
+  useSubmit,
   // useSubmit,
 } from "@remix-run/react";
 import { Translator } from "../data/language/translator";
@@ -57,7 +58,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         await supabaseClient.auth.signInWithOAuth({
           provider: "google",
           options: {
-            redirectTo: `${process.env.BASE_URL}auth/callback`,
+            redirectTo: `${process.env.BASE_URL}/auth/callback`,
             queryParams: {
               access_type: "offline",
               prompt: "consent select_account",
@@ -73,7 +74,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       }
 
       if (googleAuthData.url) {
-        return redirect(googleAuthData.url);
+        return redirect(googleAuthData.url, { headers: headers });
       }
     } catch (error) {
       return json(
@@ -127,7 +128,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         }
         return json({ success: false, error: error }, { headers, status: 400 });
       } else {
-        return redirect(`/auth/success?lang=${lang}&referer=registration`, { headers });
+        return redirect(`/auth/success?lang=${lang}&referer=registration`, {
+          headers,
+        });
       }
     } else {
       return json({ success: false, error: zError }, { headers, status: 400 });
@@ -142,9 +145,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function AuthRegister() {
   const [searchParams] = useSearchParams();
-  // const submit = useSubmit();
+  const submit = useSubmit();
 
-  const lang = searchParams.get("lang") || 'sr';
+  const lang = searchParams.get("lang") || "sr";
 
   const navigation = useNavigation();
 
@@ -276,7 +279,7 @@ export default function AuthRegister() {
             </h3>
           </div>
           <div>
-            {/* <div>
+            <div>
               <button
                 className="w-full py-2 px-4 text-sm center rounded border-[1px] border-solid border-slate-300 mb-4"
                 onClick={() => submit({ type: "3" }, { method: "post" })}
@@ -320,7 +323,7 @@ export default function AuthRegister() {
                 </svg>
                 {translator.getTranslation(lang!, "googleSign")}
               </button>
-            </div> */}
+            </div>
             <hr className="mb-2 border-gray-300" />
           </div>
           <div>
@@ -475,7 +478,7 @@ export default function AuthRegister() {
                   type="checkbox"
                   checked={conditions}
                   className="w-4 h-4 mr-3"
-                  onClick={() => setConditions(!conditions)}
+                  onChange={() => setConditions(!conditions)}
                 />
                 <label htmlFor="checkbox1" className="text-slate-500 text-sm">
                   {translator.getTranslation(lang!, "accept")} {"  "}

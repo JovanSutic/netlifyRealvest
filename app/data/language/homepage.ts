@@ -1,6 +1,7 @@
 export const homepageMap: Record<string, Record<string, string>> = {
   en: {
     heroTitle: "Data that is giving you more confidence",
+    haveAccount: "You have an account? Log in",
     heroSubtitle: "Realvest is connecting you with relevant market data that will help you to make better decisions while buying, selling or renting real estate.",
     heroCta: "Create free account",
     howTitle: "Useful data, completely free available in just 3 clicks.",
@@ -28,6 +29,7 @@ export const homepageMap: Record<string, Record<string, string>> = {
   },
   sr: {
     heroTitle: "Podaci koji daju veće samopouzdanje",
+    haveAccount: "Imate nalog? Prijavite se",
     heroSubtitle: "Realvest vas povezuje sa relevantnim tržišnim podacima koji olakšavaju proces donošenja odluka pri kupovini, prodaji ili izdavanju nekretinina.",
     heroCta: "Napravite nalog besplatno",
     howTitle: "Korisni podaci, potpuno besplatno dostupni uz samo 3 klika.",

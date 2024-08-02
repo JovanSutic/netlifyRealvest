@@ -19,12 +19,14 @@ const AreaDoughnutReport = ({
     data,
     propertyType,
     rental = false,
+    mobile = false,
   }: {
     lang: LangType;
     isShown: boolean;
     data: DashboardSearchType[];
     propertyType: PropertyType | RentalPropertyType;
     rental?: boolean;
+    mobile?: boolean;
   }) => {
     const [distributionType, setDistributionType] =
     useState<DistributionTypeKey>("price_map");
@@ -89,6 +91,7 @@ const AreaDoughnutReport = ({
                       ? reportTranslate.getTranslation(lang!, "pieUnitLabel")
                       : reportTranslate.getTranslation(lang!, "pieAverageLabel")
                   }
+                  mobile={mobile}
                 />
               </div>
           </>

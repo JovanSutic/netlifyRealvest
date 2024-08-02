@@ -12,6 +12,7 @@ import {
   useNavigation,
   // useSubmit,
   useSearchParams,
+  useSubmit,
 } from "@remix-run/react";
 import { Translator } from "../data/language/translator";
 // import Tabs from "../components/tabs";
@@ -63,7 +64,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           await supabaseClient.auth.signInWithOAuth({
             provider: "google",
             options: {
-              redirectTo: `${process.env.BASE_URL}auth/callback`,
+              redirectTo: `${process.env.BASE_URL}/auth/callback`,
               queryParams: {
                 access_type: "offline",
                 prompt: "consent select_account",
@@ -79,7 +80,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         }
 
         if (googleAuthData.url) {
-          return redirect(googleAuthData.url);
+          return redirect(googleAuthData.url, { headers: headers });
         }
       } catch (error) {
         return json(
@@ -129,7 +130,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function AuthSign() {
   const [searchParams] = useSearchParams();
-  // const submit = useSubmit();
+  const submit = useSubmit();
   const lang = searchParams.get("lang") || "sr";
   const success = searchParams.get("success");
 
@@ -212,7 +213,9 @@ export default function AuthSign() {
       !actionData.success &&
       actionData.error?.name === "AuthApiError"
     ) {
-      setApiError(translator.getTranslation(lang, "authApiError"));
+      email.includes("gmail.com")
+        ? setApiError(translator.getTranslation(lang, "authApiErrorGmail"))
+        : setApiError(translator.getTranslation(lang, "authApiError"));
     }
   }, [actionData, lang]);
 
@@ -254,7 +257,7 @@ export default function AuthSign() {
             </p>
           </div>
           <div>
-            {/* <div>
+            <div>
               <button
                 className="w-full py-2 px-4 text-sm center rounded border-[1px] border-solid border-slate-300 mb-4"
                 onClick={() => submit({ type: "3" }, { method: "post" })}
@@ -298,7 +301,7 @@ export default function AuthSign() {
                 </svg>
                 {translator.getTranslation(lang!, "googleLogin")}
               </button>
-            </div> */}
+            </div>
             <hr className="mb-2 border-gray-300" />
             {/* 
             <Tabs
