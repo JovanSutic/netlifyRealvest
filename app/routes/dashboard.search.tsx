@@ -5,7 +5,7 @@ import { ClientOnly } from "../components/helpers/ClientOnly";
 import { LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
 import Select from "../components/select/Select";
 import { useEffect, useState } from "react";
-import { useFetcher, useSearchParams } from "@remix-run/react";
+import { useFetcher, useLoaderData, useSearchParams } from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
 import {
   AreaReportType,
@@ -47,6 +47,7 @@ import AreaLineReport from "../widgets/AreaLineReport";
 import AreaDoughnutReport from "../widgets/AreaDoughnutReport";
 import AreaDoughnutTimeReport from "../widgets/AreaDoughnutTimeReport";
 import { isMobile } from "../utils/params";
+import { default as LocalTooltip } from "../components/tooltip/Tooltip";
 
 export const links: LinksFunction = () => [
   {
@@ -144,7 +145,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return json({
     data: [],
     list: [],
-    lastDate: '',
+    lastDate: "",
     mobile: isMobile(userAgent!),
   });
 };
@@ -160,6 +161,7 @@ const DashboardSearch = () => {
 
   const reportTranslate = new Translator("report");
   const translate = new Translator("dashboard");
+  const { mobile } = useLoaderData<typeof loader>();
 
   const fetcher = useFetcher<{
     data: AreaReportType;
@@ -196,14 +198,14 @@ const DashboardSearch = () => {
     <DashboardPage>
       <div className="grid grid-cols-12 gap-4 pt-5 lg:pt-0">
         <div className="row-start-1 col-span-12 xl:col-span-7 lg:row-start-1">
-          <div className="my-2 flex h-full flex-row items-center">
+          <div className="my-0 xl:my-2 flex h-full flex-row items-center">
             <h2 className="text-center xl:text-left text-2xl font-semibold">
               {translate.getTranslation(lang, "searchTitle")}
             </h2>
           </div>
         </div>
         <div className="row-start-2 col-span-12 xl:col-span-5 lg:row-start-1">
-          <div className="grid grid-cols-12 xl:grid-cols-3 grid-rows-1 gap-4 col-start-1 xl:col-start-2 mt-4">
+          <div className="grid grid-cols-12 xl:grid-cols-3 grid-rows-1 gap-4 col-start-1 xl:col-start-2 mt-0 xl:mt-4">
             <div className="col-span-6 xl:col-span-1 xl:col-start-2">
               <label
                 htmlFor="mapCity"
@@ -284,63 +286,183 @@ const DashboardSearch = () => {
           <WidgetWrapper>
             <Loader open={fetcher.state === "loading"} />
             <div className="grid grid-cols-3 grid-rows-1 gap-1 mb-4">
-              <div className="col-span-3 col-start-1 lg:col-span-1">
-                <div>
-                  <label
-                    htmlFor="mapCity"
-                    className="text-slate-800 ml-1 text-sm font-semibold"
-                  >
-                    {translate.getTranslation(lang, "areaRange")}
-                  </label>
-                  <div className="width-44">
-                    <Select
-                      name="mapRange"
-                      value={range}
-                      isFullWidth={true}
-                      setValue={(value) => {
-                        setRange(value);
-                      }}
-                      options={[
-                        {
-                          value: "250",
-                          text: `250 ${translate.getTranslation(
+              {mobile ? (
+                <>
+                  <div className="col-span-3 col-start-1 xl:col-span-1 xl:col-start-3">
+                    <div className="flex flex-row-reverse">
+                      <div className="w-[30px]">
+                        <LocalTooltip
+                          text={translate.getTranslation(
                             lang,
-                            "meters"
-                          )}`,
-                        },
-                        {
-                          value: "500",
-                          text: `500 ${translate.getTranslation(
-                            lang,
-                            "meters"
-                          )}`,
-                        },
-                        {
-                          value: "1000",
-                          text: `1000 ${translate.getTranslation(
-                            lang,
-                            "meters"
-                          )}`,
-                        },
-                        {
-                          value: "1500",
-                          text: `1500 ${translate.getTranslation(
-                            lang,
-                            "meters"
-                          )}`,
-                        },
-                        {
-                          value: "2000",
-                          text: `2000 ${translate.getTranslation(
-                            lang,
-                            "meters"
-                          )}`,
-                        },
-                      ]}
-                    />
+                            "searchDescription"
+                          )}
+                          style="top"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="size-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                            />
+                          </svg>
+                        </LocalTooltip>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                  <div className="col-span-3 col-start-1 lg:col-start-1 lg:col-span-1">
+                    <div>
+                      <label
+                        htmlFor="mapCity"
+                        className="text-slate-800 ml-1 text-sm font-semibold"
+                      >
+                        {translate.getTranslation(lang, "areaRange")}
+                      </label>
+                      <div className="width-44">
+                        <Select
+                          name="mapRange"
+                          value={range}
+                          isFullWidth={true}
+                          setValue={(value) => {
+                            setRange(value);
+                          }}
+                          options={[
+                            {
+                              value: "250",
+                              text: `250 ${translate.getTranslation(
+                                lang,
+                                "meters"
+                              )}`,
+                            },
+                            {
+                              value: "500",
+                              text: `500 ${translate.getTranslation(
+                                lang,
+                                "meters"
+                              )}`,
+                            },
+                            {
+                              value: "1000",
+                              text: `1000 ${translate.getTranslation(
+                                lang,
+                                "meters"
+                              )}`,
+                            },
+                            {
+                              value: "1500",
+                              text: `1500 ${translate.getTranslation(
+                                lang,
+                                "meters"
+                              )}`,
+                            },
+                            {
+                              value: "2000",
+                              text: `2000 ${translate.getTranslation(
+                                lang,
+                                "meters"
+                              )}`,
+                            },
+                          ]}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="col-span-3 col-start-1 lg:col-start-1 lg:col-span-1">
+                    <div>
+                      <label
+                        htmlFor="mapCity"
+                        className="text-slate-800 ml-1 text-sm font-semibold"
+                      >
+                        {translate.getTranslation(lang, "areaRange")}
+                      </label>
+                      <div className="width-44">
+                        <Select
+                          name="mapRange"
+                          value={range}
+                          isFullWidth={true}
+                          setValue={(value) => {
+                            setRange(value);
+                          }}
+                          options={[
+                            {
+                              value: "250",
+                              text: `250 ${translate.getTranslation(
+                                lang,
+                                "meters"
+                              )}`,
+                            },
+                            {
+                              value: "500",
+                              text: `500 ${translate.getTranslation(
+                                lang,
+                                "meters"
+                              )}`,
+                            },
+                            {
+                              value: "1000",
+                              text: `1000 ${translate.getTranslation(
+                                lang,
+                                "meters"
+                              )}`,
+                            },
+                            {
+                              value: "1500",
+                              text: `1500 ${translate.getTranslation(
+                                lang,
+                                "meters"
+                              )}`,
+                            },
+                            {
+                              value: "2000",
+                              text: `2000 ${translate.getTranslation(
+                                lang,
+                                "meters"
+                              )}`,
+                            },
+                          ]}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-span-3 col-start-1 xl:col-span-1 xl:col-start-3">
+                    <div className="flex flex-row-reverse">
+                      <div className="w-[30px]">
+                        <LocalTooltip
+                          text={translate.getTranslation(
+                            lang,
+                            "searchDescription"
+                          )}
+                          style="top"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="size-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                            />
+                          </svg>
+                        </LocalTooltip>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
             <ClientOnly
               fallback={
@@ -352,11 +474,6 @@ const DashboardSearch = () => {
             >
               {() => <Map range={Number(range)} setCenter={setCenter} />}
             </ClientOnly>
-            <div className="w-full mt-4">
-              <p className="text-sm text-slate-700 font-serif">
-                {translate.getTranslation(lang, "searchDescription")}
-              </p>
-            </div>
           </WidgetWrapper>
         </div>
         <div className="row-start-4 col-span-12 lg:col-span-5 col-start-1 lg:col-start-8 lg:row-start-2 mb-6">
@@ -385,6 +502,7 @@ const DashboardSearch = () => {
               onChange={(value) => {
                 setTab(value);
               }}
+              rows={mobile ? 2 : 1}
             />
             <div className="mt-4">
               {tab === "1" && (
@@ -425,6 +543,7 @@ const DashboardSearch = () => {
                   data={fetcher.data?.list || []}
                   lang={lang}
                   propertyType={propertyType}
+                  mobile={mobile}
                 />
               )}
               {tab === "4" && (
@@ -434,6 +553,7 @@ const DashboardSearch = () => {
                   lang={lang}
                   timeRange={timeRange}
                   date={fetcher.data?.lastDate || ""}
+                  mobile={mobile}
                 />
               )}
             </div>

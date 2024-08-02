@@ -80,7 +80,7 @@ export const WidgetWrapper = ({
   children: JSX.Element | JSX.Element[];
 }) => {
   return (
-    <div className="bg-white relative box-border rounded-lg p-5 mb-5 shadow-lg">
+    <div className="bg-white relative box-border rounded-lg p-5 mb-2 md:mb-5 shadow-lg">
       {children}
     </div>
   );

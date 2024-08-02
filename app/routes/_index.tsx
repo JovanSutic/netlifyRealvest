@@ -19,7 +19,6 @@ export const meta: MetaFunction = () => {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userAgent = request.headers.get("user-agent");
   return json({ ok: true, mobile: isMobile(userAgent!) });
-
 };
 
 export default function Index() {
@@ -85,8 +84,14 @@ export default function Index() {
               <div className="flex self-center">
                 <div className="">
                   <Link
+                    to={`auth/?lang=${lang}`}
+                    className="text-md px-4 py-2 bg-slate-600 font-semibold text-white rounded-xl transition-all duration-300 transform hover:bg-slate-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                  >
+                    {translator.getTranslation(lang, "haveAccount")}
+                  </Link>
+                  <Link
                     to={`/?lang=${lang === "sr" ? "en" : "sr"}`}
-                    className="text-md font-semibold text-blue-500 transform hover:text-blue-700"
+                    className="text-sm font-regular text-blue-500 transform hover:text-blue-700 ml-6"
                   >
                     {lang === "sr" ? "english version" : "srpska verzija"}
                   </Link>
@@ -374,9 +379,7 @@ export default function Index() {
                     Contact Us
                   </h4>
                   <ul className="text-gray-300">
-                    <li>
-                      office@yourealvest.com
-                    </li>
+                    <li>office@yourealvest.com</li>
                   </ul>
                 </div>
 
