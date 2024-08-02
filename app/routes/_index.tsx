@@ -71,9 +71,9 @@ export default function Index() {
       <TPage color="bg-white" mobile={mobile}>
         <TLine columns={1}>
           <TColumn span={1}>
-            <div className="flex flex-row justify-between">
-              <div className="flex items-center">
-                <div className="w-[160px] border-b-black border-b-2 ">
+            <div className="flex flex-col md:flex-row justify-between">
+              <div className="flex flex-row justify-center">
+                <div className="w-[140px] md:w-[160px]">
                   <img
                     src="logo1.png"
                     alt="Realvest logo"
@@ -81,8 +81,8 @@ export default function Index() {
                   />
                 </div>
               </div>
-              <div className="flex self-center">
-                <div className="">
+              <div className="flex flex-col mt-3 md:mt-0">
+                <div className="flex flex-col md:flex-row items-center">
                   <Link
                     to={`auth/?lang=${lang}`}
                     className="text-md px-4 py-2 bg-slate-600 font-semibold text-white rounded-xl transition-all duration-300 transform hover:bg-slate-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
@@ -91,7 +91,7 @@ export default function Index() {
                   </Link>
                   <Link
                     to={`/?lang=${lang === "sr" ? "en" : "sr"}`}
-                    className="text-sm font-regular text-blue-500 transform hover:text-blue-700 ml-6"
+                    className="text-sm font-regular text-blue-500 transform hover:text-blue-700 ml-0 md:ml-6"
                   >
                     {lang === "sr" ? "english version" : "srpska verzija"}
                   </Link>
