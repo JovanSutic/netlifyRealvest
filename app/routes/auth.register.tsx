@@ -21,14 +21,14 @@ import { registrationSchema } from "../data/schema/validators";
 import { createSupabaseServerClient } from "../supabase.server";
 import Alert from "../components/alert";
 import { AuthError } from "@supabase/supabase-js";
+import { getParamValue } from "../utils/params";
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction = ({location}) => {
+  const lang = getParamValue(location.search, 'lang', 'sr');
+  const translator = new Translator("auth");
   return [
-    { title: "Register to Estate Insights" },
-    {
-      name: "description",
-      content: "Register to Estate Insights to get best property insights",
-    },
+    { title: translator.getTranslation(lang, 'registerMetaTitle')},
+    { name: "description", content: translator.getTranslation(lang, 'registerMetaDesc') },
   ];
 };
 
@@ -257,7 +257,7 @@ export default function AuthRegister() {
         close={() => setApiError(undefined)}
       />
       <div className="lg:w-1/3 md:w-1/2 sm:w-3/4 w-full">
-        <div className="w-full">
+        <div className="w-full relative">
           <div className="w-[140px] mx-auto">
             <Link to={`/?lang=${lang}`}>
               <img
@@ -265,6 +265,14 @@ export default function AuthRegister() {
                 alt="Realvest logo"
                 className="max-w-full"
               />
+            </Link>
+          </div>
+          <div className="flex flex-row absolute bottom-0">
+            <Link
+              to={`/?lang=${lang}`}
+              className="text-sm font-regular text-blue-400 underline transform hover:text-blue-500"
+            >
+              {translator.getTranslation(lang!, "home")}
             </Link>
           </div>
         </div>

@@ -1,7 +1,17 @@
-import { Link, useSearchParams } from "@remix-run/react";
+import { Link, MetaFunction, useSearchParams } from "@remix-run/react";
 import { Translator } from "../data/language/translator";
 import { createSupabaseServerClient } from "../supabase.server";
 import { redirect, type LoaderFunctionArgs } from "@remix-run/node";
+import { getParamValue } from "../utils/params";
+
+export const meta: MetaFunction = ({location}) => {
+  const lang = getParamValue(location.search, 'lang', 'sr');
+  const translator = new Translator("auth");
+  return [
+    { title: translator.getTranslation(lang, 'successMetaTitle')},
+    { name: "description", content: translator.getTranslation(lang, 'successMetaDesc') },
+  ];
+};
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {

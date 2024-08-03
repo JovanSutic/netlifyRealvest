@@ -5,7 +5,7 @@ import { ClientOnly } from "../components/helpers/ClientOnly";
 import { LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
 import Select from "../components/select/Select";
 import { useEffect, useState } from "react";
-import { useFetcher, useLoaderData, useSearchParams } from "@remix-run/react";
+import { MetaFunction, useFetcher, useLoaderData, useSearchParams } from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
 import {
   AreaReportType,
@@ -46,7 +46,7 @@ import {
 import AreaLineReport from "../widgets/AreaLineReport";
 import AreaDoughnutReport from "../widgets/AreaDoughnutReport";
 import AreaDoughnutTimeReport from "../widgets/AreaDoughnutTimeReport";
-import { isMobile } from "../utils/params";
+import { getParamValue, isMobile } from "../utils/params";
 import { default as LocalTooltip } from "../components/tooltip/Tooltip";
 
 export const links: LinksFunction = () => [
@@ -55,6 +55,16 @@ export const links: LinksFunction = () => [
     href: "https://unpkg.com/leaflet@1.8.0/dist/leaflet.css",
   },
 ];
+
+export const meta: MetaFunction = ({location}) => {
+  const lang = getParamValue(location.search, 'lang', 'sr');
+  const translate = new Translator("dashboard");
+  
+  return [
+    { title: translate.getTranslation(lang, 'searchMetaTitle') },
+    { name: "description", content: translate.getTranslation(lang, 'searchMetaDesc') },
+  ];
+};
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userAgent = request.headers.get("user-agent");

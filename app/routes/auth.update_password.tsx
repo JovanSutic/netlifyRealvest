@@ -19,14 +19,14 @@ import { createSupabaseServerClient } from "../supabase.server";
 import { AuthError } from "@supabase/supabase-js";
 import { changePassSchema } from "../data/schema/validators";
 import { authCookie, refreshCookie } from "../utils/cookies";
+import { getParamValue } from "../utils/params";
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction = ({location}) => {
+  const lang = getParamValue(location.search, 'lang', 'sr');
+  const translator = new Translator("auth");
   return [
-    { title: "Register to Estate Insights" },
-    {
-      name: "description",
-      content: "Register to Estate Insights to get best property insights",
-    },
+    { title: translator.getTranslation(lang, 'passwordMetaTitle')},
+    { name: "description", content: translator.getTranslation(lang, 'passwordMetaDesc') },
   ];
 };
 
