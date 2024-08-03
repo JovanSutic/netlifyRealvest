@@ -67,6 +67,10 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     lux: "Lux furnished:",
     featureBenefits: 'Low represented rental features:',
     featureEssentials: 'Very represented rental features:',
+    searchMetaTitle: 'Realvest - real estate sales prices in Serbia',
+    searchMetaDesc: 'Real estate sales prices with Serbia area analysis',
+    rentalMetaTitle: 'Realvest - real estate rental prices in Serbia',
+    rentalMetaDesc: 'Real estate rental prices with Serbia area analysis',
   },
   sr: {
     meters: "metara",
@@ -138,5 +142,9 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     lux: "Luksuzno opremljen:",
     featureBenefits: 'Slabije zastupljene odlike izdatih nekretnina:',
     featureEssentials: 'Veoma zastupljene odlike izdatih nekretnina:',
+    searchMetaTitle: 'Realvest - prodajne cene nekretnina u Srbiji',
+    searchMetaDesc: 'Analiza prodajnih cena nekretnina sa prikazom zona na mapi',
+    rentalMetaTitle: 'Realvest - cene najma nekretnina u Srbiji',
+    rentalMetaDesc: 'Analiza cena najma nekretnina sa prikazom zona na mapi',
   },
 };

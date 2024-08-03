@@ -26,6 +26,8 @@ export const homepageMap: Record<string, Record<string, string>> = {
     faq5Text: "We currently display 8 types of reports. These are: general sales report, price movement, distribution of prices, distribution of sales, general rental report, rental prices movement, distribution of rental prices and rental features. There are many more reports, visualizations and conclusions planned that will help you get a clearer picture of certain parts of the market.",
     faq6Title: "Can I only see information about apartments?",
     faq6Text: "The data we collect is divided into 3 types of real estate: residential (apartments), garage and commercial (business premises). Data for all 3 types is available to our users.",
+    homeMetaTitle: "Realvest - platform for Belgrade real estate analysis",
+    homeMetaDesc: "Platform for Belgrade real estate analysis",
   },
   sr: {
     heroTitle: "Podaci koji daju veće samopouzdanje",
@@ -54,6 +56,8 @@ export const homepageMap: Record<string, Record<string, string>> = {
     faq5Text: "Za sada prikazujemo 8 tipova izveštaja. To su: generalni izveštaj prodaje, kretanje cena, raspodela cena, raspodela prodaja, generalni izveštaj izdavanje, kretanje cena izdavanja, raspodela cena izdavanja i odlike izdatog. U planu imam još mnogo dodatnih izveštaja, vizuelizacije i zaključaka koji će vam pomoći da steknete jasniju sliku pojedinih delova tržišta.",
     faq6Title: "Da li mogu da vidim samo podatke o stanovima?",
     faq6Text: "Podaci koje prikupljamo podeljeni su na 3 vrste nekretnina: rezidencijalni (stanovi), garažni i komercijalni (poslovni prostori). Podaci za sve 3 vrste su dostupni za članove.",
+    homeMetaTitle: "Realvest - platforma za analizu tržišta nekretnina Beograda",
+    homeMetaDesc: "Platforma za analizu tržišta nekretnina Beograda",
   },
 
 };
