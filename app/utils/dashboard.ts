@@ -30,7 +30,11 @@ import {
   getPieSpread,
   getPieSpreadRental,
 } from "./reports";
-import { addMonths, format, setDate } from "date-fns";
+import {
+  addMonths,
+  format,
+  setDate,
+} from "date-fns";
 import { ellipse, point, lineString, bbox, bboxPolygon } from "@turf/turf";
 
 export const generateAreaReport = (
@@ -370,7 +374,9 @@ export const getDataForAreaTimePie = (
     const newDate = new Date(date);
 
     for (let index = 0; index < rangeMap[timeRange] - 1; index++) {
-      newDate.setMonth(newDate?.getMonth() - 1);
+      if (index > 0) {
+        newDate.setMonth(newDate?.getMonth() - 1);
+      }
       const labelItem = excludeDayFromDateString(dateToDateString(newDate));
       labels.push(labelItem);
       dataPreset[labelItem] = [];
@@ -550,7 +556,12 @@ const getFeaturesData = (details: Details[]): Features => {
     if (item.technical?.includes("Kablovska")) cableTv = cableTv + 1;
     if (item.technical?.includes("Internet")) internet = internet + 1;
     if (item.rest?.includes("Klima")) aircon = aircon + 1;
-    if (item.rest?.includes("Kućni ljubimci") || item.description?.toLowerCase().includes('pet friendly') || item.description?.toLowerCase().includes('dozvoljeni kućni ljubimci')) pets = pets + 1;
+    if (
+      item.rest?.includes("Kućni ljubimci") ||
+      item.description?.toLowerCase().includes("pet friendly") ||
+      item.description?.toLowerCase().includes("dozvoljeni kućni ljubimci")
+    )
+      pets = pets + 1;
   });
 
   return {
@@ -559,9 +570,11 @@ const getFeaturesData = (details: Details[]): Features => {
     camera: Math.round((camera / details.length) * 100),
     security: Math.round((security / details.length) * 100),
     lift: Math.round((lift / details.length) * 100),
-    terrace:
-      Math.min(Math.round((terrace / details.length) * 100) +
-      Math.round((balcony / details.length) * 100), 100),
+    terrace: Math.min(
+      Math.round((terrace / details.length) * 100) +
+        Math.round((balcony / details.length) * 100),
+      100
+    ),
     reception: Math.round((reception / details.length) * 100),
     parking:
       Math.round((parking / details.length) * 100) +
@@ -574,13 +587,12 @@ const getFeaturesData = (details: Details[]): Features => {
   };
 };
 
-
 const getDigitsFromString = (text: string): string[] => {
   const split = text.split("");
   const digits = split.filter((item) => /^\d+$/.test(item));
 
   return digits;
-}
+};
 
 const isStreetNumber = (text: string): boolean => {
   const split = text.split("");
@@ -590,25 +602,31 @@ const isStreetNumber = (text: string): boolean => {
     return true;
   }
 
-  return false
-}
+  return false;
+};
 
 export const extractAddress = (address: string): string => {
   const addressSplit = address.split(",");
   const numberIndex: number | undefined = addressSplit.findIndex((item) => {
     if (isStreetNumber(item)) {
-      if (Number(getDigitsFromString(item).join('')) < 1000) {
+      if (Number(getDigitsFromString(item).join("")) < 1000) {
         return true;
       }
     }
   });
 
-  const municipalityBase = addressSplit.find((item) => item.includes('('));
-  const municipality = municipalityBase?.split('(')[1].substring(0, municipalityBase?.split('(')[1].length - 1) || addressSplit.find((item) => item.includes('Gradska opština'));
+  const municipalityBase = addressSplit.find((item) => item.includes("("));
+  const municipality =
+    municipalityBase
+      ?.split("(")[1]
+      .substring(0, municipalityBase?.split("(")[1].length - 1) ||
+    addressSplit.find((item) => item.includes("Gradska opština"));
 
   if (numberIndex > -1 && municipality !== undefined) {
-    return `${addressSplit[numberIndex + 1]}, ${addressSplit[numberIndex]}, ${municipality}`
+    return `${addressSplit[numberIndex + 1]}, ${
+      addressSplit[numberIndex]
+    }, ${municipality}`;
   }
 
   return address;
-}
+};

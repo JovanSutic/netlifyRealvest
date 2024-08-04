@@ -5,12 +5,16 @@ import {
   Scripts,
   ScrollRestoration,
   isRouteErrorResponse,
+  useLoaderData,
+  useLocation,
   useRouteError,
 } from "@remix-run/react";
-import { LinksFunction } from "@remix-run/node";
+import { json, LinksFunction } from "@remix-run/node";
 import appStyles from "./app.css?url";
 import stylesheet from "../node_modules/tailwindcss/tailwind.css?url";
 import { default as ErrorPage } from "./components/error";
+import * as gtag from "./utils/gtag";
+import { useEffect } from "react";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStyles },
@@ -34,8 +38,21 @@ export function ErrorBoundary() {
 
   return <ErrorPage link={"/?lang=sr"} />;
 }
+export const loader = async () => {
+  return json({ gaTrackingId: process.env.GOOGLE_TAG_ID, baseUrl: process.env.BASE_URL });
+};
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const location = useLocation();
+  const { gaTrackingId, baseUrl } = useLoaderData<typeof loader>();
+  const isProd = baseUrl === 'https://yourealvest.com'
+
+  useEffect(() => {
+    if (gaTrackingId?.length) {
+      gtag.pageview(location.pathname, gaTrackingId);
+    }
+  }, [location, gaTrackingId]);
+
   return (
     <html lang="en">
       <head>
@@ -45,6 +62,29 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
+        {process.env.NODE_ENV !== "development" && gaTrackingId && isProd ? (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
+            />
+            <script
+              async
+              id="gtag-init"
+              dangerouslySetInnerHTML={{
+                __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+
+                gtag('config', '${gaTrackingId}', {
+                  page_path: window.location.pathname,
+                });
+              `,
+              }}
+            />
+          </>
+        ) : null}
         {children}
         <ScrollRestoration />
         <Scripts />

@@ -12,12 +12,12 @@ export const getParamValue = (
   alter: string = ""
 ): string => {
   const paramItem = search
-    .split("?")[1]
-    .split("&")
-    .find((item: string) => item.split("=")[0] === param);
+    ?.split("?")[1]
+    ?.split("&")
+    ?.find((item: string) => item.split("=")[0] === param);
 
   if (paramItem) {
-    return paramItem.split("=")[1];
+    return paramItem?.split("=")[1];
   }
 
   return alter;
