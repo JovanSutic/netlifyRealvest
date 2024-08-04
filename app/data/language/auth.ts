@@ -1,5 +1,6 @@
 export const authMap: Record<string, Record<string, string>> = {
   en: {
+    home: "Home",
     signTitle: "Sign in",
     signDescription: "Please enter your credentials to sign in.",
     googleSign: "Sign up with Google",
@@ -47,9 +48,20 @@ export const authMap: Record<string, Record<string, string>> = {
     noActiveRecoveryLink: "You do not have active password change link?",
     forgotPassAgain: "Start the process again",
     successTitle: "Success!",
-    recoverySuccess: "You have changed the password. Now you can login using that new password."
+    recoverySuccess: "You have changed the password. Now you can login using that new password.",
+    passwordMetaTitle: 'Realvest - password change',
+    passwordMetaDesc: 'Change your Realvest password',
+    successMetaTitle: 'Realvest - auth action success',
+    successMetaDesc: 'Authentication action success',
+    registerMetaTitle: 'Realvest - create account',
+    registerMetaDesc: 'Register to use Realvest, real estate analytics platform Serbia',
+    loginMetaTitle: 'Realvest - login',
+    loginMetaDesc: 'Login to Realvest, real estate analytics platform Serbia',
+    forgetMetaTitle: 'Realvest - forgoten password',
+    forgetMetaDesc: 'Start the proces for the password change',
   },
   sr: {
+    home: "Početna",
     signTitle: "Prijavite se",
     signDescription: "Molimo vas upišite vaše podatke za prijavu.",
     googleSign: "Google registracija",
@@ -97,7 +109,17 @@ export const authMap: Record<string, Record<string, string>> = {
     noActiveRecoveryLink: "Nemate link za promenu lozinke?",
     forgotPassAgain: "Ponovite proces zamene lozinke",
     successTitle: "Uspešno!",
-    recoverySuccess: "Promenili ste lozinku, sada možete da se prijavite koristeći novu lozinku."
+    recoverySuccess: "Promenili ste lozinku, sada možete da se prijavite koristeći novu lozinku.",
+    passwordMetaTitle: 'Realvest - promena lozinke',
+    passwordMetaDesc: 'Promenite vašu Realvest lozinku',
+    successMetaTitle: 'Realvest - uspešna auth aktivnost',
+    successMetaDesc: 'Uspešna aktivnost autentikacije',
+    registerMetaTitle: 'Realvest - napravite nalog',
+    registerMetaDesc: 'Registrujete se na Realvest, platformu za analizu tržišta nekretnina Srbije',
+    loginMetaTitle: 'Realvest - prijava',
+    loginMetaDesc: 'Prijavite se na Realvest, platformu za analizu tržišta nekretnina Srbije',
+    forgetMetaTitle: 'Realvest - zaboravljena lozinka',
+    forgetMetaDesc: 'Započnite proces promene lozinke',
   },
 };
 

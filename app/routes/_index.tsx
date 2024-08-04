@@ -3,16 +3,18 @@ import { TColumn, TLine, TPage } from "../components/layout";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import { default as ErrorPage } from "../components/error";
-import { isMobile } from "../utils/params";
+import { getParamValue, isMobile } from "../utils/params";
 import { Translator } from "../data/language/translator";
 import Accordion from "../components/accordion";
 import { AccordionData } from "../types/component.types";
 import { useState } from "react";
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction = ({location}) => {
+  const lang = getParamValue(location.search, 'lang', 'sr');
+  const translator = new Translator("homepage");
   return [
-    { title: "Realvest" },
-    { name: "description", content: "Welcome to Realvest" },
+    { title: translator.getTranslation(lang, 'homeMetaTitle') },
+    { name: "description", content: translator.getTranslation(lang, 'homeMetaDesc')  },
   ];
 };
 
