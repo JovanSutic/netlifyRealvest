@@ -1,10 +1,11 @@
-import { redirect, type LoaderFunctionArgs } from "@remix-run/node";
+import { json, redirect, type LoaderFunctionArgs } from "@remix-run/node";
 import {
   createServerClient,
   parseCookieHeader,
   serializeCookieHeader,
 } from "@supabase/ssr";
 import { type EmailOtpType } from "@supabase/supabase-js";
+import { FinalError } from "../types/component.types";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const requestUrl = new URL(request.url);
@@ -12,6 +13,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const token_hash = requestUrl.searchParams.get("token_hash");
   const type = requestUrl.searchParams.get("type") as EmailOtpType | null;
   const headers = new Headers();
+
+  let isError = false;
+  let finalError: FinalError | null = null;
 
   if (token_hash && type) {
     const supabase = createServerClient(
@@ -44,8 +48,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
         return redirect(`/dashboard/search?lang=${lang}`, { headers });
       }
     } catch (error) {
-      console.log(error);
+      isError = true;
+      finalError = error as FinalError;
     }
+  }
+
+  if (isError) {
+    throw json({ error: finalError?.message, lang }, { status: 400 });
   }
 
   // return the user to an error page with instructions

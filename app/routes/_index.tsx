@@ -2,7 +2,6 @@ import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { TColumn, TLine, TPage } from "../components/layout";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
-import { default as ErrorPage } from "../components/error";
 import { getParamValue, isMobile } from "../utils/params";
 import { Translator } from "../data/language/translator";
 import Accordion from "../components/accordion";
@@ -427,8 +426,4 @@ export default function Index() {
       </TPage>
     </>
   );
-}
-
-export function ErrorBoundary() {
-  return <ErrorPage link={"/"} />;
 }

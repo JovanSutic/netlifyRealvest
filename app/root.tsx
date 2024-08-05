@@ -5,9 +5,9 @@ import {
   Scripts,
   ScrollRestoration,
   isRouteErrorResponse,
-  useLoaderData,
   useLocation,
   useRouteError,
+  useRouteLoaderData,
 } from "@remix-run/react";
 import { json, LinksFunction } from "@remix-run/node";
 import appStyles from "./app.css?url";
@@ -21,35 +21,21 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
 ];
 
-export function ErrorBoundary() {
-  const error = useRouteError();
-
-  if (error instanceof Error) {
-    return <ErrorPage link={"/?lang=sr"} />;
-  }
-
-  if (!isRouteErrorResponse(error)) {
-    return <ErrorPage link={"/?lang=sr"} />;
-  }
-
-  if (error.status === 404) {
-    return <ErrorPage link={"/?lang=sr"} />;
-  }
-
-  return <ErrorPage link={"/?lang=sr"} />;
-}
 export const loader = async () => {
-  return json({ gaTrackingId: process.env.GOOGLE_TAG_ID, baseUrl: process.env.BASE_URL });
+  return json({
+    gaTrackingId: process.env.GOOGLE_TAG_ID,
+    baseUrl: process.env.BASE_URL,
+  } as const);
 };
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
-  const { gaTrackingId, baseUrl } = useLoaderData<typeof loader>();
-  const isProd = baseUrl === 'https://yourealvest.com'
+  const { gaTrackingId, baseUrl } = useRouteLoaderData<typeof loader>("root")!;
+  const isProd = baseUrl === "https://yourealvest.com";
 
   useEffect(() => {
     if (gaTrackingId?.length) {
-      gtag.pageview(location.pathname, gaTrackingId);
+      gtag?.pageview(location.pathname, gaTrackingId);
     }
   }, [location, gaTrackingId]);
 
@@ -91,6 +77,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </body>
     </html>
   );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (error instanceof Error) {
+    return <ErrorPage link={"/?lang=sr"} />;
+  }
+
+  if (isRouteErrorResponse(error)) {
+    if (error.status === 400) {
+      return <ErrorPage link={"/?lang=sr"} lang={error.data.lang || 'sr'} />;
+    }
+    
+  }
+
+  return <ErrorPage link={"/?lang=sr"} />;
 }
 
 export default function App() {

@@ -5,7 +5,12 @@ import { ClientOnly } from "../components/helpers/ClientOnly";
 import { LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
 import Select from "../components/select/Select";
 import { useEffect, useState } from "react";
-import { MetaFunction, useFetcher, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  MetaFunction,
+  useFetcher,
+  useLoaderData,
+  useSearchParams,
+} from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
 import {
   AreaReportType,
@@ -52,6 +57,7 @@ import { format } from "date-fns";
 import FeatureReport from "../widgets/FeatureReport";
 import { getParamValue, isMobile } from "../utils/params";
 import { default as LocalTooltip } from "../components/tooltip/Tooltip";
+import { FinalError } from "../types/component.types";
 
 export const links: LinksFunction = () => [
   {
@@ -60,18 +66,22 @@ export const links: LinksFunction = () => [
   },
 ];
 
-export const meta: MetaFunction = ({location}) => {
-  const lang = getParamValue(location.search, 'lang', 'sr');
+export const meta: MetaFunction = ({ location }) => {
+  const lang = getParamValue(location.search, "lang", "sr");
   const translate = new Translator("dashboard");
 
   return [
-    { title: translate.getTranslation(lang, 'rentalMetaTitle') },
-    { name: "description", content: translate.getTranslation(lang, 'rentalMetaDesc') },
+    { title: translate.getTranslation(lang, "rentalMetaTitle") },
+    {
+      name: "description",
+      content: translate.getTranslation(lang, "rentalMetaDesc"),
+    },
   ];
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userAgent = request.headers.get("user-agent");
+  const lang = new URL(request.url).searchParams.get("lang") || "sr";
   const lat = new URL(request.url).searchParams.get("lat");
   const lng = new URL(request.url).searchParams.get("lng");
   const range = new URL(request.url).searchParams.get("range");
@@ -79,6 +89,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const searchType = new URL(request.url).searchParams.get(
     "property_type"
   ) as RentalPropertyType;
+
+  let isError = false;
+  let finalError: FinalError | null = null;
 
   if (lat && lng && range && searchType) {
     const { uniq, circle } = getMapCircle(
@@ -113,9 +126,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         .lt("link_id.lng", uniq[2])
         .returns<DashboardRentalType[]>();
       if (error) {
-        throw new Response("Archive data error.", {
-          status: 500,
-        });
+        isError = true;
+        finalError = error as FinalError;
       }
 
       const finalData = (data || [])
@@ -154,9 +166,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         ),
       });
     } catch (error) {
-      // throw new Error(error);
-      console.log(error);
+      isError = true;
+      finalError = error as FinalError;
     }
+  }
+
+  if (isError) {
+    throw json({ error: finalError?.message, lang }, { status: 400 });
   }
 
   return json({

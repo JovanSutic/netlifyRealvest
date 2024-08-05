@@ -10,7 +10,6 @@ import {
   json,
   useActionData,
   useNavigation,
-  // useSubmit,
   useSearchParams,
   useSubmit,
 } from "@remix-run/react";
@@ -23,6 +22,7 @@ import { createSupabaseServerClient } from "../supabase.server";
 import Alert from "../components/alert";
 import { AuthError } from "@supabase/supabase-js";
 import { getParamValue } from "../utils/params";
+import { FinalError } from "../types/component.types";
 
 export const meta: MetaFunction = ({ location }) => {
   const lang = getParamValue(location.search, "lang", "sr");
@@ -37,16 +37,24 @@ export const meta: MetaFunction = ({ location }) => {
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const { supabaseClient } = createSupabaseServerClient(request);
+  const lang = new URL(request.url).searchParams.get("lang") || "sr";
+  let isError = false;
+  let finalError: FinalError | null = null;
+
   try {
-    const { supabaseClient } = createSupabaseServerClient(request);
-    const lang = new URL(request.url).searchParams.get("lang") || "sr";
     const user = await supabaseClient.auth.getUser();
 
     if (user?.data?.user?.role === "authenticated") {
       return redirect(`/dashboard/search?lang=${lang}`);
     }
   } catch (error) {
-    console.log(error);
+    isError = true;
+    finalError = error as FinalError;
+  }
+
+  if (isError) {
+    throw json({ error: finalError?.message, lang }, { status: 400 });
   }
 
   return null;
