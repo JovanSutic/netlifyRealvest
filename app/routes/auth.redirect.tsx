@@ -1,16 +1,22 @@
-import { LoaderFunctionArgs, redirect } from "@remix-run/node";
+import { json, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { createSupabaseServerClient } from "../supabase.server";
 import { authCookie, refreshCookie } from "../utils/cookies";
+import { FinalError } from "../types/component.types";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const lang = new URL(request.url).searchParams.get("lang") || "sr";
   const code = new URL(request.url).searchParams.get("code");
+
+  let isError = false;
+  let finalError: FinalError | null = null;
+
   try {
     const { supabaseClient, headers } = createSupabaseServerClient(request);
     const { data, error: sessionError } =
       await supabaseClient.auth.exchangeCodeForSession(code!);
     if (sessionError) {
-      console.log(sessionError);
+      isError = true;
+      finalError = sessionError as FinalError;
     }
 
     if (data) {
@@ -34,7 +40,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       return redirect(`/dashboard/search?lang=${lang}`);
     }
   } catch (error) {
-    console.log(error);
+    isError = true;
+    finalError = error as FinalError;
+  }
+
+  if (isError) {
+    throw json({ error: finalError?.message, lang }, { status: 400 });
   }
 
   return null;

@@ -28,6 +28,9 @@ export const homepageMap: Record<string, Record<string, string>> = {
     faq6Text: "The data we collect is divided into 3 types of real estate: residential (apartments), garage and commercial (business premises). Data for all 3 types is available to our users.",
     homeMetaTitle: "Realvest - platform for Belgrade real estate analysis",
     homeMetaDesc: "Platform for Belgrade real estate analysis",
+    errorPageTitle: "Something is wrong!",
+    errorPageSubTitle: "Your last request has caused an error. Try to refresh this page or click on the button bellow to get to the home page.",
+    errorPageButton: "Go back home"
   },
   sr: {
     heroTitle: "Podaci koji daju veće samopouzdanje",
@@ -58,6 +61,9 @@ export const homepageMap: Record<string, Record<string, string>> = {
     faq6Text: "Podaci koje prikupljamo podeljeni su na 3 vrste nekretnina: rezidencijalni (stanovi), garažni i komercijalni (poslovni prostori). Podaci za sve 3 vrste su dostupni za članove.",
     homeMetaTitle: "Realvest - platforma za analizu tržišta nekretnina Beograda",
     homeMetaDesc: "Platforma za analizu tržišta nekretnina Beograda",
+    errorPageTitle: "Nešto nije u redu!",
+    errorPageSubTitle: "Vaš poslednji zahtev je prouzrovovao trenutnu grešku. Pokušajte da osvežite stranicu ili kliknite na dugme ispod da biste se vratili na počtnu stranicu.",
+    errorPageButton: "Nazad na početnu",
   },
 
 };
