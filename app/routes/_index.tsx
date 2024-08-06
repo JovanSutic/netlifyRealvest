@@ -2,19 +2,21 @@ import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { TColumn, TLine, TPage } from "../components/layout";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
-import { default as ErrorPage } from "../components/error";
 import { getParamValue, isMobile } from "../utils/params";
 import { Translator } from "../data/language/translator";
 import Accordion from "../components/accordion";
 import { AccordionData } from "../types/component.types";
 import { useState } from "react";
 
-export const meta: MetaFunction = ({location}) => {
-  const lang = getParamValue(location.search, 'lang', 'sr');
+export const meta: MetaFunction = ({ location }) => {
+  const lang = getParamValue(location.search, "lang", "sr");
   const translator = new Translator("homepage");
   return [
-    { title: translator.getTranslation(lang, 'homeMetaTitle') },
-    { name: "description", content: translator.getTranslation(lang, 'homeMetaDesc')  },
+    { title: translator.getTranslation(lang, "homeMetaTitle") },
+    {
+      name: "description",
+      content: translator.getTranslation(lang, "homeMetaDesc"),
+    },
   ];
 };
 
@@ -93,7 +95,7 @@ export default function Index() {
                   </Link>
                   <Link
                     to={`/?lang=${lang === "sr" ? "en" : "sr"}`}
-                    className="text-sm font-regular text-blue-500 transform hover:text-blue-700 ml-0 md:ml-6"
+                    className="text-sm font-regular text-blue-500 transform hover:text-blue-700 mt-3 md:mt-0 ml-0 md:ml-6"
                   >
                     {lang === "sr" ? "english version" : "srpska verzija"}
                   </Link>
@@ -359,7 +361,11 @@ export default function Index() {
                 <div className="lg:flex lg:items-center">
                   <ul className="flex space-x-6">
                     <li>
-                      <a href="http://www.linkedin.com">
+                      <a
+                        href="https://www.linkedin.com/company/yourealvest/?viewAsMember=true"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="fill-gray-300 hover:fill-white w-10 h-10"
@@ -378,7 +384,7 @@ export default function Index() {
 
                 <div>
                   <h4 className="text-lg font-semibold mb-6 text-white">
-                    Contact Us
+                    {translator.getTranslation(lang, "contact")}
                   </h4>
                   <ul className="text-gray-300">
                     <li>office@yourealvest.com</li>
@@ -427,8 +433,4 @@ export default function Index() {
       </TPage>
     </>
   );
-}
-
-export function ErrorBoundary() {
-  return <ErrorPage link={"/"} />;
 }

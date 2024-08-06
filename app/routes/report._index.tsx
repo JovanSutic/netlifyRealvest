@@ -26,7 +26,6 @@ import {
 } from "../types/dashboard.types";
 import DashboardControls from "../widgets/DashboardControls";
 import DashboardCards from "../widgets/DashboardCards";
-import { default as ErrorPage } from "../components/error";
 import { useState, useMemo, useCallback, useEffect } from "react";
 import Loader from "../components/loader";
 import { createSupabaseServerClient } from "../supabase.server";
@@ -279,8 +278,4 @@ export default function Index() {
       </TLine>
     </TPage>
   );
-}
-
-export function ErrorBoundary() {
-  return <ErrorPage link={"/"} />;
 }

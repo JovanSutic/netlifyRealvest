@@ -5,7 +5,12 @@ import { ClientOnly } from "../components/helpers/ClientOnly";
 import { LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
 import Select from "../components/select/Select";
 import { useEffect, useState } from "react";
-import { MetaFunction, useFetcher, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  MetaFunction,
+  useFetcher,
+  useLoaderData,
+  useSearchParams,
+} from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
 import {
   AreaReportType,
@@ -48,6 +53,7 @@ import AreaDoughnutReport from "../widgets/AreaDoughnutReport";
 import AreaDoughnutTimeReport from "../widgets/AreaDoughnutTimeReport";
 import { getParamValue, isMobile } from "../utils/params";
 import { default as LocalTooltip } from "../components/tooltip/Tooltip";
+import { FinalError } from "../types/component.types";
 
 export const links: LinksFunction = () => [
   {
@@ -56,18 +62,22 @@ export const links: LinksFunction = () => [
   },
 ];
 
-export const meta: MetaFunction = ({location}) => {
-  const lang = getParamValue(location.search, 'lang', 'sr');
+export const meta: MetaFunction = ({ location }) => {
+  const lang = getParamValue(location.search, "lang", "sr");
   const translate = new Translator("dashboard");
-  
+
   return [
-    { title: translate.getTranslation(lang, 'searchMetaTitle') },
-    { name: "description", content: translate.getTranslation(lang, 'searchMetaDesc') },
+    { title: translate.getTranslation(lang, "searchMetaTitle") },
+    {
+      name: "description",
+      content: translate.getTranslation(lang, "searchMetaDesc"),
+    },
   ];
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userAgent = request.headers.get("user-agent");
+  const lang = new URL(request.url).searchParams.get("lang") || "sr";
   const lat = new URL(request.url).searchParams.get("lat");
   const lng = new URL(request.url).searchParams.get("lng");
   const range = new URL(request.url).searchParams.get("range");
@@ -81,6 +91,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     parking: "garage",
     commercial: "commercial",
   };
+
+  let isError = false;
+  let finalError: FinalError | null = null;
 
   if (lat && lng && range && searchType) {
     const { uniq, circle } = getMapCircle(
@@ -99,14 +112,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         .order("date", { ascending: false });
 
       if (lastError) {
-        throw new Response("Last date error.", {
-          status: 500,
-        });
+        isError = true;
+        finalError = lastError as FinalError;
       }
 
       const startDate = getLastRecordedReportDate(
         (searchRange || "3m") as RangeOption,
-        lastData[0].date
+        lastData![0].date
       );
 
       const { data, error } = await supabaseClient
@@ -123,9 +135,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         .order("date")
         .returns<DashboardSearchType[]>();
       if (error) {
-        throw new Response("Contracts data error.", {
-          status: 500,
-        });
+        isError = true;
+        finalError = error as FinalError;
       }
       const finalData = (data || []).filter((item) => {
         const inter = point([item.lat, item.lng]);
@@ -143,13 +154,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           extractAddress(cyrillicToLatin(locationData[0].display_name))
         ),
         list: finalData,
-        lastDate: lastData[0].date,
+        lastDate: lastData![0].date,
         mobile: isMobile(userAgent!),
       });
     } catch (error) {
-      // throw new Error(error);
-      console.log(error);
+      isError = true;
+      finalError = error as FinalError;
     }
+  }
+
+  if (isError) {
+    throw json({ error: finalError?.message, lang }, { status: 400 });
   }
 
   return json({

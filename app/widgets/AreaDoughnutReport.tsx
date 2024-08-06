@@ -46,7 +46,7 @@ const AreaDoughnutReport = ({
         <div>
       <div className="mb-4">
         <p className="text-sm text-slate-700 font-serif">
-          {data.length > 0 && translate.getTranslation(lang, "areaDoughnutDescription")}
+          {data.length > 0 && translate.getTranslation(lang, rental ? "areaDoughnutDescriptionRental" : "areaDoughnutDescription")}
         </p>
       </div>
       <div>

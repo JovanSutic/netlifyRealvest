@@ -29,3 +29,7 @@ export interface AccordionData {
   title: string;
   text: string;
 }
+
+export interface FinalError {
+  message: string;
+}
