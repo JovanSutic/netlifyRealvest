@@ -21,21 +21,29 @@ import {
   bbox,
   bboxPolygon,
 } from "@turf/turf";
-import { ConnectionDetails, ListedAd, MapItem, PropertyType, RentalPropertyType } from "../types/dashboard.types";
+import {
+  ConnectionDetails,
+  ListedAd,
+  MapItem,
+  PropertyType,
+  RentalPropertyType,
+} from "../types/dashboard.types";
 import { ZodError } from "zod";
 import { connectionSchema } from "../data/schema/validators";
 
-const currentPropType: RentalPropertyType | PropertyType = 'garage_rental';
+const currentPropType: RentalPropertyType | PropertyType = "rental";
 
-const getRentalBaseTable = (rentalType: RentalPropertyType | PropertyType): string => {
-  if(rentalType === 'commercial_rental') return 'commercials_rentals';
-  if(rentalType === 'garage_rental') return 'garages_rentals';
-  if(rentalType === 'rental') return 'rentals';
-  if(rentalType === 'parking') return 'garages';
-  if(rentalType === 'commercial') return 'commercials';
+const getRentalBaseTable = (
+  rentalType: RentalPropertyType | PropertyType
+): string => {
+  if (rentalType === "commercial_rental") return "commercials_rentals";
+  if (rentalType === "garage_rental") return "garages_rentals";
+  if (rentalType === "rental") return "rentals";
+  if (rentalType === "parking") return "garages";
+  if (rentalType === "commercial") return "commercials";
 
-  return 'apartments';
-}
+  return "apartments";
+};
 
 const prepareCityPart = (cityPart: string): string => {
   if (cityPart === "") return "";
@@ -165,10 +173,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         locationItems.geojson.coordinates = coordinates;
       }
 
-      // @ts-ignore
-      archiveItems = [null];
-      // @ts-ignore
-      detailItems = [null];
+      // // @ts-ignore
+      // archiveItems = [null];
+      // // @ts-ignore
+      // detailItems = [null];
 
       if (search === "1" && locationItems) {
         const line = lineString(coordinates);
@@ -182,7 +190,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
         const rentalBaseTable = getRentalBaseTable(currentPropType);
 
-        const {data: currentData, error: currentError} = await supabaseClient.from(rentalBaseTable).select('id').order('id');
+        const { data: currentData, error: currentError } = await supabaseClient
+          .from(rentalBaseTable)
+          .select("id")
+          .order("id");
 
         if (currentError) {
           throw new Response("Current error.", {
@@ -196,20 +207,24 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           .from("ad_details")
           .select("id, description, type, lat, lng")
           .eq("type", currentPropType)
-          .not("ad_id", "in", `(${currentAdIds.toString()})`)
           .gt("lat", uniq[1])
           .lt("lat", uniq[0])
           .gt("lng", uniq[3])
           .lt("lng", uniq[2]);
 
         if (searchError) {
+          console.log(searchError);
           throw new Response("Search error.", {
             status: 500,
           });
         }
 
-        if (searchData.length) {
-          detailItems = searchData;
+        const searchResultData = searchData.filter(
+          (item) => !currentAdIds.includes(item.id)
+        );
+
+        if (searchResultData.length) {
+          detailItems = searchResultData;
         }
 
         const { data: archiveSearchData, error: archiveSearchError } =
@@ -300,7 +315,9 @@ const DashboardInsights = () => {
   const actionData = useActionData<typeof action>();
 
   useEffect(() => {
-    fetcher.load(`/dashboard/connections?part=${cityPart}&type=${currentPropType}`);
+    fetcher.load(
+      `/dashboard/connections?part=${cityPart}&type=${currentPropType}`
+    );
   }, [cityPart]);
 
   useEffect(() => {
@@ -341,7 +358,6 @@ const DashboardInsights = () => {
       if (fetcher.data?.archiveItems) {
         setArchive(fetcher.data?.archiveItems as unknown as ListedAd[]);
       }
-        
     }
   }, [fetcher.data?.archiveItems]);
 

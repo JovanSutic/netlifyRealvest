@@ -28,7 +28,10 @@ const MobileNavigation = ({
     <header className="flex shadow-sm bg-gray-700 font-[sans-serif] min-h-[70px]">
       <div className="flex flex-wrap items-center justify-between sm:px-10 px-6 py-3 relative lg:gap-y-4 gap-y-6 gap-x-4 w-full">
         <div className="w-[120px] flex">
-          <img src="/logo3.png" alt="logo" />
+          <Link to={`/?lang=${lang}`}>
+            {" "}
+            <img src="/logo3.png" alt="logo" />
+          </Link>
         </div>
         <div className="flex">
           <button id="toggleOpen" onClick={toggleOpen}>
@@ -47,10 +50,12 @@ const MobileNavigation = ({
           </button>
         </div>
       </div>
-      {isOpen && (
+      {true && (
         <div
           id="collapseMenu"
-          className="before:fixed before:bg-black before:opacity-40 before:inset-0 max-lg:before:z-[9998]"
+          className={`top-0 right-0 w-[100vw] bg-black bg-opacity-40 p-10 pl-20 text-white fixed h-full z-[100000] ease-in-out duration-300 ${
+            isOpen ? "translate-x-0 " : "translate-x-full"
+          }`}
         >
           <button
             id="toggleClose"
@@ -77,7 +82,10 @@ const MobileNavigation = ({
             <li>
               <div className="flex flex-wrap items-center">
                 <div className="w-[120px] m-auto">
-                  <img src="/logo3.png" alt="logo" />
+                  <Link to={`/?lang=${lang}`}>
+                    {" "}
+                    <img src="/logo3.png" alt="logo" />
+                  </Link>
                 </div>
                 <div className="w-full mb-2 mt-4">
                   <p className="text-lg text-center text-gray-300">{name}</p>
