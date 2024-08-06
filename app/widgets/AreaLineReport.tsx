@@ -20,6 +20,7 @@ import {
   PointElement,
   LineElement,
 } from "chart.js";
+import { makeNumberCurrency } from "../utils/numbers";
 
 const AreaLineReport = ({
   lang,
@@ -60,7 +61,11 @@ const AreaLineReport = ({
     <div>
       <div className="mb-4">
         <p className="text-sm text-slate-700 font-serif">
-          {data.length > 0 && translate.getTranslation(lang, "areaLineDescription")}
+          {data.length > 0 &&
+            translate.getTranslation(
+              lang,
+              rental ? "areaLineDescriptionRental" : "areaLineDescription"
+            )}
         </p>
       </div>
       <div>
@@ -68,7 +73,10 @@ const AreaLineReport = ({
           <div>
             <div className="flex flex-column w-full justify-center h-[200px]">
               <p className="flex items-center text-center text-slate-400 font-sm">
-                {translate.getTranslation(lang, rental ? "areaEmptyDataRental" : "areaEmptyData")}
+                {translate.getTranslation(
+                  lang,
+                  rental ? "areaEmptyDataRental" : "areaEmptyData"
+                )}
               </p>
             </div>
           </div>
@@ -109,6 +117,17 @@ const AreaLineReport = ({
               )}
               options={{
                 responsive: true,
+                scales: {
+                  y: {
+                    ticks: {
+                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                      // @ts-expect-error
+                      callback: function (value: number) {
+                        return `${makeNumberCurrency(value)}`;
+                      },
+                    },
+                  },
+                },
                 plugins: {
                   legend: {
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

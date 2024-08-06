@@ -297,6 +297,7 @@ export const getAreaLineData = (
   lang: LangType = "sr",
   date: string = ""
 ): LineDataset => {
+  console.log(calculateLineData(data, timeRange, type, lang, date).data);
   const dataSet = {
     labels: calculateLineData(data, timeRange, type, lang, date).labels,
     datasets: [
@@ -351,7 +352,7 @@ export const getDataForAreaPie = (
   const aboveSpread = total.filter((item) => item > spread[spread.length - 1]);
 
   if (aboveSpread.length) {
-    result[`+${makeNumberCurrency(spread[spread.length - 1])}`] = aboveSpread;
+    result[`${makeNumberCurrency(spread[spread.length - 1])} +`] = aboveSpread;
   }
 
   return {
