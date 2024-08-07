@@ -30,11 +30,7 @@ import {
   getPieSpread,
   getPieSpreadRental,
 } from "./reports";
-import {
-  addMonths,
-  format,
-  setDate,
-} from "date-fns";
+import { addMonths, format, setDate } from "date-fns";
 import { ellipse, point, lineString, bbox, bboxPolygon } from "@turf/turf";
 
 export const generateAreaReport = (
@@ -289,6 +285,35 @@ const calculateLineData = (
   };
 };
 
+const fillInLineZeros = (data: number[]) => {
+  const result: number[] = [];
+  data.forEach((item, index) => {
+    if (index > 0) {
+      if (item === 0) {
+        result.push(result[result.length - 1]);
+      } else {
+        result.push(item);
+      }
+    } else {
+      result.push(item);
+    }
+  });
+
+  return result;
+};
+
+export const isZeroPeriodValues = (
+  data: DashboardSearchType[],
+  timeRange: RangeOption,
+  type: DistributionTypeKey,
+  date: string = ""
+): boolean => {
+  const result = calculateLineData(data, timeRange, type, "sr", date).data.find(
+    (item) => item === 0
+  );
+  return result !== undefined;
+};
+
 export const getAreaLineData = (
   data: DashboardSearchType[],
   label: string,
@@ -297,13 +322,14 @@ export const getAreaLineData = (
   lang: LangType = "sr",
   date: string = ""
 ): LineDataset => {
-  console.log(calculateLineData(data, timeRange, type, lang, date).data);
   const dataSet = {
     labels: calculateLineData(data, timeRange, type, lang, date).labels,
     datasets: [
       {
         label: label,
-        data: calculateLineData(data, timeRange, type, lang, date).data,
+        data: fillInLineZeros(
+          calculateLineData(data, timeRange, type, lang, date).data
+        ),
         fill: true,
         backgroundColor: "rgb(219, 234, 254, 0.7)",
         borderColor: "rgb(96 165 250)",
