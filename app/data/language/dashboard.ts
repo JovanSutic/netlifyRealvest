@@ -71,6 +71,8 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     searchMetaDesc: "Real estate sales prices with Serbia area analysis",
     rentalMetaTitle: "Realvest - real estate rental prices in Serbia",
     rentalMetaDesc: "Real estate rental prices with Serbia area analysis",
+    zeroSales: "Replacement prices shown due to no-sale periods. Check the sales spread for better insight.",
+    zeroRental: "Replacement prices shown due to no-rent periods."
   },
   sr: {
     meters: "metara",
@@ -150,5 +152,7 @@ export const dashboardMap: Record<string, Record<string, string>> = {
       "Analiza prodajnih cena nekretnina sa prikazom zona na mapi",
     rentalMetaTitle: "Realvest - cene najma nekretnina u Srbiji",
     rentalMetaDesc: "Analiza cena najma nekretnina sa prikazom zona na mapi",
+    zeroSales: "Prikazane zamenske cene zbog postojanja perioda bez prodaje. Za bolji uvid proverite raspodelu prodaje.",
+    zeroRental: "Prikazane zamenske cene zbog postojanja perioda bez izdavanja."
   },
 };
