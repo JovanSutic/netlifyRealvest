@@ -6,6 +6,7 @@ import {
   useActionData,
   useFetcher,
   useLoaderData,
+  useLocation,
   useNavigation,
 } from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
@@ -71,6 +72,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const propType = new URL(request.url).searchParams.get("type");
   const location = new URL(request.url).searchParams.get("location");
   const search = new URL(request.url).searchParams.get("search");
+  
+  if(process.env.BASE_URL !== "http://localhost:5173") {
+    throw Error("Forbidden");
+    return null;
+  }
+
   try {
     let archiveItems: ListedAd[] = [];
     let detailItems: ConnectionDetails[] = [];
@@ -182,11 +189,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         const line = lineString(coordinates);
         const box = bbox(line);
         const bboxPolygon1 = bboxPolygon(box);
+        console.log(coordinates)
         const uniq = [
           ...new Set(bboxPolygon1.geometry.coordinates[0].flat()),
         ].sort(function (a, b) {
           return b - a;
         });
+        console.log(uniq)
 
         const rentalBaseTable = getRentalBaseTable(currentPropType);
 
@@ -212,6 +221,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           .gt("lng", uniq[3])
           .lt("lng", uniq[2]);
 
+          console.log(searchData?.length)
         if (searchError) {
           console.log(searchError);
           throw new Response("Search error.", {
@@ -227,25 +237,25 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           detailItems = searchResultData;
         }
 
-        const { data: archiveSearchData, error: archiveSearchError } =
-          await supabaseClient
-            .from("apartments_archive")
-            .select()
-            .eq("type", currentPropType)
-            .eq("is_active", false)
-            .is("link_id", null)
-            .ilike("name", `%${location}%`)
-            .order("id");
+        // const { data: archiveSearchData, error: archiveSearchError } =
+        //   await supabaseClient
+        //     .from("apartments_archive")
+        //     .select()
+        //     .eq("type", currentPropType)
+        //     .eq("is_active", false)
+        //     .is("link_id", null)
+        //     .ilike("name", `%${location}%`)
+        //     .order("id");
 
-        if (archiveSearchError) {
-          throw new Response("Search archive error.", {
-            status: 500,
-          });
-        }
+        // if (archiveSearchError) {
+        //   throw new Response("Search archive error.", {
+        //     status: 500,
+        //   });
+        // }
 
-        if (archiveSearchData.length) {
-          archiveItems = archiveSearchData;
-        }
+        // if (archiveSearchData.length) {
+        //   archiveItems = archiveSearchData;
+        // }
       }
     }
     return json({
@@ -334,7 +344,7 @@ const DashboardInsights = () => {
           ? lineString(fetcher.data.locationItems.geojson.coordinates)
           : null;
         if (line) {
-          item.distance = pointToLineDistance(detailPoint, line);
+          item.distance = pointToLineDistance(detailPoint, line, {units: 'meters'});
         } else {
           item.distance = 10000000;
         }
@@ -355,7 +365,7 @@ const DashboardInsights = () => {
     ) {
       console.log("location call");
     } else {
-      if (fetcher.data?.archiveItems) {
+      if (fetcher.data?.archiveItems && fetcher.data?.archiveItems.length) {
         setArchive(fetcher.data?.archiveItems as unknown as ListedAd[]);
       }
     }
