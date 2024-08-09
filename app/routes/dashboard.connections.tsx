@@ -6,7 +6,6 @@ import {
   useActionData,
   useFetcher,
   useLoaderData,
-  useLocation,
   useNavigation,
 } from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
