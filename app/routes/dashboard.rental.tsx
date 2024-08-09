@@ -4,7 +4,7 @@ import Map from "../components/map/index.client";
 import { ClientOnly } from "../components/helpers/ClientOnly";
 import { LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
 import Select from "../components/select/Select";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   MetaFunction,
   useFetcher,
@@ -105,7 +105,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
       const today = new Date();
       const startDate = getLastRecordedReportDate(
-        (searchRange || "3m") as RangeOption,
+        (searchRange || "6m") as RangeOption,
         format(today, "yyyy-MM-dd")
       );
 
@@ -190,16 +190,24 @@ const DashboardSearch = () => {
   const [center, setCenter] = useState<number[]>();
   const [propertyType, setPropertyType] =
     useState<RentalPropertyType>("rental");
-  const [timeRange, setTimeRange] = useState<RangeOption>("3m");
+  const [timeRange, setTimeRange] = useState<RangeOption>("6m");
   const [tab, setTab] = useState<string>("1");
 
   const reportTranslate = new Translator("report");
   const translate = new Translator("dashboard");
   const { mobile } = useLoaderData<typeof loader>();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const executeScroll = () => scrollRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   const fetcher = useFetcher<typeof loader>({
     key: "search_rentals",
   });
+
+  useEffect(() => {
+    if(JSON.stringify(fetcher?.data?.list) !== undefined && mobile) {
+      executeScroll();
+    }
+  },[JSON.stringify(fetcher?.data?.list)])
 
   useEffect(() => {
     if (center) {
@@ -251,10 +259,10 @@ const DashboardSearch = () => {
                   setTimeRange(value as RangeOption);
                 }}
                 options={[
-                  {
-                    value: "3m",
-                    text: translate.getTranslation(lang, "3m"),
-                  },
+                  // {
+                  //   value: "3m",
+                  //   text: translate.getTranslation(lang, "3m"),
+                  // },
                   {
                     value: "6m",
                     text: translate.getTranslation(lang, "6m"),
@@ -498,7 +506,7 @@ const DashboardSearch = () => {
             </ClientOnly>
           </WidgetWrapper>
         </div>
-        <div className="row-start-4 col-span-12 lg:col-span-5 col-start-1 lg:col-start-8 lg:row-start-2 mb-6">
+        <div ref={scrollRef} className="row-start-4 col-span-12 lg:col-span-5 col-start-1 lg:col-start-8 lg:row-start-2 mb-6">
           <WidgetWrapper>
             <Loader open={fetcher.state === "loading"} />
             <Tabs
