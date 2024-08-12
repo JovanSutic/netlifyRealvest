@@ -508,8 +508,10 @@ export default function AuthRegister() {
                 <label htmlFor="checkbox1" className="text-slate-500 text-sm">
                   {translator.getTranslation(lang!, "accept")} {"  "}
                   <Link
-                    to={`/?lang=${lang}`}
+                    to={`/terms?lang=${lang}`}
+                    target="_blank"
                     className="text-blue-500 text-sm underline"
+                    rel="noreferrer"
                   >
                     {translator.getTranslation(lang!, "terms")}
                   </Link>
