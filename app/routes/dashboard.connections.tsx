@@ -20,6 +20,7 @@ import {
   pointToLineDistance,
   bbox,
   bboxPolygon,
+  transformScale,
 } from "@turf/turf";
 import {
   ConnectionDetails,
@@ -32,6 +33,7 @@ import { ZodError } from "zod";
 import { connectionSchema } from "../data/schema/validators";
 
 const currentPropType: RentalPropertyType | PropertyType = "rental";
+const transformation: number = 1; 
 
 const getRentalBaseTable = (
   rentalType: RentalPropertyType | PropertyType
@@ -54,11 +56,11 @@ const prepareCityPart = (cityPart: string): string => {
     : result;
 };
 
-const getCoordinatesForLine = (mapLocation: MapItem[]) => {
+const getCoordinatesOfType = (mapLocation: MapItem[], type: "LineString" | "Polygon" ) => {
   const coordinates: number[][] = [];
 
   mapLocation.forEach((item) => {
-    if (item.geojson.type === "LineString") {
+    if (item.geojson.type === type) {
       item.geojson.coordinates.forEach((map) => coordinates.push(map));
     }
   });
@@ -165,14 +167,16 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       }
     }
 
+    console.log(location);
+
     if (location) {
       const hintLocation: MapItem[] = await fetchData(
         `https://nominatim.openstreetmap.org/search.php?q=${location}_beograd&format=jsonv2&polygon_geojson=1`
       );
-      const coordinates: number[][] = getCoordinatesForLine(hintLocation);
+      const coordinates: number[][] = getCoordinatesOfType(hintLocation, "Polygon");
 
       locationItems = (hintLocation || []).find(
-        (item) => item.geojson.type === "LineString"
+        (item) => item.geojson.type === "Polygon"
       );
 
       if (locationItems) {
@@ -185,16 +189,16 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       // detailItems = [null];
 
       if (search === "1" && locationItems) {
-        const line = lineString(coordinates);
-        const box = bbox(line);
+        console.log(locationItems)
+        const line = polygon(coordinates as any);
+        const trans = transformScale(line, transformation);
+        const box = bbox(trans);
         const bboxPolygon1 = bboxPolygon(box);
-        console.log(coordinates)
         const uniq = [
           ...new Set(bboxPolygon1.geometry.coordinates[0].flat()),
         ].sort(function (a, b) {
           return b - a;
         });
-        console.log(uniq)
 
         const rentalBaseTable = getRentalBaseTable(currentPropType);
 
@@ -337,21 +341,20 @@ const DashboardInsights = () => {
 
   useEffect(() => {
     if (fetcher.data?.locationItems) {
-      const match = details.map((item) => {
+      const match = details.filter((item) => {
         const detailPoint = point([Number(item.lng), Number(item.lat)]);
-        const line = fetcher.data?.locationItems
-          ? lineString(fetcher.data.locationItems.geojson.coordinates)
+        const area = fetcher.data?.locationItems
+          ? polygon(fetcher.data.locationItems.geojson.coordinates as any)
           : null;
-        if (line) {
-          item.distance = pointToLineDistance(detailPoint, line, {units: 'meters'});
-        } else {
-          item.distance = 10000000;
+        if (booleanPointInPolygon(detailPoint, area!)) {
+          return item;
         }
-        return item;
+        
       });
+      console.log(match.length)
       setMatches(
         match.sort(function (a, b) {
-          return a.distance! - b.distance!;
+          return a.id! - b.id!;
         })
       );
     }
@@ -365,7 +368,9 @@ const DashboardInsights = () => {
       console.log("location call");
     } else {
       if (fetcher.data?.archiveItems && fetcher.data?.archiveItems.length) {
-        setArchive(fetcher.data?.archiveItems as unknown as ListedAd[]);
+        setArchive(fetcher.data?.archiveItems.sort(function (a, b) {
+          return b.size - a.size;
+        }) as unknown as ListedAd[]);
       }
     }
   }, [fetcher.data?.archiveItems]);
