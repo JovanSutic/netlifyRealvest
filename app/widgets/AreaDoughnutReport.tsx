@@ -8,7 +8,7 @@ import {
   } from "../types/dashboard.types";
   import { Translator } from "../data/language/translator";
   import DoughnutChart from "../components/doughnutChart";
-  import ToggleButtons from "../components/toggleButtons";
+  import ToggleButton from "../components/toggleButtons/ToggleButton";
   import { useState } from "react";
 import { numbersToPercentage } from "../utils/reports";
 import { getDataForAreaPie } from "../utils/dashboard";
@@ -41,11 +41,12 @@ const AreaDoughnutReport = ({
   );
 
   const isEmpty = isShown && data.length === 0;
+  const margin: string = mobile ? "mb-8" : "mb-4";
 
     return(
         <div>
-      <div className="mb-4">
-        <p className="text-sm text-slate-700 font-serif">
+      <div className="mb-2">
+        <p className="text-sm text-slate-700">
           {data.length > 0 && translate.getTranslation(lang, rental ? "areaDoughnutDescriptionRental" : "areaDoughnutDescription")}
         </p>
       </div>
@@ -61,8 +62,8 @@ const AreaDoughnutReport = ({
         )}
         {isShown && !isEmpty && (
           <>
-            <div className="flex flex-row-reverse mb-4">
-              <ToggleButtons
+            <div className={`flex flex-row-reverse ${margin}`}>
+              <ToggleButton
                 value={distributionType!}
                 onChange={(value) => {
                   setDistributionType(value as DistributionTypeKey);

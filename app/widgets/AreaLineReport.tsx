@@ -6,7 +6,6 @@ import {
 import { Translator } from "../data/language/translator";
 import { Line } from "react-chartjs-2";
 import { getAreaLineData, isZeroPeriodValues } from "../utils/dashboard";
-import ToggleButtons from "../components/toggleButtons";
 import { RangeOption } from "../utils/dateTime";
 import { useEffect, useState } from "react";
 import {
@@ -21,6 +20,7 @@ import {
   LineElement,
 } from "chart.js";
 import { makeNumberCurrency } from "../utils/numbers";
+import ToggleButton from "../components/toggleButtons/ToggleButton";
 
 const AreaLineReport = ({
   lang,
@@ -29,6 +29,7 @@ const AreaLineReport = ({
   timeRange,
   date = "",
   rental = false,
+  mobile,
 }: {
   lang: LangType;
   isLine: boolean;
@@ -36,6 +37,7 @@ const AreaLineReport = ({
   timeRange: RangeOption;
   date: string;
   rental?: boolean;
+  mobile: boolean;
 }) => {
   const [distributionType, setDistributionType] =
     useState<DistributionTypeKey>("price_map");
@@ -43,6 +45,7 @@ const AreaLineReport = ({
   const translate = new Translator("dashboard");
 
   const isEmpty = isLine && data.length === 0;
+  const margin: string = mobile ? "mb-8" : "mb-4";
 
   useEffect(() => {
     ChartJS.register(
@@ -59,8 +62,8 @@ const AreaLineReport = ({
 
   return (
     <div>
-      <div className="mb-4">
-        <p className="text-sm text-slate-700 font-serif">
+      <div className="mb-2">
+        <p className="text-sm text-slate-700">
           {data.length > 0 &&
             translate.getTranslation(
               lang,
@@ -83,8 +86,8 @@ const AreaLineReport = ({
         )}
         {isLine && !isEmpty && (
           <>
-            <div className="flex flex-row-reverse mb-4">
-              <ToggleButtons
+            <div className={`flex flex-row-reverse ${margin}`}>
+              <ToggleButton
                 value={distributionType!}
                 onChange={(value) => {
                   setDistributionType(value as DistributionTypeKey);
@@ -152,11 +155,7 @@ const AreaLineReport = ({
               date
             ) && (
               <div className="mt-3">
-                <p className="text-red-500 flex flex-row-reverse text-[12px]">
-                  {translate.getTranslation(
-                    lang,
-                    rental ? "zeroRental" : "zeroSales"
-                  )}
+                <p className="text-red-500 flex flex-row text-[12px]">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -171,6 +170,10 @@ const AreaLineReport = ({
                       d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
                     />
                   </svg>
+                  {translate.getTranslation(
+                    lang,
+                    rental ? "zeroRental" : "zeroSales"
+                  )}
                 </p>
               </div>
             )}
