@@ -14,6 +14,10 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     areaLineDescription: "Prices line chart for the highlighted area.",
     areaDoughnutDescription:
       "Prices distribution chart for the highlighted area",
+    areaLineDescriptionRental:
+      "Rental prices distribution chart for the highlighted area",
+    areaDoughnutDescriptionRental:
+      "Rental prices distribution chart for the highlighted area",
     areaDoughnutTimeDescription: "Number of sales through time periods",
     areaNoData: "Area not marked. Click on the map to generate report.",
     areaEmptyData:
@@ -71,8 +75,9 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     searchMetaDesc: "Real estate sales prices with Serbia area analysis",
     rentalMetaTitle: "Realvest - real estate rental prices in Serbia",
     rentalMetaDesc: "Real estate rental prices with Serbia area analysis",
-    zeroSales: "For no-sale periods last recorded sales price are shown. Check the sales spread for better insight.",
-    zeroRental: "For no-rent periods last recorded rent prices are shown."
+    zeroSales:
+      "For no-sale periods last recorded sales price are shown. Check the sales spread for better insight.",
+    zeroRental: "For no-rent periods last recorded rent prices are shown.",
   },
   sr: {
     meters: "metara",
@@ -82,7 +87,7 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     searchTitle: "Prodajni podaci - zonska pretraga na mapi",
     searchTitleRental: "Podaci o izdavanju - zonska pretraga na mapi",
     searchDescription:
-      "Kliknite na tačku mape da biste označili zonu i generisali izveštaj. On će sadržati samo podatke za označenu zonu. Promenom vrednosti padajućih menije ili klikom na novu tačku mape prilagodjavate izveštaj svojim potrebama.",
+      "Kliknite na tačku mape da biste označili zonu i generisali izveštaj. On će sadržati samo podatke za označenu zonu. Promenom vrednosti padajućih menija ili klikom na novu tačku mape prilagodjavate izveštaj svojim potrebama.",
     areaTitle: "Izveštaj za zonu",
     areaDescription: "Prodajni detalji u odabranoj zoni.",
     areaDescriptionRental: "Detalji o izdatim jedinicima u odabranoj oblasti.",
@@ -152,7 +157,9 @@ export const dashboardMap: Record<string, Record<string, string>> = {
       "Analiza prodajnih cena nekretnina sa prikazom zona na mapi",
     rentalMetaTitle: "Realvest - cene najma nekretnina u Srbiji",
     rentalMetaDesc: "Analiza cena najma nekretnina sa prikazom zona na mapi",
-    zeroSales: "Za periode bez prodaje prikazane su poslednje ostvarene prodajne cene. Proverite raspodelu prodaje radi boljeg uvida.",
-    zeroRental: "Za perioda bez izdavanja prikazane su poslednje ostvarene kirije."
+    zeroSales:
+      "Za periode bez prodaje prikazane su poslednje ostvarene prodajne cene. Proverite raspodelu prodaje radi boljeg uvida.",
+    zeroRental:
+      "Za periode bez izdavanja prikazane su poslednje ostvarene kirije.",
   },
 };

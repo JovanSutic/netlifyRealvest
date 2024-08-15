@@ -6,35 +6,40 @@ const AreaReport = ({
   data,
   lang,
   isRental = false,
+  mobile,
 }: {
   data?: AreaReportType;
   lang: LangType;
   isRental?: boolean;
+  mobile: boolean;
 }) => {
   const translate = new Translator("dashboard");
+  const padding: string = mobile ? "px-2 py-1" : "px-2 py-2";
+
   if (data) {
     return (
       <ul className=" border-solid border-[1px] border-slate-200 rounded-md">
         <li>
-          <div className="flex w-full p-3">
-            <div className="w-[50%]">
-              <p className="text-sm">
-                {translate.getTranslation(lang, "areaCenter")}
-              </p>
-            </div>
-            <div className="w-[50%]">
-              <p className="font-bold text-sm">{data.address}</p>
+          <div className={`flex w-full ${padding}`}>
+            <div className="w-full">
+              <p className="font-bold text-sm text-center">{`${translate.getTranslation(
+                lang,
+                "areaCenter"
+              )} ${data.address}`}</p>
             </div>
           </div>
         </li>
         <li>
-          <div className="flex w-full p-3 bg-slate-100">
-            <div className="w-[50%]">
+          <div className={`flex w-full ${padding} bg-slate-100`}>
+            <div className="w-[75%]">
               <p className="text-sm">
-                {translate.getTranslation(lang, isRental ? "averagePriceRental" : "averagePrice")}
+                {translate.getTranslation(
+                  lang,
+                  isRental ? "averagePriceRental" : "averagePrice"
+                )}
               </p>
             </div>
-            <div className="w-[50%]">
+            <div className="w-[25%]">
               <p className="font-bold text-sm">
                 {makeNumberCurrency(data.averagePrice)}
               </p>
@@ -42,13 +47,16 @@ const AreaReport = ({
           </div>
         </li>
         <li>
-          <div className="flex w-full p-3">
-            <div className="w-[50%]">
+          <div className={`flex w-full ${padding}`}>
+            <div className="w-[75%]">
               <p className="text-sm">
-                {translate.getTranslation(lang, isRental ? "highestPriceRental" : "highestPrice")}
+                {translate.getTranslation(
+                  lang,
+                  isRental ? "highestPriceRental" : "highestPrice"
+                )}
               </p>
             </div>
-            <div className="w-[50%]">
+            <div className="w-[25%]">
               <p className="font-bold text-sm">
                 {makeNumberCurrency(data.highestPrice)}
               </p>
@@ -56,13 +64,16 @@ const AreaReport = ({
           </div>
         </li>
         <li>
-          <div className="flex w-full bg-slate-100 p-3">
-            <div className="w-[50%]">
+          <div className={`flex w-full ${padding} bg-slate-100`}>
+            <div className="w-[75%]">
               <p className="text-sm">
-                {translate.getTranslation(lang, isRental ? "lowestPriceRental" : "lowestPrice")}
+                {translate.getTranslation(
+                  lang,
+                  isRental ? "lowestPriceRental" : "lowestPrice"
+                )}
               </p>
             </div>
-            <div className="w-[50%]">
+            <div className="w-[25%]">
               <p className="font-bold text-sm">
                 {makeNumberCurrency(data.lowestPrice)}
               </p>
@@ -70,13 +81,16 @@ const AreaReport = ({
           </div>
         </li>
         <li>
-          <div className="flex w-full p-3">
-            <div className="w-[50%]">
+          <div className={`flex w-full ${padding}`}>
+            <div className="w-[75%]">
               <p className="text-sm">
-                {translate.getTranslation(lang, isRental ? "averageM2PriceRental" : "averageM2Price")}
+                {translate.getTranslation(
+                  lang,
+                  isRental ? "averageM2PriceRental" : "averageM2Price"
+                )}
               </p>
             </div>
-            <div className="w-[50%]">
+            <div className="w-[25%]">
               <p className="font-bold text-sm">
                 {makeNumberCurrency(data.averageM2Price)}
               </p>
@@ -84,13 +98,16 @@ const AreaReport = ({
           </div>
         </li>
         <li>
-          <div className="flex w-full bg-slate-100 p-3">
-            <div className="w-[50%]">
+          <div className={`flex w-full ${padding} bg-slate-100`}>
+            <div className="w-[75%]">
               <p className="text-sm">
-                {translate.getTranslation(lang, isRental ? "highestM2PriceRental" : "highestM2Price")}
+                {translate.getTranslation(
+                  lang,
+                  isRental ? "highestM2PriceRental" : "highestM2Price"
+                )}
               </p>
             </div>
-            <div className="w-[50%]">
+            <div className="w-[25%]">
               <p className="font-bold text-sm">
                 {makeNumberCurrency(data.highestM2Price)}
               </p>
@@ -98,13 +115,16 @@ const AreaReport = ({
           </div>
         </li>
         <li>
-          <div className="flex w-full p-3">
-            <div className="w-[50%]">
+          <div className={`flex w-full ${padding}`}>
+            <div className="w-[75%]">
               <p className="text-sm">
-                {translate.getTranslation(lang, isRental ? "lowestM2PriceRental" : "lowestM2Price")}
+                {translate.getTranslation(
+                  lang,
+                  isRental ? "lowestM2PriceRental" : "lowestM2Price"
+                )}
               </p>
             </div>
-            <div className="w-[50%]">
+            <div className="w-[25%]">
               <p className="font-bold text-sm">
                 {makeNumberCurrency(data.lowestM2Price)}
               </p>
@@ -112,13 +132,13 @@ const AreaReport = ({
           </div>
         </li>
         <li>
-          <div className="flex w-full bg-slate-100 p-3">
-            <div className="w-[50%]">
+          <div className={`flex w-full ${padding} bg-slate-100`}>
+            <div className="w-[75%]">
               <p className="text-sm">
                 {translate.getTranslation(lang, "averageSize")}
               </p>
             </div>
-            <div className="w-[50%]">
+            <div className="w-[25%]">
               <p className="font-bold text-sm">{`${roundNumberToDecimal(
                 data.averageSize,
                 0
@@ -127,13 +147,16 @@ const AreaReport = ({
           </div>
         </li>
         <li>
-          <div className="flex w-full p-3">
-            <div className="w-[50%]">
+          <div className={`flex w-full ${padding}`}>
+            <div className="w-[75%]">
               <p className="text-sm">
-                {translate.getTranslation(lang, isRental ? "rentalCount" : "salesCount")}
+                {translate.getTranslation(
+                  lang,
+                  isRental ? "rentalCount" : "salesCount"
+                )}
               </p>
             </div>
-            <div className="w-[50%]">
+            <div className="w-[25%]">
               <p className="font-bold text-sm">{data.count}</p>
             </div>
           </div>
@@ -146,7 +169,10 @@ const AreaReport = ({
     <div>
       <div className="flex flex-column w-full justify-center h-[200px]">
         <p className="flex items-center text-slate-400 text-center font-sm">
-          {translate.getTranslation(lang, isRental ? "areaEmptyDataRental" : "areaEmptyData")}
+          {translate.getTranslation(
+            lang,
+            isRental ? "areaEmptyDataRental" : "areaEmptyData"
+          )}
         </p>
       </div>
     </div>

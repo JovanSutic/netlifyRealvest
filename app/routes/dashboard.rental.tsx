@@ -549,6 +549,7 @@ const DashboardSearch = () => {
                         data={fetcher.data?.data as AreaReportType}
                         lang={lang}
                         isRental
+                        mobile={mobile}
                       />
                     ) : (
                       <div>
@@ -570,6 +571,7 @@ const DashboardSearch = () => {
                   timeRange={timeRange}
                   date={""}
                   rental
+                  mobile
                 />
               )}
               {tab === "3" && (
@@ -587,6 +589,7 @@ const DashboardSearch = () => {
                   data={fetcher.data?.features}
                   lang={lang}
                   isRental
+                  mobile
                 />
               )}
             </div>

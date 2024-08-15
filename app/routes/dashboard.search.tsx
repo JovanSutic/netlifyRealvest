@@ -35,7 +35,6 @@ import {
 } from "../utils/dashboard";
 import AreaReport from "../widgets/AreaReport";
 import Loader from "../components/loader";
-import Tabs from "../components/tabs";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -54,6 +53,7 @@ import AreaDoughnutTimeReport from "../widgets/AreaDoughnutTimeReport";
 import { getParamValue, isMobile } from "../utils/params";
 import { default as LocalTooltip } from "../components/tooltip/Tooltip";
 import { FinalError } from "../types/component.types";
+import ChipsGroupItem from "../components/chip/ChipsGroup";
 
 export const links: LinksFunction = () => [
   {
@@ -188,7 +188,8 @@ const DashboardSearch = () => {
   const translate = new Translator("dashboard");
   const { mobile } = useLoaderData<typeof loader>();
   const scrollRef = useRef<HTMLDivElement>(null);
-  const executeScroll = () => scrollRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const executeScroll = () =>
+    scrollRef?.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   const fetcher = useFetcher<{
     data: AreaReportType;
@@ -199,10 +200,10 @@ const DashboardSearch = () => {
   });
 
   useEffect(() => {
-    if(JSON.stringify(fetcher?.data?.list) !== undefined && mobile) {
+    if (JSON.stringify(fetcher?.data?.list) !== undefined && mobile) {
       executeScroll();
     }
-  },[JSON.stringify(fetcher?.data?.list)])
+  }, [JSON.stringify(fetcher?.data?.list)]);
 
   useEffect(() => {
     if (center) {
@@ -509,46 +510,34 @@ const DashboardSearch = () => {
             </ClientOnly>
           </WidgetWrapper>
         </div>
-        <div ref={scrollRef} className="row-start-4 col-span-12 lg:col-span-5 col-start-1 lg:col-start-8 lg:row-start-2 mb-6">
+        <div
+          ref={scrollRef}
+          className="row-start-4 col-span-12 lg:col-span-5 col-start-1 lg:col-start-8 lg:row-start-2 mb-6"
+        >
           <WidgetWrapper>
             <Loader open={fetcher.state === "loading"} />
-            <Tabs
-              options={[
-                {
-                  text: translate.getTranslation(lang, "tabReport"),
-                  value: "1",
-                },
-                {
-                  text: translate.getTranslation(lang, "tabLine"),
-                  value: "2",
-                },
-                {
-                  text: translate.getTranslation(lang, "tabDoughnut"),
-                  value: "3",
-                },
-                {
-                  text: translate.getTranslation(lang, "tabDoughnutTime"),
-                  value: "4",
-                },
+            <ChipsGroupItem
+              data={[
+                {text: translate.getTranslation(lang, "tabReport"), value: "1", onClick: () => setTab("1") },
+                {text: translate.getTranslation(lang, "tabLine"), value: "2", onClick: () => setTab("2") },
+                {text: translate.getTranslation(lang, "tabDoughnut"), value: "3", onClick: () => setTab("3") },
+                {text: translate.getTranslation(lang, "tabDoughnutTime"), value: "4", onClick: () => setTab("4") },
               ]}
-              value={tab}
-              onChange={(value) => {
-                setTab(value);
-              }}
-              rows={mobile ? 2 : 1}
+              current={tab}
+              mobile={mobile}
             />
-            <div className="mt-4">
+            <div className="mt-1">
               {tab === "1" && (
                 <div>
                   <div className="mb-4">
-                    <p className="text-sm text-slate-700 font-serif">
+                    <p className="text-sm text-slate-700">
                       {(fetcher.data?.list || []).length > 0 &&
                         translate.getTranslation(lang, "areaDescription")}
                     </p>
                   </div>
                   <div>
                     {center ? (
-                      <AreaReport data={fetcher.data?.data} lang={lang} />
+                      <AreaReport data={fetcher.data?.data} lang={lang} mobile={mobile} />
                     ) : (
                       <div>
                         <div className="flex flex-column w-full justify-center h-[200px]">
@@ -568,6 +557,7 @@ const DashboardSearch = () => {
                   lang={lang}
                   timeRange={timeRange}
                   date={fetcher.data?.lastDate || ""}
+                  mobile={mobile}
                 />
               )}
               {tab === "3" && (
