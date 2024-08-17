@@ -11,7 +11,7 @@ const ToggleButton = ({
 }) => {
     const orientation: string = options.findIndex(item => value === item.value) === 0 ? "left-1" : "right-1";
   return (
-    <div className="mx-8 shadow rounded border h-10 mt-4 flex p-1 relative items-center bg-gray-200">
+    <div className="shadow rounded border h-10 mt-4 flex p-1 relative items-center bg-gray-200">
       {options.map((item) => (
         <div key={item.value} className="w-full flex justify-center text-[12px] leading-[13px] text-gray-800 font-semibold px-4">
           <button onClick={() => onChange(item.value)}>{item.text}</button>

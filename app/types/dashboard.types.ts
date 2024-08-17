@@ -299,3 +299,12 @@ export type Details = {
   inner_state?: string;
   description?: string;
 };
+
+export interface AppreciationData {
+  lastAverage: number;
+  appreciationRate: number;
+  fiveYearPrice: number;
+  fiveYearPercent: number;
+  tenYearPrice: number;
+  tenYearPercent: number;
+}

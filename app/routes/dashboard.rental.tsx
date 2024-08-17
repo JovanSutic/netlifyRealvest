@@ -80,6 +80,9 @@ export const meta: MetaFunction = ({ location }) => {
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+
+  return null;
+  
   const userAgent = request.headers.get("user-agent");
   const lang = new URL(request.url).searchParams.get("lang") || "sr";
   const lat = new URL(request.url).searchParams.get("lat");
@@ -231,6 +234,8 @@ const DashboardSearch = () => {
       Filler
     );
   }, []);
+
+  return null;
 
   return (
     <DashboardPage>
@@ -550,6 +555,7 @@ const DashboardSearch = () => {
                         lang={lang}
                         isRental
                         mobile={mobile}
+                        range={range}
                       />
                     ) : (
                       <div>
