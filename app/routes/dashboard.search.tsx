@@ -13,10 +13,13 @@ import {
 } from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
 import {
+  AppreciationData,
   AreaReportType,
+  DashboardRentalType,
   DashboardSearchType,
   LangType,
   PropertyType,
+  RentalPropertyType,
 } from "../types/dashboard.types";
 import {
   RangeOption,
@@ -30,8 +33,10 @@ import {
   extractAddress,
   fetchData,
   generateAreaReport,
+  getAppreciationData,
   getMapCircle,
   setSubtypeGroup,
+  transformDashboardRental,
 } from "../utils/dashboard";
 import AreaReport from "../widgets/AreaReport";
 import Loader from "../components/loader";
@@ -54,6 +59,8 @@ import { getParamValue, isMobile } from "../utils/params";
 import { default as LocalTooltip } from "../components/tooltip/Tooltip";
 import { FinalError } from "../types/component.types";
 import ChipsGroupItem from "../components/chip/ChipsGroup";
+import { format } from "date-fns";
+import AppreciateReport from "../widgets/AppreciateReport";
 
 export const links: LinksFunction = () => [
   {
@@ -82,14 +89,25 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const lng = new URL(request.url).searchParams.get("lng");
   const range = new URL(request.url).searchParams.get("range");
   const searchRange = new URL(request.url).searchParams.get("time_range");
+  const appreciateParam = new URL(request.url).searchParams.get("appreciate");
+  const rentalParam = new URL(request.url).searchParams.get("rental");
   const searchType = new URL(request.url).searchParams.get(
     "property_type"
   ) as PropertyType;
+
+  // calculate appreciation rate - latest price for the micro location
+  // put fixed calls into one conditional
 
   const searchTypeMap: Record<PropertyType, string> = {
     residential: "apartment",
     parking: "garage",
     commercial: "commercial",
+  };
+
+  const searchRentalTypeMap: Record<PropertyType, RentalPropertyType> = {
+    residential: "rental",
+    parking: "garage_rental",
+    commercial: "commercial_rental",
   };
 
   let isError = false;
@@ -104,6 +122,48 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
     try {
       const { supabaseClient } = createSupabaseServerClient(request);
+
+      let finalRentalData = null;
+
+      if (rentalParam === "0") {
+        const today = new Date();
+        const startDateRental = getLastRecordedReportDate(
+          "1y" as RangeOption,
+          format(today, "yyyy-MM-dd")
+        );
+
+        const { data: rentalData, error: rentalError } = await supabaseClient
+          .from("apartments_archive")
+          .select(
+            `id, name, city, price, date_created, size, city_part, link_id (lat, lng, description, furnished, security, additional, technical, rest)`
+          )
+          .eq("type", searchRentalTypeMap[searchType])
+          .eq("is_active", false)
+          .not("link_id", "is", null)
+          .gt("date_created", getDbDateString(startDateRental!, "en"))
+          .gt("link_id.lat", 0)
+          .gt("link_id.lng", 0)
+          .gt("link_id.lat", uniq[1])
+          .lt("link_id.lat", uniq[0])
+          .gt("link_id.lng", uniq[3])
+          .lt("link_id.lng", uniq[2])
+          .returns<DashboardRentalType[]>();
+
+        if (rentalError) {
+          isError = true;
+          finalError = rentalError as FinalError;
+        }
+
+        finalRentalData = (rentalData || [])
+          .map((item) => {
+            const inter = point([item.link_id.lat, item.link_id.lng]);
+            const isPointInCircle = booleanIntersects(inter, circle.geometry);
+            if (isPointInCircle) {
+              return transformDashboardRental(item, searchType);
+            }
+          })
+          .filter((item) => item !== undefined);
+      }
 
       const { data: lastData, error: lastError } = await supabaseClient
         .from("contracts")
@@ -144,6 +204,39 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         if (isPointInCircle) return item;
       });
 
+      let appreciationData = null;
+
+      if (appreciateParam === "0" && Number(range) < 501) {
+        const limitNumber: number =
+          Number(range) / 40 < 8 ? 8 : Math.floor(Number(range) / 40);
+
+        const { data: earliestData, error: earliestError } =
+          await supabaseClient
+            .from("contracts")
+            .select(`id, price, size, date`)
+            .eq("type", `${searchTypeMap[searchType]}`)
+            .eq("for_view", true)
+            .in("subtype", setSubtypeGroup(searchType))
+            .gt("lat", uniq[1])
+            .lt("lat", uniq[0])
+            .gt("lng", uniq[3])
+            .lt("lng", uniq[2])
+            .limit(limitNumber)
+            .order("date", { ascending: true })
+            .returns<Record<string, string | number>[]>();
+
+        if (earliestError) {
+          isError = true;
+          finalError = earliestError as FinalError;
+        }
+
+        appreciationData = getAppreciationData(
+          earliestData!,
+          data!,
+          limitNumber
+        );
+      }
+
       const locationData = await fetchData(
         `https://nominatim.openstreetmap.org/search.php?q=${lat}+${lng}&format=jsonv2`
       );
@@ -154,8 +247,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           extractAddress(cyrillicToLatin(locationData[0].display_name))
         ),
         list: finalData,
+        rentalList: finalRentalData,
         lastDate: lastData![0].date,
         mobile: isMobile(userAgent!),
+        appreciationData,
       });
     } catch (error) {
       isError = true;
@@ -170,8 +265,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return json({
     data: [],
     list: [],
+    rentalList: [],
     lastDate: "",
     mobile: isMobile(userAgent!),
+    appreciationData: null,
   });
 };
 
@@ -183,6 +280,11 @@ const DashboardSearch = () => {
   const [propertyType, setPropertyType] = useState<PropertyType>("residential");
   const [timeRange, setTimeRange] = useState<RangeOption>("3m");
   const [tab, setTab] = useState<string>("1");
+  const [appreciate, setAppreciate] = useState<string>("0");
+  const [rental, setRental] = useState<string>("0");
+  const [appreciationData, setAppreciationData] =
+    useState<AppreciationData | null>();
+  const [rentalData, setRentalData] = useState<DashboardSearchType[] | null>();
 
   const reportTranslate = new Translator("report");
   const translate = new Translator("dashboard");
@@ -194,7 +296,9 @@ const DashboardSearch = () => {
   const fetcher = useFetcher<{
     data: AreaReportType;
     list: DashboardSearchType[];
+    rentalList: DashboardSearchType[];
     lastDate: string;
+    appreciationData: AppreciationData | null;
   }>({
     key: "search_contracts",
   });
@@ -206,13 +310,74 @@ const DashboardSearch = () => {
   }, [JSON.stringify(fetcher?.data?.list)]);
 
   useEffect(() => {
+    console.log(fetcher.data?.appreciationData)
+    if (appreciate === "0") {
+      setAppreciationData(fetcher.data?.appreciationData);
+      setAppreciate("1");
+    }
+  }, [JSON.stringify(fetcher?.data?.appreciationData)]);
+
+  useEffect(() => {
+    if (rental === "0") {
+      setRentalData(fetcher.data?.rentalList);
+      setRental("1");
+    }
+  }, [JSON.stringify(fetcher?.data?.rentalList)]);
+
+  useEffect(() => {
+    if (appreciate !== "0") {
+      setAppreciate("0");
+    }
+    if (rental !== "0") {
+      setRental("0");
+    }
+
     if (center) {
       const [lat, lng] = center;
       fetcher.load(
-        `/dashboard/search?lat=${lat}&lng=${lng}&city=1&range=${range}&time_range=${timeRange}&property_type=${propertyType}`
+        `/dashboard/search?lat=${lat}&lng=${lng}&city=1&range=${range}&time_range=${timeRange}&property_type=${propertyType}&appreciate=0&rental=0`
       );
     }
-  }, [center, range, timeRange, propertyType]);
+  }, [center]);
+
+  useEffect(() => {
+    if (appreciate !== "0") {
+      setAppreciate("0");
+    }
+
+    if (propertyType !== "residential" && (tab === "5" || tab === "6")) {
+      setTab("1");
+    }
+
+    if (center) {
+      const [lat, lng] = center;
+      fetcher.load(
+        `/dashboard/search?lat=${lat}&lng=${lng}&city=1&range=${range}&time_range=${timeRange}&property_type=${propertyType}&appreciate=0&rental=${rental}`
+      );
+    }
+  }, [propertyType]);
+
+  useEffect(() => {
+    if (appreciate !== "0") {
+      setAppreciate("0");
+    }
+
+    if (center) {
+      const [lat, lng] = center;
+      fetcher.load(
+        `/dashboard/search?lat=${lat}&lng=${lng}&city=1&range=${range}&time_range=${timeRange}&property_type=${propertyType}&appreciate=0&rental=${rental}`
+      );
+    }
+  }, [range]);
+
+  useEffect(() => {
+    if (center) {
+      const [lat, lng] = center;
+      fetcher.load(
+        `/dashboard/search?lat=${lat}&lng=${lng}&city=1&range=${range}&time_range=${timeRange}&property_type=${propertyType}&appreciate=${appreciate}&rental=${rental}`
+      );
+    }
+  }, [timeRange]);
 
   useEffect(() => {
     ChartJS.register(
@@ -227,6 +392,39 @@ const DashboardSearch = () => {
       Filler
     );
   }, []);
+
+  const chipOptions = [
+    {
+      text: translate.getTranslation(lang, "tabReport"),
+      value: "1",
+      onClick: () => setTab("1"),
+    },
+    {
+      text: translate.getTranslation(lang, "tabLine"),
+      value: "2",
+      onClick: () => setTab("2"),
+    },
+    {
+      text: translate.getTranslation(lang, "tabDoughnut"),
+      value: "3",
+      onClick: () => setTab("3"),
+    },
+    {
+      text: translate.getTranslation(lang, "tabDoughnutTime"),
+      value: "4",
+      onClick: () => setTab("4"),
+    },
+    {
+      text: translate.getTranslation(lang, "tabLineRental"),
+      value: "5",
+      onClick: () => setTab("5"),
+    },
+    {
+      text: translate.getTranslation(lang, "tabDoughnutRental"),
+      value: "6",
+      onClick: () => setTab("6"),
+    },
+  ];
 
   return (
     <DashboardPage>
@@ -517,27 +715,31 @@ const DashboardSearch = () => {
           <WidgetWrapper>
             <Loader open={fetcher.state === "loading"} />
             <ChipsGroupItem
-              data={[
-                {text: translate.getTranslation(lang, "tabReport"), value: "1", onClick: () => setTab("1") },
-                {text: translate.getTranslation(lang, "tabLine"), value: "2", onClick: () => setTab("2") },
-                {text: translate.getTranslation(lang, "tabDoughnut"), value: "3", onClick: () => setTab("3") },
-                {text: translate.getTranslation(lang, "tabDoughnutTime"), value: "4", onClick: () => setTab("4") },
-              ]}
+              data={
+                propertyType === "residential"
+                  ? chipOptions
+                  : chipOptions.slice(0, 4)
+              }
               current={tab}
               mobile={mobile}
             />
             <div className="mt-1">
+              <AppreciateReport
+                range={range}
+                appreciationData={appreciationData}
+                lang={lang}
+                type={propertyType}
+                isData={Boolean(fetcher.data?.data)}
+              />
               {tab === "1" && (
                 <div>
-                  <div className="mb-4">
-                    <p className="text-sm text-slate-700">
-                      {(fetcher.data?.list || []).length > 0 &&
-                        translate.getTranslation(lang, "areaDescription")}
-                    </p>
-                  </div>
                   <div>
                     {center ? (
-                      <AreaReport data={fetcher.data?.data} lang={lang} mobile={mobile} />
+                      <AreaReport
+                        data={fetcher.data?.data}
+                        lang={lang}
+                        mobile={mobile}
+                      />
                     ) : (
                       <div>
                         <div className="flex flex-column w-full justify-center h-[200px]">
@@ -577,6 +779,27 @@ const DashboardSearch = () => {
                   timeRange={timeRange}
                   date={fetcher.data?.lastDate || ""}
                   mobile={mobile}
+                />
+              )}
+              {tab === "5" && (
+                <AreaLineReport
+                  isLine={center !== undefined}
+                  data={rentalData || []}
+                  lang={lang}
+                  timeRange="1y"
+                  date={""}
+                  rental
+                  mobile
+                />
+              )}
+              {tab === "6" && (
+                <AreaDoughnutReport
+                  isShown={center !== undefined}
+                  data={rentalData || []}
+                  lang={lang}
+                  mobile={mobile}
+                  propertyType={propertyType}
+                  rental
                 />
               )}
             </div>

@@ -86,7 +86,7 @@ const AreaLineReport = ({
         )}
         {isLine && !isEmpty && (
           <>
-            <div className={`flex flex-row-reverse ${margin}`}>
+            <div className={`flex justify-center ${margin}`}>
               <ToggleButton
                 value={distributionType!}
                 onChange={(value) => {
