@@ -3,8 +3,7 @@ import { point, booleanIntersects } from "@turf/turf";
 import Map from "../components/map/index.client";
 import { ClientOnly } from "../components/helpers/ClientOnly";
 import { LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
-import Select from "../components/select/Select";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   MetaFunction,
   useFetcher,
@@ -17,6 +16,7 @@ import {
   AreaReportType,
   DashboardRentalType,
   DashboardSearchType,
+  FiltersType,
   LangType,
   PropertyType,
   RentalPropertyType,
@@ -61,6 +61,8 @@ import { FinalError } from "../types/component.types";
 import ChipsGroupItem from "../components/chip/ChipsGroup";
 import { format } from "date-fns";
 import AppreciateReport from "../widgets/AppreciateReport";
+import Filters from "../components/filters";
+import FiltersDisplay from "../components/filters/FiltersDisplay";
 
 export const links: LinksFunction = () => [
   {
@@ -94,9 +96,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const searchType = new URL(request.url).searchParams.get(
     "property_type"
   ) as PropertyType;
-
-  // calculate appreciation rate - latest price for the micro location
-  // put fixed calls into one conditional
 
   const searchTypeMap: Record<PropertyType, string> = {
     residential: "apartment",
@@ -135,7 +134,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         const { data: rentalData, error: rentalError } = await supabaseClient
           .from("apartments_archive")
           .select(
-            `id, name, city, price, date_created, size, city_part, link_id (lat, lng, description, furnished, security, additional, technical, rest)`
+            `id, name, city, price, date_created, size, city_part, link_id (lat, lng)`
           )
           .eq("type", searchRentalTypeMap[searchType])
           .eq("is_active", false)
@@ -183,7 +182,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
       const { data, error } = await supabaseClient
         .from("contracts")
-        .select(`id, lng, lat, municipality, city, price, size, type, date`)
+        .select(`id, lng, lat, city, price, size, type, date`)
         .eq("type", `${searchTypeMap[searchType]}`)
         .eq("for_view", true)
         .in("subtype", setSubtypeGroup(searchType))
@@ -273,20 +272,23 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 const DashboardSearch = () => {
+  const defaultFilters: FiltersType = {
+    range: "250",
+    propertyType: "residential",
+    timeRange: "3m",
+  };
+
   const [searchParams] = useSearchParams();
   const lang = (searchParams.get("lang") as LangType) || "sr";
-  const [range, setRange] = useState<string>("250");
   const [center, setCenter] = useState<number[]>();
-  const [propertyType, setPropertyType] = useState<PropertyType>("residential");
-  const [timeRange, setTimeRange] = useState<RangeOption>("3m");
   const [tab, setTab] = useState<string>("1");
   const [appreciate, setAppreciate] = useState<string>("0");
   const [rental, setRental] = useState<string>("0");
   const [appreciationData, setAppreciationData] =
     useState<AppreciationData | null>();
+  const [filters, setFilters] = useState<FiltersType>(defaultFilters);
   const [rentalData, setRentalData] = useState<DashboardSearchType[] | null>();
 
-  const reportTranslate = new Translator("report");
   const translate = new Translator("dashboard");
   const { mobile } = useLoaderData<typeof loader>();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -303,6 +305,8 @@ const DashboardSearch = () => {
     key: "search_contracts",
   });
 
+  const { range, timeRange, propertyType } = filters;
+
   useEffect(() => {
     if (JSON.stringify(fetcher?.data?.list) !== undefined && mobile) {
       executeScroll();
@@ -310,7 +314,6 @@ const DashboardSearch = () => {
   }, [JSON.stringify(fetcher?.data?.list)]);
 
   useEffect(() => {
-    console.log(fetcher.data?.appreciationData)
     if (appreciate === "0") {
       setAppreciationData(fetcher.data?.appreciationData);
       setAppreciate("1");
@@ -352,32 +355,12 @@ const DashboardSearch = () => {
     if (center) {
       const [lat, lng] = center;
       fetcher.load(
-        `/dashboard/search?lat=${lat}&lng=${lng}&city=1&range=${range}&time_range=${timeRange}&property_type=${propertyType}&appreciate=0&rental=${rental}`
+        `/dashboard/search?lat=${lat}&lng=${lng}&city=1&range=${filters.range}&time_range=${filters.timeRange}&property_type=${filters.propertyType}&appreciate=0&rental=${rental}`
       );
     }
-  }, [propertyType]);
 
-  useEffect(() => {
-    if (appreciate !== "0") {
-      setAppreciate("0");
-    }
-
-    if (center) {
-      const [lat, lng] = center;
-      fetcher.load(
-        `/dashboard/search?lat=${lat}&lng=${lng}&city=1&range=${range}&time_range=${timeRange}&property_type=${propertyType}&appreciate=0&rental=${rental}`
-      );
-    }
-  }, [range]);
-
-  useEffect(() => {
-    if (center) {
-      const [lat, lng] = center;
-      fetcher.load(
-        `/dashboard/search?lat=${lat}&lng=${lng}&city=1&range=${range}&time_range=${timeRange}&property_type=${propertyType}&appreciate=${appreciate}&rental=${rental}`
-      );
-    }
-  }, [timeRange]);
+    setIsOpen(false);
+  }, [filters.propertyType, filters.range, filters.timeRange]);
 
   useEffect(() => {
     ChartJS.register(
@@ -426,275 +409,78 @@ const DashboardSearch = () => {
     },
   ];
 
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
   return (
     <DashboardPage>
+      {useMemo(() => {
+        return (
+          <Filters
+            isOpen={isOpen}
+            filters={filters}
+            lang={lang}
+            toggleOpen={() => setIsOpen(!isOpen)}
+            submit={setFilters}
+            mobile={mobile}
+          />
+        );
+      }, [
+        filters.propertyType,
+        filters.range,
+        filters.timeRange,
+        isOpen,
+        lang,
+      ])}
+
       <div className="grid grid-cols-12 gap-4 pt-5 lg:pt-0">
-        <div className="row-start-1 col-span-12 xl:col-span-7 lg:row-start-1">
-          <div className="my-0 xl:my-2 flex h-full flex-row items-center">
-            <h2 className="text-center xl:text-left text-2xl font-semibold">
-              {translate.getTranslation(lang, "searchTitle")}
-            </h2>
-          </div>
-        </div>
-        <div className="row-start-2 col-span-12 xl:col-span-5 lg:row-start-1">
-          <div className="grid grid-cols-12 xl:grid-cols-3 grid-rows-1 gap-4 col-start-1 xl:col-start-2 mt-0 xl:mt-4">
-            <div className="col-span-6 xl:col-span-1 xl:col-start-2">
-              <label
-                htmlFor="mapCity"
-                className="text-slate-800 ml-1 text-sm font-semibold"
-              >
-                {translate.getTranslation(lang, "timeRange")}
-              </label>
-              <Select
-                name="timeRange"
-                value={timeRange}
-                isFullWidth={true}
-                setValue={(value) => {
-                  setTimeRange(value as RangeOption);
-                }}
-                options={[
-                  {
-                    value: "3m",
-                    text: translate.getTranslation(lang, "3m"),
-                  },
-                  {
-                    value: "6m",
-                    text: translate.getTranslation(lang, "6m"),
-                  },
-                  {
-                    value: "1y",
-                    text: translate.getTranslation(lang, "1y"),
-                  },
-                  {
-                    value: "3y",
-                    text: translate.getTranslation(lang, "3y"),
-                  },
-                  {
-                    value: "5y",
-                    text: translate.getTranslation(lang, "5y"),
-                  },
-                ]}
-              />
-            </div>
-            <div className="col-span-6 xl:col-span-1 col-start-7 xl:col-start-3">
-              <label
-                htmlFor="propertyType"
-                className="text-slate-800 ml-1 text-sm font-semibold"
-              >
-                {translate.getTranslation(lang, "propertyType")}
-              </label>
-              <Select
-                name="propertyType"
-                value={propertyType!}
-                isFullWidth={true}
-                setValue={(value) => {
-                  setPropertyType(value as PropertyType);
-                }}
-                options={[
-                  {
-                    value: "residential",
-                    text: reportTranslate.getTranslation(
-                      lang!,
-                      "residentialType"
-                    ),
-                  },
-                  {
-                    value: "commercial",
-                    text: reportTranslate.getTranslation(
-                      lang!,
-                      "commercialType"
-                    ),
-                  },
-                  {
-                    value: "parking",
-                    text: reportTranslate.getTranslation(lang!, "parkingType"),
-                  },
-                ]}
-              />
-            </div>
-          </div>
-        </div>
-        <div className="row-start-3 col-span-12 lg:col-span-7 lg:row-start-2">
+        <div className="row-start-1 col-span-12 lg:col-span-7 lg:row-start-2">
           <WidgetWrapper>
             <Loader open={fetcher.state === "loading"} />
-            <div className="grid grid-cols-3 grid-rows-1 gap-1 mb-4">
-              {mobile ? (
-                <>
-                  <div className="col-span-3 col-start-1 xl:col-span-1 xl:col-start-3">
-                    <div className="flex flex-row-reverse">
-                      <div className="w-[30px]">
-                        <LocalTooltip
-                          text={translate.getTranslation(
-                            lang,
-                            "searchDescription"
-                          )}
-                          style="top"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="size-6"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                            />
-                          </svg>
-                        </LocalTooltip>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-span-3 col-start-1 lg:col-start-1 lg:col-span-1">
-                    <div>
-                      <label
-                        htmlFor="mapCity"
-                        className="text-slate-800 ml-1 text-sm font-semibold"
+            <div className="grid grid-cols-6 grid-rows-1 gap-1 mb-4">
+              <div className="col-span-5 col-start-1">
+                <div className="my-0 xl:my-2 flex h-full flex-row items-center">
+                  <h2 className="text-left text-md md:text-[22px] font-bold">
+                    {translate.getTranslation(lang, "searchTitle")}
+                  </h2>
+                </div>
+              </div>
+
+              <div className="col-span-1 col-start-6">
+                <div className="flex flex-row-reverse">
+                  <div className="w-[30px]">
+                    <LocalTooltip
+                      text={translate.getTranslation(lang, "searchDescription")}
+                      style="top"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6"
                       >
-                        {translate.getTranslation(lang, "areaRange")}
-                      </label>
-                      <div className="width-44">
-                        <Select
-                          name="mapRange"
-                          value={range}
-                          isFullWidth={true}
-                          setValue={(value) => {
-                            setRange(value);
-                          }}
-                          options={[
-                            {
-                              value: "250",
-                              text: `250 ${translate.getTranslation(
-                                lang,
-                                "meters"
-                              )}`,
-                            },
-                            {
-                              value: "500",
-                              text: `500 ${translate.getTranslation(
-                                lang,
-                                "meters"
-                              )}`,
-                            },
-                            {
-                              value: "1000",
-                              text: `1000 ${translate.getTranslation(
-                                lang,
-                                "meters"
-                              )}`,
-                            },
-                            {
-                              value: "1500",
-                              text: `1500 ${translate.getTranslation(
-                                lang,
-                                "meters"
-                              )}`,
-                            },
-                            {
-                              value: "2000",
-                              text: `2000 ${translate.getTranslation(
-                                lang,
-                                "meters"
-                              )}`,
-                            },
-                          ]}
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
                         />
-                      </div>
-                    </div>
+                      </svg>
+                    </LocalTooltip>
                   </div>
-                </>
-              ) : (
-                <>
-                  <div className="col-span-3 col-start-1 lg:col-start-1 lg:col-span-1">
-                    <div>
-                      <label
-                        htmlFor="mapCity"
-                        className="text-slate-800 ml-1 text-sm font-semibold"
-                      >
-                        {translate.getTranslation(lang, "areaRange")}
-                      </label>
-                      <div className="width-44">
-                        <Select
-                          name="mapRange"
-                          value={range}
-                          isFullWidth={true}
-                          setValue={(value) => {
-                            setRange(value);
-                          }}
-                          options={[
-                            {
-                              value: "250",
-                              text: `250 ${translate.getTranslation(
-                                lang,
-                                "meters"
-                              )}`,
-                            },
-                            {
-                              value: "500",
-                              text: `500 ${translate.getTranslation(
-                                lang,
-                                "meters"
-                              )}`,
-                            },
-                            {
-                              value: "1000",
-                              text: `1000 ${translate.getTranslation(
-                                lang,
-                                "meters"
-                              )}`,
-                            },
-                            {
-                              value: "1500",
-                              text: `1500 ${translate.getTranslation(
-                                lang,
-                                "meters"
-                              )}`,
-                            },
-                            {
-                              value: "2000",
-                              text: `2000 ${translate.getTranslation(
-                                lang,
-                                "meters"
-                              )}`,
-                            },
-                          ]}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-span-3 col-start-1 xl:col-span-1 xl:col-start-3">
-                    <div className="flex flex-row-reverse">
-                      <div className="w-[30px]">
-                        <LocalTooltip
-                          text={translate.getTranslation(
-                            lang,
-                            "searchDescription"
-                          )}
-                          style="top"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="size-6"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                            />
-                          </svg>
-                        </LocalTooltip>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-6 grid-rows-1 gap-1 mb-4">
+              <div className="w-full col-span-6 col-start-1">
+                <p className="font-regular text-[16px] text-left text-gray-600">
+                  {fetcher?.data?.data.address
+                    ? `${translate.getTranslation(lang, "areaCenter")} ${
+                        fetcher?.data?.data.address
+                      }`
+                    : `${translate.getTranslation(lang, "areaCenterNo")}`}
+                </p>
+              </div>
             </div>
             <ClientOnly
               fallback={
@@ -706,11 +492,18 @@ const DashboardSearch = () => {
             >
               {() => <Map range={Number(range)} setCenter={setCenter} />}
             </ClientOnly>
+
+            <FiltersDisplay
+              mobile={mobile}
+              lang={lang}
+              filters={filters}
+              openFilters={() => setIsOpen(true)}
+            />
           </WidgetWrapper>
         </div>
         <div
           ref={scrollRef}
-          className="row-start-4 col-span-12 lg:col-span-5 col-start-1 lg:col-start-8 lg:row-start-2 mb-6"
+          className="row-start-2 col-span-12 lg:col-span-5 col-start-1 lg:col-start-8 lg:row-start-2 mb-6"
         >
           <WidgetWrapper>
             <Loader open={fetcher.state === "loading"} />
