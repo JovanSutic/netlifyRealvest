@@ -22,13 +22,6 @@ const AreaReport = ({
   if (data) {
     return (
       <div>
-        <div className="w-full mb-3">
-          <p className="font-semibold text-[16px] text-center">{`${translate.getTranslation(
-            lang,
-            "areaCenter"
-          )} ${data.address}`}</p>
-        </div>
-
         <ul className=" border-solid border-[1px] border-slate-200 rounded-md">
           <li>
             <div className={`flex w-full ${padding} bg-slate-100`}>

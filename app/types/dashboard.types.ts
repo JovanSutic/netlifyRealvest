@@ -168,7 +168,7 @@ export interface DashboardSearchType {
   id: number;
   lng: number;
   lat: number;
-  municipality: string;
+  municipality?: string;
   date: string;
   city: string;
   price: number;
@@ -307,4 +307,10 @@ export interface AppreciationData {
   fiveYearPercent: number;
   tenYearPrice: number;
   tenYearPercent: number;
+}
+
+export interface FiltersType {
+  timeRange: RangeOption;
+  range: string;
+  propertyType: PropertyType;
 }

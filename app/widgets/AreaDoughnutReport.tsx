@@ -43,6 +43,8 @@ const AreaDoughnutReport = ({
   const isEmpty = isShown && data.length === 0;
   const margin: string = mobile ? "mb-8" : "mb-4";
 
+  console.log(isShown);
+
     return(
         <div>
       <div className="mb-2">
@@ -62,7 +64,7 @@ const AreaDoughnutReport = ({
         )}
         {isShown && !isEmpty && (
           <>
-            <div className={`flex flex-row-reverse ${margin}`}>
+            <div className={`flex justify-center ${margin}`}>
               <ToggleButton
                 value={distributionType!}
                 onChange={(value) => {
