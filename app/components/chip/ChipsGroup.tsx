@@ -20,7 +20,7 @@ const ChipsGroup = ({
 
   return (
     <div
-      className={`w-full flex flex-row ${wrap} ${overflow} pb-4 gap-2`}
+      className={`w-full flex flex-row ${wrap} ${overflow} pb-4 xl:pb-2 gap-2`}
     >
       {data.map((item) => (
         <ChipTab

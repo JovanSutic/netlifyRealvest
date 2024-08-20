@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link, useNavigate } from "@remix-run/react";
 import { Translator } from "../../data/language/translator";
 import { LangType } from "../../types/dashboard.types";
 
@@ -24,6 +24,7 @@ const MobileNavigation = ({
   const nextLang = lang === "sr" ? "en" : "sr";
 
   const translate = new Translator("navigation");
+  const navigate = useNavigate();
   return (
     <header className="flex shadow-sm bg-gray-700 font-[sans-serif] min-h-[70px]">
       <div className="flex flex-wrap items-center justify-between sm:px-10 px-6 py-3 relative lg:gap-y-4 gap-y-6 gap-x-4 w-full">
@@ -122,9 +123,15 @@ const MobileNavigation = ({
             </li>
 
             <li className="fixed bottom-20 py-3 px-3">
-              <Link
-                to={`${url}?lang=${nextLang}`}
+              <div
                 className="text-blue-300 hover:text-blue-400 text-sm flex items-center rounded-md"
+                role="button"
+                tabIndex={0}
+                onKeyDown={() => null}
+                onClick={() => {
+                  toggleOpen();
+                  navigate(`${url}?lang=${nextLang}`);
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -144,7 +151,7 @@ const MobileNavigation = ({
                 <span>
                   {nextLang === "sr" ? "srpska verzija" : "english version"}
                 </span>
-              </Link>
+              </div>
             </li>
 
             <li className="fixed bottom-8 py-3 px-3">

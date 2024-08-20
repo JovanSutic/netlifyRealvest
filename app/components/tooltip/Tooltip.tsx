@@ -19,7 +19,7 @@ const Tooltip = ({
       "absolute shadow-lg hidden group-hover:block bg-[#333] text-white font-semibold px-3 py-2 text-[13px] left-full ml-3 top-0 bottom-0 my-auto h-max w-max rounded",
   };
   return (
-    <div className="relative w-max group mx-auto">
+    <div className="relative w-max group mx-auto cursor-pointer">
       {children}
       <div className={classMap[style as keyof typeof classMap]}>{text}</div>
     </div>

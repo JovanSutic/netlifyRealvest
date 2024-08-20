@@ -19,7 +19,10 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     areaDoughnutDescriptionRental:
       "Rental prices distribution chart for the highlighted area",
     areaDoughnutTimeDescription: "Number of sales through time periods",
-    areaNoData: "Area not marked. Click on the map to generate report.",
+    areaNoData:
+      "Micro-location not marked. Click on the map to generate report.",
+    areaNoDataAppreciate:
+      "Micro-location not marked. Click on the map to generate appreciation report.",
     areaEmptyData:
       "Selected area does not have recorded sales in the chosen time frame. Change dropdown values or mark a different area on the map.",
     areaEmptyDataRental:
@@ -90,8 +93,10 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     increaseExampleParking: "Value increase for 14 square meter unit:",
     averagePriceFor: "Average square meter price in",
     years: "years",
-    bigAreaWarn: "If you would like to see appreciation data for this micro-location please select 250 or 500 meters on the area range filter.",
-    noAppreciateData: "There is not enough appreciation data for the selected micro-location.",
+    bigAreaWarn:
+      "If you would like to see appreciation data for this micro-location please select 250 or 500 meters on the area range filter.",
+    noAppreciateData:
+      "There is not enough appreciation data for the selected micro-location.",
     filters: "Filters",
     apply: "Apply",
     close: "Close",
@@ -99,6 +104,8 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     to: "to",
     size: "Size",
     price: "Price",
+    infoAppreciate: "This example uses historical sales data from the chosen area. Realvest cannot guarantee that the same yearly price growth would be achieved in the future, so treat this report as educated estimation.",
+    infoReport: "All data from this report is conditioned by the marked location, time range and property type."
   },
   sr: {
     meters: "metara",
@@ -121,7 +128,9 @@ export const dashboardMap: Record<string, Record<string, string>> = {
       "Raspodela visine mesečnih krija za odabranu zonu u izabranom periodu.",
     areaDoughnutTimeDescription: "Broj prodaja rasporedjenih po periodima.",
     areaNoData:
-      "Zona nije označena. Kliknite na mapu da biste generisali izveštaj.",
+      "Mikrolokacija nije označena. Kliknite na mapu da biste generisali izveštaj.",
+    areaNoDataAppreciate:
+      "Mikrolokacija nije označena. Kliknite na mapu da biste dobili izveštaj o isplativosti.",
     areaEmptyData:
       "Izabrana zona nema zabeležene prodaje u izabranom vremenskom okviru. Promenite parametre u padajućim menijima ili izaberite drugu zonu.",
     areaEmptyDataRental:
@@ -186,16 +195,18 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     zeroRental:
       "Za periode bez izdavanja prikazane su poslednje ostvarene kirije.",
     priceGrowth: "rast cene",
-    forFive: "ZA 5 GODINA",
-    forTen: "ZA 10 GODINA",
+    forFive: "za 5 godina",
+    forTen: "za 10 godina",
     currentPrice: "Trenutna prosečna cena kvadrata:",
     priceDiff: "Porast cene kvadrata:",
     increaseExample: "Povećanje vrednosti stana od 50 kvadrata:",
     increaseExampleParking: "Povećanje vrednosti garaže od 14 kvadrata:",
     averagePriceFor: "Prosečna cena kvadrata za",
     years: "godina",
-    bigAreaWarn: "Smanjite krug mikrolokacije na 250 ili 500 metara ukoliko želite da vidite podatke o isplativosti.",
-    noAppreciateData: "Na žalost za izabranu mikrolokaciju nemamo dovoljno podataka o isplativosti.",
+    bigAreaWarn:
+      "Smanjite krug mikrolokacije na 250 ili 500 metara ukoliko želite da vidite podatke o isplativosti.",
+    noAppreciateData:
+      "Na žalost za izabranu mikrolokaciju nemamo dovoljno podataka o isplativosti.",
     filters: "Filteri",
     apply: "Primeni",
     close: "Zatvori",
@@ -203,6 +214,7 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     to: "do",
     size: "Veličina",
     price: "Cena",
-
+    infoAppreciate: "Za ovaj primer koristili su se istorijski prodajni podataci sa označene teritorije. Realvest vam ne može garantovati da će isti godišnji rast cena biti postignut i u budućnosti. Zbog toga ovaj primer posmatrajte samo kao procenu.",
+    infoReport: "Svi podaci u ovom izveštaju odnose se na označenu lokaciju, vremenski raspon i tip nekretnine."
   },
 };
