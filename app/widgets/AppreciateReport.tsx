@@ -6,6 +6,7 @@ import {
 } from "../types/dashboard.types";
 import { makeNumberCurrency } from "../utils/numbers";
 import { Translator } from "../data/language/translator";
+import Tooltip from "../components/tooltip/Tooltip";
 
 const AppreciateReport = ({
   appreciationData = null,
@@ -13,12 +14,14 @@ const AppreciateReport = ({
   range,
   type,
   isData,
+  point,
 }: {
   lang: LangType;
   appreciationData?: AppreciationData | null;
   range: string;
   type: PropertyType;
   isData: boolean;
+  point: boolean;
 }) => {
   const [appreciateTime, setAppreciateTime] = useState<5 | 10>(5);
   const translate = new Translator("dashboard");
@@ -30,12 +33,26 @@ const AppreciateReport = ({
   const activeText: string = "text-gray-500";
   const passiveText: string = "text-gray-300";
 
-  if (Number(range) > 500) {
+  if (point && Number(range) > 500) {
     return (
       <div>
-        <p className="text-center text-gray-400 text-sm font-medium py-4">
-          {translate.getTranslation(lang, "bigAreaWarn")}
-        </p>
+        <div className="flex flex-column w-full justify-center h-[200px]">
+          <p className="flex items-center text-center text-slate-400 font-sm">
+            {translate.getTranslation(lang, "bigAreaWarn")}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!point) {
+    return (
+      <div>
+        <div className="flex flex-column w-full justify-center h-[200px]">
+          <p className="flex items-center text-center text-slate-400 font-sm">
+            {translate.getTranslation(lang, "areaNoDataAppreciate")}
+          </p>
+        </div>
       </div>
     );
   }
@@ -43,11 +60,34 @@ const AppreciateReport = ({
   if (appreciationData) {
     return (
       <div>
-        <div className="w-full mb-6">
+        <div className="w-full">
+          <div className="w-full flex flex-row-reverse">
+            <div className="w-[30px]">
+              <Tooltip
+                text={translate.getTranslation(lang, "infoAppreciate")}
+                style="top"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                  />
+                </svg>
+              </Tooltip>
+            </div>
+          </div>
           <div>
             <div className="w-full flex border-grey-300 border-[1px] rounded-xl bg-gray-100">
               <div
-                className={`w-[50%] rounded-s-xl py-3 cursor-pointer ${
+                className={`w-[50%] rounded-s-xl py-3 px-1 flex gap-2 justify-around cursor-pointer ${
                   appreciateTime === 5 && activeButton
                 }`}
                 role="button"
@@ -56,29 +96,31 @@ const AppreciateReport = ({
                 onClick={() => setAppreciateTime(5)}
               >
                 <p
-                  className={`w-full text-center text-2xl md:text-3xl font-bold mb-1 md:mb-3 ${
+                  className={`text-center text-2xl md:text-3xl font-bold mb-1 md:mb-3 ${
                     appreciateTime !== 5 ? passiveTitle : activeTitle
                   }`}
                 >
                   {`+${Math.round(appreciationData.fiveYearPercent)}%`}
                 </p>
-                <p
-                  className={`w-full text-center text-sm font-regular ${
-                    appreciateTime !== 5 ? passiveText : activeText
-                  }`}
-                >
-                  {translate.getTranslation(lang, "priceGrowth")}
-                </p>
-                <p
-                  className={`w-full text-center text-sm md:text-md font-semibold ${
-                    appreciateTime !== 5 ? passiveText : activeText
-                  }`}
-                >
-                  {translate.getTranslation(lang, "forFive")}
-                </p>
+                <div className="flex flex-col">
+                  <p
+                    className={`w-full text-center text-sm font-regular ${
+                      appreciateTime !== 5 ? passiveText : activeText
+                    }`}
+                  >
+                    {`${translate.getTranslation(lang, "priceGrowth")}`}
+                  </p>
+                  <p
+                    className={`w-full text-center text-sm font-bold ${
+                      appreciateTime !== 5 ? passiveText : activeText
+                    }`}
+                  >
+                    {`${translate.getTranslation(lang, "forFive")}`}
+                  </p>
+                </div>
               </div>
               <div
-                className={`w-[50%] rounded-e-xl py-3 cursor-pointer ${
+                className={`w-[50%] rounded-e-xl py-3 px-1 flex gap-2 justify-around cursor-pointer ${
                   appreciateTime === 10 && activeButton
                 }`}
                 role="button"
@@ -87,26 +129,28 @@ const AppreciateReport = ({
                 onClick={() => setAppreciateTime(10)}
               >
                 <p
-                  className={`w-full text-center text-2xl md:text-3xl font-bold mb-1 md:mb-3 ${
+                  className={`text-center text-2xl md:text-3xl font-bold mb-1 md:mb-3 ${
                     appreciateTime !== 10 ? passiveTitle : activeTitle
                   }`}
                 >
                   {`+${Math.round(appreciationData.tenYearPercent)}%`}
                 </p>
-                <p
-                  className={`w-full text-center text-sm font-regular ${
-                    appreciateTime !== 10 ? passiveText : activeText
-                  }`}
-                >
-                  {translate.getTranslation(lang, "priceGrowth")}
-                </p>
-                <p
-                  className={`w-full text-center text-sm md:text-md font-semibold ${
-                    appreciateTime !== 10 ? passiveText : activeText
-                  }`}
-                >
-                  {translate.getTranslation(lang, "forTen")}
-                </p>
+                <div className="flex flex-col">
+                  <p
+                    className={`w-full text-center text-sm font-regular ${
+                      appreciateTime !== 10 ? passiveText : activeText
+                    }`}
+                  >
+                    {`${translate.getTranslation(lang, "priceGrowth")}`}
+                  </p>
+                  <p
+                    className={`w-full text-center text-sm font-bold ${
+                      appreciateTime !== 10 ? passiveText : activeText
+                    }`}
+                  >
+                    {`${translate.getTranslation(lang, "forTen")}`}
+                  </p>
+                </div>
               </div>
             </div>
             <div className="w-full mt-[-20px] pt-[10px]">
@@ -204,14 +248,20 @@ const AppreciateReport = ({
   if (!appreciationData && isData) {
     return (
       <div>
-        <p className="text-center text-red-300 text-md font-medium py-4">
-          {translate.getTranslation(lang, "noAppreciateData")}
-        </p>
+        <div className="flex flex-column w-full justify-center h-[200px]">
+          <p className="flex items-center text-center text-slate-400 font-sm">
+            {translate.getTranslation(lang, "noAppreciateData")}
+          </p>
+        </div>
       </div>
     );
   }
 
-  return null;
+  return (
+    <div>
+      <div className="flex flex-column w-full justify-center h-[200px]"></div>
+    </div>
+  );
 };
 
 export default AppreciateReport;

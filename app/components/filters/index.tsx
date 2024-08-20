@@ -58,7 +58,7 @@ const Filters = ({
         <li className="mb-6">
           <div className="flex flex-wrap items-center">
             <p className="w-full text-center font-bold text-xl mb-2 text-black">
-              Filteri
+              {translate.getTranslation(lang, "filters")}
             </p>
           </div>
           <hr />
@@ -193,7 +193,10 @@ const Filters = ({
                     htmlFor="sizeFrom"
                     className="text-slate-800 ml-1 text-sm font-semibold"
                   >
-                    {`${translate.getTranslation(lang, "size")} ${translate.getTranslation(lang, "from")}`}
+                    {`${translate.getTranslation(
+                      lang,
+                      "size"
+                    )} ${translate.getTranslation(lang, "from")}`}
                   </label>
                 </div>
                 <div className="w-full flex">
@@ -284,7 +287,10 @@ const Filters = ({
                     htmlFor="priceFrom"
                     className="text-slate-800 ml-1 text-sm font-semibold"
                   >
-                    {`${translate.getTranslation(lang, "price")} ${translate.getTranslation(lang, "from")}`}
+                    {`${translate.getTranslation(
+                      lang,
+                      "price"
+                    )} ${translate.getTranslation(lang, "from")}`}
                   </label>
                 </div>
                 <div className="w-full flex">
@@ -367,7 +373,7 @@ const Filters = ({
           </div>
         </li>
 
-        <li className={`fixed bottom-0 right-0 ${containerW}`}>
+        <li className={`fixed bottom-[40px] right-0 ${containerW}`}>
           <div className="w-full flex flex-row justify-center gap-8 px-2 py-3">
             <button
               onClick={() =>
@@ -378,13 +384,13 @@ const Filters = ({
                 })
               }
               disabled={!isChanged}
-              className="text-md px-6 py-2 bg-blue-400 font-semibold text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:outline-none disabled:bg-gray-300 disabled:cursor-no-drop"
+              className="text-md px-6 py-2 bg-blue-400 font-semibold text-white rounded-md transition-all duration-300 transform hover:bg-blue-600 focus:outline-none disabled:bg-gray-300 disabled:cursor-no-drop"
             >
               {translate.getTranslation(lang, "apply")}
             </button>
             <button
               onClick={toggleOpen}
-              className="text-md px-6 py-2 bg-gray-500 font-semibold text-white rounded-xl transition-all duration-300 transform hover:bg-gray-700 focus:outline-none "
+              className="text-md px-6 py-2 bg-gray-500 font-semibold text-white rounded-md transition-all duration-300 transform hover:bg-gray-700 focus:outline-none "
             >
               {translate.getTranslation(lang, "close")}
             </button>

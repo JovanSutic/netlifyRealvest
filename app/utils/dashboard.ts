@@ -725,11 +725,11 @@ export const getAppreciationData = (
     appreciationRate,
     fiveYearPrice,
     fiveYearPercent: Math.floor(
-      ((fiveYearPrice - lastAverageM2) / fiveYearPrice) * 100
+      ((fiveYearPrice - lastAverageM2) / lastAverageM2) * 100
     ),
     tenYearPrice,
     tenYearPercent: Math.floor(
-      ((tenYearPrice - lastAverageM2) / tenYearPrice) * 100
+      ((tenYearPrice - lastAverageM2) / lastAverageM2) * 100
     ),
   };
 };
