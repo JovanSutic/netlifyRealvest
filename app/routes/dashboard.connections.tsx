@@ -167,8 +167,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       }
     }
 
-    console.log(location);
-
     if (location) {
       const hintLocation: MapItem[] = await fetchData(
         `https://nominatim.openstreetmap.org/search.php?q=${location}_beograd&format=jsonv2&polygon_geojson=1`
@@ -189,7 +187,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       // detailItems = [null];
 
       if (search === "1" && locationItems) {
-        console.log(locationItems)
         const line = polygon(coordinates as any);
         const trans = transformScale(line, transformation);
         const box = bbox(trans);
@@ -224,7 +221,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           .gt("lng", uniq[3])
           .lt("lng", uniq[2]);
 
-          console.log(searchData?.length)
         if (searchError) {
           console.log(searchError);
           throw new Response("Search error.", {
@@ -351,7 +347,6 @@ const DashboardInsights = () => {
         }
         
       });
-      console.log(match.length)
       setMatches(
         match.sort(function (a, b) {
           return a.id! - b.id!;

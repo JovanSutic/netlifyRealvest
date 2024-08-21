@@ -87,7 +87,7 @@ const AppreciateReport = ({
           <div>
             <div className="w-full flex border-grey-300 border-[1px] rounded-xl bg-gray-100">
               <div
-                className={`w-[50%] rounded-s-xl py-3 px-1 flex gap-2 justify-around cursor-pointer ${
+                className={`w-[50%] rounded-s-xl py-3 px-1 flex flex-col md:flex-row gap-2 justify-around cursor-pointer ${
                   appreciateTime === 5 && activeButton
                 }`}
                 role="button"
@@ -96,7 +96,7 @@ const AppreciateReport = ({
                 onClick={() => setAppreciateTime(5)}
               >
                 <p
-                  className={`text-center text-2xl md:text-3xl font-bold mb-1 md:mb-3 ${
+                  className={`text-center text-2xl md:text-3xl font-bold mb-0 ${
                     appreciateTime !== 5 ? passiveTitle : activeTitle
                   }`}
                 >
@@ -120,7 +120,7 @@ const AppreciateReport = ({
                 </div>
               </div>
               <div
-                className={`w-[50%] rounded-e-xl py-3 px-1 flex gap-2 justify-around cursor-pointer ${
+                className={`w-[50%] rounded-e-xl py-3 px-1 flex flex-col md:flex-row gap-2 justify-around cursor-pointer ${
                   appreciateTime === 10 && activeButton
                 }`}
                 role="button"
@@ -129,7 +129,7 @@ const AppreciateReport = ({
                 onClick={() => setAppreciateTime(10)}
               >
                 <p
-                  className={`text-center text-2xl md:text-3xl font-bold mb-1 md:mb-3 ${
+                  className={`text-center text-2xl md:text-3xl font-bold mb-0 ${
                     appreciateTime !== 10 ? passiveTitle : activeTitle
                   }`}
                 >

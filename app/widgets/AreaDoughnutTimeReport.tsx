@@ -6,8 +6,9 @@ import {
 import { Translator } from "../data/language/translator";
 import DoughnutChart from "../components/doughnutChart";
 import { numbersToPercentage } from "../utils/reports";
-import {getDataForAreaTimePie } from "../utils/dashboard";
+import { getDataForAreaTimePie } from "../utils/dashboard";
 import { RangeOption } from "../utils/dateTime";
+import Tooltip from "../components/tooltip/Tooltip";
 
 const AreaDoughnutTimeReport = ({
   lang,
@@ -15,7 +16,7 @@ const AreaDoughnutTimeReport = ({
   data,
   date,
   timeRange,
-  mobile= false,
+  mobile = false,
 }: {
   lang: LangType;
   isShown: boolean;
@@ -27,16 +28,16 @@ const AreaDoughnutTimeReport = ({
   const reportTranslate = new Translator("report");
   const translate = new Translator("dashboard");
 
-  const chartData: PieChartData = getDataForAreaTimePie(data, date, timeRange, lang);
+  const chartData: PieChartData = getDataForAreaTimePie(
+    data,
+    date,
+    timeRange,
+    lang
+  );
 
   const isEmpty = isShown && data.length === 0;
   return (
     <div>
-      <div className="mb-2">
-        <p className="text-sm text-slate-700">
-          {data.length > 0 && translate.getTranslation(lang, "areaDoughnutTimeDescription")}
-        </p>
-      </div>
       <div>
         {isEmpty && (
           <div>
@@ -48,10 +49,33 @@ const AreaDoughnutTimeReport = ({
           </div>
         )}
         {isShown && !isEmpty && (
-          <>
+          <div className="w-full">
+            <div className="w-full flex flex-row-reverse">
+              <div className="w-[30px]">
+                <Tooltip
+                  text={translate.getTranslation(lang, "infoReport")}
+                  style="top"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                    />
+                  </svg>
+                </Tooltip>
+              </div>
+            </div>
             <div className="flex flex-row w-full">
               <DoughnutChart
-                ratio={1.5}
+                ratio={1.8}
                 id="areaSalesCountDistribution"
                 labels={chartData.labels}
                 data={numbersToPercentage(chartData.data)}
@@ -59,7 +83,7 @@ const AreaDoughnutTimeReport = ({
                 mobile={mobile}
               />
             </div>
-          </>
+          </div>
         )}
         {!isShown && !isEmpty && (
           <div>
