@@ -21,6 +21,7 @@ import {
 } from "chart.js";
 import { makeNumberCurrency } from "../utils/numbers";
 import ToggleButton from "../components/toggleButtons/ToggleButton";
+import {default as TextTooltip} from "../components/tooltip/Tooltip";
 
 const AreaLineReport = ({
   lang,
@@ -62,15 +63,6 @@ const AreaLineReport = ({
 
   return (
     <div>
-      <div className="mb-2">
-        <p className="text-sm text-slate-700">
-          {data.length > 0 &&
-            translate.getTranslation(
-              lang,
-              rental ? "areaLineDescriptionRental" : "areaLineDescription"
-            )}
-        </p>
-      </div>
       <div>
         {isEmpty && (
           <div>
@@ -85,7 +77,30 @@ const AreaLineReport = ({
           </div>
         )}
         {isLine && !isEmpty && (
-          <>
+          <div className="w-full">
+             <div className="w-full flex flex-row-reverse">
+              <div className="w-[30px]">
+                <TextTooltip
+                  text={translate.getTranslation(lang, "infoReport")}
+                  style="top"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                    />
+                  </svg>
+                </TextTooltip>
+              </div>
+            </div>
             <div className={`flex justify-center ${margin}`}>
               <ToggleButton
                 value={distributionType!}
@@ -177,7 +192,7 @@ const AreaLineReport = ({
                 </p>
               </div>
             )}
-          </>
+          </div>
         )}
         {!isLine && !isEmpty && (
           <div>

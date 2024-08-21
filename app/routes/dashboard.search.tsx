@@ -473,7 +473,7 @@ const DashboardSearch = () => {
             </div>
             <div className="grid grid-cols-6 grid-rows-1 gap-1 mb-4">
               <div className="w-full col-span-6 col-start-1">
-                <p className="font-regular text-[16px] text-left text-gray-600">
+                <p className="font-regular text-sm xl:text-[16px] text-left text-gray-600">
                   {fetcher?.data?.data?.address
                     ? `${translate.getTranslation(lang, "areaCenter")} ${
                         fetcher?.data?.data.address
@@ -503,7 +503,7 @@ const DashboardSearch = () => {
         </div>
         <div
           ref={scrollRef}
-          className="row-start-2 col-span-12 lg:col-span-5 h-auto xl:h-[calc(100vh-40px)] overflow-none xl:overflow-x-none xl:overflow-y-scroll col-start-1 lg:col-start-8 lg:row-start-2 mb-6 scrollbar-thin"
+          className="row-start-2 col-span-12 pr-0 xl:pr-1 lg:col-span-5 h-auto xl:h-[calc(100vh-40px)] overflow-none xl:overflow-x-none xl:overflow-y-scroll col-start-1 lg:col-start-8 lg:row-start-2 mb-6 scrollbar-thin"
         >
           <div className="mb-6 xl:mb-4">
           <WidgetWrapper>

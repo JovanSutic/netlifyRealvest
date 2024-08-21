@@ -40,11 +40,11 @@ const AreaReport = ({
             </Tooltip>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          <div className="bg-blue-50 rounded-md py-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+          <div className="bg-blue-50 rounded-md py-2 px-1">
             <div className={`flex flex-col w-full justify-center rounded-md`}>
               <div className="w-full">
-                <p className="text-sm text-center text-gray-500">
+                <p className="text-xs text-center text-gray-500">
                   {translate.getTranslation(
                     lang,
                     isRental ? "lowestPriceRental" : "lowestPrice"
@@ -52,16 +52,16 @@ const AreaReport = ({
                 </p>
               </div>
               <div className="w-full mt-1">
-                <p className="font-bold text-center text-xl">
+                <p className="font-bold text-center text-md">
                   {makeNumberCurrency(data.lowestPrice)}
                 </p>
               </div>
             </div>
           </div>
-          <div className="bg-violet-50 rounded-md py-2">
+          <div className="bg-blue-50 rounded-md py-2 px-1">
             <div className={`flex flex-col w-full justify-center`}>
               <div className="w-full">
-                <p className="text-sm text-center text-gray-500">
+                <p className="text-xs text-center text-gray-500">
                   {translate.getTranslation(
                     lang,
                     isRental ? "highestPriceRental" : "highestPrice"
@@ -69,16 +69,16 @@ const AreaReport = ({
                 </p>
               </div>
               <div className="w-full mt-1">
-                <p className="font-bold text-center text-xl">
+                <p className="font-bold text-center text-md">
                   {makeNumberCurrency(data.highestPrice)}
                 </p>
               </div>
             </div>
           </div>
-          <div className="bg-blue-50 md:bg-violet-50 rounded-md py-2">
+          <div className="bg-blue-50 rounded-md py-2 px-1">
             <div className={`flex flex-col w-full justify-center`}>
               <div className="w-full">
-                <p className="text-sm text-center text-gray-500">
+                <p className="text-xs text-center text-gray-500">
                   {translate.getTranslation(
                     lang,
                     isRental ? "averagePriceRental" : "averagePrice"
@@ -86,16 +86,16 @@ const AreaReport = ({
                 </p>
               </div>
               <div className="w-full mt-1">
-                <p className="font-bold text-center text-xl">
+                <p className="font-bold text-center text-md">
                   {makeNumberCurrency(data.averagePrice)}
                 </p>
               </div>
             </div>
           </div>
-          <div className="bg-violet-50 md:bg-blue-50 rounded-md py-2">
+          <div className="bg-blue-50 rounded-md py-2 px-1">
             <div className={`flex flex-col w-full justify-center`}>
               <div className="w-full">
-                <p className="text-sm text-center text-gray-500">
+                <p className="text-xs text-center text-gray-500">
                   {translate.getTranslation(
                     lang,
                     isRental ? "averageM2PriceRental" : "averageM2Price"
@@ -103,16 +103,16 @@ const AreaReport = ({
                 </p>
               </div>
               <div className="w-full mt-1">
-                <p className="font-bold text-center text-xl">
+                <p className="font-bold text-center text-sm">
                   {makeNumberCurrency(data.averageM2Price)}
                 </p>
               </div>
             </div>
           </div>
-          <div className="bg-blue-50 rounded-md py-2">
+          <div className="bg-blue-50 rounded-md py-2 px-1">
             <div className={`flex flex-col w-full justify-center`}>
               <div className="w-full">
-                <p className="text-sm text-center text-gray-500">
+                <p className="text-xs text-center text-gray-500">
                   {translate.getTranslation(
                     lang,
                     isRental ? "highestM2PriceRental" : "highestM2Price"
@@ -120,16 +120,16 @@ const AreaReport = ({
                 </p>
               </div>
               <div className="w-full mt-1">
-                <p className="font-bold text-center text-xl">
+                <p className="font-bold text-center text-sm">
                   {makeNumberCurrency(data.highestM2Price)}
                 </p>
               </div>
             </div>
           </div>
-          <div className="bg-violet-50 rounded-md py-2">
+          <div className="bg-blue-50 rounded-md py-2 px-1">
             <div className={`flex flex-col w-full justify-center`}>
               <div className="w-full">
-                <p className="text-sm text-center text-gray-500">
+                <p className="text-xs text-center text-gray-500">
                   {translate.getTranslation(
                     lang,
                     isRental ? "lowestM2PriceRental" : "lowestM2Price"
@@ -137,30 +137,30 @@ const AreaReport = ({
                 </p>
               </div>
               <div className="w-full mt-1">
-                <p className="font-bold text-center text-xl">
+                <p className="font-bold text-center text-md">
                   {makeNumberCurrency(data.lowestM2Price)}
                 </p>
               </div>
             </div>
           </div>
-          <div className="bg-blue-50 md:bg-violet-50 rounded-md py-2">
+          <div className="bg-blue-50 rounded-md py-2 px-1">
             <div className={`flex flex-col w-full justify-center`}>
               <div className="w-full">
-                <p className="text-sm text-center text-gray-500">
+                <p className="text-xs text-center text-gray-500">
                   {translate.getTranslation(lang, "averageSize")}
                 </p>
               </div>
               <div className="w-full mt-1">
-                <p className="font-bold text-center text-xl">
+                <p className="font-bold text-center text-md">
                   {`${roundNumberToDecimal(data.averageSize, 0)} m2`}
                 </p>
               </div>
             </div>
           </div>
-          <div className="bg-violet-50 md:bg-blue-50 rounded-md py-2">
+          <div className="bg-blue-50 rounded-md py-2 px-1">
             <div className={`flex flex-col w-full justify-center`}>
               <div className="w-full">
-                <p className="text-sm text-center text-gray-500">
+                <p className="text-xs text-center text-gray-500">
                   {translate.getTranslation(
                     lang,
                     isRental ? "rentalCount" : "salesCount"
@@ -168,7 +168,7 @@ const AreaReport = ({
                 </p>
               </div>
               <div className="w-full mt-1">
-                <p className="font-bold text-center text-xl">{data.count}</p>
+                <p className="font-bold text-center text-sm">{data.count}</p>
               </div>
             </div>
           </div>
