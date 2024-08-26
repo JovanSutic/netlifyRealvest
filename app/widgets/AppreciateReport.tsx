@@ -260,7 +260,7 @@ const AppreciateReport = ({
                   </li>
                 )}
 
-                {rentalData && (rentalData?.count || 0) > 4 ? (
+                {type === "residential" && rentalData && (rentalData?.count || 0) > 4 ? (
                   <>
                     <li>
                       <div className={`flex w-full px-2 py-1`}>
@@ -324,7 +324,7 @@ const AppreciateReport = ({
                     <div>
                       <div className="flex flex-column px-4 w-full justify-center h-[120px]">
                         <p className="flex items-center text-center text-slate-400 font-sm">
-                          {translate.getTranslation(lang, "noDataRental")}
+                          {translate.getTranslation(lang, type === "residential" ? "noDataRental": "noDataRentalType")}
                         </p>
                       </div>
                     </div>

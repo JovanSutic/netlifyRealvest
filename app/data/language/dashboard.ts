@@ -27,6 +27,8 @@ export const dashboardMap: Record<string, Record<string, string>> = {
       "For highlighted micro-location there is not enough data to generate appreciation report.",
     noDataRental:
       "For highlighted micro-location there is not enough data to generate rental report.",
+    noDataRentalType:
+      "Rental report is currently available only for the residential properties.",
     noDataAppreciateReport:
       "For highlighted micro-location there is not enough data to show appreciate report.",
     areaEmptyData:
@@ -114,11 +116,11 @@ export const dashboardMap: Record<string, Record<string, string>> = {
       "This example uses historical sales data from the chosen area. Realvest cannot guarantee that the same yearly price growth would be achieved in the future, so treat this report as educated estimation.",
     infoReport:
       "All data from this report is conditioned by the marked location, time range and property type.",
-      appreciateReportTitle: "Property appreciation",
-      rentReportTitle: "Rental income",
-      averageRentalM2: "Average monthly rental per square meter:",
-      rentalExpense: "Expected yearly expense per square meter:",
-      rentalExample: "Rental income for unit of 50 square meter:",
+    appreciateReportTitle: "Property appreciation",
+    rentReportTitle: "Rental income",
+    averageRentalM2: "Average monthly rental per square meter:",
+    rentalExpense: "Expected yearly expense per square meter:",
+    rentalExample: "Rental income for unit of 50 square meter:",
   },
   sr: {
     meters: "metara",
@@ -150,6 +152,8 @@ export const dashboardMap: Record<string, Record<string, string>> = {
       "Na izabranoj mikrolokaciji nema dovoljno podataka za prikaz izveštaja o isplativosti.",
     noDataRental:
       "Na izabranoj mikrolokaciji nema dovoljno podataka za prikaz izveštaja o isplativosti izdavanja.",
+    noDataRentalType:
+      "Izveštaj o isplativosti izdavanja dostupan je samo za rezidencijalni tip nekretnina.",
     noDataAppreciateReport:
       "Za izabranu mikrolokaciju nije moguće prikazati izveštaj o isplativosti.",
     areaEmptyDataRental:
@@ -242,6 +246,5 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     averageRentalM2: "Prosečna mesečna krija po kvadratu:",
     rentalExpense: "Očekivani godišnji trošak po kvadratu:",
     rentalExample: "Prihodi od kirije za stan od 50 kvadrata:",
-
   },
 };
