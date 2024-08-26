@@ -23,6 +23,12 @@ export const dashboardMap: Record<string, Record<string, string>> = {
       "Micro-location not marked. Click on the map to generate report.",
     areaNoDataAppreciate:
       "Micro-location not marked. Click on the map to generate appreciation report.",
+    noDataAppreciate:
+      "For highlighted micro-location there is not enough data to generate appreciation report.",
+    noDataRental:
+      "For highlighted micro-location there is not enough data to generate rental report.",
+    noDataAppreciateReport:
+      "For highlighted micro-location there is not enough data to show appreciate report.",
     areaEmptyData:
       "Selected area does not have recorded sales in the chosen time frame. Change dropdown values or mark a different area on the map.",
     areaEmptyDataRental:
@@ -84,11 +90,11 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     zeroSales:
       "For no-sale periods last recorded sales price are shown. Check the sales spread for better insight.",
     zeroRental: "For no-rent periods last recorded rent prices are shown.",
-    priceGrowth: "price growth",
+    priceGrowth: "Price growth in",
     forFive: "in 5 years",
     forTen: "in 10 years",
     currentPrice: "Current average square meter price:",
-    priceDiff: "Square meter price difference:",
+    priceDiff: "Square meter price difference",
     increaseExample: "Value increase for 50 square meter unit:",
     increaseExampleParking: "Value increase for 14 square meter unit:",
     averagePriceFor: "Average square meter price in",
@@ -104,8 +110,15 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     to: "to",
     size: "Size",
     price: "Price",
-    infoAppreciate: "This example uses historical sales data from the chosen area. Realvest cannot guarantee that the same yearly price growth would be achieved in the future, so treat this report as educated estimation.",
-    infoReport: "All data from this report is conditioned by the marked location, time range and property type."
+    infoAppreciate:
+      "This example uses historical sales data from the chosen area. Realvest cannot guarantee that the same yearly price growth would be achieved in the future, so treat this report as educated estimation.",
+    infoReport:
+      "All data from this report is conditioned by the marked location, time range and property type.",
+      appreciateReportTitle: "Property appreciation",
+      rentReportTitle: "Rental income",
+      averageRentalM2: "Average monthly rental per square meter:",
+      rentalExpense: "Expected yearly expense per square meter:",
+      rentalExample: "Rental income for unit of 50 square meter:",
   },
   sr: {
     meters: "metara",
@@ -133,6 +146,12 @@ export const dashboardMap: Record<string, Record<string, string>> = {
       "Mikrolokacija nije označena. Kliknite na mapu da biste dobili izveštaj o isplativosti.",
     areaEmptyData:
       "Izabrana zona nema zabeležene prodaje u izabranom vremenskom okviru. Promenite parametre u padajućim menijima ili izaberite drugu zonu.",
+    noDataAppreciate:
+      "Na izabranoj mikrolokaciji nema dovoljno podataka za prikaz izveštaja o isplativosti.",
+    noDataRental:
+      "Na izabranoj mikrolokaciji nema dovoljno podataka za prikaz izveštaja o isplativosti izdavanja.",
+    noDataAppreciateReport:
+      "Za izabranu mikrolokaciju nije moguće prikazati izveštaj o isplativosti.",
     areaEmptyDataRental:
       "Izabrana zona nema zabeleženih izdavanja u izabranom vremenskom okviru. Promenite parametre u padajućim menijima ili izaberite drugu zonu.",
     "3m": "3 meseca",
@@ -194,11 +213,11 @@ export const dashboardMap: Record<string, Record<string, string>> = {
       "Za periode bez prodaje prikazane su poslednje ostvarene prodajne cene. Proverite raspodelu prodaje radi boljeg uvida.",
     zeroRental:
       "Za periode bez izdavanja prikazane su poslednje ostvarene kirije.",
-    priceGrowth: "rast cene",
+    priceGrowth: "Rast cene za",
     forFive: "za 5 godina",
     forTen: "za 10 godina",
     currentPrice: "Trenutna prosečna cena kvadrata:",
-    priceDiff: "Porast cene kvadrata:",
+    priceDiff: "Porast cene kvadrata",
     increaseExample: "Povećanje vrednosti stana od 50 kvadrata:",
     increaseExampleParking: "Povećanje vrednosti garaže od 14 kvadrata:",
     averagePriceFor: "Prosečna cena kvadrata za",
@@ -214,7 +233,15 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     to: "do",
     size: "Veličina",
     price: "Cena",
-    infoAppreciate: "Za ovaj primer koristili su se istorijski prodajni podataci sa označene teritorije. Realvest vam ne može garantovati da će isti godišnji rast cena biti postignut i u budućnosti. Zbog toga ovaj primer posmatrajte samo kao procenu.",
-    infoReport: "Svi podaci u ovom izveštaju odnose se na označenu lokaciju, vremenski raspon i tip nekretnine."
+    infoAppreciate:
+      "Za ovaj primer koristili su se istorijski prodajni podataci sa označene teritorije. Realvest vam ne može garantovati da će isti godišnji rast cena biti postignut i u budućnosti. Zbog toga ovaj primer posmatrajte samo kao procenu.",
+    infoReport:
+      "Svi podaci u ovom izveštaju odnose se na označenu lokaciju, vremenski raspon i tip nekretnine.",
+    appreciateReportTitle: "Povećanje vrednosti",
+    rentReportTitle: "Prihod od izdavanja",
+    averageRentalM2: "Prosečna mesečna krija po kvadratu:",
+    rentalExpense: "Očekivani godišnji trošak po kvadratu:",
+    rentalExample: "Prihodi od kirije za stan od 50 kvadrata:",
+
   },
 };
