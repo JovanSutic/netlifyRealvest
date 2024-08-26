@@ -20,6 +20,7 @@ import {
   LangType,
   PropertyType,
   RentalPropertyType,
+  RentEstimationData,
 } from "../types/dashboard.types";
 import {
   RangeOption,
@@ -35,6 +36,7 @@ import {
   generateAreaReport,
   getAppreciationData,
   getMapCircle,
+  getRentalEstimation,
   setSubtypeGroup,
   transformDashboardRental,
 } from "../utils/dashboard";
@@ -204,10 +206,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       });
 
       let appreciationData = null;
+      let rentalEstimationData = null;
 
       if (appreciateParam === "0" && Number(range) < 501) {
         const limitNumber: number =
-          Number(range) / 40 < 8 ? 8 : Math.floor(Number(range) / 40);
+          Number(range) / 40 < 12 ? 12 : Math.floor(Number(range) / 40);
 
         const { data: earliestData, error: earliestError } =
           await supabaseClient
@@ -234,6 +237,28 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           data!,
           limitNumber
         );
+
+        const { data: rentalOpsData, error: rentalOpsError } =
+          await supabaseClient
+            .from("apartments_archive")
+            .select("id, price, size, date_created, link_id(lat, lng)")
+            .eq("type", "rental")
+            .eq("is_active", false)
+            .not("link_id", "is", null)
+            .gt("link_id.lat", uniq[1])
+            .lt("link_id.lat", uniq[0])
+            .gt("link_id.lng", uniq[3])
+            .lt("link_id.lng", uniq[2])
+            .order("date_created", { ascending: false })
+            .limit(40)
+            .returns<Record<string, string | number>[]>();
+
+        if (rentalOpsError) {
+          isError = true;
+          finalError = rentalOpsError as FinalError;
+        }
+
+        rentalEstimationData = getRentalEstimation(rentalOpsData!, appreciationData?.lastAverage || 0);
       }
 
       const locationData = await fetchData(
@@ -250,6 +275,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         lastDate: lastData![0].date,
         mobile: isMobile(userAgent!),
         appreciationData,
+        rentalEstimationData,
       });
     } catch (error) {
       isError = true;
@@ -268,6 +294,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     lastDate: "",
     mobile: isMobile(userAgent!),
     appreciationData: null,
+    rentalEstimationData: null,
   });
 };
 
@@ -301,6 +328,8 @@ const DashboardSearch = () => {
     rentalList: DashboardSearchType[];
     lastDate: string;
     appreciationData: AppreciationData | null;
+    rentalEstimationData: RentEstimationData | null;
+
   }>({
     key: "search_contracts",
   });
@@ -506,19 +535,20 @@ const DashboardSearch = () => {
           className="row-start-2 col-span-12 pr-0 xl:pr-1 lg:col-span-5 h-auto xl:h-[calc(100vh-40px)] overflow-none xl:overflow-x-none xl:overflow-y-scroll col-start-1 lg:col-start-8 lg:row-start-2 mb-6 scrollbar-thin"
         >
           <div className="mb-6 xl:mb-4">
-          <WidgetWrapper>
-            <div className="min-h-[200px]">
-              <Loader open={fetcher.state === "loading"} />
-              <AppreciateReport
-                range={range}
-                appreciationData={appreciationData}
-                lang={lang}
-                type={propertyType}
-                isData={Boolean(fetcher.data?.data)}
-                point={Boolean(center)}
-              />
-            </div>
-          </WidgetWrapper>
+            <WidgetWrapper>
+              <div className="min-h-[200px]">
+                <Loader open={fetcher.state === "loading"} />
+                <AppreciateReport
+                  range={range}
+                  appreciationData={appreciationData}
+                  rentalData={fetcher.data?.rentalEstimationData}
+                  lang={lang}
+                  type={propertyType}
+                  isData={Boolean(fetcher.data?.data)}
+                  point={Boolean(center)}
+                />
+              </div>
+            </WidgetWrapper>
           </div>
           <WidgetWrapper>
             <Loader open={fetcher.state === "loading"} />

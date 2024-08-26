@@ -3,6 +3,7 @@ import {
   AppreciationData,
   LangType,
   PropertyType,
+  RentEstimationData,
 } from "../types/dashboard.types";
 import { makeNumberCurrency } from "../utils/numbers";
 import { Translator } from "../data/language/translator";
@@ -10,6 +11,7 @@ import Tooltip from "../components/tooltip/Tooltip";
 
 const AppreciateReport = ({
   appreciationData = null,
+  rentalData = null,
   lang,
   range,
   type,
@@ -18,6 +20,7 @@ const AppreciateReport = ({
 }: {
   lang: LangType;
   appreciationData?: AppreciationData | null;
+  rentalData?: RentEstimationData | null;
   range: string;
   type: PropertyType;
   isData: boolean;
@@ -28,9 +31,7 @@ const AppreciateReport = ({
   const presentationalSize: number = type === "parking" ? 14 : 50;
 
   const activeButton: string = "bg-white cursor-text";
-  const activeTitle: string = "text-blue-600";
-  const passiveTitle: string = "text-gray-300";
-  const activeText: string = "text-gray-500";
+  const activeText: string = "text-blue-500";
   const passiveText: string = "text-gray-300";
 
   if (point && Number(range) > 500) {
@@ -57,7 +58,7 @@ const AppreciateReport = ({
     );
   }
 
-  if (appreciationData) {
+  if (appreciationData || (rentalData?.count || 0) > 0) {
     return (
       <div>
         <div className="w-full">
@@ -95,23 +96,9 @@ const AppreciateReport = ({
                 tabIndex={0}
                 onClick={() => setAppreciateTime(5)}
               >
-                <p
-                  className={`text-center text-2xl md:text-3xl font-bold mb-0 ${
-                    appreciateTime !== 5 ? passiveTitle : activeTitle
-                  }`}
-                >
-                  {`+${Math.round(appreciationData.fiveYearPercent)}%`}
-                </p>
                 <div className="flex flex-col">
                   <p
-                    className={`w-full text-center text-sm font-regular ${
-                      appreciateTime !== 5 ? passiveText : activeText
-                    }`}
-                  >
-                    {`${translate.getTranslation(lang, "priceGrowth")}`}
-                  </p>
-                  <p
-                    className={`w-full text-center text-sm font-bold ${
+                    className={`w-full text-center text-xl font-bold ${
                       appreciateTime !== 5 ? passiveText : activeText
                     }`}
                   >
@@ -128,23 +115,9 @@ const AppreciateReport = ({
                 tabIndex={0}
                 onClick={() => setAppreciateTime(10)}
               >
-                <p
-                  className={`text-center text-2xl md:text-3xl font-bold mb-0 ${
-                    appreciateTime !== 10 ? passiveTitle : activeTitle
-                  }`}
-                >
-                  {`+${Math.round(appreciationData.tenYearPercent)}%`}
-                </p>
                 <div className="flex flex-col">
                   <p
-                    className={`w-full text-center text-sm font-regular ${
-                      appreciateTime !== 10 ? passiveText : activeText
-                    }`}
-                  >
-                    {`${translate.getTranslation(lang, "priceGrowth")}`}
-                  </p>
-                  <p
-                    className={`w-full text-center text-sm font-bold ${
+                    className={`w-full text-center text-xl font-bold ${
                       appreciateTime !== 10 ? passiveText : activeText
                     }`}
                   >
@@ -155,88 +128,208 @@ const AppreciateReport = ({
             </div>
             <div className="w-full mt-[-20px] pt-[10px]">
               <ul className=" border-solid border-x-[1px] border-b-[1px] rounded-b-xl border-gray-200 pt-3">
-                <li>
-                  <div className={`flex w-full px-2 py-1`}>
-                    <div className="w-[75%]">
-                      <p className="text-sm">
-                        {`${translate.getTranslation(
-                          lang,
-                          "averagePriceFor"
-                        )} ${appreciateTime} ${translate.getTranslation(
-                          lang,
-                          "years"
-                        )}:`}
-                      </p>
+                {appreciationData ? (
+                  <>
+                    <li>
+                      <div className={`flex w-full px-2 py-1`}>
+                        <div className="w-full text-center">
+                          <p className="text-[10px] font-bold text-gray-400">
+                            {translate
+                              .getTranslation(lang, "appreciateReportTitle")
+                              .toUpperCase()}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div className={`flex w-full px-2 py-1`}>
+                        <div className="w-[75%]">
+                          <p className="text-sm">
+                            {translate.getTranslation(lang, "currentPrice")}
+                          </p>
+                        </div>
+                        <div className="w-[25%]">
+                          <p className="font-semibold text-sm text-right">
+                            {makeNumberCurrency(appreciationData.lastAverage)}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div className={`flex w-full px-2 py-1`}>
+                        <div className="w-[75%]">
+                          <p className="text-sm">
+                            {`${translate.getTranslation(
+                              lang,
+                              "averagePriceFor"
+                            )} ${appreciateTime} ${translate.getTranslation(
+                              lang,
+                              "years"
+                            )}:`}
+                          </p>
+                        </div>
+                        <div className="w-[25%]">
+                          <p className="font-semibold text-sm text-right">
+                            {makeNumberCurrency(
+                              appreciateTime === 5
+                                ? appreciationData.fiveYearPrice
+                                : appreciationData.tenYearPrice
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div className={`flex w-full px-2 py-1`}>
+                        <div className="w-[75%]">
+                          <p className="text-sm">
+                            {`${translate.getTranslation(
+                              lang,
+                              "priceDiff"
+                            )} %:`}
+                          </p>
+                        </div>
+                        <div className="w-[25%]">
+                          <p className="font-bold text-sm text-right text-blue-600">
+                            {`+${Math.round(
+                              appreciateTime === 5
+                                ? appreciationData.fiveYearPercent
+                                : appreciationData.tenYearPercent
+                            )}%`}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                    <li className="border-b-[1px] border-gray-200">
+                      <div className={`flex w-full px-2 py-1 mb-1`}>
+                        <div className="w-[75%]">
+                          <p className="text-sm">
+                            {`${translate.getTranslation(
+                              lang,
+                              "priceDiff"
+                            )} €:`}
+                          </p>
+                        </div>
+                        <div className="w-[25%]">
+                          <p className="font-bold text-sm text-right text-blue-600">
+                            {`+${makeNumberCurrency(
+                              (appreciateTime === 5
+                                ? appreciationData.fiveYearPrice
+                                : appreciationData.tenYearPrice) -
+                                appreciationData.lastAverage
+                            )}`}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div className={`flex w-full px-2 py-3`}>
+                        <div className="w-[65%] md:w-[70%] lg:w-[75%]">
+                          <p className="text-sm md:text-md font-semibold">
+                            {translate.getTranslation(
+                              lang,
+                              type === "parking"
+                                ? "increaseExampleParking"
+                                : "increaseExample"
+                            )}
+                          </p>
+                        </div>
+                        <div className="w-[35%] md:w-[30%] lg:w-[25%]">
+                          <p className="font-bold text-md text-right text-blue-600">
+                            {`+${makeNumberCurrency(
+                              ((appreciateTime === 5
+                                ? appreciationData.fiveYearPrice
+                                : appreciationData.tenYearPrice) -
+                                appreciationData.lastAverage) *
+                                presentationalSize
+                            )}`}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                  </>
+                ) : (
+                  <li>
+                    <div>
+                      <div className="flex flex-column w-full justify-center h-[200px]">
+                        <p className="flex items-center text-center text-slate-400 font-sm">
+                          {translate.getTranslation(lang, "noDataAppreciate")}
+                        </p>
+                      </div>
                     </div>
-                    <div className="w-[25%]">
-                      <p className="font-semibold text-sm text-right">
-                        {makeNumberCurrency(
-                          appreciateTime === 5
-                            ? appreciationData.fiveYearPrice
-                            : appreciationData.tenYearPrice
-                        )}
-                      </p>
+                  </li>
+                )}
+
+                {rentalData && (rentalData?.count || 0) > 4 ? (
+                  <>
+                    <li>
+                      <div className={`flex w-full px-2 py-1`}>
+                        <div className="w-full text-center">
+                          <p className="text-[10px] font-bold text-gray-400">
+                            {translate
+                              .getTranslation(lang, "rentReportTitle")
+                              .toUpperCase()}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div className={`flex w-full px-2 py-1`}>
+                        <div className="w-[75%]">
+                          <p className="text-sm">
+                            {translate.getTranslation(lang, "averageRentalM2")}
+                          </p>
+                        </div>
+                        <div className="w-[25%]">
+                          <p className="font-semibold text-sm text-right">
+                            {makeNumberCurrency(rentalData.average)}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                    <li className="border-b-[1px] border-gray-200">
+                      <div className={`flex w-full px-2 py-1`}>
+                        <div className="w-[75%]">
+                          <p className="text-sm">
+                            {translate.getTranslation(lang, "rentalExpense")}
+                          </p>
+                        </div>
+                        <div className="w-[25%]">
+                          <p className="font-semibold text-sm text-right text-red-400">
+                            {`-${makeNumberCurrency(rentalData.expense)}`}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div className={`flex w-full px-2 py-3`}>
+                        <div className="w-[65%] md:w-[70%] lg:w-[75%]">
+                          <p className="text-sm md:text-md font-semibold">
+                            {translate.getTranslation(lang, "rentalExample")}
+                          </p>
+                        </div>
+                        <div className="w-[35%] md:w-[30%] lg:w-[25%]">
+                          <p className="font-bold text-md text-right text-blue-600">
+                            {`+${makeNumberCurrency(
+                              rentalData.average * 50 * 12 * appreciateTime -
+                                rentalData.expense * 50 * appreciateTime
+                            )}`}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                  </>
+                ) : (
+                  <li>
+                    <div>
+                      <div className="flex flex-column px-4 w-full justify-center h-[120px]">
+                        <p className="flex items-center text-center text-slate-400 font-sm">
+                          {translate.getTranslation(lang, "noDataRental")}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </li>
-                <li>
-                  <div className={`flex w-full px-2 py-1`}>
-                    <div className="w-[75%]">
-                      <p className="text-sm">
-                        {translate.getTranslation(lang, "currentPrice")}
-                      </p>
-                    </div>
-                    <div className="w-[25%]">
-                      <p className="font-semibold text-sm text-right">
-                        {makeNumberCurrency(appreciationData.lastAverage)}
-                      </p>
-                    </div>
-                  </div>
-                </li>
-                <li className="border-b-[1px] border-gray-200">
-                  <div className={`flex w-full px-2 py-1 mb-1`}>
-                    <div className="w-[75%]">
-                      <p className="text-sm">
-                        {translate.getTranslation(lang, "priceDiff")}
-                      </p>
-                    </div>
-                    <div className="w-[25%]">
-                      <p className="font-bold text-sm text-right text-blue-600">
-                        {`+${makeNumberCurrency(
-                          (appreciateTime === 5
-                            ? appreciationData.fiveYearPrice
-                            : appreciationData.tenYearPrice) -
-                            appreciationData.lastAverage
-                        )}`}
-                      </p>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div className={`flex w-full px-2 py-3`}>
-                    <div className="w-[65%] md:w-[70%] lg:w-[75%]">
-                      <p className="text-sm md:text-md font-bold">
-                        {translate.getTranslation(
-                          lang,
-                          type === "parking"
-                            ? "increaseExampleParking"
-                            : "increaseExample"
-                        )}
-                      </p>
-                    </div>
-                    <div className="w-[35%] md:w-[30%] lg:w-[25%]">
-                      <p className="font-bold text-md text-right text-blue-600">
-                        {`+${makeNumberCurrency(
-                          ((appreciateTime === 5
-                            ? appreciationData.fiveYearPrice
-                            : appreciationData.tenYearPrice) -
-                            appreciationData.lastAverage) *
-                            presentationalSize
-                        )}`}
-                      </p>
-                    </div>
-                  </div>
-                </li>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -259,7 +352,13 @@ const AppreciateReport = ({
 
   return (
     <div>
-      <div className="flex flex-column w-full justify-center h-[200px]"></div>
+      <div>
+        <div className="flex flex-column w-full justify-center h-[200px]">
+          <p className="flex items-center text-center text-slate-400 font-sm">
+            {translate.getTranslation(lang, "noDataAppreciateReport")}
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

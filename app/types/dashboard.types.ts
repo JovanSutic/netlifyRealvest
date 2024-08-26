@@ -307,6 +307,13 @@ export interface AppreciationData {
   fiveYearPercent: number;
   tenYearPrice: number;
   tenYearPercent: number;
+  years: number;
+}
+
+export interface RentEstimationData {
+  average: number;
+  count: number;
+  expense: number;
 }
 
 export interface FiltersType {

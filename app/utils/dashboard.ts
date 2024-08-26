@@ -13,6 +13,7 @@ import {
   PieChartData,
   PropertyType,
   RentalPropertyType,
+  RentEstimationData,
 } from "../types/dashboard.types";
 import {
   RangeOption,
@@ -722,6 +723,7 @@ export const getAppreciationData = (
 
   return {
     lastAverage: lastAverageM2,
+    years: yearDiff,
     appreciationRate,
     fiveYearPrice,
     fiveYearPercent: Math.floor(
@@ -733,3 +735,15 @@ export const getAppreciationData = (
     ),
   };
 };
+
+export const getRentalEstimation = (data: Record<string, string | number>[], lastAverage: number): RentEstimationData | null => {
+  if (!data) return null;
+  const fullPrice = data.reduce((a, b) => a + Number(b.price), 0);
+  const fullSize = data.reduce((a, b) => a + Number(b.size), 0);
+
+  return {
+    average: parseFloat((fullPrice / fullSize).toFixed(2)),
+    count: data.length,
+    expense: parseFloat((lastAverage * 0.016).toFixed(2)),
+  }
+}
