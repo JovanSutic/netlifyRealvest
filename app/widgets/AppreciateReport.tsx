@@ -4,6 +4,7 @@ import {
   LangType,
   PropertyType,
   RentEstimationData,
+  RoleType,
 } from "../types/dashboard.types";
 import { makeNumberCurrency } from "../utils/numbers";
 import { Translator } from "../data/language/translator";
@@ -17,6 +18,7 @@ const AppreciateReport = ({
   type,
   isData,
   point,
+  role,
 }: {
   lang: LangType;
   appreciationData?: AppreciationData | null;
@@ -25,6 +27,7 @@ const AppreciateReport = ({
   type: PropertyType;
   isData: boolean;
   point: boolean;
+  role: RoleType;
 }) => {
   const [appreciateTime, setAppreciateTime] = useState<5 | 10>(5);
   const translate = new Translator("dashboard");
@@ -33,6 +36,30 @@ const AppreciateReport = ({
   const activeButton: string = "bg-white cursor-text";
   const activeText: string = "text-blue-500";
   const passiveText: string = "text-gray-300";
+
+  if (role !== "premium") {
+    return (
+      <div className="bg-[url('/blurred_table.jpg')] bg-contain bg-opacity-90">
+        <div className="flex flex-col w-full justify-center h-[200px]">
+          <div className="w-full flex justify-center mb-1">
+            <p className="bg-white px-1 flex items-center text-center text-blue-500 text-xl font-bold">
+              {translate.getTranslation(lang, "premiumTitle")}
+            </p>
+          </div>
+          <div className="w-full flex justify-center mb-5">
+            <p className="bg-white px-1 flex items-center text-center text-slate-400 text-sm">
+              {translate.getTranslation(lang, "premiumSubtitle")}
+            </p>
+          </div>
+          <div className="w-full flex justify-center">
+            <button className="text-md text-blue-950 px-6 py-2 bg-amber-300 font-semibold rounded-md transition-all duration-300 transform hover:bg-amber-400 focus:outline-none disabled:bg-gray-300 disabled:cursor-no-drop">
+              {translate.getTranslation(lang, "premiumButton")}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (point && Number(range) > 500) {
     return (
@@ -260,7 +287,9 @@ const AppreciateReport = ({
                   </li>
                 )}
 
-                {type === "residential" && rentalData && (rentalData?.count || 0) > 4 ? (
+                {type === "residential" &&
+                rentalData &&
+                (rentalData?.count || 0) > 4 ? (
                   <>
                     <li>
                       <div className={`flex w-full px-2 py-1`}>
@@ -324,7 +353,12 @@ const AppreciateReport = ({
                     <div>
                       <div className="flex flex-column px-4 w-full justify-center h-[120px]">
                         <p className="flex items-center text-center text-slate-400 font-sm">
-                          {translate.getTranslation(lang, type === "residential" ? "noDataRental": "noDataRentalType")}
+                          {translate.getTranslation(
+                            lang,
+                            type === "residential"
+                              ? "noDataRental"
+                              : "noDataRentalType"
+                          )}
                         </p>
                       </div>
                     </div>

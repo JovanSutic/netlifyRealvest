@@ -21,6 +21,7 @@ import {
   PropertyType,
   RentalPropertyType,
   RentEstimationData,
+  RoleType,
 } from "../types/dashboard.types";
 import {
   RangeOption,
@@ -57,7 +58,12 @@ import {
 import AreaLineReport from "../widgets/AreaLineReport";
 import AreaDoughnutReport from "../widgets/AreaDoughnutReport";
 import AreaDoughnutTimeReport from "../widgets/AreaDoughnutTimeReport";
-import { getParamValue, isMobile } from "../utils/params";
+import {
+  getParamValue,
+  isMobile,
+  priceOptions,
+  sizeOptions,
+} from "../utils/params";
 import { default as LocalTooltip } from "../components/tooltip/Tooltip";
 import { FinalError } from "../types/component.types";
 import ChipsGroupItem from "../components/chip/ChipsGroup";
@@ -65,6 +71,18 @@ import { format } from "date-fns";
 import AppreciateReport from "../widgets/AppreciateReport";
 import Filters from "../components/filters";
 import FiltersDisplay from "../components/filters/FiltersDisplay";
+import { jwtDecode } from "jwt-decode";
+
+interface DashboardSearchLoader {
+  data: AreaReportType;
+  list: DashboardSearchType[];
+  rentalList: DashboardSearchType[];
+  lastDate: string;
+  role: RoleType;
+  appreciationData: AppreciationData | null;
+  rentalEstimationData: RentEstimationData | null;
+  mobile: boolean;
+}
 
 export const links: LinksFunction = () => [
   {
@@ -93,6 +111,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const lng = new URL(request.url).searchParams.get("lng");
   const range = new URL(request.url).searchParams.get("range");
   const searchRange = new URL(request.url).searchParams.get("time_range");
+  const sizeFrom = new URL(request.url).searchParams.get("size_from");
+  const sizeTo = new URL(request.url).searchParams.get("size_to");
+  const priceFrom = new URL(request.url).searchParams.get("price_from");
+  const priceTo = new URL(request.url).searchParams.get("price_to");
   const appreciateParam = new URL(request.url).searchParams.get("appreciate");
   const rentalParam = new URL(request.url).searchParams.get("rental");
   const searchType = new URL(request.url).searchParams.get(
@@ -113,6 +135,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   let isError = false;
   let finalError: FinalError | null = null;
+  let userRole: RoleType = "basic";
 
   if (lat && lng && range && searchType) {
     const { uniq, circle } = getMapCircle(
@@ -123,10 +146,16 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
     try {
       const { supabaseClient } = createSupabaseServerClient(request);
+      const session = await supabaseClient.auth.getSession();
+
+      const decoded = jwtDecode<{ user_role: string }>(
+        session?.data?.session?.access_token || ""
+      );
+      const isPremium = decoded?.user_role === "premium";
 
       let finalRentalData = null;
 
-      if (rentalParam === "0") {
+      if (rentalParam === "0" && isPremium) {
         const today = new Date();
         const startDateRental = getLastRecordedReportDate(
           "1y" as RangeOption,
@@ -189,6 +218,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         .eq("for_view", true)
         .in("subtype", setSubtypeGroup(searchType))
         .gt("date", getDbDateString(startDate!, "en"))
+        .gte("size", Number(sizeFrom))
+        .lte("size", Number(sizeTo))
+        .gte("price", Number(priceFrom))
+        .lte("price", Number(priceTo))
         .gt("lat", uniq[1])
         .lt("lat", uniq[0])
         .gt("lng", uniq[3])
@@ -208,7 +241,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       let appreciationData = null;
       let rentalEstimationData = null;
 
-      if (appreciateParam === "0" && Number(range) < 501) {
+      if (appreciateParam === "0" && Number(range) < 501 && isPremium) {
         const limitNumber: number =
           Number(range) / 40 < 12 ? 12 : Math.floor(Number(range) / 40);
 
@@ -258,7 +291,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           finalError = rentalOpsError as FinalError;
         }
 
-        rentalEstimationData = getRentalEstimation(rentalOpsData!, appreciationData?.lastAverage || 0);
+        rentalEstimationData = getRentalEstimation(
+          rentalOpsData!,
+          appreciationData?.lastAverage || 0
+        );
       }
 
       const locationData = await fetchData(
@@ -273,10 +309,24 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         list: finalData,
         rentalList: finalRentalData,
         lastDate: lastData![0].date,
+        role: decoded?.user_role || "basic",
         mobile: isMobile(userAgent!),
         appreciationData,
         rentalEstimationData,
       });
+    } catch (error) {
+      isError = true;
+      finalError = error as FinalError;
+    }
+  } else {
+    try {
+      const { supabaseClient } = createSupabaseServerClient(request);
+      const session = await supabaseClient.auth.getSession();
+
+      const decoded = jwtDecode<{ user_role: RoleType }>(
+        session?.data?.session?.access_token || ""
+      );
+      userRole = decoded.user_role;
     } catch (error) {
       isError = true;
       finalError = error as FinalError;
@@ -292,6 +342,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     list: [],
     rentalList: [],
     lastDate: "",
+    role: userRole,
     mobile: isMobile(userAgent!),
     appreciationData: null,
     rentalEstimationData: null,
@@ -303,6 +354,10 @@ const DashboardSearch = () => {
     range: "250",
     propertyType: "residential",
     timeRange: "3m",
+    sizeFrom: sizeOptions[0].toString(),
+    sizeTo: sizeOptions[sizeOptions.length - 1].toString(),
+    priceFrom: priceOptions[0].toString(),
+    priceTo: priceOptions[priceOptions.length - 1].toString(),
   };
 
   const [searchParams] = useSearchParams();
@@ -313,28 +368,30 @@ const DashboardSearch = () => {
   const [rental, setRental] = useState<string>("0");
   const [appreciationData, setAppreciationData] =
     useState<AppreciationData | null>();
+  const [rentalEstimate, setRentalEstimate] =
+    useState<RentEstimationData | null>();
   const [filters, setFilters] = useState<FiltersType>(defaultFilters);
   const [rentalData, setRentalData] = useState<DashboardSearchType[] | null>();
 
   const translate = new Translator("dashboard");
-  const { mobile } = useLoaderData<typeof loader>();
+  const { mobile, role } = useLoaderData<DashboardSearchLoader>();
   const scrollRef = useRef<HTMLDivElement>(null);
   const executeScroll = () =>
     scrollRef?.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
-  const fetcher = useFetcher<{
-    data: AreaReportType;
-    list: DashboardSearchType[];
-    rentalList: DashboardSearchType[];
-    lastDate: string;
-    appreciationData: AppreciationData | null;
-    rentalEstimationData: RentEstimationData | null;
-
-  }>({
+  const fetcher = useFetcher<DashboardSearchLoader>({
     key: "search_contracts",
   });
 
-  const { range, timeRange, propertyType } = filters;
+  const {
+    range,
+    timeRange,
+    propertyType,
+    sizeFrom,
+    sizeTo,
+    priceFrom,
+    priceTo,
+  } = filters;
 
   useEffect(() => {
     if (JSON.stringify(fetcher?.data?.list) !== undefined && mobile) {
@@ -345,6 +402,7 @@ const DashboardSearch = () => {
   useEffect(() => {
     if (appreciate === "0") {
       setAppreciationData(fetcher.data?.appreciationData);
+      setRentalEstimate(fetcher.data?.rentalEstimationData);
       setAppreciate("1");
     }
   }, [JSON.stringify(fetcher?.data?.appreciationData)]);
@@ -367,7 +425,7 @@ const DashboardSearch = () => {
     if (center) {
       const [lat, lng] = center;
       fetcher.load(
-        `/dashboard/search?lat=${lat}&lng=${lng}&city=1&range=${range}&time_range=${timeRange}&property_type=${propertyType}&appreciate=0&rental=0`
+        `/dashboard/search?lat=${lat}&lng=${lng}&city=1&range=${range}&time_range=${timeRange}&property_type=${propertyType}&size_from=${sizeFrom}&size_to=${sizeTo}&price_from=${priceFrom}&price_to=${priceTo}&appreciate=0&rental=0`
       );
     }
   }, [center]);
@@ -384,12 +442,20 @@ const DashboardSearch = () => {
     if (center) {
       const [lat, lng] = center;
       fetcher.load(
-        `/dashboard/search?lat=${lat}&lng=${lng}&city=1&range=${filters.range}&time_range=${filters.timeRange}&property_type=${filters.propertyType}&appreciate=0&rental=${rental}`
+        `/dashboard/search?lat=${lat}&lng=${lng}&city=1&range=${filters.range}&time_range=${filters.timeRange}&property_type=${filters.propertyType}&size_from=${sizeFrom}&size_to=${sizeTo}&price_from=${priceFrom}&price_to=${priceTo}&appreciate=0&rental=${rental}`
       );
     }
 
     setIsOpen(false);
-  }, [filters.propertyType, filters.range, filters.timeRange]);
+  }, [
+    filters.propertyType,
+    filters.range,
+    filters.timeRange,
+    filters.priceFrom,
+    filters.priceTo,
+    filters.sizeFrom,
+    filters.sizeTo,
+  ]);
 
   useEffect(() => {
     ChartJS.register(
@@ -451,12 +517,17 @@ const DashboardSearch = () => {
             toggleOpen={() => setIsOpen(!isOpen)}
             submit={setFilters}
             mobile={mobile}
+            role={role as RoleType}
           />
         );
       }, [
         filters.propertyType,
         filters.range,
         filters.timeRange,
+        filters.priceFrom,
+        filters.priceTo,
+        filters.sizeFrom,
+        filters.sizeTo,
         isOpen,
         lang,
       ])}
@@ -537,15 +608,18 @@ const DashboardSearch = () => {
           <div className="mb-6 xl:mb-4">
             <WidgetWrapper>
               <div className="min-h-[200px]">
-                <Loader open={fetcher.state === "loading"} />
+                <Loader
+                  open={fetcher.state === "loading" && role !== "basic"}
+                />
                 <AppreciateReport
                   range={range}
                   appreciationData={appreciationData}
-                  rentalData={fetcher.data?.rentalEstimationData}
+                  rentalData={rentalEstimate}
                   lang={lang}
                   type={propertyType}
                   isData={Boolean(fetcher.data?.data)}
                   point={Boolean(center)}
+                  role={role}
                 />
               </div>
             </WidgetWrapper>
@@ -554,9 +628,9 @@ const DashboardSearch = () => {
             <Loader open={fetcher.state === "loading"} />
             <ChipsGroupItem
               data={
-                propertyType === "residential"
-                  ? chipOptions
-                  : chipOptions.slice(0, 4)
+                propertyType !== "residential" || role === "basic"
+                  ? chipOptions.slice(0, 4)
+                  : chipOptions
               }
               current={tab}
               mobile={mobile}

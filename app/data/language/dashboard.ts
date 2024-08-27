@@ -121,6 +121,9 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     averageRentalM2: "Average monthly rental per square meter:",
     rentalExpense: "Expected yearly expense per square meter:",
     rentalExample: "Rental income for unit of 50 square meter:",
+    premiumTitle: "Profitability information",
+    premiumSubtitle: "Available only for PREMIUM users",
+    premiumButton: "Become PREMIUM user",
   },
   sr: {
     meters: "metara",
@@ -246,5 +249,8 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     averageRentalM2: "Prosečna mesečna krija po kvadratu:",
     rentalExpense: "Očekivani godišnji trošak po kvadratu:",
     rentalExample: "Prihodi od kirije za stan od 50 kvadrata:",
+    premiumTitle: "Podaci o isplativosti",
+    premiumSubtitle: "Dostupno samo za PREMIUM korisnike",
+    premiumButton: "Postani PREMIUM korisnik",
   },
 };

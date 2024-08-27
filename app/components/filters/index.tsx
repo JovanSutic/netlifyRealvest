@@ -4,10 +4,12 @@ import {
   LangType,
   PropertyType,
   FiltersType,
+  RoleType,
 } from "../../types/dashboard.types";
 import Select from "../select/Select";
 import { useEffect, useState } from "react";
 import SideWrapper from "../helpers/SideWrapper";
+import { priceOptions, sizeOptions } from "../../utils/params";
 
 const Filters = ({
   isOpen,
@@ -16,6 +18,7 @@ const Filters = ({
   toggleOpen,
   submit,
   mobile,
+  role,
 }: {
   isOpen: boolean;
   lang: LangType;
@@ -23,20 +26,36 @@ const Filters = ({
   toggleOpen: () => void;
   submit: (filters: FiltersType) => void;
   mobile: boolean;
+  role: RoleType;
 }) => {
   const translate = new Translator("dashboard");
   const reportTranslate = new Translator("report");
+  const isPremium = role !== "basic";
 
   const [range, setRange] = useState<string>("250");
   const [propertyType, setPropertyType] = useState<PropertyType>("residential");
   const [timeRange, setTimeRange] = useState<RangeOption>("3m");
+  const [sizeFrom, setSizeFrom] = useState<string>(sizeOptions[0].toString());
+  const [sizeTo, setsizeTo] = useState<string>(
+    sizeOptions[sizeOptions.length - 1].toString()
+  );
+  const [priceFrom, setPriceFrom] = useState<string>(
+    priceOptions[0].toString()
+  );
+  const [priceTo, setPriceTo] = useState<string>(
+    priceOptions[priceOptions.length - 1].toString()
+  );
 
   const containerW = mobile ? "w-[100%]" : "w-[360px]";
 
   const isChanged =
     filters.propertyType !== propertyType ||
     filters.range !== range ||
-    filters.timeRange !== timeRange
+    filters.timeRange !== timeRange ||
+    filters.priceFrom !== priceFrom ||
+    filters.priceTo !== priceTo ||
+    filters.sizeFrom !== sizeFrom ||
+    filters.sizeTo !== sizeTo
       ? true
       : false;
 
@@ -46,6 +65,52 @@ const Filters = ({
       setPropertyType(filters.propertyType);
     if (timeRange !== filters.timeRange) setTimeRange(filters.timeRange);
   }, [isOpen]);
+
+  const timeRangeOptions = [
+    {
+      value: "3m",
+      text: translate.getTranslation(lang, "3m"),
+    },
+    {
+      value: "6m",
+      text: translate.getTranslation(lang, "6m"),
+    },
+    {
+      value: "1y",
+      text: translate.getTranslation(lang, "1y"),
+    },
+    {
+      value: "3y",
+      text: translate.getTranslation(lang, "3y"),
+    },
+    {
+      value: "5y",
+      text: translate.getTranslation(lang, "5y"),
+    },
+  ];
+
+  const mapRangeOptions = [
+    {
+      value: "250",
+      text: `250 ${translate.getTranslation(lang, "meters")}`,
+    },
+    {
+      value: "500",
+      text: `500 ${translate.getTranslation(lang, "meters")}`,
+    },
+    {
+      value: "1000",
+      text: `1000 ${translate.getTranslation(lang, "meters")}`,
+    },
+    {
+      value: "1500",
+      text: `1500 ${translate.getTranslation(lang, "meters")}`,
+    },
+    {
+      value: "2000",
+      text: `2000 ${translate.getTranslation(lang, "meters")}`,
+    },
+  ];
 
   return (
     <SideWrapper
@@ -79,28 +144,9 @@ const Filters = ({
               setValue={(value) => {
                 setTimeRange(value as RangeOption);
               }}
-              options={[
-                {
-                  value: "3m",
-                  text: translate.getTranslation(lang, "3m"),
-                },
-                {
-                  value: "6m",
-                  text: translate.getTranslation(lang, "6m"),
-                },
-                {
-                  value: "1y",
-                  text: translate.getTranslation(lang, "1y"),
-                },
-                {
-                  value: "3y",
-                  text: translate.getTranslation(lang, "3y"),
-                },
-                {
-                  value: "5y",
-                  text: translate.getTranslation(lang, "5y"),
-                },
-              ]}
+              options={
+                isPremium ? timeRangeOptions : timeRangeOptions.slice(0, 3)
+              }
             />
           </div>
         </li>
@@ -156,222 +202,135 @@ const Filters = ({
                   setValue={(value) => {
                     setRange(value);
                   }}
-                  options={[
-                    {
-                      value: "250",
-                      text: `250 ${translate.getTranslation(lang, "meters")}`,
-                    },
-                    {
-                      value: "500",
-                      text: `500 ${translate.getTranslation(lang, "meters")}`,
-                    },
-                    {
-                      value: "1000",
-                      text: `1000 ${translate.getTranslation(lang, "meters")}`,
-                    },
-                    {
-                      value: "1500",
-                      text: `1500 ${translate.getTranslation(lang, "meters")}`,
-                    },
-                    {
-                      value: "2000",
-                      text: `2000 ${translate.getTranslation(lang, "meters")}`,
-                    },
-                  ]}
+                  options={
+                    isPremium ? mapRangeOptions : mapRangeOptions.slice(0, 3)
+                  }
                 />
               </div>
             </div>
           </div>
         </li>
-        <hr />
-        <li className="px-2 mb-3 mt-3">
-          <div className="">
-            <div>
-              <div className="w-full flex flex-row justify-center gap-2">
-                <div className="w-full flex">
-                  <label
-                    htmlFor="sizeFrom"
-                    className="text-slate-800 ml-1 text-sm font-semibold"
-                  >
-                    {`${translate.getTranslation(
-                      lang,
-                      "size"
-                    )} ${translate.getTranslation(lang, "from")}`}
-                  </label>
-                </div>
-                <div className="w-full flex">
-                  <label
-                    htmlFor="sizeTo"
-                    className="text-slate-800 ml-1 text-sm font-semibold"
-                  >
-                    {translate.getTranslation(lang, "to")}
-                  </label>
-                </div>
-              </div>
+        {isPremium && (
+          <>
+            <hr />
+            <li className="px-2 mb-3 mt-3">
+              <div className="">
+                <div>
+                  <div className="w-full flex flex-row justify-center gap-2">
+                    <div className="w-full flex">
+                      <label
+                        htmlFor="sizeFrom"
+                        className="text-slate-800 ml-1 text-sm font-semibold"
+                      >
+                        {`${translate.getTranslation(
+                          lang,
+                          "size"
+                        )} ${translate.getTranslation(lang, "from")}`}
+                      </label>
+                    </div>
+                    <div className="w-full flex">
+                      <label
+                        htmlFor="sizeTo"
+                        className="text-slate-800 ml-1 text-sm font-semibold"
+                      >
+                        {translate.getTranslation(lang, "to")}
+                      </label>
+                    </div>
+                  </div>
 
-              <div className="w-full flex flex-row justify-center gap-2">
-                <div className="w-full flex">
-                  <Select
-                    name="sizeFrom"
-                    value={"0"}
-                    isFullWidth={true}
-                    setValue={(value) => {
-                      console.log(value);
-                    }}
-                    options={[
-                      {
-                        value: "0",
-                        text: `0`,
-                      },
-                      {
-                        value: "30",
-                        text: `30`,
-                      },
-                      {
-                        value: "40",
-                        text: `40`,
-                      },
-                      {
-                        value: "50",
-                        text: `50`,
-                      },
-                      {
-                        value: "60",
-                        text: `60`,
-                      },
-                    ]}
-                  />
-                </div>
-                <div className="w-full flex">
-                  <Select
-                    name="sizeTo"
-                    value={"0"}
-                    isFullWidth={true}
-                    setValue={(value) => {
-                      console.log(value);
-                    }}
-                    options={[
-                      {
-                        value: "0",
-                        text: `0`,
-                      },
-                      {
-                        value: "30",
-                        text: `30`,
-                      },
-                      {
-                        value: "40",
-                        text: `40`,
-                      },
-                      {
-                        value: "50",
-                        text: `50`,
-                      },
-                      {
-                        value: "60",
-                        text: `60`,
-                      },
-                    ]}
-                  />
+                  <div className="w-full flex flex-row justify-center gap-2">
+                    <div className="w-full flex">
+                      <Select
+                        name="sizeFrom"
+                        value={sizeFrom}
+                        isFullWidth={true}
+                        setValue={(value) => {
+                          setSizeFrom(value);
+                        }}
+                        options={sizeOptions.map((item) => ({
+                          value: item.toString(),
+                          text: item.toString(),
+                        }))}
+                      />
+                    </div>
+                    <div className="w-full flex">
+                      <Select
+                        name="sizeTo"
+                        value={sizeTo}
+                        isFullWidth={true}
+                        setValue={(value) => {
+                          setsizeTo(value);
+                        }}
+                        options={sizeOptions.map((item) => ({
+                          value: item.toString(),
+                          text: item.toString(),
+                        }))}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </li>
-        <li className="px-2 mb-3">
-          <div className="">
-            <div>
-              <div className="w-full flex flex-row justify-center gap-2">
-                <div className="w-full flex">
-                  <label
-                    htmlFor="priceFrom"
-                    className="text-slate-800 ml-1 text-sm font-semibold"
-                  >
-                    {`${translate.getTranslation(
-                      lang,
-                      "price"
-                    )} ${translate.getTranslation(lang, "from")}`}
-                  </label>
-                </div>
-                <div className="w-full flex">
-                  <label
-                    htmlFor="priceTo"
-                    className="text-slate-800 ml-1 text-sm font-semibold"
-                  >
-                    {translate.getTranslation(lang, "to")}
-                  </label>
-                </div>
-              </div>
+            </li>
+            <li className="px-2 mb-3">
+              <div className="">
+                <div>
+                  <div className="w-full flex flex-row justify-center gap-2">
+                    <div className="w-full flex">
+                      <label
+                        htmlFor="priceFrom"
+                        className="text-slate-800 ml-1 text-sm font-semibold"
+                      >
+                        {`${translate.getTranslation(
+                          lang,
+                          "price"
+                        )} ${translate.getTranslation(lang, "from")}`}
+                      </label>
+                    </div>
+                    <div className="w-full flex">
+                      <label
+                        htmlFor="priceTo"
+                        className="text-slate-800 ml-1 text-sm font-semibold"
+                      >
+                        {translate.getTranslation(lang, "to")}
+                      </label>
+                    </div>
+                  </div>
 
-              <div className="w-full flex flex-row justify-center gap-2">
-                <div className="w-full flex">
-                  <Select
-                    name="priceFrom"
-                    value={"0"}
-                    isFullWidth={true}
-                    setValue={(value) => {
-                      console.log(value);
-                    }}
-                    options={[
-                      {
-                        value: "0",
-                        text: `0`,
-                      },
-                      {
-                        value: "30",
-                        text: `30`,
-                      },
-                      {
-                        value: "40",
-                        text: `40`,
-                      },
-                      {
-                        value: "50",
-                        text: `50`,
-                      },
-                      {
-                        value: "60",
-                        text: `60`,
-                      },
-                    ]}
-                  />
-                </div>
-                <div className="w-full flex">
-                  <Select
-                    name="priceTo"
-                    value={"0"}
-                    isFullWidth={true}
-                    setValue={(value) => {
-                      console.log(value);
-                    }}
-                    options={[
-                      {
-                        value: "0",
-                        text: `0`,
-                      },
-                      {
-                        value: "30",
-                        text: `30`,
-                      },
-                      {
-                        value: "40",
-                        text: `40`,
-                      },
-                      {
-                        value: "50",
-                        text: `50`,
-                      },
-                      {
-                        value: "60",
-                        text: `60`,
-                      },
-                    ]}
-                  />
+                  <div className="w-full flex flex-row justify-center gap-2">
+                    <div className="w-full flex">
+                      <Select
+                        name="priceFrom"
+                        value={priceFrom}
+                        isFullWidth={true}
+                        setValue={(value) => {
+                          setPriceFrom(value);
+                        }}
+                        options={priceOptions.map((item) => ({
+                          value: item.toString(),
+                          text: item.toString(),
+                        }))}
+                      />
+                    </div>
+                    <div className="w-full flex">
+                      <Select
+                        name="priceTo"
+                        value={priceTo}
+                        isFullWidth={true}
+                        setValue={(value) => {
+                          setPriceTo(value);
+                        }}
+                        options={priceOptions.map((item) => ({
+                          value: item.toString(),
+                          text: item.toString(),
+                        }))}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </li>
+            </li>
+          </>
+        )}
 
         <li className={`fixed bottom-[40px] right-0 ${containerW}`}>
           <div className="w-full flex flex-row justify-center gap-8 px-2 py-3">
@@ -381,6 +340,10 @@ const Filters = ({
                   range,
                   timeRange,
                   propertyType,
+                  sizeFrom,
+                  sizeTo,
+                  priceFrom,
+                  priceTo,
                 })
               }
               disabled={!isChanged}

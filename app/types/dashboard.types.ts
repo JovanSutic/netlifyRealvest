@@ -10,6 +10,9 @@ export type RentalPropertyType = (typeof rentalPropertyType)[number];
 export const propertyType = ["residential", "parking", "commercial"] as const;
 export type PropertyType = (typeof propertyType)[number];
 
+export const roles = ["admin", "premium", "basic", "agency"] as const;
+export type RoleType = (typeof roles)[number];
+
 export type PieReportType = {
   id: number;
   price_map: number[];
@@ -320,4 +323,8 @@ export interface FiltersType {
   timeRange: RangeOption;
   range: string;
   propertyType: PropertyType;
+  sizeFrom: string;
+  sizeTo: string;
+  priceFrom: string;
+  priceTo: string;
 }
