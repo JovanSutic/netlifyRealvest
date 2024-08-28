@@ -1,6 +1,7 @@
 import { json, redirect, type LoaderFunctionArgs } from "@remix-run/node";
 import { createSupabaseServerClient } from "../supabase.server";
 import { FinalError } from "../types/component.types";
+import { assignRole } from "../utils/auth";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const requestUrl = new URL(request.url);
@@ -15,8 +16,28 @@ export async function loader({ request }: LoaderFunctionArgs) {
     const { supabaseClient, headers } = createSupabaseServerClient(request);
 
     try {
-      const { error } = await supabaseClient.auth.exchangeCodeForSession(code);
-      if (!error) {
+      const { data, error } = await supabaseClient.auth.exchangeCodeForSession(
+        code
+      );
+
+      if (error) {
+        isError = true;
+        finalError = error as FinalError;
+      }
+
+      if (data?.user?.id) {
+        const { success: roleSuccess, message: roleMessage } = await assignRole(
+          supabaseClient,
+          data?.user?.id
+        );
+
+        if (!roleSuccess) {
+          isError = true;
+          finalError = {message: roleMessage} as FinalError;
+        }
+      }
+
+      if (!isError) {
         return redirect(next, { headers });
       }
     } catch (error) {
@@ -26,6 +47,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 
   if (isError) {
+    console.log(finalError)
     throw json({ error: finalError?.message, lang }, { status: 400 });
   }
 

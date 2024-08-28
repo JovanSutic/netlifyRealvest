@@ -23,6 +23,7 @@ import Alert from "../components/alert";
 import { AuthError } from "@supabase/supabase-js";
 import { getParamValue } from "../utils/params";
 import { FinalError } from "../types/component.types";
+import { assignRole } from "../utils/auth";
 
 export const meta: MetaFunction = ({ location }) => {
   const lang = getParamValue(location.search, "lang", "sr");
@@ -109,16 +110,22 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       });
 
       if (success) {
-        const { error } = await supabaseClient.auth.signInWithPassword({
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
           email: String(email),
           password: String(password),
         });
 
         if (error) {
-          console.log(error);
           return json({ success: false, error }, { headers, status: 400 });
         } else {
-          return redirect(`/dashboard/search?lang=${lang}`, { headers });
+          const { success: roleSuccess, message: roleMessage } =
+            await assignRole(supabaseClient, data.user.id);
+
+          if (roleSuccess) {
+            return redirect(`/dashboard/search?lang=${lang}`, { headers });
+          } else {
+            throw json({ error: roleMessage, lang }, { status: 400 });
+          }
         }
       } else {
         return json(
