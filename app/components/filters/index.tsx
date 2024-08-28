@@ -49,13 +49,13 @@ const Filters = ({
   const containerW = mobile ? "w-[100%]" : "w-[360px]";
 
   const isChanged =
-    filters.propertyType !== propertyType ||
+    (filters.propertyType !== propertyType ||
     filters.range !== range ||
     filters.timeRange !== timeRange ||
     filters.priceFrom !== priceFrom ||
     filters.priceTo !== priceTo ||
     filters.sizeFrom !== sizeFrom ||
-    filters.sizeTo !== sizeTo
+    filters.sizeTo !== sizeTo) && (priceFrom < priceTo && sizeFrom < sizeTo)
       ? true
       : false;
 
