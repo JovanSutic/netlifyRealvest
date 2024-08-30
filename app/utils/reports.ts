@@ -127,8 +127,12 @@ export const listMainReportData = (
 };
 
 export const numbersToPercentage = (list: number[]): number[] => {
-  const sum = list.reduce((total, item) => total + item);
-  return list.map((item) => roundNumberToDecimal((item / sum) * 100, 1));
+  if (list.length) {
+    const sum = list.reduce((total, item) => total + item);
+    return list.map((item) => roundNumberToDecimal((item / sum) * 100, 1));
+  }
+
+  return [];
 };
 
 export const getOptions = (list: GeneralObject[]): DropdownOptions[] => {
@@ -152,8 +156,7 @@ export const getPieSpreadRental = (
 ): number[] => {
   if (isParking && key !== "average_price_map")
     return [250, 500, 750, 1000, 1500, 2000, 2500, 3000];
-  if (key === "average_price_map")
-    return [5, 8, 10, 12, 15, 20, 25, 30];
+  if (key === "average_price_map") return [5, 8, 10, 12, 15, 20, 25, 30];
   return [250, 500, 750, 1000, 1500, 2000, 2500, 3000];
 };
 

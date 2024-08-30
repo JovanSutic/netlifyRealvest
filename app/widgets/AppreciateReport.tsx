@@ -9,6 +9,7 @@ import {
 import { makeNumberCurrency } from "../utils/numbers";
 import { Translator } from "../data/language/translator";
 import Tooltip from "../components/tooltip/Tooltip";
+import { Link } from "@remix-run/react";
 
 const AppreciateReport = ({
   appreciationData = null,
@@ -52,9 +53,9 @@ const AppreciateReport = ({
             </p>
           </div>
           <div className="w-full flex justify-center">
-            <button className="text-md text-blue-950 px-6 py-2 bg-amber-300 font-semibold rounded-md transition-all duration-300 transform hover:bg-amber-400 focus:outline-none disabled:bg-gray-300 disabled:cursor-no-drop">
+            <Link to={`/plans?lang=${lang}`} className="text-md text-blue-950 px-6 py-2 bg-amber-300 font-semibold rounded-md transition-all duration-300 transform hover:bg-amber-400 focus:outline-none disabled:bg-gray-300 disabled:cursor-no-drop">
               {translate.getTranslation(lang, "premiumButton")}
-            </button>
+            </Link>
           </div>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { navigationMap } from "./navigation";
 import { authMap } from "./auth";
 import { homepageMap } from "./homepage";
 import { termsMap } from "./terms";
+import { componentsMap } from "./components";
 
 const translationMap = {
   dashboard: dashboardMap,
@@ -12,6 +13,7 @@ const translationMap = {
   homepage: homepageMap,
   auth: authMap,
   terms: termsMap,
+  components: componentsMap,
 };
 
 export type SectionType = keyof typeof translationMap;

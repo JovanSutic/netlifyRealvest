@@ -75,7 +75,9 @@ const DoughnutChart = ({
         },
         plugins: {
           legend: {
+            display: !mobile,
             fullSize: true,
+            align: "center",
             position: "left",
             labels: {
               boxPadding: 2,
