@@ -124,6 +124,7 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     premiumTitle: "Profitability information",
     premiumSubtitle: "Available only for PREMIUM users",
     premiumButton: "Become PREMIUM user",
+    mobileDoughnutInfo: "Click on the chart colors to see more info.",
   },
   sr: {
     meters: "metara",
@@ -252,5 +253,6 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     premiumTitle: "Podaci o isplativosti",
     premiumSubtitle: "Dostupno samo za PREMIUM korisnike",
     premiumButton: "Postani PREMIUM korisnik",
+    mobileDoughnutInfo: "Kliknite na boje čarta za više informacija.",
   },
 };

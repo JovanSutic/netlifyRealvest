@@ -6,10 +6,17 @@ import {
   PropertyType,
   RentalPropertyType,
 } from "../types/dashboard.types";
+import {
+  Chart as ChartJS,
+  Title,
+  Legend,
+  Tooltip as ChartTooltip,
+  ArcElement,
+} from "chart.js";
 import { Translator } from "../data/language/translator";
 import DoughnutChart from "../components/doughnutChart";
 import ToggleButton from "../components/toggleButtons/ToggleButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { numbersToPercentage } from "../utils/reports";
 import { getDataForAreaPie } from "../utils/dashboard";
 import Tooltip from "../components/tooltip/Tooltip";
@@ -44,6 +51,10 @@ const AreaDoughnutReport = ({
   const isEmpty = isShown && data.length === 0;
   const margin: string = mobile ? "mb-8" : "mb-4";
 
+  useEffect(() => {
+    ChartJS.register(ArcElement, ChartTooltip, Title, Legend);
+  }, []);
+
   return (
     <div>
       <div>
@@ -59,7 +70,7 @@ const AreaDoughnutReport = ({
             </div>
           </div>
         )}
-        {isShown && !isEmpty && (
+        {!isEmpty && isShown && (
           <div className="w-full">
             <div className="w-full flex flex-row-reverse">
               <div className="w-[30px]">
@@ -105,7 +116,7 @@ const AreaDoughnutReport = ({
 
             <div className="flex flex-row w-full">
               <DoughnutChart
-                ratio={2}
+                ratio={mobile ? 1.5 : 2}
                 id={`areaSalesDistribution-${distributionType}`}
                 labels={chartData.labels}
                 data={numbersToPercentage(chartData.data)}
@@ -117,6 +128,13 @@ const AreaDoughnutReport = ({
                 mobile={mobile}
               />
             </div>
+            {mobile && (
+              <div className="flex flex-row w-full mt-4">
+                <p className="w-full text-center text-sm text-gray-700">
+                  {translate.getTranslation(lang, "mobileDoughnutInfo")}
+                </p>
+              </div>
+            )}
           </div>
         )}
         {!isShown && !isEmpty && (

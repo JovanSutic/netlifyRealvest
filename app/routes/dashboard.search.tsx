@@ -603,41 +603,47 @@ const DashboardSearch = () => {
         </div>
         <div
           ref={scrollRef}
-          className="row-start-2 col-span-12 pr-0 xl:pr-1 lg:col-span-5 h-auto xl:h-[calc(100vh-40px)] overflow-none xl:overflow-x-none xl:overflow-y-scroll col-start-1 lg:col-start-8 lg:row-start-2 mb-6 scrollbar-thin"
+          className="row-start-2 col-span-12 pr-0 xl:pr-1 lg:col-span-5 h-auto xl:h-[calc(100vh-40px)] no-anchor xl:overflow-x-none xl:overflow-y-scroll col-start-1 lg:col-start-8 lg:row-start-2 mb-6 scrollbar-thin"
         >
-          <div className="mb-6 xl:mb-4">
+          <div
+            className={
+              role === "basic"
+                ? "min-h-auto xl:min-h-[760px]"
+                : "min-h-auto xl:min-h-[960px]"
+            }
+          >
+            <div className="mb-6 xl:mb-4">
+              <WidgetWrapper>
+                <div className="min-h-[200px]">
+                  <Loader
+                    open={fetcher.state === "loading" && role !== "basic"}
+                  />
+                  <AppreciateReport
+                    range={range}
+                    appreciationData={appreciationData}
+                    rentalData={rentalEstimate}
+                    lang={lang}
+                    type={propertyType}
+                    isData={Boolean(fetcher.data?.data)}
+                    point={Boolean(center)}
+                    role={role}
+                  />
+                </div>
+              </WidgetWrapper>
+            </div>
             <WidgetWrapper>
-              <div className="min-h-[200px]">
-                <Loader
-                  open={fetcher.state === "loading" && role !== "basic"}
-                />
-                <AppreciateReport
-                  range={range}
-                  appreciationData={appreciationData}
-                  rentalData={rentalEstimate}
-                  lang={lang}
-                  type={propertyType}
-                  isData={Boolean(fetcher.data?.data)}
-                  point={Boolean(center)}
-                  role={role}
-                />
-              </div>
-            </WidgetWrapper>
-          </div>
-          <WidgetWrapper>
-            <Loader open={fetcher.state === "loading"} />
-            <ChipsGroupItem
-              data={
-                propertyType !== "residential" || role === "basic"
-                  ? chipOptions.slice(0, 4)
-                  : chipOptions
-              }
-              current={tab}
-              mobile={mobile}
-            />
-            <div className="mt-1">
-              {tab === "1" && (
-                <div>
+              <Loader open={fetcher.state === "loading"} />
+              <ChipsGroupItem
+                data={
+                  propertyType !== "residential" || role === "basic"
+                    ? chipOptions.slice(0, 4)
+                    : chipOptions
+                }
+                current={tab}
+                mobile={mobile}
+              />
+              <div className="mt-1">
+                <div className={tab === "1" ? "block" : "hidden"}>
                   <div>
                     {center ? (
                       <AreaReport data={fetcher.data?.data} lang={lang} />
@@ -652,67 +658,67 @@ const DashboardSearch = () => {
                     )}
                   </div>
                 </div>
-              )}
-              {tab === "2" && (
-                <AreaLineReport
-                  isLine={center !== undefined}
-                  data={fetcher.data?.list || []}
-                  lang={lang}
-                  timeRange={timeRange}
-                  date={fetcher.data?.lastDate || ""}
-                  mobile={mobile}
-                />
-              )}
-              {tab === "3" && (
-                <AreaDoughnutReport
-                  isShown={center !== undefined}
-                  data={fetcher.data?.list || []}
-                  lang={lang}
-                  propertyType={propertyType}
-                  mobile={mobile}
-                />
-              )}
-              {tab === "4" && (
-                <AreaDoughnutTimeReport
-                  isShown={center !== undefined}
-                  data={fetcher.data?.list || []}
-                  lang={lang}
-                  timeRange={timeRange}
-                  date={fetcher.data?.lastDate || ""}
-                  mobile={mobile}
-                />
-              )}
-              {tab === "5" && (
-                <AreaLineReport
-                  isLine={center !== undefined}
-                  data={rentalData || []}
-                  lang={lang}
-                  timeRange="1y"
-                  date={""}
-                  rental
-                  mobile
-                />
-              )}
-              {tab === "6" && (
-                <AreaDoughnutReport
-                  isShown={center !== undefined}
-                  data={rentalData || []}
-                  lang={lang}
-                  mobile={mobile}
-                  propertyType={propertyType}
-                  rental
-                />
-              )}
-            </div>
-          </WidgetWrapper>
-          <p className="mt-4 text-sm font-serif text-right pr-4">
-            {fetcher.data?.lastDate
-              ? `${translate.getTranslation(
-                  lang!,
-                  "lastInputDate"
-                )} ${formatDate(fetcher.data?.lastDate, lang!)}`
-              : ""}
-          </p>
+                <div className={tab === "2" ? "block" : "hidden"}>
+                  <AreaLineReport
+                    isLine={center !== undefined}
+                    data={fetcher.data?.list || []}
+                    lang={lang}
+                    timeRange={timeRange}
+                    date={fetcher.data?.lastDate || ""}
+                    mobile={mobile}
+                  />
+                </div>
+                <div className={tab === "3" ? "block" : "hidden"}>
+                  <AreaDoughnutReport
+                    isShown={center !== undefined}
+                    data={fetcher.data?.list || []}
+                    lang={lang}
+                    propertyType={propertyType}
+                    mobile={mobile}
+                  />
+                </div>
+                <div className={tab === "4" ? "block" : "hidden"}>
+                  <AreaDoughnutTimeReport
+                    isShown={center !== undefined}
+                    data={fetcher.data?.list || []}
+                    lang={lang}
+                    timeRange={timeRange}
+                    date={fetcher.data?.lastDate || ""}
+                    mobile={mobile}
+                  />
+                </div>
+                <div className={tab === "5" ? "block" : "hidden"}>
+                  <AreaLineReport
+                    isLine={center !== undefined}
+                    data={rentalData || []}
+                    lang={lang}
+                    timeRange="1y"
+                    date={""}
+                    rental
+                    mobile
+                  />
+                </div>
+                <div className={tab === "6" ? "block" : "hidden"}>
+                  <AreaDoughnutReport
+                    isShown={center !== undefined}
+                    data={rentalData || []}
+                    lang={lang}
+                    mobile={mobile}
+                    propertyType={propertyType}
+                    rental
+                  />
+                </div>
+              </div>
+            </WidgetWrapper>
+            <p className="mt-4 text-sm font-serif text-right pr-4">
+              {fetcher.data?.lastDate
+                ? `${translate.getTranslation(
+                    lang!,
+                    "lastInputDate"
+                  )} ${formatDate(fetcher.data?.lastDate, lang!)}`
+                : ""}
+            </p>
+          </div>
         </div>
       </div>
     </DashboardPage>

@@ -113,9 +113,9 @@ const MobileNavigation = ({
                   className="size-6 w-6 mr-3 inline"
                 >
                   <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+                    fillRule="evenodd"
+                    d="m11.54 22.351.07.04.028.016a.76.76 0 0 0 .723 0l.028-.015.071-.041a16.975 16.975 0 0 0 1.144-.742 19.58 19.58 0 0 0 2.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 0 0-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 0 0 2.682 2.282 16.975 16.975 0 0 0 1.145.742ZM12 13.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                    clipRule="evenodd"
                   />
                 </svg>
                 <span>{translate.getTranslation(lang, "areaSearch")}</span>
@@ -149,7 +149,7 @@ const MobileNavigation = ({
                 </svg>
 
                 <span>
-                  {nextLang === "sr" ? "srpska verzija" : "english version"}
+                  {nextLang === "sr" ? "Srpska verzija" : "English version"}
                 </span>
               </div>
             </li>

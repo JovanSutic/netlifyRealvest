@@ -75,7 +75,7 @@ const AreaDoughnutTimeReport = ({
             </div>
             <div className="flex flex-row w-full">
               <DoughnutChart
-                ratio={1.8}
+                ratio={mobile ? 1.5 : 2}
                 id="areaSalesCountDistribution"
                 labels={chartData.labels}
                 data={numbersToPercentage(chartData.data)}
@@ -83,6 +83,13 @@ const AreaDoughnutTimeReport = ({
                 mobile={mobile}
               />
             </div>
+            {mobile && (
+              <div className="flex flex-row w-full mt-4">
+                <p className="w-full text-center text-sm text-gray-700">
+                  {translate.getTranslation(lang, "mobileDoughnutInfo")}
+                </p>
+              </div>
+            )}
           </div>
         )}
         {!isShown && !isEmpty && (
