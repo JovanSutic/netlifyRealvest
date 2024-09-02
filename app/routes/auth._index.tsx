@@ -164,7 +164,10 @@ export default function AuthSign() {
   const [emailError, setEmailError] = useState<string>();
   const [passwordError, setPasswordError] = useState<string>();
 
-  const actionData = useActionData<typeof action>();
+  const actionData = useActionData<{
+    success: boolean;
+    error: ZodError;
+  }>();
   const translator = new Translator("auth");
 
   useEffect(() => {
@@ -474,12 +477,12 @@ export default function AuthSign() {
                 <button
                   type="submit"
                   disabled={
-                    navigation.state === "submitting" || !email || !password
+                    navigation.state === "submitting" || !email || !password || actionData?.success
                   }
                   className="w-full py-2.5 px-4 text-sm font-semibold rounded-xl text-white bg-blue-500 hover:bg-blue-600 disabled:bg-slate-300 disabled:cursor-no-drop focus:outline-none"
                 >
                   {translator.getTranslation(lang!, "signTitle")}
-                  {navigation.state === "submitting" && (
+                  {(navigation.state === "submitting" || actionData?.success) && (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="18px"
