@@ -18,6 +18,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userAgent = request.headers.get("user-agent");
   const lang = currentUrl.searchParams.get("lang") || "sr";
   const user = await supabaseClient.auth.getUser();
+ 
   if (user?.data?.user?.role !== "authenticated") {
     return redirect(`/auth?lang=${lang}`);
   }

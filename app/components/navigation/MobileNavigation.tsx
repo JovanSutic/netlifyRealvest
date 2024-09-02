@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link, useNavigate } from "@remix-run/react";
 import { Translator } from "../../data/language/translator";
 import { LangType } from "../../types/dashboard.types";
 
@@ -24,6 +24,7 @@ const MobileNavigation = ({
   const nextLang = lang === "sr" ? "en" : "sr";
 
   const translate = new Translator("navigation");
+  const navigate = useNavigate();
   return (
     <header className="flex shadow-sm bg-gray-700 font-[sans-serif] min-h-[70px]">
       <div className="flex flex-wrap items-center justify-between sm:px-10 px-6 py-3 relative lg:gap-y-4 gap-y-6 gap-x-4 w-full">
@@ -112,45 +113,25 @@ const MobileNavigation = ({
                   className="size-6 w-6 mr-3 inline"
                 >
                   <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+                    fillRule="evenodd"
+                    d="m11.54 22.351.07.04.028.016a.76.76 0 0 0 .723 0l.028-.015.071-.041a16.975 16.975 0 0 0 1.144-.742 19.58 19.58 0 0 0 2.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 0 0-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 0 0 2.682 2.282 16.975 16.975 0 0 0 1.145.742ZM12 13.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                    clipRule="evenodd"
                   />
                 </svg>
                 <span>{translate.getTranslation(lang, "areaSearch")}</span>
               </Link>
             </li>
-            <li className="py-3 px-3">
-              <Link
-                to={`/dashboard/rental?lang=${lang}`}
-                className={
-                  url === "/dashboard/rental"
-                    ? styleMap.itemActive
-                    : styleMap.item
-                }
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="size-6 w-6 mr-3 inline"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"
-                  />
-                </svg>
-                <span>{translate.getTranslation(lang, "rental")}</span>
-              </Link>
-            </li>
 
             <li className="fixed bottom-20 py-3 px-3">
-              <Link
-                to={`${url}?lang=${nextLang}`}
+              <div
                 className="text-blue-300 hover:text-blue-400 text-sm flex items-center rounded-md"
+                role="button"
+                tabIndex={0}
+                onKeyDown={() => null}
+                onClick={() => {
+                  toggleOpen();
+                  navigate(`${url}?lang=${nextLang}`);
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -168,9 +149,9 @@ const MobileNavigation = ({
                 </svg>
 
                 <span>
-                  {nextLang === "sr" ? "srpska verzija" : "english version"}
+                  {nextLang === "sr" ? "Srpska verzija" : "English version"}
                 </span>
-              </Link>
+              </div>
             </li>
 
             <li className="fixed bottom-8 py-3 px-3">

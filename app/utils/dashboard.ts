@@ -1,4 +1,5 @@
 import {
+  AppreciationData,
   AreaReportType,
   DashboardRentalType,
   DashboardSearchType,
@@ -12,6 +13,7 @@ import {
   PieChartData,
   PropertyType,
   RentalPropertyType,
+  RentEstimationData,
 } from "../types/dashboard.types";
 import {
   RangeOption,
@@ -30,7 +32,7 @@ import {
   getPieSpread,
   getPieSpreadRental,
 } from "./reports";
-import { addMonths, format, setDate } from "date-fns";
+import { addMonths, differenceInYears, format, setDate } from "date-fns";
 import { ellipse, point, lineString, bbox, bboxPolygon } from "@turf/turf";
 
 export const generateAreaReport = (
@@ -657,3 +659,91 @@ export const extractAddress = (address: string): string => {
 
   return address;
 };
+
+export const calculateAppreciationRate = (
+  pastValue: number,
+  currentValue: number,
+  years: number
+): number => {
+  return Math.pow(currentValue / pastValue, 1 / years) - 1;
+};
+
+export const calculateFuturePrice = (
+  currentPrice: number,
+  appreciationRate: number,
+  years: number
+): number => {
+  return currentPrice + currentPrice * appreciationRate * years;
+};
+
+export const getAppreciationData = (
+  earliestData: Record<string, string | number>[],
+  latestData: DashboardSearchType[],
+  limit: number
+): AppreciationData | null => {
+  if (!earliestData?.length || !latestData?.length) return null;
+  const newLimit: number =
+    limit > latestData.length ? latestData.length : limit;
+
+  const firstAverageM2 =
+    (earliestData || [])
+      .map((item) => Number(item.price) / Number(item.size))
+      .reduce((a, b) => a + b, 0) / earliestData!.length;
+
+  const latestDataPart = latestData.slice(-newLimit);
+  const lastAverageM2 =
+    latestDataPart
+      .map((item) => Number(item.price) / Number(item.size))
+      .reduce((a, b) => a + b, 0) / latestDataPart!.length;
+
+  if (lastAverageM2 - firstAverageM2 < 1) return null;
+
+  const yearDiff: number = Math.abs(
+    differenceInYears(
+      earliestData[0].date,
+      latestDataPart[latestDataPart.length - 1].date
+    )
+  );
+
+  const appreciationRate = calculateAppreciationRate(
+    firstAverageM2,
+    lastAverageM2,
+    yearDiff
+  );
+  const fiveYearPrice = calculateFuturePrice(
+    lastAverageM2,
+    appreciationRate,
+    5
+  );
+  const tenYearPrice = calculateFuturePrice(
+    lastAverageM2,
+    appreciationRate,
+    10
+  );
+
+  return {
+    lastAverage: lastAverageM2,
+    years: yearDiff,
+    appreciationRate,
+    fiveYearPrice,
+    fiveYearPercent: Math.floor(
+      ((fiveYearPrice - lastAverageM2) / lastAverageM2) * 100
+    ),
+    tenYearPrice,
+    tenYearPercent: Math.floor(
+      ((tenYearPrice - lastAverageM2) / lastAverageM2) * 100
+    ),
+  };
+};
+
+export const getRentalEstimation = (data: Record<string, string | number>[], lastAverage: number): RentEstimationData | null => {
+  if (!data) return null;
+  const fullPrice = data.reduce((a, b) => a + Number(b.price), 0);
+  const fullSize = data.reduce((a, b) => a + Number(b.size), 0);
+
+  return {
+    average: parseFloat((fullPrice / fullSize).toFixed(2)),
+    count: data.length,
+    expense: parseFloat((lastAverage * 0.016).toFixed(2)),
+  }
+}

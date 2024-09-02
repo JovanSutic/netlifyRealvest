@@ -33,3 +33,18 @@ export interface AccordionData {
 export interface FinalError {
   message: string;
 }
+
+export interface PlanType {
+  name: string;
+  description: string;
+  priceYear: string;
+  priceMonth: string;
+  isActive: boolean;
+  link: string;
+  options: {
+    name: string;
+    active: boolean;
+  }[];
+}
+
+export type PlanPeriodType = "month" | "year";

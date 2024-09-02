@@ -23,6 +23,7 @@ import Alert from "../components/alert";
 import { AuthError } from "@supabase/supabase-js";
 import { getParamValue } from "../utils/params";
 import { FinalError } from "../types/component.types";
+import { assignRole } from "../utils/auth";
 
 export const meta: MetaFunction = ({ location }) => {
   const lang = getParamValue(location.search, "lang", "sr");
@@ -109,16 +110,22 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       });
 
       if (success) {
-        const { error } = await supabaseClient.auth.signInWithPassword({
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
           email: String(email),
           password: String(password),
         });
 
         if (error) {
-          console.log(error);
           return json({ success: false, error }, { headers, status: 400 });
         } else {
-          return redirect(`/dashboard/search?lang=${lang}`, { headers });
+          const { success: roleSuccess, message: roleMessage } =
+            await assignRole(supabaseClient, data.user.id);
+
+          if (roleSuccess) {
+            return redirect(`/dashboard/search?lang=${lang}`, { headers });
+          } else {
+            throw json({ error: roleMessage, lang }, { status: 400 });
+          }
         }
       } else {
         return json(
@@ -157,7 +164,10 @@ export default function AuthSign() {
   const [emailError, setEmailError] = useState<string>();
   const [passwordError, setPasswordError] = useState<string>();
 
-  const actionData = useActionData<typeof action>();
+  const actionData = useActionData<{
+    success: boolean;
+    error: ZodError;
+  }>();
   const translator = new Translator("auth");
 
   useEffect(() => {
@@ -467,12 +477,12 @@ export default function AuthSign() {
                 <button
                   type="submit"
                   disabled={
-                    navigation.state === "submitting" || !email || !password
+                    navigation.state === "submitting" || !email || !password || actionData?.success
                   }
                   className="w-full py-2.5 px-4 text-sm font-semibold rounded-xl text-white bg-blue-500 hover:bg-blue-600 disabled:bg-slate-300 disabled:cursor-no-drop focus:outline-none"
                 >
                   {translator.getTranslation(lang!, "signTitle")}
-                  {navigation.state === "submitting" && (
+                  {(navigation.state === "submitting" || actionData?.success) && (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="18px"

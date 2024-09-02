@@ -10,6 +10,9 @@ export type RentalPropertyType = (typeof rentalPropertyType)[number];
 export const propertyType = ["residential", "parking", "commercial"] as const;
 export type PropertyType = (typeof propertyType)[number];
 
+export const roles = ["admin", "premium", "basic", "agency"] as const;
+export type RoleType = (typeof roles)[number];
+
 export type PieReportType = {
   id: number;
   price_map: number[];
@@ -168,7 +171,7 @@ export interface DashboardSearchType {
   id: number;
   lng: number;
   lat: number;
-  municipality: string;
+  municipality?: string;
   date: string;
   city: string;
   price: number;
@@ -299,3 +302,29 @@ export type Details = {
   inner_state?: string;
   description?: string;
 };
+
+export interface AppreciationData {
+  lastAverage: number;
+  appreciationRate: number;
+  fiveYearPrice: number;
+  fiveYearPercent: number;
+  tenYearPrice: number;
+  tenYearPercent: number;
+  years: number;
+}
+
+export interface RentEstimationData {
+  average: number;
+  count: number;
+  expense: number;
+}
+
+export interface FiltersType {
+  timeRange: RangeOption;
+  range: string;
+  propertyType: PropertyType;
+  sizeFrom: string;
+  sizeTo: string;
+  priceFrom: string;
+  priceTo: string;
+}

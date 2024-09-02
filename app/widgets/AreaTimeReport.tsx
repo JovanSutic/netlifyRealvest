@@ -1,60 +1,40 @@
 import {
   DashboardSearchType,
-  DistributionTypeKey,
   LangType,
   PieChartData,
-  PropertyType,
-  RentalPropertyType,
 } from "../types/dashboard.types";
-import {
-  Chart as ChartJS,
-  Title,
-  Legend,
-  Tooltip as ChartTooltip,
-  ArcElement,
-} from "chart.js";
 import { Translator } from "../data/language/translator";
-import DoughnutChart from "../components/doughnutChart";
-import ToggleButton from "../components/toggleButtons/ToggleButton";
-import { useEffect, useState } from "react";
-import { numbersToPercentage } from "../utils/reports";
-import { getDataForAreaPie } from "../utils/dashboard";
+import { getDataForAreaTimePie } from "../utils/dashboard";
+import { RangeOption } from "../utils/dateTime";
 import Tooltip from "../components/tooltip/Tooltip";
+import { Line } from "react-chartjs-2";
 
-const AreaDoughnutReport = ({
+const AreaTimeReport = ({
   lang,
   isShown,
   data,
-  propertyType,
-  rental = false,
+  date,
+  timeRange,
   mobile = false,
 }: {
   lang: LangType;
   isShown: boolean;
   data: DashboardSearchType[];
-  propertyType: PropertyType | RentalPropertyType;
-  rental?: boolean;
+  date: string;
+  timeRange: RangeOption;
   mobile?: boolean;
 }) => {
-  const [distributionType, setDistributionType] =
-    useState<DistributionTypeKey>("average_price_map");
   const reportTranslate = new Translator("report");
   const translate = new Translator("dashboard");
 
-  const chartData: PieChartData = getDataForAreaPie(
+  const chartData: PieChartData = getDataForAreaTimePie(
     data,
-    distributionType,
-    propertyType!,
-    rental
+    date,
+    timeRange,
+    lang
   );
 
   const isEmpty = isShown && data.length === 0;
-  const margin: string = mobile ? "mb-8" : "mb-4";
-
-  useEffect(() => {
-    ChartJS.register(ArcElement, ChartTooltip, Title, Legend);
-  }, []);
-
   return (
     <div>
       <div>
@@ -62,15 +42,12 @@ const AreaDoughnutReport = ({
           <div>
             <div className="flex flex-column w-full justify-center h-[200px]">
               <p className="flex items-center text-center text-slate-400 font-sm">
-                {translate.getTranslation(
-                  lang,
-                  rental ? "areaEmptyDataRental" : "areaEmptyData"
-                )}
+                {translate.getTranslation(lang, "areaEmptyData")}
               </p>
             </div>
           </div>
         )}
-        {!isEmpty && isShown && (
+        {isShown && !isEmpty && (
           <div className="w-full">
             <div className="w-full flex flex-row-reverse">
               <div className="w-[30px]">
@@ -95,37 +72,38 @@ const AreaDoughnutReport = ({
                 </Tooltip>
               </div>
             </div>
-            <div className={`flex justify-center ${margin}`}>
-              <ToggleButton
-                value={distributionType!}
-                onChange={(value) => {
-                  setDistributionType(value as DistributionTypeKey);
-                }}
-                options={[
-                  {
-                    value: "average_price_map" as DistributionTypeKey,
-                    text: reportTranslate.getTranslation(lang!, "pieToggleM2"),
-                  },
-                  {
-                    value: "price_map" as DistributionTypeKey,
-                    text: reportTranslate.getTranslation(lang!, rental ? "pieToggleRent" : "pieToggle"),
-                  },
-                ]}
-              />
-            </div>
-
             <div className="flex flex-row w-full">
-              <DoughnutChart
-                ratio={mobile ? 1.5 : 2}
-                id={`areaSalesDistribution-${distributionType}`}
-                labels={chartData.labels}
-                data={numbersToPercentage(chartData.data)}
-                label={
-                  distributionType === "price_map"
-                    ? reportTranslate.getTranslation(lang!, "pieUnitLabel")
-                    : reportTranslate.getTranslation(lang!, "pieAverageLabel")
-                }
-                mobile={mobile}
+              <Line
+                data={{
+                  labels: chartData.labels,
+                  datasets: [
+                    {
+                      label: reportTranslate.getTranslation(lang!, "pieUnitLabel"),
+                      data: chartData.data,
+                      fill: true,
+                      backgroundColor: "rgb(219, 234, 254, 0.7)",
+                      borderColor: "rgb(96 165 250)",
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                      // @ts-expect-error
+                      onClick: (e) => e.stopPropagation(),
+                    },
+                    tooltip: {
+                      displayColors: false,
+                      callbacks: {
+                        label: function (context) {
+                          return `${Math.round(Number(context.formattedValue))}`;
+                        },
+                      },
+                    },
+                  },
+                }}
               />
             </div>
             {mobile && (
@@ -151,4 +129,4 @@ const AreaDoughnutReport = ({
   );
 };
 
-export default AreaDoughnutReport;
+export default AreaTimeReport;

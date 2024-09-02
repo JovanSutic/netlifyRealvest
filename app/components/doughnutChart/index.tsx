@@ -75,10 +75,14 @@ const DoughnutChart = ({
         },
         plugins: {
           legend: {
+            display: !mobile,
+            fullSize: true,
+            align: "center",
             position: "left",
             labels: {
-              boxPadding: 10,
-              padding: mobile ? 4 : 8,
+              boxPadding: 2,
+              boxHeight: 10,
+              padding: mobile ? 2 : 4,
             },
           },
           tooltip: {
