@@ -536,11 +536,12 @@ export default function AuthRegister() {
                     !email ||
                     !name ||
                     !password
+                    || actionData?.success
                   }
                   className="w-full py-2.5 px-4 text-sm font-semibold rounded-xl text-white bg-blue-500 hover:bg-blue-600 disabled:bg-slate-300 disabled:cursor-no-drop focus:outline-none"
                 >
                   {translator.getTranslation(lang!, "registerTitle")}
-                  {navigation.state === "submitting" && (
+                  {(navigation.state === "submitting" || actionData?.success) && (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="18px"
