@@ -8,9 +8,9 @@ export const isNumber = (value: string | number): boolean => {
   return !Number.isNaN(Number(value.replace(",", ".")));
 };
 
-export const makeNumberCurrency = (num: number, currency: string = "€") => {
+export const makeNumberCurrency = (num: number, currency: string = "€", fraction: number = 0) => {
   return `${(num || 0).toLocaleString(undefined, {
-    maximumFractionDigits: 0,
+    maximumFractionDigits: fraction,
   })}${currency}`;
 };
 

@@ -4,13 +4,12 @@ import {
   PieChartData,
 } from "../types/dashboard.types";
 import { Translator } from "../data/language/translator";
-import DoughnutChart from "../components/doughnutChart";
-import { numbersToPercentage } from "../utils/reports";
 import { getDataForAreaTimePie } from "../utils/dashboard";
 import { RangeOption } from "../utils/dateTime";
 import Tooltip from "../components/tooltip/Tooltip";
+import { Line } from "react-chartjs-2";
 
-const AreaDoughnutTimeReport = ({
+const AreaTimeReport = ({
   lang,
   isShown,
   data,
@@ -74,13 +73,37 @@ const AreaDoughnutTimeReport = ({
               </div>
             </div>
             <div className="flex flex-row w-full">
-              <DoughnutChart
-                ratio={mobile ? 1.5 : 2}
-                id="areaSalesCountDistribution"
-                labels={chartData.labels}
-                data={numbersToPercentage(chartData.data)}
-                label={reportTranslate.getTranslation(lang!, "pieUnitLabel")}
-                mobile={mobile}
+              <Line
+                data={{
+                  labels: chartData.labels,
+                  datasets: [
+                    {
+                      label: reportTranslate.getTranslation(lang!, "pieUnitLabel"),
+                      data: chartData.data,
+                      fill: true,
+                      backgroundColor: "rgb(219, 234, 254, 0.7)",
+                      borderColor: "rgb(96 165 250)",
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                      // @ts-expect-error
+                      onClick: (e) => e.stopPropagation(),
+                    },
+                    tooltip: {
+                      displayColors: false,
+                      callbacks: {
+                        label: function (context) {
+                          return `${Math.round(Number(context.formattedValue))}`;
+                        },
+                      },
+                    },
+                  },
+                }}
               />
             </div>
             {mobile && (
@@ -106,4 +129,4 @@ const AreaDoughnutTimeReport = ({
   );
 };
 
-export default AreaDoughnutTimeReport;
+export default AreaTimeReport;
