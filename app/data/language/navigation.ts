@@ -8,7 +8,7 @@ export const navigationMap: Record<string, Record<string, string>> = {
     dashboardNav: "Dashboard",
     loginNav: "Login",
     logoutNav: "Logout",
-    areaSearch: "Micro-location search",
+    areaSearch: "Micro-locations",
     rental: "Rentals",
     connections: "Connections",
     insights: "Insights"
@@ -22,7 +22,7 @@ export const navigationMap: Record<string, Record<string, string>> = {
     dashboardNav: "Pregled",
     loginNav: "Prijavi se",
     logoutNav: "Odjava",
-    areaSearch: "Pretraga mikrolokacija",
+    areaSearch: "Mikrolokacije",
     rental: "Izdavanje",
     connections: "Veze",
     insights: "Uvidi"

@@ -37,7 +37,7 @@ const AreaDoughnutReport = ({
   mobile?: boolean;
 }) => {
   const [distributionType, setDistributionType] =
-    useState<DistributionTypeKey>("price_map");
+    useState<DistributionTypeKey>("average_price_map");
   const reportTranslate = new Translator("report");
   const translate = new Translator("dashboard");
 
@@ -108,7 +108,7 @@ const AreaDoughnutReport = ({
                   },
                   {
                     value: "price_map" as DistributionTypeKey,
-                    text: reportTranslate.getTranslation(lang!, "pieToggle"),
+                    text: reportTranslate.getTranslation(lang!, rental ? "pieToggleRent" : "pieToggle"),
                   },
                 ]}
               />

@@ -57,7 +57,7 @@ import {
 } from "chart.js";
 import AreaLineReport from "../widgets/AreaLineReport";
 import AreaDoughnutReport from "../widgets/AreaDoughnutReport";
-import AreaDoughnutTimeReport from "../widgets/AreaDoughnutTimeReport";
+import AreaTimeReport from "../widgets/AreaTimeReport";
 import {
   getParamValue,
   isMobile,
@@ -678,7 +678,7 @@ const DashboardSearch = () => {
                   />
                 </div>
                 <div className={tab === "4" ? "block" : "hidden"}>
-                  <AreaDoughnutTimeReport
+                  <AreaTimeReport
                     isShown={center !== undefined}
                     data={fetcher.data?.list || []}
                     lang={lang}

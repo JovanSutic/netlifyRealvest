@@ -35,7 +35,7 @@ const AppreciateReport = ({
   const presentationalSize: number = type === "parking" ? 14 : 50;
 
   const activeButton: string = "bg-white cursor-text";
-  const activeText: string = "text-blue-500";
+  const activeText: string = "text-gray-800";
   const passiveText: string = "text-gray-300";
 
   if (role !== "premium") {
@@ -91,6 +91,7 @@ const AppreciateReport = ({
       <div>
         <div className="w-full">
           <div className="w-full flex flex-row-reverse">
+            
             <div className="w-[30px]">
               <Tooltip
                 text={translate.getTranslation(lang, "infoAppreciate")}
@@ -112,6 +113,7 @@ const AppreciateReport = ({
                 </svg>
               </Tooltip>
             </div>
+            <div className="w-[calc(100%-35px)]"><h3 className="w-full text-center font-bold text-md mb-4">{translate.getTranslation(lang, "appreciationTitle")}</h3></div>
           </div>
           <div>
             <div className="w-full flex border-grey-300 border-[1px] rounded-xl bg-gray-100">
@@ -126,7 +128,7 @@ const AppreciateReport = ({
               >
                 <div className="flex flex-col">
                   <p
-                    className={`w-full text-center text-xl font-bold ${
+                    className={`w-full text-center text-md font-bold ${
                       appreciateTime !== 5 ? passiveText : activeText
                     }`}
                   >
@@ -145,7 +147,7 @@ const AppreciateReport = ({
               >
                 <div className="flex flex-col">
                   <p
-                    className={`w-full text-center text-xl font-bold ${
+                    className={`w-full text-center text-md font-bold ${
                       appreciateTime !== 10 ? passiveText : activeText
                     }`}
                   >
@@ -159,7 +161,7 @@ const AppreciateReport = ({
                 {appreciationData ? (
                   <>
                     <li>
-                      <div className={`flex w-full px-2 py-1`}>
+                      <div className={`flex w-full px-2 py-1 mt-2`}>
                         <div className="w-full text-center">
                           <p className="text-[10px] font-bold text-gray-400">
                             {translate
@@ -214,11 +216,11 @@ const AppreciateReport = ({
                             {`${translate.getTranslation(
                               lang,
                               "priceDiff"
-                            )} %:`}
+                            )} (%):`}
                           </p>
                         </div>
                         <div className="w-[25%]">
-                          <p className="font-bold text-sm text-right text-blue-600">
+                          <p className="font-bold text-sm text-right">
                             {`+${Math.round(
                               appreciateTime === 5
                                 ? appreciationData.fiveYearPercent
@@ -228,18 +230,18 @@ const AppreciateReport = ({
                         </div>
                       </div>
                     </li>
-                    <li className="border-b-[1px] border-gray-200">
+                    <li >
                       <div className={`flex w-full px-2 py-1 mb-1`}>
                         <div className="w-[75%]">
                           <p className="text-sm">
                             {`${translate.getTranslation(
                               lang,
                               "priceDiff"
-                            )} €:`}
+                            )} (€):`}
                           </p>
                         </div>
                         <div className="w-[25%]">
-                          <p className="font-bold text-sm text-right text-blue-600">
+                          <p className="font-bold text-sm text-right">
                             {`+${makeNumberCurrency(
                               (appreciateTime === 5
                                 ? appreciationData.fiveYearPrice
@@ -250,7 +252,7 @@ const AppreciateReport = ({
                         </div>
                       </div>
                     </li>
-                    <li>
+                    <li className="border-b-[1px] border-gray-200">
                       <div className={`flex w-full px-2 py-3`}>
                         <div className="w-[65%] md:w-[70%] lg:w-[75%]">
                           <p className="text-sm md:text-md font-semibold">
@@ -293,7 +295,7 @@ const AppreciateReport = ({
                 (rentalData?.count || 0) > 4 ? (
                   <>
                     <li>
-                      <div className={`flex w-full px-2 py-1`}>
+                      <div className={`flex w-full px-2 py-1 mt-3`}>
                         <div className="w-full text-center">
                           <p className="text-[10px] font-bold text-gray-400">
                             {translate
@@ -317,7 +319,7 @@ const AppreciateReport = ({
                         </div>
                       </div>
                     </li>
-                    <li className="border-b-[1px] border-gray-200">
+                    <li >
                       <div className={`flex w-full px-2 py-1`}>
                         <div className="w-[75%]">
                           <p className="text-sm">
@@ -326,7 +328,7 @@ const AppreciateReport = ({
                         </div>
                         <div className="w-[25%]">
                           <p className="font-semibold text-sm text-right text-red-400">
-                            {`-${makeNumberCurrency(rentalData.expense)}`}
+                            {`-${makeNumberCurrency(rentalData.expense / 12, "€", 2)}`}
                           </p>
                         </div>
                       </div>

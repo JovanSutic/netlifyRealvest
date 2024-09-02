@@ -42,6 +42,75 @@ const AreaReport = ({
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
           <div className="bg-blue-50 rounded-md py-2 px-1">
+            <div className={`flex flex-col w-full justify-center`}>
+              <div className="w-full">
+                <p className="text-xs text-center text-gray-500">
+                  {translate.getTranslation(
+                    lang,
+                    isRental ? "averageM2PriceRental" : "averageM2Price"
+                  )}
+                </p>
+              </div>
+              <div className="w-full mt-1">
+                <p className="font-bold text-center text-sm">
+                  {makeNumberCurrency(data.averageM2Price)}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-blue-50 rounded-md py-2 px-1">
+            <div className={`flex flex-col w-full justify-center`}>
+              <div className="w-full">
+                <p className="text-xs text-center text-gray-500">
+                  {translate.getTranslation(
+                    lang,
+                    isRental ? "lowestM2PriceRental" : "lowestM2Price"
+                  )}
+                </p>
+              </div>
+              <div className="w-full mt-1">
+                <p className="font-bold text-center text-md">
+                  {makeNumberCurrency(data.lowestM2Price)}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-blue-50 rounded-md py-2 px-1">
+            <div className={`flex flex-col w-full justify-center`}>
+              <div className="w-full">
+                <p className="text-xs text-center text-gray-500">
+                  {translate.getTranslation(
+                    lang,
+                    isRental ? "highestM2PriceRental" : "highestM2Price"
+                  )}
+                </p>
+              </div>
+              <div className="w-full mt-1">
+                <p className="font-bold text-center text-sm">
+                  {makeNumberCurrency(data.highestM2Price)}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-blue-50 rounded-md py-2 px-1">
+            <div className={`flex flex-col w-full justify-center`}>
+              <div className="w-full">
+                <p className="text-xs text-center text-gray-500">
+                  {translate.getTranslation(
+                    lang,
+                    isRental ? "averagePriceRental" : "averagePrice"
+                  )}
+                </p>
+              </div>
+              <div className="w-full mt-1">
+                <p className="font-bold text-center text-md">
+                  {makeNumberCurrency(data.averagePrice)}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-blue-50 rounded-md py-2 px-1">
             <div className={`flex flex-col w-full justify-center rounded-md`}>
               <div className="w-full">
                 <p className="text-xs text-center text-gray-500">
@@ -71,74 +140,6 @@ const AreaReport = ({
               <div className="w-full mt-1">
                 <p className="font-bold text-center text-md">
                   {makeNumberCurrency(data.highestPrice)}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-blue-50 rounded-md py-2 px-1">
-            <div className={`flex flex-col w-full justify-center`}>
-              <div className="w-full">
-                <p className="text-xs text-center text-gray-500">
-                  {translate.getTranslation(
-                    lang,
-                    isRental ? "averagePriceRental" : "averagePrice"
-                  )}
-                </p>
-              </div>
-              <div className="w-full mt-1">
-                <p className="font-bold text-center text-md">
-                  {makeNumberCurrency(data.averagePrice)}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-blue-50 rounded-md py-2 px-1">
-            <div className={`flex flex-col w-full justify-center`}>
-              <div className="w-full">
-                <p className="text-xs text-center text-gray-500">
-                  {translate.getTranslation(
-                    lang,
-                    isRental ? "averageM2PriceRental" : "averageM2Price"
-                  )}
-                </p>
-              </div>
-              <div className="w-full mt-1">
-                <p className="font-bold text-center text-sm">
-                  {makeNumberCurrency(data.averageM2Price)}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-blue-50 rounded-md py-2 px-1">
-            <div className={`flex flex-col w-full justify-center`}>
-              <div className="w-full">
-                <p className="text-xs text-center text-gray-500">
-                  {translate.getTranslation(
-                    lang,
-                    isRental ? "highestM2PriceRental" : "highestM2Price"
-                  )}
-                </p>
-              </div>
-              <div className="w-full mt-1">
-                <p className="font-bold text-center text-sm">
-                  {makeNumberCurrency(data.highestM2Price)}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-blue-50 rounded-md py-2 px-1">
-            <div className={`flex flex-col w-full justify-center`}>
-              <div className="w-full">
-                <p className="text-xs text-center text-gray-500">
-                  {translate.getTranslation(
-                    lang,
-                    isRental ? "lowestM2PriceRental" : "lowestM2Price"
-                  )}
-                </p>
-              </div>
-              <div className="w-full mt-1">
-                <p className="font-bold text-center text-md">
-                  {makeNumberCurrency(data.lowestM2Price)}
                 </p>
               </div>
             </div>
