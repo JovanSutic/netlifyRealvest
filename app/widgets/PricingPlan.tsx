@@ -31,8 +31,8 @@ const PricingPlan = ({
             value={period}
             onChange={(value) => setPeriod(value as PlanPeriodType)}
             options={[
-              { text: translate.getTranslation(lang, "year"), value: "year" },
               { text: translate.getTranslation(lang, "month"), value: "month" },
+              { text: translate.getTranslation(lang, "year"), value: "year" },
             ]}
           />
         </div>
@@ -86,7 +86,9 @@ const PricingPlan = ({
                       ? "w-full block mt-6 px-4 py-2.5 text-sm text-center tracking-wide outline-none  border border-white text-white font-semibold bg-transparent rounded-md"
                       : "w-full block mt-6 px-4 py-2.5 text-sm text-center tracking-wide outline-none  border border-blue-500 text-blue-500 font-semibold bg-transparent rounded-md"
                   }
-                >{translate.getTranslation(lang, "planButton")}</Link>
+                >
+                  {translate.getTranslation(lang, "planButton")}
+                </Link>
               ) : (
                 <button
                   type="button"
@@ -103,7 +105,9 @@ const PricingPlan = ({
             </div>
 
             <div className="mt-6">
-              <h4 className="text-base font-bold mb-4">{translate.getTranslation(lang, "planIncludes")}</h4>
+              <h4 className="text-base font-bold mb-4">
+                {translate.getTranslation(lang, "planIncludes")}
+              </h4>
               <ul className="space-y-4">
                 {item.options.map((subItem) => (
                   <li

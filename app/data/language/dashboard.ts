@@ -250,11 +250,11 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     rentReportTitle: "Prihod od izdavanja",
     averageRentalM2: "Prosečna mesečna kirija po m2:",
     rentalExpense: "Mesečni trošak po m2 (porez i amortizacija):",
-    rentalExample: "Dobit od kirije za stan od 50 m2 (prihod - trošak):",
+    rentalExample: "Prihod od kirije za stan od 50 m2:",
     premiumTitle: "Podaci o isplativosti",
     premiumSubtitle: "Dostupno samo za PREMIUM korisnike",
     premiumButton: "Postanite PREMIUM korisnik",
     mobileDoughnutInfo: "Kliknite na boje grafikona za više informacija.",
-    appreciationTitle: "Izveštaj o isplativost",
+    appreciationTitle: "Izveštaj o isplativosti",
   },
 };
