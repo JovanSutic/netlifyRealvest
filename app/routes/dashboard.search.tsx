@@ -635,7 +635,7 @@ const DashboardSearch = () => {
               <Loader open={fetcher.state === "loading"} />
               <ChipsGroupItem
                 data={
-                  propertyType !== "residential" || role === "basic"
+                  propertyType !== "residential"
                     ? chipOptions.slice(0, 4)
                     : chipOptions
                 }
@@ -696,6 +696,7 @@ const DashboardSearch = () => {
                     date={""}
                     rental
                     mobile
+                    roleConflict={role === 'basic'}
                   />
                 </div>
                 <div className={tab === "6" ? "block" : "hidden"}>
@@ -706,6 +707,7 @@ const DashboardSearch = () => {
                     mobile={mobile}
                     propertyType={propertyType}
                     rental
+                    roleConflict={role === 'basic'}
                   />
                 </div>
               </div>

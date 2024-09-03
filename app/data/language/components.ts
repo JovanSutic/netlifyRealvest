@@ -18,14 +18,14 @@ export const componentsMap: Record<string, Record<string, string>> = {
     planAgencyText:
       "Ideal for real estate agencies which are keen to provide their clients with detailed information about the real estate they are interested in.",
     planFeatureList:
-      "micro-locations search,sales reports,rental reports,appreciation and earning potential,advanced real estate search,detailed analysis of real estates,advanced access link generation,agency client access report",
+      "micro-locations search,sales reports,rental reports,appreciation and earning potential,advanced real estate search,detailed analysis of real estates,premium access link generation,agency client access report",
     contact: "Contact us at:",
     email: "office@yourealvest.com",
     planButton: "Get started",
     planCustom: "Custom",
     planIncludes: "Plan includes:",
-    year: "Year",
-    month: "Month",
+    year: "Yearly",
+    month: "Monthly",
     close: "Close",
   },
   sr: {
@@ -41,20 +41,20 @@ export const componentsMap: Record<string, Record<string, string>> = {
     planModalTextPremium: "Uputstvo za plaćanje: Premium plan",
     planModalText5: ". Biće nam drago da Vam pošaljemo uputstvo za plaćanje. Hvala na razumevanju.",
     planBasicText:
-      "Idealno za korisnike koji žele da budu informisaniji i potreban im samo površni pregled tržišta nekretnina.",
+      "Idealno za korisnike koji žele da budu informisaniji i potreban im je samo opšti pregled tržišta nekretnina.",
     planPremiumText:
       "Idealno za one koji investiraju u nekretnine ili su kupci kojima su potrebni detaljniji podaci sa tržišta.",
     planAgencyText:
       "Idealno za agencije koje klijentima žele da obezbede detaljnije podatke o traženim nekretninama.",
     planFeatureList:
-      "pretraga mikrolokacija,prodajni izveštaji,izveštaji o izdavanju,prihodni potencijal i isplativost,napredna pretraga nekretnina,detaljna analiza svake nekretnine,generisanje linkova za napredni pristup,izveštaj klijentskog pristupa",
+      "pretraga mikrolokacija,prodajni izveštaji,izveštaji o izdavanju,prihodni potencijal i isplativost,napredna pretraga nekretnina,detaljna analiza svake nekretnine,generisanje linkova za premium pristup,izveštaj klijentskog pristupa",
     contact: "Kontaktirajte nas na:",
     email: "office@yourealvest.com",
     planButton: "Izaberi",
     planCustom: "Po dogovoru",
     planIncludes: "Plan uključuje:",
-    year: "Godišnje",
-    month: "Mesečno",
+    year: "Godišnji",
+    month: "Mesečni",
     close: "Zatvori",
   },
 };
