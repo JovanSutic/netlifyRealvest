@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "@remix-run/react";
 import { Translator } from "../../data/language/translator";
 import { LangType } from "../../types/dashboard.types";
+import { switchLanguage } from "../../utils/market";
 
 const MobileNavigation = ({
   isOpen,
@@ -61,7 +62,7 @@ const MobileNavigation = ({
           <button
             id="toggleClose"
             onClick={toggleOpen}
-            className="fixed top-2 right-4 z-[9999] rounded-full bg-white p-3"
+            className="fixed top-2 right-4 z-[9999] rounded-full bg-gray-300 p-3"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -97,9 +98,34 @@ const MobileNavigation = ({
 
             <li className="py-3 px-3">
               <Link
+                to={`/market?page=1&lang=${lang}`}
+                className={
+                  url.includes("/market") ? styleMap.itemActive : styleMap.item
+                }
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6 w-6 mr-3 inline"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span>{translate.getTranslation(lang, "marketSearch")}</span>
+              </Link>
+            </li>
+
+            <li className="py-3 px-3">
+              <Link
                 to={`/dashboard/search?lang=${lang}`}
                 className={
-                  url === "/dashboard/search"
+                  url.includes("/dashboard/search")
                     ? styleMap.itemActive
                     : styleMap.item
                 }
@@ -130,7 +156,7 @@ const MobileNavigation = ({
                 onKeyDown={() => null}
                 onClick={() => {
                   toggleOpen();
-                  navigate(`${url}?lang=${nextLang}`);
+                  navigate(switchLanguage(url, nextLang));
                 }}
               >
                 <svg
