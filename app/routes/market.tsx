@@ -18,17 +18,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userAgent = request.headers.get("user-agent");
   const lang = currentUrl.searchParams.get("lang") || "sr";
   const user = await supabaseClient.auth.getUser();
-
+ 
   if (user?.data?.user?.role !== "authenticated") {
     return redirect(`/auth?lang=${lang}`);
   }
 
-  if (
-    user?.data?.user?.role === "authenticated" &&
-    currentUrl.pathname === "/dashboard"
-  ) {
-    return redirect(`/dashboard/search?lang=${lang}`);
-  }
 
   return {
     mobile: isMobile(userAgent!),
@@ -36,7 +30,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
-export default function Report() {
+export default function Market() {
   const [searchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const lang = (searchParams.get("lang") as LangType) || "sr";
