@@ -1,10 +1,6 @@
 import { DashboardPage } from "../components/layout";
 import { LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
-import {
-  MetaFunction,
-  useLoaderData,
-  useSearchParams,
-} from "@remix-run/react";
+import { MetaFunction, useLoaderData, useSearchParams } from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
 import { Translator } from "../data/language/translator";
 // import Loader from "../components/loader";
@@ -14,9 +10,10 @@ import { Details, LangType } from "../types/dashboard.types";
 import Pagination from "../components/pagination/index";
 import { jwtDecode } from "jwt-decode";
 import { FinalError } from "../types/component.types";
-import { Profitability, MarketItem } from "../types/market.types";
+import { Profitability, MarketItem, PhotoItem } from "../types/market.types";
 import { intervalToDuration } from "date-fns";
 import { formatHighLightValue, getPropertyHighlight } from "../utils/market";
+import { makeNumberCurrency } from "../utils/numbers";
 
 const orderData = (data: Details[] | Profitability[]) => {
   const result: Record<string, Partial<Details | Profitability>> = {};
@@ -76,9 +73,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       .from("ad_profitability")
       .select("*", { count: "exact" })
       .eq("ad_type", "apartment")
-      .order("id")
+      .order("ad_type")
       .range(rangeStart, rangeStart + limit)
-      .limit(limit)
       .returns<Profitability[]>();
 
     if (profitabilityError) {
@@ -91,12 +87,31 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       apartmentIds.push(item.ad_id);
     });
 
+    const { data: photoData, error: photoError } = await supabaseClient
+      .from("photos")
+      .select("id, link, apartment_id")
+      .in("apartment_id", apartmentIds)
+      .order("id");
+
+    if (photoError) {
+      isError = true;
+      finalError = photoError as FinalError;
+    }
+
+    const photos: Record<string, PhotoItem> = {};
+
+    photoData?.forEach((item) => {
+      if(photos[item.apartment_id as string] === undefined) {
+        photos[item.apartment_id] = item
+      }
+    })
+
     const { data: adsData, error: adsError } = await supabaseClient
       .from("apartments")
       .select("id, city_part, date_signed, price, size, room_number")
       .in("id", apartmentIds)
       .order("id")
-      .limit(limit);
+      .limit(20)
 
     if (adsError) {
       isError = true;
@@ -126,6 +141,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         ...item,
         details: details[item.id],
         profitability: profitability[item.id],
+        photo: photos[item.id]
       });
     });
 
@@ -160,8 +176,7 @@ const MarketAll = () => {
 
   const { data, pages } = useLoaderData<typeof loader>();
 
-  const photo =
-    "https://img.nekretnine.rs/foto/MzAweDE2OS9jZW50ZXIvbWlkZGxlL2ZpbHRlcnM6d2F0ZXJtYXJrKGh0dHBzOi8vd3d3Lm5la3JldG5pbmUucnMvYnVpbGQvaW1hZ2VzL3dhdGVybWFyay05Ni5wbmcsY2VudGVyLGNlbnRlciw1MCk6Zm9ybWF0KHdlYnApL25law==/WMrk-N41H_fss?st=LCy7z0kJk0R1qOQ44gz-kzMPYLXOExgv1YPkPdHIJ20&ts=1725456068&e=0";
+  console.log(data.length)
 
   return (
     <DashboardPage>
@@ -184,14 +199,17 @@ const MarketAll = () => {
                 <MarketCard
                   key={item?.id}
                   link={`${item?.id}?lang=${lang}`}
+                  price={makeNumberCurrency(item!.price)}
                   highlight={translate.getTranslation(
                     lang,
                     `${highlight.type}Highlight`
                   )}
                   value={formatHighLightValue(highlight)}
-                  photo={photo}
+                  photo={item?.photo?.link || ''}
                   title={`${item?.city_part}, ${item?.size}m2`}
-                  duration={`${translate.getTranslation(lang, 'onMarket')} ${duration.days} ${translate.getTranslation(lang, 'days')}`}
+                  duration={`${translate.getTranslation(lang, "onMarket")} ${
+                    duration.days
+                  } ${translate.getTranslation(lang, "days")}`}
                 />
               );
             })}
@@ -201,7 +219,7 @@ const MarketAll = () => {
             <Pagination
               page={Number(page)}
               total={pages!}
-              totalText={translate.getTranslation(lang, 'paginationTotal')}
+              totalText={translate.getTranslation(lang, "paginationTotal")}
               onClick={(page: number) =>
                 setSearchParams((prev) => {
                   prev.set("page", `${page}`);

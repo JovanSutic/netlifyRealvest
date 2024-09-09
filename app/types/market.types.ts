@@ -20,6 +20,11 @@ export interface Profitability {
   ad_type: string;
 }
 
+export interface PhotoItem {
+  id?: number;
+  link: string;
+  apartment_id: number;
+}
 export interface MarketItem {
   id: number;
   city_part: string;
@@ -29,6 +34,7 @@ export interface MarketItem {
   price: number;
   details: Partial<Details>;
   profitability: Partial<Profitability>;
+  photo?: PhotoItem;
 }
 
 export interface AverageReport {

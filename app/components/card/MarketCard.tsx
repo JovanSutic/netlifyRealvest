@@ -7,6 +7,7 @@ const MarketCard = ({
   link,
   highlight,
   value,
+  price,
 }: {
   photo: string;
   title: string;
@@ -14,16 +15,17 @@ const MarketCard = ({
   link: string;
   highlight: string;
   value: string;
+  price: string;
 }) => {
   return (
     <Link to={link} className="bg-white rounded-xl cursor-pointer hover:-translate-y-1 transition-all relative shadow-lg">
-      <div className="px-2 py-1 absolute right-2 top-2 text-sm bg-gray-700 text-white bg-opacity-60 rounded-xl">
-        {highlight}
+      <div className="px-3 py-1 absolute right-2 top-2 text-[15px] shadow-md font-bold bg-blue-700 text-white bg-opacity-70 rounded-xl">
+        {price}
       </div>
 
       <div className="w-full h-[180px] overflow-hidden rounded-t-xl mb-4">
         <img
-          src={photo}
+          src={photo || "empty.jpg"}
           alt="Product 1"
           className="h-full w-full object-center"
         />
