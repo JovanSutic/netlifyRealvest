@@ -1,6 +1,6 @@
 import { DashboardPage } from "../components/layout";
 import { LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
-import { MetaFunction, useLoaderData, useSearchParams } from "@remix-run/react";
+import { Link, MetaFunction, useLoaderData, useSearchParams } from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
 import { Translator } from "../data/language/translator";
 // import Loader from "../components/loader";
@@ -12,7 +12,7 @@ import { jwtDecode } from "jwt-decode";
 import { FinalError } from "../types/component.types";
 import { Profitability, MarketItem, PhotoItem } from "../types/market.types";
 import { intervalToDuration } from "date-fns";
-import { formatHighLightValue, getPropertyHighlight } from "../utils/market";
+import { getNumberWithDecimals, getPropertyDemand } from "../utils/market";
 import { makeNumberCurrency } from "../utils/numbers";
 
 const orderData = (data: Details[] | Profitability[]) => {
@@ -83,7 +83,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     }
 
     const apartmentIds: number[] = [];
-    profitabilityData?.forEach((item) => {
+
+    (profitabilityData || [])?.forEach((item) => {
       apartmentIds.push(item.ad_id);
     });
 
@@ -101,17 +102,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const photos: Record<string, PhotoItem> = {};
 
     photoData?.forEach((item) => {
-      if(photos[item.apartment_id as string] === undefined) {
-        photos[item.apartment_id] = item
+      if (photos[item.apartment_id as string] === undefined) {
+        photos[item.apartment_id] = item;
       }
-    })
+    });
 
     const { data: adsData, error: adsError } = await supabaseClient
       .from("apartments")
       .select("id, city_part, date_signed, price, size, room_number")
       .in("id", apartmentIds)
       .order("id")
-      .limit(20)
+      .limit(20);
 
     if (adsError) {
       isError = true;
@@ -131,17 +132,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       finalError = detailError as FinalError;
     }
 
-    const details = orderData(detailData!);
-    const profitability = orderData(profitabilityData!);
+    const details = orderData(detailData || []);
+    const profitability = orderData(profitabilityData || []);
 
     const results: MarketItem[] = [];
 
-    adsData?.forEach((item) => {
+    (adsData || [])?.forEach((item) => {
       results.push({
         ...item,
         details: details[item.id],
         profitability: profitability[item.id],
-        photo: photos[item.id]
+        photo: photos[item.id],
       });
     });
 
@@ -176,8 +177,6 @@ const MarketAll = () => {
 
   const { data, pages } = useLoaderData<typeof loader>();
 
-  console.log(data.length)
-
   return (
     <DashboardPage>
       <div className="font-[sans-serif] bg-gray-100">
@@ -186,48 +185,62 @@ const MarketAll = () => {
             {translate.getTranslation(lang, "allTitle")}
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 max-xl:gap-4 gap-6">
-            {data.map((item) => {
-              const duration = intervalToDuration({
-                start: item?.date_signed || "",
-                end: new Date(),
-              });
+          {Number(page) > pages ? (
+            <div className="w-full flex flex-col justify-center py-5">
+              <h3 className="text-center text-md xl:text-lg text-gray-500 mb-4">{translate.getTranslation(lang, 'noPage')}</h3>
+              <Link to={`/market?page=1&lang=${lang}`} className="w-full underline block text-center text-md text-blue-500">Početna stranica tržišta</Link>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4  gap-8 md:gap-6 xl:gap-4">
+                {data.map((item) => {
+                  const duration = intervalToDuration({
+                    start: item?.date_signed || "",
+                    end: new Date(),
+                  });
 
-              const highlight = getPropertyHighlight(item!);
+                  return (
+                    <MarketCard
+                      key={item?.id}
+                      link={`${item?.id}?lang=${lang}`}
+                      lang={lang}
+                      price={makeNumberCurrency(item!.price)}
+                      demand={getPropertyDemand(item!)}
+                      appreciation={`${getNumberWithDecimals(
+                        (item?.profitability.competitionTrend || 0) * 100,
+                        2
+                      )}%`}
+                      photo={item?.photo?.link || ""}
+                      title={`${item?.city_part}, ${item?.size}m2`}
+                      rent={(item?.profitability?.rentalCount || 0) > 2}
+                      duration={`${translate.getTranslation(
+                        lang,
+                        "onMarket"
+                      )} ${duration.days} ${translate.getTranslation(
+                        lang,
+                        "days"
+                      )}`}
+                    />
+                  );
+                })}
+              </div>
 
-              return (
-                <MarketCard
-                  key={item?.id}
-                  link={`${item?.id}?lang=${lang}`}
-                  price={makeNumberCurrency(item!.price)}
-                  highlight={translate.getTranslation(
-                    lang,
-                    `${highlight.type}Highlight`
-                  )}
-                  value={formatHighLightValue(highlight)}
-                  photo={item?.photo?.link || ''}
-                  title={`${item?.city_part}, ${item?.size}m2`}
-                  duration={`${translate.getTranslation(lang, "onMarket")} ${
-                    duration.days
-                  } ${translate.getTranslation(lang, "days")}`}
+              <div className="flex w-full mt-12">
+                <Pagination
+                  page={Number(page)}
+                  total={pages!}
+                  title={translate.getTranslation(lang, "page")}
+                  totalText={translate.getTranslation(lang, "paginationTotal")}
+                  onClick={(page: number) =>
+                    setSearchParams((prev) => {
+                      prev.set("page", `${page}`);
+                      return prev;
+                    })
+                  }
                 />
-              );
-            })}
-          </div>
-
-          <div className="flex w-full mt-12">
-            <Pagination
-              page={Number(page)}
-              total={pages!}
-              totalText={translate.getTranslation(lang, "paginationTotal")}
-              onClick={(page: number) =>
-                setSearchParams((prev) => {
-                  prev.set("page", `${page}`);
-                  return prev;
-                })
-              }
-            />
-          </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </DashboardPage>
