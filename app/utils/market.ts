@@ -1,10 +1,5 @@
 import { LangType } from "../types/dashboard.types";
-import {
-  AverageReport,
-  MarketItem,
-  MarketItemHighlight,
-} from "../types/market.types";
-import { makeNumberCurrency } from "./numbers";
+import { AverageReport, MarketItem } from "../types/market.types";
 
 export const switchLanguage = (path: string, newLang: LangType): string => {
   const oldLang = newLang === "sr" ? "en" : "sr";
@@ -25,7 +20,7 @@ export const getNumberWithDecimals = (num: number, decimal: number) => {
   );
 };
 
-const getAverageReport = (property: MarketItem): AverageReport => {
+export const getAverageReport = (property: MarketItem): AverageReport => {
   const averageDiff =
     (property.profitability.averageCompetition || 0) -
     property.price / property.size;
@@ -39,44 +34,18 @@ const getAverageReport = (property: MarketItem): AverageReport => {
   };
 };
 
-const getYearRental = (property: MarketItem) => {
+export const getYearRental = (property: MarketItem) => {
   return property.profitability.averageRental
     ? property.size * property.profitability.averageRental * 12
     : 0;
 };
 
-export const getPropertyHighlight = (
-  property: MarketItem
-): MarketItemHighlight => {
+export const getPropertyDemand = (property: MarketItem): string => {
   const { profitability } = property;
-  const averageReport = getAverageReport(property);
-  const yearRental = getYearRental(property);
   const demandRatio =
     profitability.competitionCount && profitability.cityCountSold
-      ? (profitability.competitionCount / profitability.cityCountSold) * 100
+      ? (1 - profitability.competitionCount / profitability.cityCountSold) * 10
       : 0;
 
-  if (averageReport.isUnderPriced) {
-    return { type: "underpriced", value: averageReport.percent };
-  }
-
-  if (demandRatio < 0.1) {
-    return { type: "demand", value: demandRatio };
-  }
-
-  if (yearRental > 0) {
-    return { type: "rental", value: yearRental };
-  }
-
-  return { type: "trend", value: profitability.competitionTrend! * 100 };
-};
-
-export const formatHighLightValue = (
-  highlight: MarketItemHighlight
-): string => {
-  if (highlight.type === "rental") return makeNumberCurrency(highlight.value);
-  if (highlight.type === "trend" || highlight.type === "underpriced")
-    return `${getNumberWithDecimals(highlight.value, 2)}%`;
-
-  return `${getNumberWithDecimals(highlight.value, 2)}`;
+  return `${getNumberWithDecimals(demandRatio, 2)}`;
 };
