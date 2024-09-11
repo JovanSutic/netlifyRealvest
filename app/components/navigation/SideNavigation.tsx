@@ -24,7 +24,7 @@ const SideNavigation = ({
 
   const translate = new Translator("navigation");
   return (
-    <nav className="bg-gray-700 shadow-lg h-screen fixed top-0 left-0 w-[260px] min-w-[260px]  px-6 pb-6 pt-2 font-[sans-serif] flex flex-col overflow-auto">
+    <nav className="bg-gray-800 shadow-lg h-screen fixed top-0 left-0 w-[220px] min-w-[220px]  px-4 pb-4 pt-2 font-[sans-serif] flex flex-col overflow-auto">
       <div className="w-full">
         <div className="w-[120px] m-auto">
           <Link to={`/?lang=${lang}`}>

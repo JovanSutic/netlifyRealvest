@@ -12,7 +12,7 @@ import { jwtDecode } from "jwt-decode";
 import { FinalError } from "../types/component.types";
 import { Profitability, MarketItem, PhotoItem } from "../types/market.types";
 import { intervalToDuration } from "date-fns";
-import { getNumberWithDecimals, getPropertyDemand } from "../utils/market";
+import { getNumberWithDecimals } from "../utils/market";
 import { makeNumberCurrency } from "../utils/numbers";
 
 const orderData = (data: Details[] | Profitability[]) => {
@@ -202,10 +202,9 @@ const MarketAll = () => {
                   return (
                     <MarketCard
                       key={item?.id}
-                      link={`${item?.id}?lang=${lang}`}
+                      link={`${item?.id}?lang=${lang}&fromPage=${page}`}
                       lang={lang}
                       price={makeNumberCurrency(item!.price)}
-                      demand={getPropertyDemand(item!)}
                       appreciation={`${getNumberWithDecimals(
                         (item?.profitability.competitionTrend || 0) * 100,
                         2
