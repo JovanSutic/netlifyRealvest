@@ -23,7 +23,7 @@ const SideWrapper = ({
           ? `bottom-0 left-0 w-[100%] h-[calc(100%)] bg-black bg-opacity-40 p-10 pl-20 text-white fixed h-full z-[9999] ease-in-out duration-300 ${
               open ? "translate-y-0 " : "translate-y-full"
             }`
-          : `top-0 right-0 w-[calc(100%-260px)] bg-black bg-opacity-40 p-10 pl-20 text-white fixed h-full z-[9999] ease-in-out duration-300 ${
+          : `top-0 right-0 w-[calc(100%-220px)] bg-black bg-opacity-40 p-10 pl-20 text-white fixed h-full z-[9999] ease-in-out duration-300 ${
               open ? "translate-x-0 " : "translate-x-full"
             }`
       }

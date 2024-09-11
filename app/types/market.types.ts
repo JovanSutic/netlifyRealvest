@@ -54,3 +54,12 @@ export interface PropertyHighlights {
   demandRatio: number;
   trend: number;
 }
+
+export type DeviceType = 'mobile' | 'tablet' | 'desktop';
+
+export interface PropertyPurchaseExpenses {
+  tax: number;
+  agency: number;
+  legal: number;
+  total: number;
+}

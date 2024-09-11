@@ -1,5 +1,5 @@
 import { LangType } from "../types/dashboard.types";
-import { AverageReport, MarketItem } from "../types/market.types";
+import { AverageReport, MarketItem, PropertyPurchaseExpenses } from "../types/market.types";
 
 export const switchLanguage = (path: string, newLang: LangType): string => {
   const oldLang = newLang === "sr" ? "en" : "sr";
@@ -48,4 +48,27 @@ export const getPropertyDemand = (property: MarketItem): string => {
       : 0;
 
   return `${getNumberWithDecimals(demandRatio, 2)}`;
+};
+
+
+
+const calculateLegalExpenses = (price: number): number => {
+  if (price < 50001) return 300;
+  if (price < 100001) return 350;
+  if (price < 150001) return 500;
+  if (price < 200001) return 700;
+  if (price < 250001) return 800;
+  if (price < 300001) return 900;
+  if (price < 400001) return 1000;
+  if (price < 500001) return 1200;
+
+  return 1500;
+};
+export const getPropertyPurchaseExpenses = (price: number): PropertyPurchaseExpenses => {
+  return {
+    tax: price * 0.025,
+    agency: price * 0.02,
+    legal: calculateLegalExpenses(price),
+    total: price * 0.045 + calculateLegalExpenses(price),
+  };
 };

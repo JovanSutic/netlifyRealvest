@@ -7,7 +7,6 @@ const MarketCard = ({
   title,
   duration,
   link,
-  demand,
   appreciation,
   lang,
   price,
@@ -17,7 +16,6 @@ const MarketCard = ({
   title: string;
   duration: string;
   link: string;
-  demand: string;
   appreciation: string;
   lang: LangType;
   price: string;
@@ -54,18 +52,6 @@ const MarketCard = ({
           <span className="text-gray-600 text-[12px]">{`(${translate.getTranslation(
             lang,
             "trendLong"
-          )})`}</span>
-        </p>
-        <p>
-          <span className="text-gray-700 font-bold mr-1 text-md md:text-sm">
-            {`${translate.getTranslation(lang, "demandShort")}:`}
-          </span>
-          <span className="text-blue-500 text-md font-extrabold mr-1">
-            {demand}
-          </span>
-          <span className="text-gray-600 text-[12px]">{`(${translate.getTranslation(
-            lang,
-            "demandLong"
           )})`}</span>
         </p>
         <p className="mt-1">

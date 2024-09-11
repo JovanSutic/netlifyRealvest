@@ -27,8 +27,8 @@ const MobileNavigation = ({
   const translate = new Translator("navigation");
   const navigate = useNavigate();
   return (
-    <header className="flex shadow-sm bg-gray-700 font-[sans-serif] min-h-[70px]">
-      <div className="flex flex-wrap items-center justify-between sm:px-10 px-6 py-3 relative lg:gap-y-4 gap-y-6 gap-x-4 w-full">
+    <header className="flex shadow-sm bg-gray-800 font-[sans-serif] min-h-[70px]">
+      <div className="flex flex-wrap items-center justify-between sm:px-10 px-6 py-2 relative lg:gap-y-4 gap-y-6 gap-x-4 w-full">
         <div className="w-[120px] flex">
           <Link to={`/?lang=${lang}`}>
             {" "}
@@ -80,7 +80,7 @@ const MobileNavigation = ({
             </svg>
           </button>
 
-          <ul className="block space-x-4 space-y-3 fixed bg-gray-700 w-1/2 min-w-[300px] top-0 left-0 p-4 h-full shadow-md overflow-auto z-[9998]">
+          <ul className="block space-x-4 space-y-3 fixed bg-gray-800 w-1/2 min-w-[300px] top-0 left-0 p-4 h-full shadow-md overflow-auto z-[9998]">
             <li>
               <div className="flex flex-wrap items-center">
                 <div className="w-[120px] m-auto">
