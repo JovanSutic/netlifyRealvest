@@ -20,10 +20,11 @@ const Slider = ({
   const getMyStyle = (index: number) => {
     if (index === 0) return "start-0";
     if (index === options.length - 1) return "end-0";
+    if (index === 1) return `left-[25%]`
 
-    return `start-${index}/${
-      options.length - 1
-    } -translate-x-1/2 rtl:translate-x-1/2`;
+    
+
+    return `left-[50%]`;
   };
 
   return (
