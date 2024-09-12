@@ -1,4 +1,4 @@
-import { Details } from "./dashboard.types";
+import { Details, ListedAd } from "./dashboard.types";
 
 export interface Profitability {
   id?: number;
@@ -62,4 +62,10 @@ export interface PropertyPurchaseExpenses {
   agency: number;
   legal: number;
   total: number;
+}
+
+export type MarketSingleType =  ListedAd & {
+  details: Details;
+  photos: PhotoItem[];
+  profit: Profitability;
 }
