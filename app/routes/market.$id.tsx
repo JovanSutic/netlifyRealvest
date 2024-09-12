@@ -13,10 +13,11 @@ import { getParamValue, detectDevice } from "../utils/params";
 import { Details, LangType, ListedAd } from "../types/dashboard.types";
 import { jwtDecode } from "jwt-decode";
 import { FinalError } from "../types/component.types";
-import { Profitability, PhotoItem } from "../types/market.types";
+import { Profitability, PhotoItem, MarketSingleType } from "../types/market.types";
 import { makeNumberCurrency } from "../utils/numbers";
 import Gallery from "../widgets/MarketGallery";
 import MarketAppreciationAnalysis from "../widgets/MarketAppreciationAnalysis";
+import MarketFlipAnalysis from "../widgets/MarketFlipAnalysis";
 
 export const links: LinksFunction = () => [
   {
@@ -135,11 +136,7 @@ const MarketSingle = () => {
   const page = searchParams.get("fromPage") || "1";
 
   const { data, device } = useLoaderData<{
-    data: ListedAd & {
-      details: Details;
-      photos: PhotoItem[];
-      profit: Profitability;
-    };
+    data: MarketSingleType;
     device: string;
   }>();
 
@@ -153,7 +150,7 @@ const MarketSingle = () => {
             to={`/market?page=${page}&lang=${lang}`}
             className="text-blue-500 text-md underline"
           >
-            {translate.getTranslation(lang, 'back')}
+            {translate.getTranslation(lang, "back")}
           </Link>
         </div>
         <div>
@@ -173,11 +170,17 @@ const MarketSingle = () => {
               average={data.average_price!}
               trend={data.profit.competitionTrend}
               lang={lang}
-              isMobile={device === 'mobile'}
+              isMobile={device === "mobile"}
             />
           </WidgetWrapper>
           <WidgetWrapper>
-            <div>Flip analysis</div>
+            <MarketFlipAnalysis
+              price={data.price}
+              average={data.average_price!}
+              data={data as unknown as MarketSingleType}
+              lang={lang}
+              isMobile={device === "mobile"}
+            />
           </WidgetWrapper>
           <WidgetWrapper>
             <div>Rental analysis</div>

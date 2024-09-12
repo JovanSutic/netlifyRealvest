@@ -1,5 +1,9 @@
-import { LangType } from "../types/dashboard.types";
-import { AverageReport, MarketItem, PropertyPurchaseExpenses } from "../types/market.types";
+import { Details, LangType } from "../types/dashboard.types";
+import {
+  AverageReport,
+  MarketItem,
+  PropertyPurchaseExpenses,
+} from "../types/market.types";
 
 export const switchLanguage = (path: string, newLang: LangType): string => {
   const oldLang = newLang === "sr" ? "en" : "sr";
@@ -50,8 +54,6 @@ export const getPropertyDemand = (property: MarketItem): string => {
   return `${getNumberWithDecimals(demandRatio, 2)}`;
 };
 
-
-
 const calculateLegalExpenses = (price: number): number => {
   if (price < 50001) return 300;
   if (price < 100001) return 350;
@@ -64,11 +66,162 @@ const calculateLegalExpenses = (price: number): number => {
 
   return 1500;
 };
-export const getPropertyPurchaseExpenses = (price: number): PropertyPurchaseExpenses => {
+
+const catchIndicators = (text: string, indicators: string[]) => {
+  let result = false;
+
+  for (let index = 0; index < indicators.length; index++) {
+    const indicator = indicators[index];
+    const find = text.toLowerCase().search(indicator);
+    if (find > -1) {
+      result = true;
+      break;
+    }
+  }
+  return result;
+};
+
+export const getPropertyPurchaseExpenses = (
+  price: number,
+  detail?: Details
+): PropertyPurchaseExpenses => {
+  const withoutTax = catchIndicators(detail?.description || "", [
+    "bez pdv",
+    "se dodaje pdv",
+  ]);
+  const tax = withoutTax ? price * 0.1 : price * 0.025;
+  const agency = price * 0.02;
+
   return {
-    tax: price * 0.025,
-    agency: price * 0.02,
+    tax,
+    agency,
     legal: calculateLegalExpenses(price),
-    total: price * 0.045 + calculateLegalExpenses(price),
+    total: agency + tax + calculateLegalExpenses(price),
   };
+};
+
+export const isNewBuild = (detail: Details) => {
+  if (
+    catchIndicators(detail.description || "", [
+      "lux",
+      "nov stan",
+      "u novoizgradjenom kompleksu",
+      "u novogradnji",
+      "u izgradnji",
+    ]) ||
+    catchIndicators(detail.built_state || "", [
+      "lux",
+      "novogradnja",
+      "u izgradnji",
+    ]) ||
+    new Date().getFullYear() - (detail.built_year || 0) < 10
+  )
+    return true;
+
+  return false;
+};
+
+export const getRenovationExpenses = (detail: Details) => {
+  const standardM2 = 450;
+  const yearDiff = new Date().getFullYear() - (detail.built_year || 0);
+
+  if (isNewBuild(detail)) return 0;
+  if (yearDiff < 4 && detail.built_state === "Novogradnja") return 0;
+  if (
+    catchIndicators(detail.description || "", [
+      "renovirano kupatilo",
+      "renovirano je kupatilo",
+    ])
+  ) {
+    return standardM2 * 0.8;
+  }
+  if (
+    catchIndicators(detail.description || "", [
+      "lux",
+      "renoviran",
+      "renovirano",
+      "nov stan",
+      "u novoizgradjenom kompleksu",
+      "u izgradnji",
+      "extra sređen",
+    ]) ||
+    detail.built_state === "Lux"
+  )
+    return 0;
+
+  if (detail.built_year) {
+    return yearDiff < 15 ? yearDiff * (standardM2 / 15) : standardM2;
+  }
+
+  return standardM2;
+};
+
+const getParkingPoints = (detail: Details): number => {
+  if (
+    detail.parking_type === null &&
+    catchIndicators(detail.description || "", [
+      "cena garažnog mesta",
+      "garažno mesto",
+    ])
+  ) {
+    return 10;
+  }
+
+  let result = 0;
+  if (detail.parking) result = result + 5;
+  if (detail.parking_type === "internal") result = result + 5;
+  if (detail.parking_entrance === "ground") result = result + 2;
+
+  return result;
+};
+
+const isTerrace = (detail: Details) => {
+  return (
+    detail.terrace ||
+    catchIndicators(detail.description || "", [
+      "terasa",
+      "terase",
+      "terasi",
+      "terasu",
+      "balkon",
+      "lođa",
+      "lodja",
+      "lođe",
+      "lodje",
+      "lodji",
+      "lođi",
+      "balkonu",
+    ])
+  );
+};
+
+const isGoodHeating = (detail: Details) => {
+  return (
+    catchIndicators(detail.heating || "", ["centralno", "podno", "etažno"]) ||
+    catchIndicators(detail.description || "", [
+      "centralno grejanje",
+      "podno grejanje",
+      "podnog grejanja",
+      "etažno grejanje",
+      "toplotne pumpe",
+      "toplotnih pumpi",
+      "centralnog grejanja",
+    ])
+  );
+};
+
+export const getFlipProbability = (detail: Details, roomRatio: number) => {
+  let result = 40;
+  if (!(detail.floor < 1 || detail.floor === detail.floor_limit))
+    result = result + 10;
+  if (isNewBuild(detail)) result = result + 15;
+  if (detail.lift) result = result + 5;
+  if (detail.intercom) result = result + 3;
+  if (detail.cellar) result = result + 2;
+  if (isTerrace(detail)) result = result + 5;
+  if (isGoodHeating(detail)) result = result + 5;
+  if (roomRatio > 0.05) result = result + 2;
+  result = result + getParkingPoints(detail);
+
+  return result < 70 ? 0.7 : result / 100;
 };
