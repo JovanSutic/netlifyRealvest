@@ -69,3 +69,8 @@ export type MarketSingleType =  ListedAd & {
   photos: PhotoItem[];
   profit: Profitability;
 }
+
+export interface FeatureItem {
+  name: string;
+  isTrue: boolean;
+}

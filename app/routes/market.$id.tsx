@@ -13,11 +13,16 @@ import { getParamValue, detectDevice } from "../utils/params";
 import { Details, LangType, ListedAd } from "../types/dashboard.types";
 import { jwtDecode } from "jwt-decode";
 import { FinalError } from "../types/component.types";
-import { Profitability, PhotoItem, MarketSingleType } from "../types/market.types";
+import {
+  Profitability,
+  PhotoItem,
+  MarketSingleType,
+} from "../types/market.types";
 import { makeNumberCurrency } from "../utils/numbers";
 import Gallery from "../widgets/MarketGallery";
 import MarketAppreciationAnalysis from "../widgets/MarketAppreciationAnalysis";
 import MarketFlipAnalysis from "../widgets/MarketFlipAnalysis";
+import MarketFeatureList from "../widgets/MarketFeatureList";
 
 export const links: LinksFunction = () => [
   {
@@ -162,7 +167,7 @@ const MarketSingle = () => {
           </h2>
         </div>
         <Gallery photos={data.photos} device={device} />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-5">
           <WidgetWrapper>
             <MarketAppreciationAnalysis
               price={data.price}
@@ -184,6 +189,11 @@ const MarketSingle = () => {
           </WidgetWrapper>
           <WidgetWrapper>
             <div>Rental analysis</div>
+          </WidgetWrapper>
+        </div>
+        <div className="grid grid-cols-1">
+          <WidgetWrapper>
+            <MarketFeatureList details={data.details} lang={lang} />
           </WidgetWrapper>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { Details, LangType } from "../types/dashboard.types";
 import {
   AverageReport,
+  FeatureItem,
   MarketItem,
   PropertyPurchaseExpenses,
 } from "../types/market.types";
@@ -121,6 +122,15 @@ export const isNewBuild = (detail: Details) => {
   return false;
 };
 
+const isRenovation = (detail: Details) => {
+  return catchIndicators(detail.description || "", [
+    "lux",
+    "renoviran",
+    "renovirano",
+    "extra sređen",
+  ]);
+};
+
 export const getRenovationExpenses = (detail: Details) => {
   const standardM2 = 450;
   const yearDiff = new Date().getFullYear() - (detail.built_year || 0);
@@ -161,6 +171,7 @@ const getParkingPoints = (detail: Details): number => {
     detail.parking_type === null &&
     catchIndicators(detail.description || "", [
       "cena garažnog mesta",
+      "parking mesto",
       "garažno mesto",
     ])
   ) {
@@ -203,6 +214,7 @@ const isGoodHeating = (detail: Details) => {
       "podno grejanje",
       "podnog grejanja",
       "etažno grejanje",
+      "grejanje - etažno",
       "toplotne pumpe",
       "toplotnih pumpi",
       "centralnog grejanja",
@@ -224,4 +236,66 @@ export const getFlipProbability = (detail: Details, roomRatio: number) => {
   result = result + getParkingPoints(detail);
 
   return result < 70 ? 0.7 : result / 100;
+};
+
+const isAdditionalLux = (detail: Details) => {
+  return (
+    catchIndicators(detail.additional || "", [
+      "bazen",
+      "recepcija",
+      "sauna",
+      "spa ",
+      "spa zona",
+      "spa centar",
+      "teretana",
+    ]) ||
+    catchIndicators(detail.description || "", [
+      "bazen",
+      "recepcija",
+      "sauna",
+      "spa ",
+      "spa zona",
+      "spa centar",
+      "teretana",
+    ])
+  );
+};
+
+const isAdditionalSecurity = (detail: Details) => {
+  return (
+    catchIndicators(detail.security || "", [
+      "alarm",
+      "kamera",
+      "obezbeđenje",
+    ]) ||
+    catchIndicators(detail.description || "", [
+      "alarm",
+      "kamera",
+      "obezbeđenje",
+    ])
+  );
+};
+
+export const getMarketFeatures = (detail: Details): FeatureItem[] => {
+  const result = [
+    { name: "featTerrace", isTrue: isTerrace(detail) },
+    { name: "featNew", isTrue: isNewBuild(detail) },
+    { name: "featHeat", isTrue: isGoodHeating(detail) },
+    { name: "featParking", isTrue: getParkingPoints(detail) > 0 },
+    { name: "featRenovation", isTrue: isRenovation(detail) },
+    { name: "featLift", isTrue: Boolean(detail.lift) },
+    { name: "featCellar", isTrue: Boolean(detail.cellar) },
+    { name: "featInter", isTrue: Boolean(detail.intercom) },
+    { name: "featCable", isTrue: Boolean(detail.rest?.search("Kablovska")) },
+    {
+      name: "featSecurity",
+      isTrue: isAdditionalSecurity(detail),
+    },
+    {
+      name: "featLux",
+      isTrue: isAdditionalLux(detail),
+    },
+  ];
+
+  return result;
 };
