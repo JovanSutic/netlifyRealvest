@@ -11,6 +11,7 @@ const MarketFeatureList = ({
 }) => {
   const translate = new Translator("market");
   const features = getMarketFeatures(details);
+  
   return (
     <div className="w-full">
       <div className={`w-full flex flex-column justify-between mb-4`}>
