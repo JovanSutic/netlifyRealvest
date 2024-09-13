@@ -94,13 +94,13 @@ const MarketFlipAnalysis = ({
           <ul>
             <li>
               <div className="flex w-full px-2 py-1">
-                <div className="w-[75%]">
+                <div className="w-[80%]">
                   <p className="text-sm">{`${translate.getTranslation(
                     lang,
                     "appreciationPrice"
                   )}:`}</p>
                 </div>
-                <div className="w-[25%]">
+                <div className="w-[20%]">
                   <p className="font-bold text-sm">
                     {makeNumberCurrency(average)}
                   </p>
@@ -110,13 +110,13 @@ const MarketFlipAnalysis = ({
 
             <li>
               <div className="flex w-full px-2 py-1">
-                <div className="w-[75%]">
+                <div className="w-[80%]">
                   <p className="text-sm">{`${translate.getTranslation(
                     lang,
                     "appreciationCurrent"
                   )}:`}</p>
                 </div>
-                <div className="w-[25%]">
+                <div className="w-[20%]">
                   <p className="font-bold text-sm">
                     {makeNumberCurrency(data.price)}
                   </p>
@@ -125,7 +125,7 @@ const MarketFlipAnalysis = ({
             </li>
             <li>
               <div className="flex w-full px-2 py-1">
-                <div className="w-[75%]">
+                <div className="w-[80%]">
                   <p className="text-sm">
                     {`${translate.getTranslation(
                       lang,
@@ -133,7 +133,7 @@ const MarketFlipAnalysis = ({
                     )}:`}
                   </p>
                 </div>
-                <div className="w-[25%]">
+                <div className="w-[20%]">
                   <p className="font-bold text-sm">
                     {makeNumberCurrency(
                       getPropertyPurchaseExpenses(data.price, data.details).total
@@ -144,10 +144,10 @@ const MarketFlipAnalysis = ({
             </li>
             <li>
               <div className="flex w-full px-2 py-1">
-                <div className="w-[75%]">
+                <div className="w-[80%]">
                   <p className="text-sm">{`${translate.getTranslation(lang, 'flipRenovation')}:`}</p>
                 </div>
-                <div className="w-[25%]">
+                <div className="w-[20%]">
                   <p className="font-bold text-sm">
                     {makeNumberCurrency(data.size * renovationM2Price)}
                   </p>
@@ -156,10 +156,10 @@ const MarketFlipAnalysis = ({
             </li>
             <li>
               <div className="flex w-full px-2 py-1">
-                <div className="w-[75%]">
+                <div className="w-[80%]">
                   <p className="text-sm">{`${translate.getTranslation(lang, 'flipTotal')}:`}</p>
                 </div>
-                <div className="w-[25%]">
+                <div className="w-[20%]">
                   <p className="font-bold text-sm">
                     {makeNumberCurrency(flipInvestment)}
                   </p>
@@ -171,10 +171,10 @@ const MarketFlipAnalysis = ({
 
             <li className="mt-2">
               <div className="flex w-full px-2 py-1">
-                <div className="w-[75%]">
+                <div className="w-[80%]">
                   <p className="text-sm">{`${translate.getTranslation(lang, 'flipMax')}:`}</p>
                 </div>
-                <div className="w-[25%]">
+                <div className="w-[20%]">
                   <p className="font-bold text-sm">
                     {makeNumberCurrency(maxPrice)}
                   </p>
@@ -183,20 +183,20 @@ const MarketFlipAnalysis = ({
             </li>
             <li>
               <div className="flex w-full px-2 py-1">
-                <div className="w-[75%]">
+                <div className="w-[80%]">
                   <p className="text-sm">{`${translate.getTranslation(lang, 'flipProbability')}:`}</p>
                 </div>
-                <div className="w-[25%]">
+                <div className="w-[20%]">
                   <p className="font-bold text-sm">{`${getNumberWithDecimals(probability*100, 0)}%`}</p>
                 </div>
               </div>
             </li>
             <li>
               <div className="flex w-full px-2 py-1">
-                <div className="w-[75%]">
+                <div className="w-[80%]">
                   <p className="text-sm">{`${translate.getTranslation(lang, 'flipPotential')}:`}</p>
                 </div>
-                <div className="w-[25%]">
+                <div className="w-[20%]">
                   <p className="font-bold text-sm">
                     {makeNumberCurrency(flipPrice)}
                   </p>
@@ -208,10 +208,10 @@ const MarketFlipAnalysis = ({
 
             <li className="mt-2">
               <div className="flex w-full px-2 py-1">
-                <div className="w-[75%]">
+                <div className="w-[80%]">
                   <p className="text-md font-semibold">{`${translate.getTranslation(lang, 'flipProfit')}:`}</p>
                 </div>
-                <div className="w-[25%]">
+                <div className="w-[20%]">
                   <p className={`font-bold text-md ${flipPrice - flipInvestment > 0 ? 'text-blue-500' : 'text-red-500'}`}>
                     {makeNumberCurrency(flipPrice - flipInvestment)}
                   </p>

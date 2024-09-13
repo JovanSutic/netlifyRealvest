@@ -1,67 +1,69 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { makeNumberCurrency } from "../utils/numbers";
 import {
   getNumberWithDecimals,
   getPropertyPurchaseExpenses,
 } from "../utils/market";
-import { calculateFuturePrice } from "../utils/dashboard";
-import Slider from "../components/slider";
 import { LangType } from "../types/dashboard.types";
 import { Translator } from "../data/language/translator";
 import Tooltip from "../components/tooltip/Tooltip";
+import { MarketSingleType } from "../types/market.types";
 
-const calculateIRR = (
-  currentPrice: number,
-  futurePrice: number,
-  years: number
-): number => {
-  if (currentPrice <= 0 || futurePrice <= 0 || years <= 0) {
-    throw new Error("All input values must be positive numbers.");
+const calculateCapRate = (noi: number, marketValue: number): number => {
+  if (marketValue === 0) {
+    throw new Error("Market value cannot be zero.");
   }
-
-  // Calculate the IRR using the compound annual growth rate formula
-  const irrDecimal = Math.pow(futurePrice / currentPrice, 1 / years) - 1;
-
-  // Convert to percentage
-  return irrDecimal * 100;
+  return (noi / marketValue) * 100;
 };
 
-const MarketAppreciationAnalysis = ({
-  trend,
+const MarketRentalAnalysis = ({
+  data,
   price,
-  size,
-  average,
   lang,
   isMobile,
 }: {
-  trend: number;
+  data: MarketSingleType;
   price: number;
-  size: number;
-  average: number;
   lang: LangType;
   isMobile: boolean;
 }) => {
   const [open, setOpen] = useState<boolean>(true);
-  const [years, setYears] = useState<number>(5);
   const translate = new Translator("market");
+  const netIncome = data.profit.averageRental * data.size * 12;
+  const expenses = getPropertyPurchaseExpenses(data.price, data.details).total;
+  const optimization =
+    ((data.profit.maxRental - data.profit.averageRental) /
+      data.profit.averageRental) *
+    100;
 
   useEffect(() => {
-    setOpen(!isMobile)
+    setOpen(!isMobile);
   }, []);
 
-  const changeStep = (event: ChangeEvent<HTMLInputElement>) => {
-    setYears(Number(event.target.value));
-  };
+  if (data.profit.rentalCount < 3) {
+    return (
+      <div className="w-full h-full flex flex-col justify-center py-3">
+        <h3 className="text-center text-md text-gray-700">
+          {translate.getTranslation(lang, "rentalNoData")}
+        </h3>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div>
-        <div className={`w-full flex flex-column justify-between ${isMobile ? 'mb-2' : 'mb-4'}`}>
+        <div
+          className={`w-full flex flex-column justify-between ${
+            isMobile ? "mb-2" : "mb-4"
+          }`}
+        >
           <h3 className="text-lg text-center font-semibold">
-            {translate.getTranslation(lang, "appreciationTitle")}
+            {translate.getTranslation(lang, "rentalTitle")}
           </h3>
           <div className="w-[30px]">
             <Tooltip
-              text={translate.getTranslation(lang, "appreciationText")}
+              text={translate.getTranslation(lang, "rentalText")}
               style="top"
             >
               <svg
@@ -83,7 +85,10 @@ const MarketAppreciationAnalysis = ({
         </div>
         {isMobile && (
           <div className="flex flex-row justify-center">
-            <button className="text-md text-blue-500 underline" onClick={() => setOpen(!open)}>{`${translate.getTranslation(
+            <button
+              className="text-md text-blue-500 underline"
+              onClick={() => setOpen(!open)}
+            >{`${translate.getTranslation(
               lang,
               open ? "seeLess" : "seeMore"
             )}`}</button>
@@ -99,29 +104,13 @@ const MarketAppreciationAnalysis = ({
                 <div className="w-[80%]">
                   <p className="text-sm">{`${translate.getTranslation(
                     lang,
-                    "appreciationPrice"
+                    "rentalAverage"
                   )}:`}</p>
                 </div>
                 <div className="w-[20%]">
                   <p className="font-bold text-sm">
-                    {makeNumberCurrency(average)}
+                    {makeNumberCurrency(data.profit.averageRental)}
                   </p>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div className="flex w-full px-2 py-1">
-                <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(
-                    lang,
-                    "appreciationTrend"
-                  )}:`}</p>
-                </div>
-                <div className="w-[20%]">
-                  <p className="font-bold text-sm">{`${getNumberWithDecimals(
-                    (trend || 0) * 100,
-                    2
-                  )}%`}</p>
                 </div>
               </div>
             </li>
@@ -134,7 +123,7 @@ const MarketAppreciationAnalysis = ({
                   )}:`}</p>
                 </div>
                 <div className="w-[20%]">
-                  <p className="font-bold text-sm">{`${size}m2`}</p>
+                  <p className="font-bold text-sm">{`${data.size}m2`}</p>
                 </div>
               </div>
             </li>
@@ -143,12 +132,12 @@ const MarketAppreciationAnalysis = ({
                 <div className="w-[80%]">
                   <p className="text-sm">{`${translate.getTranslation(
                     lang,
-                    "appreciationCurrent"
+                    "rentalMonth"
                   )}:`}</p>
                 </div>
                 <div className="w-[20%]">
                   <p className="font-bold text-sm">
-                    {makeNumberCurrency(price)}
+                    {makeNumberCurrency(data.profit.averageRental * data.size)}
                   </p>
                 </div>
               </div>
@@ -158,71 +147,33 @@ const MarketAppreciationAnalysis = ({
                 <div className="w-[80%]">
                   <p className="text-sm">{`${translate.getTranslation(
                     lang,
-                    "appreciationExpenses"
+                    "rentalNoi"
                   )}:`}</p>
                 </div>
                 <div className="w-[20%]">
                   <p className="font-bold text-sm">
-                    {makeNumberCurrency(
-                      getPropertyPurchaseExpenses(price).total
-                    )}
-                  </p>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div className="flex w-full px-2 py-1">
-                <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(
-                    lang,
-                    "price"
-                  )} ${years} ${translate.getTranslation(lang, "years")}:`}</p>
-                </div>
-                <div className="w-[20%]">
-                  <p className="font-bold text-sm">
-                    {makeNumberCurrency(
-                      calculateFuturePrice(average, trend, years) * size
-                    )}
+                    {makeNumberCurrency(netIncome)}
                   </p>
                 </div>
               </div>
             </li>
 
-            <li>
-              <div className="w-full mt-2 mb-12 px-2">
-                <Slider
-                  min={5}
-                  max={20}
-                  step={5}
-                  value={years}
-                  title={translate.getTranslation(lang, "appreciationTitle")}
-                  onChange={changeStep}
-                  options={[
-                    `5 ${translate.getTranslation(lang, "years")}`,
-                    `10 ${translate.getTranslation(lang, "years")}`,
-                    `15 ${translate.getTranslation(lang, "years")}`,
-                    `20 ${translate.getTranslation(lang, "years")}`,
-                  ]}
-                />
-              </div>
-            </li>
-
-            <hr className="text-gray-600 bg-gray-400 h-[1px] mt-2" />
+            <hr className="text-gray-600 bg-gray-600 h-[1px] mt-2" />
 
             <li className="mt-2">
               <div className="flex w-full px-2 py-1">
                 <div className="w-[80%]">
                   <p className="text-md font-semibold">{`${translate.getTranslation(
                     lang,
-                    "profit"
-                  )} ${years} ${translate.getTranslation(lang, "years")}:`}</p>
+                    "rentalCap"
+                  )}:`}</p>
                 </div>
                 <div className="w-[20%]">
                   <p className="font-bold text-md text-blue-500">
-                    {makeNumberCurrency(
-                      calculateFuturePrice(average, trend, years) * size -
-                        (price + getPropertyPurchaseExpenses(price).total)
-                    )}
+                    {`${getNumberWithDecimals(
+                      calculateCapRate(netIncome, price),
+                      2
+                    )}%`}
                   </p>
                 </div>
               </div>
@@ -232,19 +183,30 @@ const MarketAppreciationAnalysis = ({
                 <div className="w-[80%]">
                   <p className="text-md font-semibold">{`${translate.getTranslation(
                     lang,
-                    "appreciationIrr"
+                    "rentalPeriod"
                   )}:`}</p>
                 </div>
                 <div className="w-[20%]">
                   <p className="font-bold text-md text-blue-500">
                     {`${getNumberWithDecimals(
-                      calculateIRR(
-                        price + getPropertyPurchaseExpenses(price).total,
-                        calculateFuturePrice(average, trend, years) * size,
-                        years
-                      ),
-                      2
-                    )}%`}
+                      (price + expenses) / netIncome,
+                      1
+                    )}`}
+                  </p>
+                </div>
+              </div>
+            </li>
+            <li className="mt-2">
+              <div className="flex w-full px-2 py-1">
+                <div className="w-[80%]">
+                  <p className="text-sm">{`${translate.getTranslation(
+                    lang,
+                    "rentalOptimization"
+                  )}:`}</p>
+                </div>
+                <div className="w-[20%]">
+                  <p className="font-bold text-sm">
+                    {`${getNumberWithDecimals(optimization, 2)}%`}
                   </p>
                 </div>
               </div>
@@ -256,4 +218,4 @@ const MarketAppreciationAnalysis = ({
   );
 };
 
-export default MarketAppreciationAnalysis;
+export default MarketRentalAnalysis;
