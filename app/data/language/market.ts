@@ -31,8 +31,9 @@ export const marketMap: Record<string, Record<string, string>> = {
     seeMore: "show analysis",
     seeLess: "close analysis",
     flipTitle: "Flip analysis",
-    flipText: "This analysis is based on data provided in real estate ads. Although it provides valuable insights, it may not reflect all the factors that affect the real market value of a property. Probabilities and potential prices shown are estimates based on available data and are for informational purposes only. There are no guarantees of their realization on the market.",
-    flipProfit: "Flip profit",
+    flipText:
+      "This analysis is based on data provided in real estate ads. Although it provides valuable insights, it may not reflect all the factors that affect the real market value of a property. Probabilities and potential prices shown are estimates based on available data and are for informational purposes only. There are no guarantees of their realization on the market.",
+    flipProfit: "Potential flip profit",
     flipPotential: "Flip potential price",
     flipProbability: "Max price probability",
     flipMax: "Micro-location m2 max price",
@@ -55,6 +56,17 @@ export const marketMap: Record<string, Record<string, string>> = {
     featFloor: "Floor",
     featFloorLimit: "Floor limit",
     noData: "No data",
+    rentalTitle: "Rental analysis",
+    rentalText: "The stated estimates of rental income are informative in nature and are not guaranteed. These figures are based on historical rental figures and additional market trends that may vary for various reasons. Although data based on these estimates cannot be guaranteed, please do your own research and preparation.",
+    rentalNoData:
+      "Unfortunately we are not able to provide rental analysis for this property because of the lack of data.",
+    rentalAverage: "Average rental for m2",
+    rentalMonth: "Expected monthly rent",
+    rentalNoi: "Net operative income (NOI) yearly",
+    rentalCap: "Cap rate",
+    rentalPeriod: "Payout period in years",
+    rentalOptimization:
+      "Optimization of the rent income (difference between average and max rental)",
   },
   sr: {
     allTitle: "Pretraga tržišta nekretnina",
@@ -64,14 +76,14 @@ export const marketMap: Record<string, Record<string, string>> = {
       "Stranica koju ste odabrali više ne postoji. Molimo vas vratite se na početnu stranicu tržišta.",
     onMarket: "Na tržištu",
     days: "dana",
-    rentalHighlight: "Potencijal izdavanja",
+    rentalHighlight: "Analiza izdavanja",
     trendLong: "godišnje povećanje vrednosti",
     trendShort: "GPV",
     demandLong: "indikator potražnje",
     demandShort: "ILP",
     underpricedHighlight: "Ispod prosečne cene",
-    rentOn: "dostupan",
-    rentOff: "nedostupan",
+    rentOn: "dostupna",
+    rentOff: "nedostupna",
     appreciationTitle: "Analiza promene vrednosti",
     appreciationText:
       "Projekcije date u ovoj analizi zasnovane su na istorijskim trendovima rasta i namenjene su samo u informativne svrhe. Iako ove projekcije nude vredan uvid u potencijalnu buduću vrednost, one nisu garancija budućeg stanja. Na vrednosti nekretnina mogu uticati različiti faktori koji mogu varirati u zavisnosti od tržišnih uslova, ekonomskih promena i drugih varijabli.",
@@ -88,8 +100,9 @@ export const marketMap: Record<string, Record<string, string>> = {
     seeMore: "otvori analizu",
     seeLess: "zatvori analizu",
     flipTitle: "Analiza preprodaje",
-    flipText: "Ova analiza se zasniva na podacima datim u oglasima za nekretnine. Iako pruža vredne uvide, možda neće odražavati sve faktore koji utiču na stvarnu tržišnu vrednost nekretnine. Prikazane verovatnoće i potencijalne cene su procene izvedene na osnovu dostupnih podataka i one su informativnog karaktera. Nema garancija njihovog ostvarenja na tržištu.",
-    flipProfit: "Profit od preprodaje",
+    flipText:
+      "Ova analiza se zasniva na podacima datim u oglasima za nekretnine. Iako pruža vredne uvide, možda neće odražavati sve faktore koji utiču na stvarnu tržišnu vrednost nekretnine. Prikazane verovatnoće i potencijalne cene su procene izvedene na osnovu dostupnih podataka i one su informativnog karaktera. Nema garancija njihovog ostvarenja na tržištu.",
+    flipProfit: "Potencijalni profit od preprodaje",
     flipPotential: "Potencijalna cena u preprodaji",
     flipProbability: "Verovatnoća ostvarenja max cene",
     flipMax: "Max cena m2 na mikrolokaciji",
@@ -112,5 +125,17 @@ export const marketMap: Record<string, Record<string, string>> = {
     featFloor: "Sprat",
     featFloorLimit: "Spratnost",
     noData: "Nema podataka",
+    rentalTitle: "Analiza izdavanja",
+    rentalText:
+      "Navedene procene prihoda od izdavanja su informativnog karaktera i nisu zagarantovane. Ove brojke su zasnovane na podacima ostvarenih kirija u prošlosti i dodatnim tržišnim trendovima koji mogu varirati iz različitih razloga. Iako zasnovane na podacima ove procene ne mogu biti garantovane, stoga vas molimo da sprovedete sopstvena istraživanja i pripremu.",
+    rentalNoData:
+      "Na žalost za ovu nekretninu nije dostupna analiza izdavanja zbog nedostatka podataka.",
+    rentalAverage: "Prosečna kirija po m2",
+    rentalMonth: "Očekivana mesečna kirija",
+    rentalNoi: "Neto operativni prihod (NOI) godišnji",
+    rentalCap: "Stopa kapitalizacije",
+    rentalPeriod: "Period otplate investicije u godinama",
+    rentalOptimization:
+      "Optimizacije prihoda (razlika izmedju prosečne i max kirije)",
   },
 };

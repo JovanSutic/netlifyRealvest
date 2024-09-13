@@ -23,6 +23,7 @@ import Gallery from "../widgets/MarketGallery";
 import MarketAppreciationAnalysis from "../widgets/MarketAppreciationAnalysis";
 import MarketFlipAnalysis from "../widgets/MarketFlipAnalysis";
 import MarketFeatureList from "../widgets/MarketFeatureList";
+import MarketRentalAnalysis from "../widgets/MarketRentalAnalysis";
 
 export const links: LinksFunction = () => [
   {
@@ -167,7 +168,7 @@ const MarketSingle = () => {
           </h2>
         </div>
         <Gallery photos={data.photos} device={device} />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-5 mb-3 lg:mb-0">
           <WidgetWrapper>
             <MarketAppreciationAnalysis
               price={data.price}
@@ -188,7 +189,12 @@ const MarketSingle = () => {
             />
           </WidgetWrapper>
           <WidgetWrapper>
-            <div>Rental analysis</div>
+            <MarketRentalAnalysis
+              price={data.price}
+              data={data as unknown as MarketSingleType}
+              lang={lang}
+              isMobile={device === "mobile"}
+            />
           </WidgetWrapper>
         </div>
         <div className="grid grid-cols-1">
