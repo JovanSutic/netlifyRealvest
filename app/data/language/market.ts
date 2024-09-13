@@ -54,7 +54,7 @@ export const marketMap: Record<string, Record<string, string>> = {
     featBaths: "Bath number",
     featFloor: "Floor",
     featFloorLimit: "Floor limit",
-    noInfo: "No data",
+    noData: "No data",
   },
   sr: {
     allTitle: "Pretraga tržišta nekretnina",
@@ -111,6 +111,6 @@ export const marketMap: Record<string, Record<string, string>> = {
     featBaths: "Broj kupatila",
     featFloor: "Sprat",
     featFloorLimit: "Spratnost",
-    noInfo: "Nema podataka",
+    noData: "Nema podataka",
   },
 };
