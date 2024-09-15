@@ -30,7 +30,7 @@ const MarketFlipAnalysis = ({
   const [open, setOpen] = useState<boolean>(true);
   const translate = new Translator("market");
 
-  const maxPrice = isNewBuild(data.details) && (data.profit.maxCompetition > (data.average_price! * 2.2)) ? data.profit.maxCompetition / 2 : data.profit.maxCompetition;
+  const maxPrice = isNewBuild(data.details) && (data.profit.max_competition > (data.average_price! * 2.2)) ? data.profit.max_competition / 2 : data.profit.max_competition;
   const probability = getFlipProbability(data.details, data.room_ratio || 0.001);
   const renovationM2Price = getRenovationExpenses(data.details);
   const flipPrice = data.size * maxPrice * probability;

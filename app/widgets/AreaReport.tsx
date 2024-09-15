@@ -164,7 +164,7 @@ const AreaReport = ({
                 <p className="text-xs text-center text-gray-500">
                   {translate.getTranslation(
                     lang,
-                    isRental ? "rentalCount" : "salesCount"
+                    isRental ? "rental_count" : "salesCount"
                   )}
                 </p>
               </div>

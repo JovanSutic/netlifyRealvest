@@ -27,29 +27,29 @@ export const getNumberWithDecimals = (num: number, decimal: number) => {
 
 export const getAverageReport = (property: MarketItem): AverageReport => {
   const averageDiff =
-    (property.profitability.averageCompetition || 0) -
+    (property.profitability.average_competition || 0) -
     property.price / property.size;
   return {
     difference: averageDiff,
     percent:
       averageDiff > 0
-        ? averageDiff / property.profitability.averageCompetition!
+        ? averageDiff / property.profitability.average_competition!
         : 0,
     isUnderPriced: averageDiff > 0,
   };
 };
 
 export const getYearRental = (property: MarketItem) => {
-  return property.profitability.averageRental
-    ? property.size * property.profitability.averageRental * 12
+  return property.profitability.average_rental
+    ? property.size * property.profitability.average_rental * 12
     : 0;
 };
 
 export const getPropertyDemand = (property: MarketItem): string => {
   const { profitability } = property;
   const demandRatio =
-    profitability.competitionCount && profitability.cityCountSold
-      ? (1 - profitability.competitionCount / profitability.cityCountSold) * 10
+    profitability.competition_count && profitability.city_count_sold
+      ? (1 - profitability.competition_count / profitability.city_count_sold) * 10
       : 0;
 
   return `${getNumberWithDecimals(demandRatio, 2)}`;

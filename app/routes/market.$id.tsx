@@ -174,7 +174,7 @@ const MarketSingle = () => {
               price={data.price}
               size={data.size}
               average={data.average_price!}
-              trend={data.profit.competitionTrend}
+              trend={data.profit.competition_trend}
               lang={lang}
               isMobile={device === "mobile"}
             />
