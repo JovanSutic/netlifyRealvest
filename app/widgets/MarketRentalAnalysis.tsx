@@ -29,18 +29,18 @@ const MarketRentalAnalysis = ({
 }) => {
   const [open, setOpen] = useState<boolean>(true);
   const translate = new Translator("market");
-  const netIncome = data.profit.averageRental * data.size * 12;
+  const netIncome = data.profit.average_rental * data.size * 12;
   const expenses = getPropertyPurchaseExpenses(data.price, data.details).total;
   const optimization =
-    ((data.profit.maxRental - data.profit.averageRental) /
-      data.profit.averageRental) *
+    ((data.profit.max_rental - data.profit.average_rental) /
+      data.profit.average_rental) *
     100;
 
   useEffect(() => {
     setOpen(!isMobile);
   }, []);
 
-  if (data.profit.rentalCount < 3) {
+  if (data.profit.rental_count < 3) {
     return (
       <div className="w-full h-full flex flex-col justify-center py-3">
         <h3 className="text-center text-md text-gray-700">
@@ -109,7 +109,7 @@ const MarketRentalAnalysis = ({
                 </div>
                 <div className="w-[20%]">
                   <p className="font-bold text-sm">
-                    {makeNumberCurrency(data.profit.averageRental)}
+                    {makeNumberCurrency(data.profit.average_rental)}
                   </p>
                 </div>
               </div>
@@ -137,7 +137,7 @@ const MarketRentalAnalysis = ({
                 </div>
                 <div className="w-[20%]">
                   <p className="font-bold text-sm">
-                    {makeNumberCurrency(data.profit.averageRental * data.size)}
+                    {makeNumberCurrency(data.profit.average_rental * data.size)}
                   </p>
                 </div>
               </div>

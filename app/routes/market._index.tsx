@@ -1,28 +1,24 @@
 import { DashboardPage } from "../components/layout";
 import { LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
-import { Link, MetaFunction, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  Link,
+  MetaFunction,
+  useLoaderData,
+  useSearchParams,
+} from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
 import { Translator } from "../data/language/translator";
 // import Loader from "../components/loader";
 import { getParamValue, isMobile } from "../utils/params";
 import MarketCard from "../components/card/MarketCard";
-import { Details, LangType } from "../types/dashboard.types";
+import { LangType } from "../types/dashboard.types";
 import Pagination from "../components/pagination/index";
 import { jwtDecode } from "jwt-decode";
 import { FinalError } from "../types/component.types";
-import { Profitability, MarketItem, PhotoItem } from "../types/market.types";
+import { MarketIndexItem, PhotoItem } from "../types/market.types";
 import { intervalToDuration } from "date-fns";
 import { getNumberWithDecimals } from "../utils/market";
 import { makeNumberCurrency } from "../utils/numbers";
-
-const orderData = (data: Details[] | Profitability[]) => {
-  const result: Record<string, Partial<Details | Profitability>> = {};
-  data.forEach((item) => {
-    result[item.ad_id as unknown as string] = item;
-  });
-
-  return result;
-};
 
 export const links: LinksFunction = () => [
   {
@@ -65,28 +61,26 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     );
     userRole = decoded?.user_role;
 
-    const {
-      data: profitabilityData,
-      error: profitabilityError,
-      count: profitabilityCount,
-    } = await supabaseClient
-      .from("ad_profitability")
-      .select("*", { count: "exact" })
-      .eq("ad_type", "apartment")
-      .order("ad_type")
-      .range(rangeStart, rangeStart + limit)
-      .returns<Profitability[]>();
+    const { data: countData, error: countError } = await supabaseClient.rpc(
+      "get_apartments_count"
+    );
 
-    if (profitabilityError) {
+    if (countError) {
       isError = true;
-      finalError = profitabilityError as FinalError;
+      finalError = countError as FinalError;
     }
 
-    const apartmentIds: number[] = [];
+    const { data: queryData, error: queryError } = await supabaseClient.rpc(
+      "get_apartments_with_details_and_profitability",
+      { p_limit: limit, p_offset: rangeStart }
+    )
 
-    (profitabilityData || [])?.forEach((item) => {
-      apartmentIds.push(item.ad_id);
-    });
+    if (queryError) {
+      isError = true;
+      finalError = queryError as FinalError;
+    }
+
+    const apartmentIds = queryData.map((item: MarketIndexItem) => item.id);
 
     const { data: photoData, error: photoError } = await supabaseClient
       .from("photos")
@@ -107,48 +101,18 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       }
     });
 
-    const { data: adsData, error: adsError } = await supabaseClient
-      .from("apartments")
-      .select("id, city_part, date_signed, price, size, room_number")
-      .in("id", apartmentIds)
-      .order("id")
-      .limit(20);
+    const results: MarketIndexItem[] = [];
 
-    if (adsError) {
-      isError = true;
-      finalError = adsError as FinalError;
-    }
-
-    const { data: detailData, error: detailError } = await supabaseClient
-      .from("ad_details")
-      .select("id, ad_id, type, lat, lng, built_state, built_year")
-      .in("ad_id", apartmentIds)
-      .order("id")
-      .limit(limit)
-      .returns<Details[]>();
-
-    if (detailError) {
-      isError = true;
-      finalError = detailError as FinalError;
-    }
-
-    const details = orderData(detailData || []);
-    const profitability = orderData(profitabilityData || []);
-
-    const results: MarketItem[] = [];
-
-    (adsData || [])?.forEach((item) => {
+    (queryData || [])?.forEach((item: MarketIndexItem) => {
       results.push({
         ...item,
-        details: details[item.id],
-        profitability: profitability[item.id],
         photo: photos[item.id],
       });
     });
 
     return json({
       data: results,
-      pages: Math.round((profitabilityCount || 0) / limit),
+      pages: Math.round(countData / limit),
       mobile: isMobile(userAgent!),
       role: userRole,
     });
@@ -177,6 +141,8 @@ const MarketAll = () => {
 
   const { data, pages } = useLoaderData<typeof loader>();
 
+  console.log(data);
+
   return (
     <DashboardPage>
       <div className="font-[sans-serif] bg-gray-100">
@@ -187,8 +153,15 @@ const MarketAll = () => {
 
           {Number(page) > pages ? (
             <div className="w-full flex flex-col justify-center py-5">
-              <h3 className="text-center text-md xl:text-lg text-gray-500 mb-4">{translate.getTranslation(lang, 'noPage')}</h3>
-              <Link to={`/market?page=1&lang=${lang}`} className="w-full underline block text-center text-md text-blue-500">Početna stranica tržišta</Link>
+              <h3 className="text-center text-md xl:text-lg text-gray-500 mb-4">
+                {translate.getTranslation(lang, "noPage")}
+              </h3>
+              <Link
+                to={`/market?page=1&lang=${lang}`}
+                className="w-full underline block text-center text-md text-blue-500"
+              >
+                Početna stranica tržišta
+              </Link>
             </div>
           ) : (
             <>
@@ -206,12 +179,12 @@ const MarketAll = () => {
                       lang={lang}
                       price={makeNumberCurrency(item!.price)}
                       appreciation={`${getNumberWithDecimals(
-                        (item?.profitability.competitionTrend || 0) * 100,
+                        (item?.profitability_competition_trend || 0) * 100,
                         2
                       )}%`}
                       photo={item?.photo?.link || ""}
                       title={`${item?.city_part}, ${item?.size}m2`}
-                      rent={(item?.profitability?.rentalCount || 0) > 2}
+                      rent={(item?.profitability_rental_count || 0) > 2}
                       duration={`${translate.getTranslation(
                         lang,
                         "onMarket"
