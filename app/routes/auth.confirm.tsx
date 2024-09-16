@@ -45,7 +45,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       });
 
       if (!error) {
-        return redirect(`/dashboard/search?lang=${lang}`, { headers });
+        return redirect(`/market?page=1&lang=${lang}`, { headers });
       }
     } catch (error) {
       isError = true;

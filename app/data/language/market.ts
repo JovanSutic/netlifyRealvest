@@ -40,6 +40,7 @@ export const marketMap: Record<string, Record<string, string>> = {
     flipTotal: "Total",
     flipRenovation: "Renovation expenses",
     featTitle: "Important property features",
+    featText: "This information comes from the available listing and may not accurately reflect the current condition of the apartments. We recommend that you check all the information by scrolling through the pictures and finally visiting the property in person, in order to confirm its exact condition. We are not responsible for any discrepancies or inaccuracies in the data.",
     featTerrace: "Apartment with terrace",
     featNew: "Apartment in new build",
     featHeat: "Good heating system",
@@ -55,9 +56,12 @@ export const marketMap: Record<string, Record<string, string>> = {
     featBaths: "Bath number",
     featFloor: "Floor",
     featFloorLimit: "Floor limit",
+    featFurnished: "Apartment is furnished",
+    featView: "Apartment with view",
     noData: "No data",
     rentalTitle: "Rental analysis",
-    rentalText: "The stated estimates of rental income are informative in nature and are not guaranteed. These figures are based on historical rental figures and additional market trends that may vary for various reasons. Although data based on these estimates cannot be guaranteed, please do your own research and preparation.",
+    rentalText:
+      "The stated estimates of rental income are informative in nature and are not guaranteed. These figures are based on historical rental figures and additional market trends that may vary for various reasons. Although data based on these estimates cannot be guaranteed, please do your own research and preparation.",
     rentalNoData:
       "Unfortunately we are not able to provide rental analysis for this property because of the lack of data.",
     rentalAverage: "Average rental for m2",
@@ -109,6 +113,8 @@ export const marketMap: Record<string, Record<string, string>> = {
     flipTotal: "Ukupno",
     flipRenovation: "Troškovi renoviranja",
     featTitle: "Najbitnije karakteristike nekretnine",
+    featText:
+      "Ove informacije potiču iz dostupnog oglasa i možda neće tačno odražavati trenutno stanje stanova. Preporučujemo da sve informacije proverite prelistavanjem slika i na kraju ličnim obilaskom nekretnine, kako biste potvrdili njegovo tačno stanje. Ne snosimo odgovornost za bilo kakva odstupanja ili netačnosti u podacima.",
     featTerrace: "Poseduje terasu",
     featNew: "Stan u novijoj gradnji",
     featHeat: "Dobar grejni sistem",
@@ -124,6 +130,8 @@ export const marketMap: Record<string, Record<string, string>> = {
     featBaths: "Broj kupatila",
     featFloor: "Sprat",
     featFloorLimit: "Spratnost",
+    featFurnished: "Stan je namešten",
+    featView: "Stan sa pogledom",
     noData: "Nema podataka",
     rentalTitle: "Analiza izdavanja",
     rentalText:
