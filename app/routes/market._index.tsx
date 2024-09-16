@@ -16,7 +16,7 @@ import Pagination from "../components/pagination/index";
 import { jwtDecode } from "jwt-decode";
 import { FinalError } from "../types/component.types";
 import { MarketIndexItem, PhotoItem } from "../types/market.types";
-import { intervalToDuration } from "date-fns";
+import { differenceInDays } from "date-fns";
 import { makeNumberCurrency } from "../utils/numbers";
 
 export const links: LinksFunction = () => [
@@ -72,7 +72,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const { data: queryData, error: queryError } = await supabaseClient.rpc(
       "get_apartments_with_details_and_profitability",
       { p_limit: limit, p_offset: rangeStart }
-    )
+    );
 
     if (queryError) {
       isError = true;
@@ -164,11 +164,6 @@ const MarketAll = () => {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4  gap-8 md:gap-6 xl:gap-4">
                 {data.map((item) => {
-                  const duration = intervalToDuration({
-                    start: item?.date_signed || "",
-                    end: new Date(),
-                  });
-
                   return (
                     <MarketCard
                       key={item?.id}
@@ -182,10 +177,17 @@ const MarketAll = () => {
                       duration={`${translate.getTranslation(
                         lang,
                         "onMarket"
-                      )} ${duration.days} ${translate.getTranslation(
-                        lang,
-                        "days"
-                      )}`}
+                      )} ${
+                        differenceInDays(
+                          item?.date_signed || new Date(),
+                          new Date()
+                        ) < 1
+                          ? Math.abs(differenceInDays(
+                              item?.date_signed || new Date(),
+                              new Date()
+                            ))
+                          : 0
+                      } ${translate.getTranslation(lang, "days")}`}
                     />
                   );
                 })}
