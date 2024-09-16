@@ -410,7 +410,7 @@ export const getDataForAreaTimePie = (
       labels.push(labelItem);
       dataPreset[labelItem] = [];
     }
-
+    
     list.forEach((item) => {
       if (
         dataPreset[`${item.date?.split("-")[0]}-${item.date?.split("-")[1]}`]
@@ -453,7 +453,7 @@ export const getDataForAreaTimePie = (
               .map(
                 (item, index) =>
                   `${formatDate(item, lang, false)}: ${
-                    dataPreset[Object.keys(dataPreset)[index]].length
+                    dataPreset[Object.keys(dataPreset)[index]]?.length
                   }`
               )
               .reverse(),
@@ -461,7 +461,7 @@ export const getDataForAreaTimePie = (
         labels.length > 12
           ? longData.reverse()
           : Object.keys(dataPreset)
-              .map((key) => dataPreset[key].length)
+              .map((key) => dataPreset[key]?.length)
               .reverse(),
     };
   }

@@ -1,6 +1,7 @@
 import { Link } from "@remix-run/react";
 import { LangType } from "../../types/dashboard.types";
 import { Translator } from "../../data/language/translator";
+import { switchLanguage } from "../../utils/market";
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
 const SideNavigation = ({
@@ -23,7 +24,7 @@ const SideNavigation = ({
 
   const translate = new Translator("navigation");
   return (
-    <nav className="bg-gray-700 shadow-lg h-screen fixed top-0 left-0 w-[260px] min-w-[260px]  px-6 pb-6 pt-2 font-[sans-serif] flex flex-col overflow-auto">
+    <nav className="bg-gray-800 shadow-lg h-screen fixed top-0 left-0 w-[220px] min-w-[220px]  px-4 pb-4 pt-2 font-[sans-serif] flex flex-col overflow-auto">
       <div className="w-full">
         <div className="w-[120px] m-auto">
           <Link to={`/?lang=${lang}`}>
@@ -43,9 +44,32 @@ const SideNavigation = ({
       <ul className="flex-1 mt-4 mb-10">
         <li className="py-3 mb-0.5s">
           <Link
+            to={`/market?page=1&lang=${lang}`}
+            className={url.includes("/market") ? styleMap.itemActive : styleMap.item}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6 w-6 mr-3 inline"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z"
+                clipRule="evenodd"
+              />
+            </svg>
+
+            <span>{translate.getTranslation(lang, "marketSearch")}</span>
+          </Link>
+        </li>
+        <li className="py-3 mb-0.5s">
+          <Link
             to={`/dashboard/search?lang=${lang}`}
             className={
-              url === "/dashboard/search" ? styleMap.itemActive : styleMap.item
+              url.includes("/dashboard/search") ? styleMap.itemActive : styleMap.item
             }
           >
             <svg
@@ -66,6 +90,7 @@ const SideNavigation = ({
             <span>{translate.getTranslation(lang, "areaSearch")}</span>
           </Link>
         </li>
+
         {/* <li className="py-3 mb-0.5s">
           <Link
             to="/dashboard/connections"
@@ -117,7 +142,7 @@ const SideNavigation = ({
       <ul>
         <li className="mb-8">
           <Link
-            to={`${url}?lang=${nextLang}`}
+            to={switchLanguage(url,nextLang)}
             className="text-blue-300 hover:text-blue-400 text-sm flex items-center rounded-md"
           >
             <svg

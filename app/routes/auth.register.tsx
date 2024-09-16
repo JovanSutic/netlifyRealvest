@@ -47,7 +47,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     const user = await supabaseClient.auth.getUser();
     if (user?.data?.user?.role === "authenticated") {
-      return redirect(`/dashboard/search?lang=${lang}`);
+      return redirect(`/market?page=1&lang=${lang}`);
     }
   } catch (error) {
     isError = true;

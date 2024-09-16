@@ -5,6 +5,7 @@ import {
 } from "../types/dashboard.types";
 import { RangeOption, rangeOptions } from "./dateTime";
 import { isNumber } from "./numbers";
+import { UAParser } from 'ua-parser-js';
 
 export const getParamValue = (
   search: string,
@@ -44,6 +45,14 @@ export const isDashboardParamsValid = (params: DashboardParams): boolean => {
     return true;
   return false;
 };
+
+export const detectDevice = (userAgent: string): string => {
+  const parser = new UAParser(userAgent);
+  const device = parser.getDevice();
+
+  return device.type || 'desktop';
+};
+
 
 export const isMobile = (userAgent: string) => {
   if (
