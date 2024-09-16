@@ -17,7 +17,6 @@ import { jwtDecode } from "jwt-decode";
 import { FinalError } from "../types/component.types";
 import { MarketIndexItem, PhotoItem } from "../types/market.types";
 import { intervalToDuration } from "date-fns";
-import { getNumberWithDecimals } from "../utils/market";
 import { makeNumberCurrency } from "../utils/numbers";
 
 export const links: LinksFunction = () => [
@@ -141,8 +140,6 @@ const MarketAll = () => {
 
   const { data, pages } = useLoaderData<typeof loader>();
 
-  console.log(data);
-
   return (
     <DashboardPage>
       <div className="font-[sans-serif] bg-gray-100">
@@ -178,10 +175,7 @@ const MarketAll = () => {
                       link={`${item?.id}?lang=${lang}&fromPage=${page}`}
                       lang={lang}
                       price={makeNumberCurrency(item!.price)}
-                      appreciation={`${getNumberWithDecimals(
-                        (item?.profitability_competition_trend || 0) * 100,
-                        2
-                      )}%`}
+                      appreciation={item?.profitability_competition_trend || 0}
                       photo={item?.photo?.link || ""}
                       title={`${item?.city_part}, ${item?.size}m2`}
                       rent={(item?.profitability_rental_count || 0) > 2}

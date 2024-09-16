@@ -276,6 +276,14 @@ const isAdditionalSecurity = (detail: Details) => {
   );
 };
 
+const isWithView = (detail: Details) => {
+  return catchIndicators(detail.description || "", [
+    "sa pogledom",
+    "pogled na",
+    "pogled",
+  ])
+}
+
 export const getMarketFeatures = (detail: Details): FeatureItem[] => {
   const result = [
     { name: "featTerrace", isTrue: isTerrace(detail) },
@@ -283,6 +291,8 @@ export const getMarketFeatures = (detail: Details): FeatureItem[] => {
     { name: "featHeat", isTrue: isGoodHeating(detail) },
     { name: "featParking", isTrue: getParkingPoints(detail) > 0 },
     { name: "featRenovation", isTrue: isRenovation(detail) },
+    { name: "featFurnished", isTrue: Boolean(detail.furnished) },
+    { name: "featView", isTrue: isWithView(detail) },
     { name: "featLift", isTrue: Boolean(detail.lift) },
     { name: "featCellar", isTrue: Boolean(detail.cellar) },
     { name: "featInter", isTrue: Boolean(detail.intercom) },

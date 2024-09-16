@@ -47,7 +47,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const user = await supabaseClient.auth.getUser();
 
     if (user?.data?.user?.role === "authenticated") {
-      return redirect(`/dashboard/search?lang=${lang}`);
+      return redirect(`/market?page=1&lang=${lang}`);
     }
   } catch (error) {
     isError = true;
@@ -122,7 +122,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             await assignRole(supabaseClient, data.user.id);
 
           if (roleSuccess) {
-            return redirect(`/dashboard/search?lang=${lang}`, { headers });
+            return redirect(`/market?page=1&lang=${lang}`, { headers });
           } else {
             throw json({ error: roleMessage, lang }, { status: 400 });
           }

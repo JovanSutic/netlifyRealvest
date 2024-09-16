@@ -1,6 +1,7 @@
 import { Link } from "@remix-run/react";
 import { Translator } from "../../data/language/translator";
 import { LangType } from "../../types/dashboard.types";
+import { getNumberWithDecimals } from "../../utils/market";
 
 const MarketCard = ({
   photo,
@@ -16,7 +17,7 @@ const MarketCard = ({
   title: string;
   duration: string;
   link: string;
-  appreciation: string;
+  appreciation: number;
   lang: LangType;
   price: string;
   rent: boolean;
@@ -41,13 +42,19 @@ const MarketCard = ({
       </div>
 
       <div className="px-3 mb-12">
-        <h3 className="text-lg lg:text-sm font-semibold text-black mb-2">{title}</h3>
+        <h3 className="text-lg lg:text-sm font-semibold text-black mb-2">
+          {title}
+        </h3>
         <p>
           <span className="text-gray-700 font-bold mr-1 text-md md:text-sm">
             {`${translate.getTranslation(lang, "trendShort")}:`}
           </span>
-          <span className="text-blue-500 text-md font-extrabold mr-1">
-            {appreciation}
+          <span
+            className={`text-blue-500 text-md font-extrabold mr-1 ${
+              appreciation > 0 ? "text-blue-500" : "text-red-500"
+            }`}
+          >
+            {`${getNumberWithDecimals((appreciation || 0) * 100, 2)}%`}
           </span>
           <span className="text-gray-600 text-[12px]">{`(${translate.getTranslation(
             lang,
@@ -58,7 +65,11 @@ const MarketCard = ({
           <span className="text-gray-700 mr-1 text-md md:text-sm">
             {`${translate.getTranslation(lang, "rentalHighlight")}:`}
           </span>
-          <span className={`font-regular mr-1 text-md md:text-sm ${rent ? 'text-blue-500' : 'text-gray-400'}`}>
+          <span
+            className={`font-regular mr-1 text-md md:text-sm ${
+              rent ? "text-blue-500" : "text-gray-400"
+            }`}
+          >
             {`${translate.getTranslation(lang, rent ? "rentOn" : "rentOff")}`}
           </span>
         </p>

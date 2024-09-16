@@ -24,7 +24,7 @@ const Slider = ({
 
     
 
-    return `left-[50%]`;
+    return `left-[55%]`;
   };
 
   return (
