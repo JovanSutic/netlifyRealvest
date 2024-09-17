@@ -58,7 +58,7 @@ const MarketRentalAnalysis = ({
             isMobile ? "mb-2" : "mb-4"
           }`}
         >
-          <h3 className="text-lg text-center font-semibold">
+          <h3 className="text-[22px] md:text-lg font-bold">
             {translate.getTranslation(lang, "rentalTitle")}
           </h3>
           <div className="w-[30px]">

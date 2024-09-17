@@ -144,7 +144,7 @@ const MarketAll = () => {
     <DashboardPage>
       <div className="font-[sans-serif] bg-gray-100">
         <div className="p-4 mx-auto lg:max-w-7xl sm:max-w-full">
-          <h2 className="text-center text-xl md:text-2xl xl:text-3xl font-bold mb-6">
+          <h2 className="text-center text-[24px] md:text-2xl xl:text-3xl font-bold mb-6">
             {translate.getTranslation(lang, "allTitle")}
           </h2>
 

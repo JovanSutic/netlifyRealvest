@@ -113,7 +113,7 @@ const AppreciateReport = ({
                 </svg>
               </Tooltip>
             </div>
-            <div className="w-[calc(100%-35px)]"><h3 className="w-full text-center font-bold text-md mb-4">{translate.getTranslation(lang, "appreciationTitle")}</h3></div>
+            <div className="w-[calc(100%-35px)]"><h3 className="w-full text-left lg:text-center font-bold text-[22px] md:text-lg mb-4">{translate.getTranslation(lang, "appreciationTitle")}</h3></div>
           </div>
           <div>
             <div className="w-full flex border-grey-300 border-[1px] rounded-xl bg-gray-100">
