@@ -539,7 +539,7 @@ const DashboardSearch = () => {
             <div className="grid grid-cols-6 grid-rows-1 gap-1 mb-4">
               <div className="col-span-5 col-start-1">
                 <div className="my-0 xl:my-2 flex h-full flex-row items-center">
-                  <h2 className="text-left text-md md:text-[22px] font-bold">
+                  <h2 className="text-left text-[22px] md:text-lg font-bold">
                     {translate.getTranslation(lang, "searchTitle")}
                   </h2>
                 </div>

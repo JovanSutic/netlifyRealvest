@@ -16,7 +16,7 @@ const MarketFeatureList = ({
   return (
     <div className="w-full">
       <div className={`w-full flex flex-column justify-between mb-4`}>
-        <h3 className="text-lg text-center font-semibold">
+        <h3 className="text-[22px] md:text-lg font-bold">
           {translate.getTranslation(lang, "featTitle")}
         </h3>
         <span className="w-[30px]">
@@ -104,7 +104,7 @@ const MarketFeatureList = ({
               </svg>
             )}
 
-            <p className="w-fit ml-2">
+            <p className="w-fit ml-2 text-sm">
               {translate.getTranslation(lang, item.name)}
             </p>
           </div>
