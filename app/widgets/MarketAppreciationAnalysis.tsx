@@ -9,6 +9,7 @@ import Slider from "../components/slider";
 import { LangType } from "../types/dashboard.types";
 import { Translator } from "../data/language/translator";
 import Tooltip from "../components/tooltip/Tooltip";
+import { Link } from "@remix-run/react";
 
 const calculateIRR = (
   currentPrice: number,
@@ -33,6 +34,7 @@ const MarketAppreciationAnalysis = ({
   average,
   lang,
   isMobile,
+  role,
 }: {
   trend: number;
   price: number;
@@ -40,10 +42,12 @@ const MarketAppreciationAnalysis = ({
   average: number;
   lang: LangType;
   isMobile: boolean;
+  role: string;
 }) => {
   const [open, setOpen] = useState<boolean>(true);
   const [years, setYears] = useState<number>(5);
   const translate = new Translator("market");
+  const dashTranslate = new Translator("dashboard");
 
   useEffect(() => {
     setOpen(!isMobile)
@@ -52,6 +56,40 @@ const MarketAppreciationAnalysis = ({
   const changeStep = (event: ChangeEvent<HTMLInputElement>) => {
     setYears(Number(event.target.value));
   };
+
+  if (role !== "premium") {
+    return (
+      <div className="w-full h-full flex flex-col">
+        <div
+          className={`w-full flex flex-column justify-between ${
+            isMobile ? "mb-2" : "mb-4"
+          }`}
+        >
+          <h3 className="text-[22px] md:text-lg font-bold">
+            {translate.getTranslation(lang, "appreciationTitle")}
+          </h3>
+        </div>
+        <div className="bg-[url('/blurred_table.jpg')] bg-contain bg-opacity-90">
+          <div className="flex flex-col w-full justify-center h-[200px]">
+            <div className="w-full flex justify-center mb-5">
+              <p className="bg-white px-1 flex items-center text-center text-black text-md">
+                {dashTranslate.getTranslation(lang, "premiumSubtitle")}
+              </p>
+            </div>
+            <div className="w-full flex justify-center">
+              <Link
+                to={`/plans?lang=${lang}`}
+                className="text-md text-blue-950 px-6 py-2 bg-amber-300 font-semibold rounded-md transition-all duration-300 transform hover:bg-amber-400 focus:outline-none disabled:bg-gray-300 disabled:cursor-no-drop"
+              >
+                {dashTranslate.getTranslation(lang, "premiumButton")}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div>
       <div>
