@@ -141,9 +141,10 @@ const MarketSingle = () => {
   const lang = (searchParams.get("lang") as LangType) || "sr";
   const page = searchParams.get("fromPage") || "1";
 
-  const { data, device } = useLoaderData<{
+  const { data, device, role } = useLoaderData<{
     data: MarketSingleType;
     device: string;
+    role: string;
   }>();
 
   const translate = new Translator("market");
@@ -177,6 +178,7 @@ const MarketSingle = () => {
               trend={data.profit.competition_trend}
               lang={lang}
               isMobile={device === "mobile"}
+              role={role}
             />
           </WidgetWrapper>
           <WidgetWrapper>
@@ -186,6 +188,7 @@ const MarketSingle = () => {
               data={data as unknown as MarketSingleType}
               lang={lang}
               isMobile={device === "mobile"}
+              role={role}
             />
           </WidgetWrapper>
           <WidgetWrapper>
@@ -194,6 +197,7 @@ const MarketSingle = () => {
               data={data as unknown as MarketSingleType}
               lang={lang}
               isMobile={device === "mobile"}
+              role={role}
             />
           </WidgetWrapper>
         </div>

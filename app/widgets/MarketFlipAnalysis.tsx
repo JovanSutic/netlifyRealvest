@@ -11,8 +11,7 @@ import { LangType } from "../types/dashboard.types";
 import { Translator } from "../data/language/translator";
 import Tooltip from "../components/tooltip/Tooltip";
 import { MarketSingleType } from "../types/market.types";
-
-
+import { Link } from "@remix-run/react";
 
 const MarketFlipAnalysis = ({
   data,
@@ -20,18 +19,28 @@ const MarketFlipAnalysis = ({
   average,
   lang,
   isMobile,
+  role,
 }: {
   data: MarketSingleType;
   price: number;
   average: number;
   lang: LangType;
   isMobile: boolean;
+  role: string;
 }) => {
   const [open, setOpen] = useState<boolean>(true);
   const translate = new Translator("market");
+  const dashTranslate = new Translator("dashboard");
 
-  const maxPrice = isNewBuild(data.details) && (data.profit.max_competition > (data.average_price! * 2.2)) ? data.profit.max_competition / 2 : data.profit.max_competition;
-  const probability = getFlipProbability(data.details, data.room_ratio || 0.001);
+  const maxPrice =
+    isNewBuild(data.details) &&
+    data.profit.max_competition > data.average_price! * 2.2
+      ? data.profit.max_competition / 2
+      : data.profit.max_competition;
+  const probability = getFlipProbability(
+    data.details,
+    data.room_ratio || 0.001
+  );
   const renovationM2Price = getRenovationExpenses(data.details);
   const flipPrice = data.size * maxPrice * probability;
   const flipInvestment =
@@ -42,6 +51,39 @@ const MarketFlipAnalysis = ({
   useEffect(() => {
     setOpen(!isMobile);
   }, []);
+
+  if (role !== "premium") {
+    return (
+      <div className="w-full h-full flex flex-col">
+        <div
+          className={`w-full flex flex-column justify-between ${
+            isMobile ? "mb-2" : "mb-4"
+          }`}
+        >
+          <h3 className="text-[22px] md:text-lg font-bold">
+            {translate.getTranslation(lang, "flipTitle")}
+          </h3>
+        </div>
+        <div className="bg-[url('/blurred_table.jpg')] bg-contain bg-opacity-90">
+          <div className="flex flex-col w-full justify-center h-[200px]">
+            <div className="w-full flex justify-center mb-5">
+              <p className="bg-white px-1 flex items-center text-center text-black text-md">
+                {dashTranslate.getTranslation(lang, "premiumSubtitle")}
+              </p>
+            </div>
+            <div className="w-full flex justify-center">
+              <Link
+                to={`/plans?lang=${lang}`}
+                className="text-md text-blue-950 px-6 py-2 bg-amber-300 font-semibold rounded-md transition-all duration-300 transform hover:bg-amber-400 focus:outline-none disabled:bg-gray-300 disabled:cursor-no-drop"
+              >
+                {dashTranslate.getTranslation(lang, "premiumButton")}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -136,7 +178,8 @@ const MarketFlipAnalysis = ({
                 <div className="w-[20%]">
                   <p className="font-bold text-sm">
                     {makeNumberCurrency(
-                      getPropertyPurchaseExpenses(data.price, data.details).total
+                      getPropertyPurchaseExpenses(data.price, data.details)
+                        .total
                     )}
                   </p>
                 </div>
@@ -145,7 +188,10 @@ const MarketFlipAnalysis = ({
             <li>
               <div className="flex w-full px-2 py-1">
                 <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(lang, 'flipRenovation')}:`}</p>
+                  <p className="text-sm">{`${translate.getTranslation(
+                    lang,
+                    "flipRenovation"
+                  )}:`}</p>
                 </div>
                 <div className="w-[20%]">
                   <p className="font-bold text-sm">
@@ -157,7 +203,10 @@ const MarketFlipAnalysis = ({
             <li>
               <div className="flex w-full px-2 py-1">
                 <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(lang, 'flipTotal')}:`}</p>
+                  <p className="text-sm">{`${translate.getTranslation(
+                    lang,
+                    "flipTotal"
+                  )}:`}</p>
                 </div>
                 <div className="w-[20%]">
                   <p className="font-bold text-sm">
@@ -172,7 +221,10 @@ const MarketFlipAnalysis = ({
             <li className="mt-2">
               <div className="flex w-full px-2 py-1">
                 <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(lang, 'flipMax')}:`}</p>
+                  <p className="text-sm">{`${translate.getTranslation(
+                    lang,
+                    "flipMax"
+                  )}:`}</p>
                 </div>
                 <div className="w-[20%]">
                   <p className="font-bold text-sm">
@@ -184,17 +236,26 @@ const MarketFlipAnalysis = ({
             <li>
               <div className="flex w-full px-2 py-1">
                 <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(lang, 'flipProbability')}:`}</p>
+                  <p className="text-sm">{`${translate.getTranslation(
+                    lang,
+                    "flipProbability"
+                  )}:`}</p>
                 </div>
                 <div className="w-[20%]">
-                  <p className="font-bold text-sm">{`${getNumberWithDecimals(probability*100, 0)}%`}</p>
+                  <p className="font-bold text-sm">{`${getNumberWithDecimals(
+                    probability * 100,
+                    0
+                  )}%`}</p>
                 </div>
               </div>
             </li>
             <li>
               <div className="flex w-full px-2 py-1">
                 <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(lang, 'flipPotential')}:`}</p>
+                  <p className="text-sm">{`${translate.getTranslation(
+                    lang,
+                    "flipPotential"
+                  )}:`}</p>
                 </div>
                 <div className="w-[20%]">
                   <p className="font-bold text-sm">
@@ -209,10 +270,19 @@ const MarketFlipAnalysis = ({
             <li className="mt-2">
               <div className="flex w-full px-2 py-1">
                 <div className="w-[80%]">
-                  <p className="text-md font-semibold">{`${translate.getTranslation(lang, 'flipProfit')}:`}</p>
+                  <p className="text-md font-semibold">{`${translate.getTranslation(
+                    lang,
+                    "flipProfit"
+                  )}:`}</p>
                 </div>
                 <div className="w-[20%]">
-                  <p className={`font-bold text-md ${flipPrice - flipInvestment > 0 ? 'text-blue-500' : 'text-red-500'}`}>
+                  <p
+                    className={`font-bold text-md ${
+                      flipPrice - flipInvestment > 0
+                        ? "text-blue-500"
+                        : "text-red-500"
+                    }`}
+                  >
                     {makeNumberCurrency(flipPrice - flipInvestment)}
                   </p>
                 </div>
