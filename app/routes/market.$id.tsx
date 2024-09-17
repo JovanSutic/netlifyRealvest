@@ -151,7 +151,7 @@ const MarketSingle = () => {
   return (
     <DashboardPage>
       <div className="w-full pt-2 pb-6">
-        <div className="w-full mb-4 md:mb-2 flex flex-row-reverse">
+        <div className="w-full mb-3 md:mb-2 flex flex-row-reverse">
           <Link
             to={`/market?page=${page}&lang=${lang}`}
             className="text-blue-500 text-md underline"
@@ -160,7 +160,7 @@ const MarketSingle = () => {
           </Link>
         </div>
         <div>
-          <h2 className="text-2xl md:text-3xl font-bold mb-5">
+          <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">
             <span className="text-gray-700">{`${data.city_part}, ${data.size}m2,`}</span>
             <span className="text-blue-500 ml-2">{`${makeNumberCurrency(
               data.price
@@ -168,7 +168,7 @@ const MarketSingle = () => {
           </h2>
         </div>
         <Gallery photos={data.photos} device={device} />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-5 mb-3 lg:mb-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-3 md:mt-4 lg:mt-5 mb-3 lg:mb-0">
           <WidgetWrapper>
             <MarketAppreciationAnalysis
               price={data.price}

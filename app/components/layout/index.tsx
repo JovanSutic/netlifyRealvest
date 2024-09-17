@@ -80,7 +80,7 @@ export const WidgetWrapper = ({
   children: JSX.Element | JSX.Element[];
 }) => {
   return (
-    <div className="bg-white relative box-border rounded-lg p-4 md:p-5 mb-2 md:mb-5 shadow-lg">
+    <div className="bg-white relative box-border rounded-lg px-2 py-4 md:py-5 md:px-4 mb-2 md:mb-5 shadow-lg">
       {children}
     </div>
   );
@@ -155,7 +155,7 @@ export const DashboardPage = ({
 }) => {
   return (
     <div className="pl-0 lg:pl-[220px] min-h-screen bg-gray-100">
-      <div className="px-5">{children}</div>
+      <div className="px-2 md:px-4 lg:px-5">{children}</div>
     </div>
   );
 };
