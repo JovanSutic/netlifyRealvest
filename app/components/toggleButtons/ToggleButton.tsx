@@ -17,7 +17,7 @@ const ToggleButton = ({
           <button onClick={() => onChange(item.value)}>{item.text}</button>
         </div>
       ))}
-      <span className={`bg-white shadow text-gray-800 text-[13px] font-semibold flex items-center justify-center rounded px-3 h-8 transition-all top-[4px] absolute ${orientation}`}>
+      <span className={`bg-white shadow text-gray-800 text-[13px] font-semibold flex items-center justify-center rounded px-3 h-8 transition-all top-[4px] max-w-[50%] leading-[14px] text-center absolute ${orientation}`}>
         {(options || []).find((item) => item.value === value)!.text}
       </span>
       {/* s */}
