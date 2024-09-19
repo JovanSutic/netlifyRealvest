@@ -41,7 +41,7 @@ export interface MarketIndexItem {
   detail_ad_id: number;
   detail_lng: number;
   detail_lat: number;
-  detail_listed: true,
+  detail_listed: true;
   profitability_id: number;
   profitability_competition_trend: number;
   profitability_rental_count: number;
@@ -61,8 +61,6 @@ export interface MarketItem {
   photo?: PhotoItem;
 }
 
-
-
 export interface AverageReport {
   difference: number;
   percent: number;
@@ -70,8 +68,8 @@ export interface AverageReport {
 }
 
 export interface MarketItemHighlight {
-    type: string;
-    value: number;
+  type: string;
+  value: number;
 }
 
 export interface PropertyHighlights {
@@ -81,7 +79,7 @@ export interface PropertyHighlights {
   trend: number;
 }
 
-export type DeviceType = 'mobile' | 'tablet' | 'desktop';
+export type DeviceType = "mobile" | "tablet" | "desktop";
 
 export interface PropertyPurchaseExpenses {
   tax: number;
@@ -90,13 +88,25 @@ export interface PropertyPurchaseExpenses {
   total: number;
 }
 
-export type MarketSingleType =  ListedAd & {
+export type MarketSingleType = ListedAd & {
   details: Details;
   photos: PhotoItem[];
   profit: Profitability;
-}
+};
 
 export interface FeatureItem {
   name: string;
   isTrue: boolean;
+}
+
+export interface MarketFilter {
+  sizeFrom: string;
+  sizeTo: string;
+  priceFrom: string;
+  priceTo: string;
+  m2PriceFrom: string;
+  m2PriceTo: string;
+  rentalAnalysis: string;
+  appreciation: string;
+  cityPart: string;
 }
