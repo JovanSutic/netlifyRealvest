@@ -109,7 +109,7 @@ const MarketFilter = ({
       close={toggleOpen}
       mobile={mobile}
     >
-      <ul>
+      <ul className="min-h-[700px] overflow-y-scroll md:min-h-auto md:overflow-y-hidden">
         <li className="md:mb-4">
           <div className="flex flex-wrap items-center">
             <p className="w-full text-center font-bold text-xl text-black">
@@ -117,7 +117,7 @@ const MarketFilter = ({
             </p>
           </div>
         </li>
-        <li className="px-2 md:mb-3">
+        <li className="px-2 mb-2 md:mb-3">
           <div className="">
             <div>
               <div className="w-full flex flex-row justify-center">
@@ -146,7 +146,7 @@ const MarketFilter = ({
             </div>
           </div>
         </li>
-        <li className="px-2 mb-2 md:mb-3">
+        <li className="px-2 mb-4 md:mb-3">
           <div className="">
             <div>
               <div className="w-full flex flex-row justify-center">
@@ -441,7 +441,7 @@ const MarketFilter = ({
           </div>
         </li>
 
-        <li className={`fixed bottom-0 md:bottom-[20px] right-0 ${containerW}`}>
+        <li className={`relative mt-3 md:mt-0 md:fixed md:bottom-[20px] right-0 ${containerW}`}>
           <div className="w-full flex flex-row justify-center gap-8 px-2 py-3">
             <button
               onClick={() =>
