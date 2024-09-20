@@ -46,6 +46,7 @@ const MarketFilter = ({
   );
 
   const [rentalAnalysis, setRentalAnalysis] = useState<string>("false");
+  const [lowPrice, setLowPrice] = useState<string>("true");
   const [appreciation, setAppreciation] = useState<string>("0");
   const [cityPart, setCityPart] = useState<string>(cityParts[0]);
 
@@ -60,6 +61,7 @@ const MarketFilter = ({
       filters.m2PriceTo !== m2PriceTo.toString() ||
       filters.rentalAnalysis !== rentalAnalysis ||
       filters.appreciation !== appreciation ||
+      filters.lowPrice !== lowPrice ||
       filters.cityPart !== cityPart) &&
     Number(priceFrom) < Number(priceTo) &&
     Number(sizeFrom) < Number(sizeTo) &&
@@ -95,6 +97,9 @@ const MarketFilter = ({
     if (cityPart !== filters.cityPart) {
       setCityPart(filters.cityPart!);
     }
+    if (lowPrice !== filters.lowPrice) {
+      setLowPrice(filters.lowPrice!);
+    }
   }, [isOpen]);
 
   return (
@@ -105,11 +110,40 @@ const MarketFilter = ({
       mobile={mobile}
     >
       <ul>
-        <li className="mb-1 md:mb-4">
+        <li className="md:mb-4">
           <div className="flex flex-wrap items-center">
-            <p className="w-full text-center font-bold text-xl mb-2 text-black">
+            <p className="w-full text-center font-bold text-xl text-black">
               {translate.getTranslation(lang, "filters")}
             </p>
+          </div>
+        </li>
+        <li className="px-2 md:mb-3">
+          <div className="">
+            <div>
+              <div className="w-full flex flex-row justify-center">
+                <ToggleButton
+                  fullWidth
+                  value={lowPrice}
+                  onChange={(value: string) => setLowPrice(value)}
+                  options={[
+                    {
+                      text: marketTranslate.getTranslation(
+                        lang,
+                        "filterRentalFalse"
+                      ),
+                      value: "true",
+                    },
+                    {
+                      text: marketTranslate.getTranslation(
+                        lang,
+                        "filterLowPrice"
+                      ),
+                      value: "false",
+                    },
+                  ]}
+                />
+              </div>
+            </div>
           </div>
         </li>
         <li className="px-2 mb-2 md:mb-3">
@@ -117,6 +151,7 @@ const MarketFilter = ({
             <div>
               <div className="w-full flex flex-row justify-center">
                 <ToggleButton
+                  fullWidth
                   value={rentalAnalysis}
                   onChange={(value: string) => setRentalAnalysis(value)}
                   options={[
@@ -140,6 +175,7 @@ const MarketFilter = ({
             </div>
           </div>
         </li>
+
         <li className="px-2 mb-2 md:mb-3">
           <div className="">
             <div>
@@ -162,7 +198,7 @@ const MarketFilter = ({
                   options={[
                     {
                       text: marketTranslate.getTranslation(lang, "filterAll"),
-                      value: "0",
+                      value: "-10",
                     },
                     {
                       text: `${marketTranslate.getTranslation(
@@ -405,9 +441,7 @@ const MarketFilter = ({
           </div>
         </li>
 
-        <li
-          className={`fixed bottom-[1px] md:bottom-[20px] right-0 ${containerW}`}
-        >
+        <li className={`fixed bottom-0 md:bottom-[20px] right-0 ${containerW}`}>
           <div className="w-full flex flex-row justify-center gap-8 px-2 py-3">
             <button
               onClick={() =>
@@ -421,6 +455,7 @@ const MarketFilter = ({
                   rentalAnalysis,
                   appreciation,
                   cityPart,
+                  lowPrice,
                 })
               }
               disabled={!isChanged}
