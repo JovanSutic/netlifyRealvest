@@ -109,4 +109,14 @@ export interface MarketFilter {
   rentalAnalysis: string;
   appreciation: string;
   cityPart: string;
+  lowPrice: string;
 }
+
+
+const marketSortTypes = ["date_desc", "date_asc", "price_desc", "price_asc", "size_desc", "size_asc",] as const;
+export type MarketSortType = (typeof marketSortTypes)[number];
+
+export interface SortParams {
+  column: string;
+  order: string;
+} 

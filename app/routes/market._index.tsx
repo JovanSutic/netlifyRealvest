@@ -18,6 +18,7 @@ import { FinalError } from "../types/component.types";
 import {
   MarketFilter as MarketFilterType,
   MarketIndexItem,
+  MarketSortType,
   PhotoItem,
 } from "../types/market.types";
 import { differenceInDays } from "date-fns";
@@ -25,6 +26,7 @@ import { makeNumberCurrency } from "../utils/numbers";
 import Select from "../components/select/Select";
 import MarketFilter from "../components/filters/MarketFilter";
 import { useState } from "react";
+import { getSortingParams } from "../utils/market";
 
 export const links: LinksFunction = () => [
   {
@@ -54,7 +56,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const sizeTo = new URL(request.url).searchParams.get("size_to") || "1000";
   const priceFrom = new URL(request.url).searchParams.get("price_from") || "0";
   const priceTo =
-    new URL(request.url).searchParams.get("price_to") || "1500000";
+    new URL(request.url).searchParams.get("price_to") || "30000000";
   const m2PriceFrom =
     new URL(request.url).searchParams.get("m2_price_from") || "0";
   const m2PriceTo =
@@ -62,8 +64,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const rentalAnalysis =
     new URL(request.url).searchParams.get("rental_analysis") || "false";
   const appreciation =
-    new URL(request.url).searchParams.get("appreciation") || "0";
+    new URL(request.url).searchParams.get("appreciation") || "-10";
   const cityPart = new URL(request.url).searchParams.get("city_part") || "all";
+  const sort = new URL(request.url).searchParams.get("sort") || "date_asc";
+  const low_price = new URL(request.url).searchParams.get("low_price") || "true";
 
   const limit = 20;
   const rangeStart = (Number(page) - 1) * limit;
@@ -104,6 +108,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         rental: rentalAnalysis === "true" ? 3 : 0,
         trend: Number(appreciation) / 100,
         part: cityPart,
+        low_price: low_price,
       }
     );
 
@@ -111,6 +116,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       isError = true;
       finalError = countError as FinalError;
     }
+
+    const sortingParams = getSortingParams(sort as unknown as MarketSortType);
 
     const { data: queryData, error: queryError } = await supabaseClient.rpc(
       "get_apartments_with_details_and_profitability",
@@ -126,6 +133,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         rental: rentalAnalysis === "true" ? 3 : 0,
         trend: Number(appreciation) / 100,
         part: cityPart,
+        low_price: low_price,
+        p_sort_column: sortingParams.column,
+        p_sort_order: sortingParams.order,
       }
     );
 
@@ -199,12 +209,14 @@ const MarketAll = () => {
   const sizeFrom = searchParams.get("size_from") || "0";
   const sizeTo = searchParams.get("size_to") || "1000";
   const priceFrom = searchParams.get("price_from") || "0";
-  const priceTo = searchParams.get("price_to") || "1500000";
+  const priceTo = searchParams.get("price_to") || "3000000";
   const m2PriceFrom = searchParams.get("m2_price_from") || "0";
   const m2PriceTo = searchParams.get("m2_price_to") || "15000";
   const rentalAnalysis = searchParams.get("rental_analysis") || "false";
   const appreciation = searchParams.get("appreciation") || "0";
   const cityPart = searchParams.get("city_part") || "all";
+  const marketSort = searchParams.get("sort") || "date_asc";
+  const lowPrice = searchParams.get("low_price") || "true";
 
   const setFilters = (filters: MarketFilterType) => {
     const params = new URLSearchParams();
@@ -219,6 +231,8 @@ const MarketAll = () => {
     params.set("price_from", filters.priceFrom);
     params.set("size_to", filters.sizeTo);
     params.set("size_from", filters.sizeFrom);
+    params.set("low_price", filters.lowPrice);
+    params.set("sort", marketSort);
 
     setSearchParams(params, {
       preventScrollReset: true,
@@ -244,6 +258,7 @@ const MarketAll = () => {
           rentalAnalysis,
           appreciation,
           cityPart,
+          lowPrice
         }}
         cityParts={cityParts}
         toggleOpen={() => setOpenFilter(!openFilter)}
@@ -273,15 +288,24 @@ const MarketAll = () => {
                 </svg>
               </button>
             </div>
-            <div className="flex w-full md:w-[220px]">
+            <div className="flex w-full md:w-[260px]">
               <Select
-                name="marketFilter"
+                name="marketSort"
                 isFullWidth
-                value={"1"}
-                setValue={() => console.log("val")}
+                value={marketSort}
+                setValue={(value) =>
+                  setSearchParams((prev) => {
+                    prev.set("sort", `${value}`);
+                    return prev;
+                  })
+                }
                 options={[
-                  { value: "1", text: "po ceni" },
-                  { value: "2", text: "po datumu" },
+                  { value: "date_desc", text: translate.getTranslation(lang, 'sortDateDesc') },
+                  { value: "date_asc", text: translate.getTranslation(lang, 'sortDateAsc')  },
+                  { value: "price_desc", text: translate.getTranslation(lang, 'sortPriceDesc')  },
+                  { value: "price_asc", text: translate.getTranslation(lang, 'sortPriceAsc')  },
+                  { value: "size_desc", text: translate.getTranslation(lang, 'sortSizeDesc')  },
+                  { value: "size_asc", text: translate.getTranslation(lang, 'sortSizeAsc')  },
                 ]}
               />
             </div>

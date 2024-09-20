@@ -3,7 +3,9 @@ import {
   AverageReport,
   FeatureItem,
   MarketItem,
+  MarketSortType,
   PropertyPurchaseExpenses,
+  SortParams,
 } from "../types/market.types";
 
 export const switchLanguage = (path: string, newLang: LangType): string => {
@@ -309,3 +311,14 @@ export const getMarketFeatures = (detail: Details): FeatureItem[] => {
 
   return result;
 };
+
+export const getSortingParams = (param: MarketSortType): SortParams => {
+  if(param === 'date_asc') return {column: 'date_signed', order: 'ASC'};
+  if(param === 'date_desc') return {column: 'date_signed', order: 'DESC'};
+  if(param === 'price_asc') return {column: 'price', order: 'ASC'};
+  if(param === 'price_desc') return {column: 'price', order: 'DESC'};
+  if(param === 'size_asc') return {column: 'size', order: 'ASC'};
+  if(param === 'size_desc') return {column: 'size', order: 'DESC'};
+
+  return {column: 'date_signed', order: 'ASC'}
+}
