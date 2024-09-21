@@ -1,10 +1,10 @@
 import { DashboardPage, WidgetWrapper } from "../components/layout";
 import { LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
 import {
-  Link,
   MetaFunction,
   useLoaderData,
   useSearchParams,
+  useNavigate
 } from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
 import { Translator } from "../data/language/translator";
@@ -139,7 +139,9 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 const MarketSingle = () => {
   const [searchParams] = useSearchParams();
   const lang = (searchParams.get("lang") as LangType) || "sr";
-  const page = searchParams.get("fromPage") || "1";
+
+  const navigate = useNavigate();
+  const goBack = () => navigate(-1);
 
   const { data, device, role } = useLoaderData<{
     data: MarketSingleType;
@@ -153,12 +155,13 @@ const MarketSingle = () => {
     <DashboardPage>
       <div className="w-full pt-2 pb-6">
         <div className="w-full mb-3 md:mb-2 flex flex-row-reverse">
-          <Link
-            to={`/market?page=${page}&lang=${lang}`}
+          <button
+            type="button"
+            onClick={goBack}
             className="text-blue-500 text-md underline"
           >
             {translate.getTranslation(lang, "back")}
-          </Link>
+          </button>
         </div>
         <div>
           <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">
