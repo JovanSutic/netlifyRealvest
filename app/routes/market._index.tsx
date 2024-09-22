@@ -177,7 +177,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return json({
       data: results,
       cityParts: partsData,
-      pages: Math.round(countData / limit),
+      pages: Math.ceil(countData / limit),
+      count: countData,
       mobile: isMobile(userAgent!),
       role: userRole,
     });
@@ -193,6 +194,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     data: [],
     cityParts: [],
     pages: 0,
+    count: 0,
     mobile: isMobile(userAgent!),
     role: userRole,
   };
@@ -240,7 +242,7 @@ const MarketAll = () => {
     setOpenFilter(false);
   };
 
-  const { data, pages, mobile, role, cityParts } =
+  const { data, pages, mobile, role, cityParts, count } =
     useLoaderData<typeof loader>();
 
   return (
@@ -272,12 +274,12 @@ const MarketAll = () => {
             {translate.getTranslation(lang, "allTitle")}
           </h2>
           <div className="mb-6 pb-4 border-b-[1px] border-gray-300 flex flex-col md:flex-row gap-2 justify-between">
-            <div className="flex w-full md:w-[220px]">
+            <div className="flex w-full md:w-[260px]">
               <button
                 onClick={() => setOpenFilter(true)}
                 className="w-full bg-blue-500 text-white flex flex-row gap-2 justify-center font-semibold leading-[28px] rounded-md px-3 py-1 hover:bg-blue-600 leading-[37px]"
               >
-                {translate.getTranslation(lang, "filters")}
+                {`${translate.getTranslation(lang, "filters")} (${count})`}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -296,6 +298,7 @@ const MarketAll = () => {
                 setValue={(value) =>
                   setSearchParams((prev) => {
                     prev.set("sort", `${value}`);
+                    prev.set("page", "1");
                     return prev;
                   })
                 }

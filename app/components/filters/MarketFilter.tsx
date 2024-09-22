@@ -257,7 +257,7 @@ const MarketFilter = ({
                     value: item,
                     text:
                       item === "all"
-                        ? marketTranslate.getTranslation(lang, "filterAll")
+                        ? marketTranslate.getTranslation(lang, "filterAll1")
                         : item,
                   }))}
                 />
