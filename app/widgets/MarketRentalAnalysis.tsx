@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
 import { makeNumberCurrency } from "../utils/numbers";
 import {
   getNumberWithDecimals,
   getPropertyPurchaseExpenses,
 } from "../utils/market";
-import { LangType } from "../types/dashboard.types";
+import { LangType, RoleType } from "../types/dashboard.types";
 import { Translator } from "../data/language/translator";
 import Tooltip from "../components/tooltip/Tooltip";
 import { MarketSingleType } from "../types/market.types";
-import { Link } from "@remix-run/react";
+import Premium from "../components/placeholder/Premium";
 
 const calculateCapRate = (noi: number, marketValue: number): number => {
   if (marketValue === 0) {
@@ -28,9 +27,8 @@ const MarketRentalAnalysis = ({
   price: number;
   lang: LangType;
   isMobile: boolean;
-  role: string;
+  role: RoleType;
 }) => {
-  const [open, setOpen] = useState<boolean>(true);
   const translate = new Translator("market");
   const dashTranslate = new Translator("dashboard");
 
@@ -41,11 +39,7 @@ const MarketRentalAnalysis = ({
       data.profit.average_rental) *
     100;
 
-  useEffect(() => {
-    setOpen(!isMobile);
-  }, []);
-
-  if (role !== "premium") {
+  if (role !== "premium" && role !== "limitedPremium") {
     return (
       <div className="w-full h-full flex flex-col">
         <div
@@ -53,27 +47,14 @@ const MarketRentalAnalysis = ({
             isMobile ? "mb-2" : "mb-4"
           }`}
         >
-          <h3 className="text-[22px] md:text-lg font-bold">
-            {translate.getTranslation(lang, "rentalTitle")}
-          </h3>
+          <h3 className="text-[22px] md:text-lg font-bold">{translate.getTranslation(lang, "rentalTitle")}</h3>
         </div>
-        <div className="bg-[url('/blurred_table.jpg')] bg-contain bg-opacity-90">
-          <div className="flex flex-col w-full justify-center h-[200px]">
-            <div className="w-full flex justify-center mb-5">
-              <p className="bg-white px-1 flex items-center text-center text-black text-md">
-                {dashTranslate.getTranslation(lang, "premiumSubtitle")}
-              </p>
-            </div>
-            <div className="w-full flex justify-center">
-              <Link
-                to={`/plans?lang=${lang}`}
-                className="text-md text-blue-950 px-6 py-2 bg-amber-300 font-semibold rounded-md transition-all duration-300 transform hover:bg-amber-400 focus:outline-none disabled:bg-gray-300 disabled:cursor-no-drop"
-              >
-                {dashTranslate.getTranslation(lang, "premiumButton")}
-              </Link>
-            </div>
-          </div>
-        </div>
+        <Premium
+          lang={lang}
+          title={dashTranslate.getTranslation(lang, "premiumSubtitle")}
+          subTitle={dashTranslate.getTranslation(lang, "premiumSmallSubtitle")}
+          button={dashTranslate.getTranslation(lang, "premiumButton")}
+        />
       </div>
     );
   }
@@ -153,137 +134,124 @@ const MarketRentalAnalysis = ({
             </Tooltip>
           </div>
         </div>
-        {isMobile && (
-          <div className="flex flex-row justify-center">
-            <button
-              className="text-md text-blue-500 underline"
-              onClick={() => setOpen(!open)}
-            >{`${translate.getTranslation(
-              lang,
-              open ? "seeLess" : "seeMore"
-            )}`}</button>
-          </div>
-        )}
       </div>
 
-      {open && (
-        <div className="w-full mt-4">
-          <ul>
-            <li>
-              <div className="flex w-full px-2 py-1">
-                <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(
-                    lang,
-                    "rentalAverage"
-                  )}:`}</p>
-                </div>
-                <div className="w-[20%]">
-                  <p className="font-bold text-sm">
-                    {makeNumberCurrency(data.profit.average_rental)}
-                  </p>
-                </div>
+      <div className="w-full mt-4">
+        <ul>
+          <li>
+            <div className="flex w-full px-2 py-1">
+              <div className="w-[80%]">
+                <p className="text-sm">{`${translate.getTranslation(
+                  lang,
+                  "rentalAverage"
+                )}:`}</p>
               </div>
-            </li>
-            <li>
-              <div className="flex w-full px-2 py-1">
-                <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(
-                    lang,
-                    "appreciationSize"
-                  )}:`}</p>
-                </div>
-                <div className="w-[20%]">
-                  <p className="font-bold text-sm">{`${data.size}m2`}</p>
-                </div>
+              <div className="w-[20%]">
+                <p className="font-bold text-sm">
+                  {makeNumberCurrency(data.profit.average_rental)}
+                </p>
               </div>
-            </li>
-            <li>
-              <div className="flex w-full px-2 py-1">
-                <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(
-                    lang,
-                    "rentalMonth"
-                  )}:`}</p>
-                </div>
-                <div className="w-[20%]">
-                  <p className="font-bold text-sm">
-                    {makeNumberCurrency(data.profit.average_rental * data.size)}
-                  </p>
-                </div>
+            </div>
+          </li>
+          <li>
+            <div className="flex w-full px-2 py-1">
+              <div className="w-[80%]">
+                <p className="text-sm">{`${translate.getTranslation(
+                  lang,
+                  "appreciationSize"
+                )}:`}</p>
               </div>
-            </li>
-            <li>
-              <div className="flex w-full px-2 py-1">
-                <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(
-                    lang,
-                    "rentalNoi"
-                  )}:`}</p>
-                </div>
-                <div className="w-[20%]">
-                  <p className="font-bold text-sm">
-                    {makeNumberCurrency(netIncome)}
-                  </p>
-                </div>
+              <div className="w-[20%]">
+                <p className="font-bold text-sm">{`${data.size}m2`}</p>
               </div>
-            </li>
+            </div>
+          </li>
+          <li>
+            <div className="flex w-full px-2 py-1">
+              <div className="w-[80%]">
+                <p className="text-sm">{`${translate.getTranslation(
+                  lang,
+                  "rentalMonth"
+                )}:`}</p>
+              </div>
+              <div className="w-[20%]">
+                <p className="font-bold text-sm">
+                  {makeNumberCurrency(data.profit.average_rental * data.size)}
+                </p>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div className="flex w-full px-2 py-1">
+              <div className="w-[80%]">
+                <p className="text-sm">{`${translate.getTranslation(
+                  lang,
+                  "rentalNoi"
+                )}:`}</p>
+              </div>
+              <div className="w-[20%]">
+                <p className="font-bold text-sm">
+                  {makeNumberCurrency(netIncome)}
+                </p>
+              </div>
+            </div>
+          </li>
 
-            <hr className="text-gray-600 bg-gray-600 h-[1px] mt-2" />
+          <hr className="text-gray-600 bg-gray-600 h-[1px] mt-2" />
 
-            <li className="mt-2">
-              <div className="flex w-full px-2 py-1">
-                <div className="w-[80%]">
-                  <p className="text-md font-semibold">{`${translate.getTranslation(
-                    lang,
-                    "rentalCap"
-                  )}:`}</p>
-                </div>
-                <div className="w-[20%]">
-                  <p className="font-bold text-md text-blue-500">
-                    {`${getNumberWithDecimals(
-                      calculateCapRate(netIncome, price),
-                      2
-                    )}%`}
-                  </p>
-                </div>
+          <li className="mt-2">
+            <div className="flex w-full px-2 py-1">
+              <div className="w-[80%]">
+                <p className="text-md font-semibold">{`${translate.getTranslation(
+                  lang,
+                  "rentalCap"
+                )}:`}</p>
               </div>
-            </li>
-            <li>
-              <div className="flex w-full px-2 py-1">
-                <div className="w-[80%]">
-                  <p className="text-md font-semibold">{`${translate.getTranslation(
-                    lang,
-                    "rentalPeriod"
-                  )}:`}</p>
-                </div>
-                <div className="w-[20%]">
-                  <p className="font-bold text-md text-blue-500">
-                    {`${getNumberWithDecimals(
-                      (price + expenses) / netIncome,
-                      1
-                    )}`}
-                  </p>
-                </div>
+              <div className="w-[20%]">
+                <p className="font-bold text-md text-blue-500">
+                  {`${getNumberWithDecimals(
+                    calculateCapRate(netIncome, price),
+                    2
+                  )}%`}
+                </p>
               </div>
-            </li>
-            <li className="mt-2">
-              <div className="flex w-full px-2 py-1">
-                <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(
-                    lang,
-                    "rentalOptimization"
-                  )}:`}</p>
-                </div>
-                <div className="w-[20%]">
-                  <p className="font-bold text-sm">
-                    {`${getNumberWithDecimals(optimization, 2)}%`}
-                  </p>
-                </div>
+            </div>
+          </li>
+          <li>
+            <div className="flex w-full px-2 py-1">
+              <div className="w-[80%]">
+                <p className="text-md font-semibold">{`${translate.getTranslation(
+                  lang,
+                  "rentalPeriod"
+                )}:`}</p>
               </div>
-            </li>
-          </ul>
-        </div>
-      )}
+              <div className="w-[20%]">
+                <p className="font-bold text-md text-blue-500">
+                  {`${getNumberWithDecimals(
+                    (price + expenses) / netIncome,
+                    1
+                  )}`}
+                </p>
+              </div>
+            </div>
+          </li>
+          <li className="mt-2">
+            <div className="flex w-full px-2 py-1">
+              <div className="w-[80%]">
+                <p className="text-sm">{`${translate.getTranslation(
+                  lang,
+                  "rentalOptimization"
+                )}:`}</p>
+              </div>
+              <div className="w-[20%]">
+                <p className="font-bold text-sm">
+                  {`${getNumberWithDecimals(optimization, 2)}%`}
+                </p>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 };
