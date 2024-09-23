@@ -4,6 +4,7 @@ import {
   AverageReport,
   FeatureItem,
   MarketItem,
+  MarketSingleType,
   MarketSortType,
   PropertyPurchaseExpenses,
   SortParams,
@@ -176,6 +177,8 @@ const getParkingPoints = (detail: Details): number => {
     detail.parking_type === null &&
     catchIndicators(detail.description || "", [
       "cena garažnog mesta",
+      "garaznog mesta",
+      "graznog mesta",
       "parking mesto",
       "garažno mesto",
     ])
@@ -293,6 +296,7 @@ export const getMarketFeatures = (detail: Details): FeatureItem[] => {
   const result = [
     { name: "featTerrace", isTrue: isTerrace(detail) },
     { name: "featNew", isTrue: isNewBuild(detail) },
+    { name: "featListed", isTrue: Boolean(detail.listed) },
     { name: "featHeat", isTrue: isGoodHeating(detail) },
     { name: "featParking", isTrue: getParkingPoints(detail) > 0 },
     { name: "featRenovation", isTrue: isRenovation(detail) },
@@ -344,16 +348,48 @@ export const getRoleForUpsert = (role: UserRole): UserRole => {
 
 export const getSessionUserRole = (role: UserRole): RoleType => {
   const today = new Date();
-  if(role.role === 'basic') {
-    if(role.date !== null) {
-      if(differenceInDays(today, role.date) > 0 || role.count < 5) {
-        return 'limitedPremium'
+  if (role.role === "basic") {
+    if (role.date !== null) {
+      if (differenceInDays(today, role.date) > 0 || role.count < 5) {
+        return "limitedPremium";
       }
     } else {
-      console.log('alo')
-      return 'limitedPremium'
+      return "limitedPremium";
     }
   }
 
   return role.role;
-}
+};
+
+export const getMarketItemImportantData = (data: MarketSingleType) => {
+  const competitionDisplacement =
+    (data.profit.average_competition - data.profit.median_competition) /
+    data.profit.average_competition;
+
+  const potentialPrice =
+    data.profit.average_competition +
+    (data.profit.max_competition - data.profit.average_competition) * 0.4;
+
+  const newBuildRatio =
+    data.profit.competition_new_build_count / data.profit.competition_count;
+
+  const maxToPotentialRatio = potentialPrice / data.profit.max_competition;
+
+  const probability =
+    data.average_price! < data.profit.max_competition && newBuildRatio > 0.75
+      ? maxToPotentialRatio *
+        getFlipProbability(data.details, data.room_ratio || 0.001)
+      : getFlipProbability(data.details, data.room_ratio || 0.001);
+
+  const renovationM2Price = getRenovationExpenses(data.details);
+
+  return {
+    probability:
+      data.profit.competition_new_build_count < 1
+        ? probability + 0.15
+        : probability,
+    competitionDisplacement,
+    maxPrice: data.profit.max_competition,
+    renovationM2Price,
+  };
+};

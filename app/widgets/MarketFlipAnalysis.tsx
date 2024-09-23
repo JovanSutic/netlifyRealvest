@@ -1,10 +1,8 @@
 import { makeNumberCurrency } from "../utils/numbers";
 import {
-  getFlipProbability,
+  getMarketItemImportantData,
   getNumberWithDecimals,
   getPropertyPurchaseExpenses,
-  getRenovationExpenses,
-  isNewBuild,
 } from "../utils/market";
 import { LangType, RoleType } from "../types/dashboard.types";
 import { Translator } from "../data/language/translator";
@@ -30,16 +28,9 @@ const MarketFlipAnalysis = ({
   const translate = new Translator("market");
   const dashTranslate = new Translator("dashboard");
 
-  const maxPrice =
-    isNewBuild(data.details) &&
-    data.profit.max_competition > data.average_price! * 2.2
-      ? data.profit.max_competition / 2
-      : data.profit.max_competition;
-  const probability = getFlipProbability(
-    data.details,
-    data.room_ratio || 0.001
-  );
-  const renovationM2Price = getRenovationExpenses(data.details);
+  const { probability, maxPrice, renovationM2Price } =
+    getMarketItemImportantData(data);
+
   const flipPrice = data.size * maxPrice * probability;
   const flipInvestment =
     data.size * renovationM2Price +
