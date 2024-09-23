@@ -1,4 +1,5 @@
-import { Details, LangType } from "../types/dashboard.types";
+import { differenceInDays } from "date-fns";
+import { Details, LangType, RoleType } from "../types/dashboard.types";
 import {
   AverageReport,
   FeatureItem,
@@ -6,6 +7,7 @@ import {
   MarketSortType,
   PropertyPurchaseExpenses,
   SortParams,
+  UserRole,
 } from "../types/market.types";
 
 export const switchLanguage = (path: string, newLang: LangType): string => {
@@ -51,7 +53,8 @@ export const getPropertyDemand = (property: MarketItem): string => {
   const { profitability } = property;
   const demandRatio =
     profitability.competition_count && profitability.city_count_sold
-      ? (1 - profitability.competition_count / profitability.city_count_sold) * 10
+      ? (1 - profitability.competition_count / profitability.city_count_sold) *
+        10
       : 0;
 
   return `${getNumberWithDecimals(demandRatio, 2)}`;
@@ -283,8 +286,8 @@ const isWithView = (detail: Details) => {
     "sa pogledom",
     "pogled na",
     "pogled",
-  ])
-}
+  ]);
+};
 
 export const getMarketFeatures = (detail: Details): FeatureItem[] => {
   const result = [
@@ -313,12 +316,44 @@ export const getMarketFeatures = (detail: Details): FeatureItem[] => {
 };
 
 export const getSortingParams = (param: MarketSortType): SortParams => {
-  if(param === 'date_asc') return {column: 'date_signed', order: 'ASC'};
-  if(param === 'date_desc') return {column: 'date_signed', order: 'DESC'};
-  if(param === 'price_asc') return {column: 'price', order: 'ASC'};
-  if(param === 'price_desc') return {column: 'price', order: 'DESC'};
-  if(param === 'size_asc') return {column: 'size', order: 'ASC'};
-  if(param === 'size_desc') return {column: 'size', order: 'DESC'};
+  if (param === "date_asc") return { column: "date_signed", order: "ASC" };
+  if (param === "date_desc") return { column: "date_signed", order: "DESC" };
+  if (param === "price_asc") return { column: "price", order: "ASC" };
+  if (param === "price_desc") return { column: "price", order: "DESC" };
+  if (param === "size_asc") return { column: "size", order: "ASC" };
+  if (param === "size_desc") return { column: "size", order: "DESC" };
 
-  return {column: 'date_signed', order: 'ASC'}
+  return { column: "date_signed", order: "ASC" };
+};
+
+export const isRoleForUpdate = (role: UserRole): boolean => {
+  const today = new Date();
+  if (role.role === "premium") return false;
+  if (role.date === null) return true;
+  if (differenceInDays(today, role.date) > 0) return true;
+  if (role.count < 5) return true;
+
+  return false;
+};
+
+export const getRoleForUpsert = (role: UserRole): UserRole => {
+  const today = new Date();
+  const count = role.count === null ? 1 : role.count + 1;
+  return { ...role, date: today, count };
+};
+
+export const getSessionUserRole = (role: UserRole): RoleType => {
+  const today = new Date();
+  if(role.role === 'basic') {
+    if(role.date !== null) {
+      if(differenceInDays(today, role.date) > 0 || role.count < 5) {
+        return 'limitedPremium'
+      }
+    } else {
+      console.log('alo')
+      return 'limitedPremium'
+    }
+  }
+
+  return role.role;
 }
