@@ -1,27 +1,24 @@
 import { makeNumberCurrency } from "../utils/numbers";
 import {
-  getFlipProbability,
-  getNumberWithDecimals,
+  getMarketItemImportantData,
+  getMarketPriceIndex,
   getPropertyPurchaseExpenses,
-  getRenovationExpenses,
-  isNewBuild,
 } from "../utils/market";
 import { LangType, RoleType } from "../types/dashboard.types";
 import { Translator } from "../data/language/translator";
 import Tooltip from "../components/tooltip/Tooltip";
 import { MarketSingleType } from "../types/market.types";
 import Premium from "../components/placeholder/Premium";
+import PriceIndex from "../components/slider/PriceIndex";
 
 const MarketFlipAnalysis = ({
   data,
-  price,
   average,
   lang,
   isMobile,
   role,
 }: {
   data: MarketSingleType;
-  price: number;
   average: number;
   lang: LangType;
   isMobile: boolean;
@@ -30,21 +27,14 @@ const MarketFlipAnalysis = ({
   const translate = new Translator("market");
   const dashTranslate = new Translator("dashboard");
 
-  const maxPrice =
-    isNewBuild(data.details) &&
-    data.profit.max_competition > data.average_price! * 2.2
-      ? data.profit.max_competition / 2
-      : data.profit.max_competition;
-  const probability = getFlipProbability(
-    data.details,
-    data.room_ratio || 0.001
-  );
-  const renovationM2Price = getRenovationExpenses(data.details);
+  const {
+    probability,
+    maxPrice,
+    renovationM2Price,
+    flipInvestment,
+  } = getMarketItemImportantData(data);
+
   const flipPrice = data.size * maxPrice * probability;
-  const flipInvestment =
-    data.size * renovationM2Price +
-    price +
-    getPropertyPurchaseExpenses(data.price, data.details).total;
 
   if (role !== "premium" && role !== "limitedPremium") {
     return (
@@ -205,14 +195,13 @@ const MarketFlipAnalysis = ({
               <div className="w-[80%]">
                 <p className="text-sm">{`${translate.getTranslation(
                   lang,
-                  "flipProbability"
+                  "flipAverage"
                 )}:`}</p>
               </div>
               <div className="w-[20%]">
-                <p className="font-bold text-sm">{`${getNumberWithDecimals(
-                  probability * 100,
-                  0
-                )}%`}</p>
+                <p className="font-bold text-sm">
+                  {makeNumberCurrency(data.profit.average_competition)}
+                </p>
               </div>
             </div>
           </li>
@@ -221,39 +210,21 @@ const MarketFlipAnalysis = ({
               <div className="w-[80%]">
                 <p className="text-sm">{`${translate.getTranslation(
                   lang,
-                  "flipPotential"
+                  "flipNewbuild"
                 )}:`}</p>
               </div>
               <div className="w-[20%]">
                 <p className="font-bold text-sm">
-                  {makeNumberCurrency(flipPrice)}
+                  {makeNumberCurrency(
+                    data.profit.competition_new_build_average
+                  )}
                 </p>
               </div>
             </div>
           </li>
 
-          <hr className="text-gray-600 bg-gray-600 h-[1px] mt-2" />
-
-          <li className="mt-2">
-            <div className="flex w-full px-2 py-1">
-              <div className="w-[80%]">
-                <p className="text-md font-semibold">{`${translate.getTranslation(
-                  lang,
-                  "flipProfit"
-                )}:`}</p>
-              </div>
-              <div className="w-[20%]">
-                <p
-                  className={`font-bold text-md ${
-                    flipPrice - flipInvestment > 0
-                      ? "text-blue-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  {makeNumberCurrency(flipPrice - flipInvestment)}
-                </p>
-              </div>
-            </div>
+          <li className="mt-3">
+            <PriceIndex lang={lang} index={getMarketPriceIndex(flipPrice, flipInvestment)} />
           </li>
         </ul>
       </div>

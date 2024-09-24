@@ -218,7 +218,6 @@ const MarketSingle = () => {
           </WidgetWrapper>
           <WidgetWrapper>
             <MarketFlipAnalysis
-              price={data.price}
               average={data.average_price!}
               data={data as unknown as MarketSingleType}
               lang={lang}
