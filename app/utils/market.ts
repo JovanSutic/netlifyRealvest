@@ -1,11 +1,14 @@
-import { Details, LangType } from "../types/dashboard.types";
+import { differenceInDays } from "date-fns";
+import { Details, LangType, RoleType } from "../types/dashboard.types";
 import {
   AverageReport,
   FeatureItem,
   MarketItem,
+  MarketSingleType,
   MarketSortType,
   PropertyPurchaseExpenses,
   SortParams,
+  UserRole,
 } from "../types/market.types";
 
 export const switchLanguage = (path: string, newLang: LangType): string => {
@@ -51,7 +54,8 @@ export const getPropertyDemand = (property: MarketItem): string => {
   const { profitability } = property;
   const demandRatio =
     profitability.competition_count && profitability.city_count_sold
-      ? (1 - profitability.competition_count / profitability.city_count_sold) * 10
+      ? (1 - profitability.competition_count / profitability.city_count_sold) *
+        10
       : 0;
 
   return `${getNumberWithDecimals(demandRatio, 2)}`;
@@ -173,6 +177,8 @@ const getParkingPoints = (detail: Details): number => {
     detail.parking_type === null &&
     catchIndicators(detail.description || "", [
       "cena garažnog mesta",
+      "garaznog mesta",
+      "graznog mesta",
       "parking mesto",
       "garažno mesto",
     ])
@@ -283,13 +289,14 @@ const isWithView = (detail: Details) => {
     "sa pogledom",
     "pogled na",
     "pogled",
-  ])
-}
+  ]);
+};
 
 export const getMarketFeatures = (detail: Details): FeatureItem[] => {
   const result = [
     { name: "featTerrace", isTrue: isTerrace(detail) },
     { name: "featNew", isTrue: isNewBuild(detail) },
+    { name: "featListed", isTrue: Boolean(detail.listed) },
     { name: "featHeat", isTrue: isGoodHeating(detail) },
     { name: "featParking", isTrue: getParkingPoints(detail) > 0 },
     { name: "featRenovation", isTrue: isRenovation(detail) },
@@ -313,12 +320,97 @@ export const getMarketFeatures = (detail: Details): FeatureItem[] => {
 };
 
 export const getSortingParams = (param: MarketSortType): SortParams => {
-  if(param === 'date_asc') return {column: 'date_signed', order: 'ASC'};
-  if(param === 'date_desc') return {column: 'date_signed', order: 'DESC'};
-  if(param === 'price_asc') return {column: 'price', order: 'ASC'};
-  if(param === 'price_desc') return {column: 'price', order: 'DESC'};
-  if(param === 'size_asc') return {column: 'size', order: 'ASC'};
-  if(param === 'size_desc') return {column: 'size', order: 'DESC'};
+  if (param === "date_asc") return { column: "date_signed", order: "ASC" };
+  if (param === "date_desc") return { column: "date_signed", order: "DESC" };
+  if (param === "price_asc") return { column: "price", order: "ASC" };
+  if (param === "price_desc") return { column: "price", order: "DESC" };
+  if (param === "size_asc") return { column: "size", order: "ASC" };
+  if (param === "size_desc") return { column: "size", order: "DESC" };
 
-  return {column: 'date_signed', order: 'ASC'}
-}
+  return { column: "date_signed", order: "ASC" };
+};
+
+export const isRoleForUpdate = (role: UserRole): boolean => {
+  const today = new Date();
+  if (role.role === "premium") return false;
+  if (role.date === null) return true;
+  if (differenceInDays(today, role.date) > 0) return true;
+  if (role.count < 5) return true;
+
+  return false;
+};
+
+export const getRoleForUpsert = (role: UserRole): UserRole => {
+  const today = new Date();
+  const count = role.count === null || differenceInDays(today, role.date) > 0 ? 1 : role.count + 1;
+  return { ...role, date: today, count };
+};
+
+export const getSessionUserRole = (role: UserRole): RoleType => {
+  const today = new Date();
+  if (role.role === "basic") {
+    if (role.date !== null) {
+      if (differenceInDays(today, role.date) > 0 || role.count < 5) {
+        return "limitedPremium";
+      }
+    } else {
+      return "limitedPremium";
+    }
+  }
+
+  return role.role;
+};
+
+export const getMarketItemImportantData = (data: MarketSingleType) => {
+  const competitionDisplacement =
+    (data.profit.average_competition - data.profit.median_competition) /
+    data.profit.average_competition;
+
+  const potentialPrice =
+    data.profit.average_competition +
+    (data.profit.max_competition - data.profit.average_competition) * 0.4;
+
+  const newBuildRatio =
+    data.profit.competition_new_build_count / data.profit.competition_count;
+
+  const maxToPotentialRatio = potentialPrice / data.profit.max_competition;
+
+  const probability =
+    data.average_price! < data.profit.max_competition && newBuildRatio > 0.75
+      ? maxToPotentialRatio *
+        getFlipProbability(data.details, data.room_ratio || 0.001)
+      : getFlipProbability(data.details, data.room_ratio || 0.001);
+
+  const renovationM2Price = getRenovationExpenses(data.details);
+
+  const flipInvestment =
+    data.size * renovationM2Price +
+    data.price +
+    getPropertyPurchaseExpenses(data.price, data.details).total;
+
+  return {
+    probability: newBuildRatio < 0.1 ? probability + 0.15 : probability,
+    competitionDisplacement,
+    structureProbability: getFlipProbability(
+      data.details,
+      data.room_ratio || 0.001
+    ),
+    maxPrice: data.profit.max_competition,
+    renovationM2Price,
+    flipInvestment,
+  };
+};
+
+export const getMarketPriceIndex = (
+  flipPrice: number,
+  flipInvestment: number
+): number => {
+  const diff = flipPrice - flipInvestment;
+  const diffRatio = diff / flipInvestment;
+  if (diffRatio > 0.3) return 5;
+  if (diffRatio > 0.05) return 4;
+  if (diffRatio > -0.1) return 3;
+  if (diffRatio > -0.3) return 3;
+
+  return 1;
+};

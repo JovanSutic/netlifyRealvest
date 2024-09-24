@@ -1,58 +1,42 @@
-import { useEffect, useState } from "react";
 import { makeNumberCurrency } from "../utils/numbers";
 import {
-  getFlipProbability,
-  getNumberWithDecimals,
+  getMarketItemImportantData,
+  getMarketPriceIndex,
   getPropertyPurchaseExpenses,
-  getRenovationExpenses,
-  isNewBuild,
 } from "../utils/market";
-import { LangType } from "../types/dashboard.types";
+import { LangType, RoleType } from "../types/dashboard.types";
 import { Translator } from "../data/language/translator";
 import Tooltip from "../components/tooltip/Tooltip";
 import { MarketSingleType } from "../types/market.types";
-import { Link } from "@remix-run/react";
+import Premium from "../components/placeholder/Premium";
+import PriceIndex from "../components/slider/PriceIndex";
 
 const MarketFlipAnalysis = ({
   data,
-  price,
   average,
   lang,
   isMobile,
   role,
 }: {
   data: MarketSingleType;
-  price: number;
   average: number;
   lang: LangType;
   isMobile: boolean;
-  role: string;
+  role: RoleType;
 }) => {
-  const [open, setOpen] = useState<boolean>(true);
   const translate = new Translator("market");
   const dashTranslate = new Translator("dashboard");
 
-  const maxPrice =
-    isNewBuild(data.details) &&
-    data.profit.max_competition > data.average_price! * 2.2
-      ? data.profit.max_competition / 2
-      : data.profit.max_competition;
-  const probability = getFlipProbability(
-    data.details,
-    data.room_ratio || 0.001
-  );
-  const renovationM2Price = getRenovationExpenses(data.details);
+  const {
+    probability,
+    maxPrice,
+    renovationM2Price,
+    flipInvestment,
+  } = getMarketItemImportantData(data);
+
   const flipPrice = data.size * maxPrice * probability;
-  const flipInvestment =
-    data.size * renovationM2Price +
-    price +
-    getPropertyPurchaseExpenses(data.price, data.details).total;
 
-  useEffect(() => {
-    setOpen(!isMobile);
-  }, []);
-
-  if (role !== "premium") {
+  if (role !== "premium" && role !== "limitedPremium") {
     return (
       <div className="w-full h-full flex flex-col">
         <div
@@ -64,23 +48,12 @@ const MarketFlipAnalysis = ({
             {translate.getTranslation(lang, "flipTitle")}
           </h3>
         </div>
-        <div className="bg-[url('/blurred_table.jpg')] bg-contain bg-opacity-90">
-          <div className="flex flex-col w-full justify-center h-[200px]">
-            <div className="w-full flex justify-center mb-5">
-              <p className="bg-white px-1 flex items-center text-center text-black text-md">
-                {dashTranslate.getTranslation(lang, "premiumSubtitle")}
-              </p>
-            </div>
-            <div className="w-full flex justify-center">
-              <Link
-                to={`/plans?lang=${lang}`}
-                className="text-md text-blue-950 px-6 py-2 bg-amber-300 font-semibold rounded-md transition-all duration-300 transform hover:bg-amber-400 focus:outline-none disabled:bg-gray-300 disabled:cursor-no-drop"
-              >
-                {dashTranslate.getTranslation(lang, "premiumButton")}
-              </Link>
-            </div>
-          </div>
-        </div>
+        <Premium
+          lang={lang}
+          subTitle={dashTranslate.getTranslation(lang, "premiumSmallSubtitle")}
+          title={dashTranslate.getTranslation(lang, "premiumSubtitle")}
+          button={dashTranslate.getTranslation(lang, "premiumButton")}
+        />
       </div>
     );
   }
@@ -118,179 +91,143 @@ const MarketFlipAnalysis = ({
             </Tooltip>
           </div>
         </div>
-        {isMobile && (
-          <div className="flex flex-row justify-center">
-            <button
-              className="text-md text-blue-500 underline"
-              onClick={() => setOpen(!open)}
-            >{`${translate.getTranslation(
-              lang,
-              open ? "seeLess" : "seeMore"
-            )}`}</button>
-          </div>
-        )}
       </div>
 
-      {open && (
-        <div className="w-full mt-4">
-          <ul>
-            <li>
-              <div className="flex w-full px-2 py-1">
-                <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(
-                    lang,
-                    "appreciationPrice"
-                  )}:`}</p>
-                </div>
-                <div className="w-[20%]">
-                  <p className="font-bold text-sm">
-                    {makeNumberCurrency(average)}
-                  </p>
-                </div>
+      <div className="w-full mt-4">
+        <ul>
+          <li>
+            <div className="flex w-full px-2 py-1">
+              <div className="w-[80%]">
+                <p className="text-sm">{`${translate.getTranslation(
+                  lang,
+                  "appreciationPrice"
+                )}:`}</p>
               </div>
-            </li>
+              <div className="w-[20%]">
+                <p className="font-bold text-sm">
+                  {makeNumberCurrency(average)}
+                </p>
+              </div>
+            </div>
+          </li>
 
-            <li>
-              <div className="flex w-full px-2 py-1">
-                <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(
-                    lang,
-                    "appreciationCurrent"
-                  )}:`}</p>
-                </div>
-                <div className="w-[20%]">
-                  <p className="font-bold text-sm">
-                    {makeNumberCurrency(data.price)}
-                  </p>
-                </div>
+          <li>
+            <div className="flex w-full px-2 py-1">
+              <div className="w-[80%]">
+                <p className="text-sm">{`${translate.getTranslation(
+                  lang,
+                  "appreciationCurrent"
+                )}:`}</p>
               </div>
-            </li>
-            <li>
-              <div className="flex w-full px-2 py-1">
-                <div className="w-[80%]">
-                  <p className="text-sm">
-                    {`${translate.getTranslation(
-                      lang,
-                      "appreciationExpenses"
-                    )}:`}
-                  </p>
-                </div>
-                <div className="w-[20%]">
-                  <p className="font-bold text-sm">
-                    {makeNumberCurrency(
-                      getPropertyPurchaseExpenses(data.price, data.details)
-                        .total
-                    )}
-                  </p>
-                </div>
+              <div className="w-[20%]">
+                <p className="font-bold text-sm">
+                  {makeNumberCurrency(data.price)}
+                </p>
               </div>
-            </li>
-            <li>
-              <div className="flex w-full px-2 py-1">
-                <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(
-                    lang,
-                    "flipRenovation"
-                  )}:`}</p>
-                </div>
-                <div className="w-[20%]">
-                  <p className="font-bold text-sm">
-                    {makeNumberCurrency(data.size * renovationM2Price)}
-                  </p>
-                </div>
+            </div>
+          </li>
+          <li>
+            <div className="flex w-full px-2 py-1">
+              <div className="w-[80%]">
+                <p className="text-sm">
+                  {`${translate.getTranslation(lang, "appreciationExpenses")}:`}
+                </p>
               </div>
-            </li>
-            <li>
-              <div className="flex w-full px-2 py-1">
-                <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(
-                    lang,
-                    "flipTotal"
-                  )}:`}</p>
-                </div>
-                <div className="w-[20%]">
-                  <p className="font-bold text-sm">
-                    {makeNumberCurrency(flipInvestment)}
-                  </p>
-                </div>
+              <div className="w-[20%]">
+                <p className="font-bold text-sm">
+                  {makeNumberCurrency(
+                    getPropertyPurchaseExpenses(data.price, data.details).total
+                  )}
+                </p>
               </div>
-            </li>
+            </div>
+          </li>
+          <li>
+            <div className="flex w-full px-2 py-1">
+              <div className="w-[80%]">
+                <p className="text-sm">{`${translate.getTranslation(
+                  lang,
+                  "flipRenovation"
+                )}:`}</p>
+              </div>
+              <div className="w-[20%]">
+                <p className="font-bold text-sm">
+                  {makeNumberCurrency(data.size * renovationM2Price)}
+                </p>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div className="flex w-full px-2 py-1">
+              <div className="w-[80%]">
+                <p className="text-sm">{`${translate.getTranslation(
+                  lang,
+                  "flipTotal"
+                )}:`}</p>
+              </div>
+              <div className="w-[20%]">
+                <p className="font-bold text-sm">
+                  {makeNumberCurrency(flipInvestment)}
+                </p>
+              </div>
+            </div>
+          </li>
 
-            <hr className="text-gray-600 bg-gray-600 h-[1px] mt-2" />
+          <hr className="text-gray-600 bg-gray-600 h-[1px] mt-2" />
 
-            <li className="mt-2">
-              <div className="flex w-full px-2 py-1">
-                <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(
-                    lang,
-                    "flipMax"
-                  )}:`}</p>
-                </div>
-                <div className="w-[20%]">
-                  <p className="font-bold text-sm">
-                    {makeNumberCurrency(maxPrice)}
-                  </p>
-                </div>
+          <li className="mt-2">
+            <div className="flex w-full px-2 py-1">
+              <div className="w-[80%]">
+                <p className="text-sm">{`${translate.getTranslation(
+                  lang,
+                  "flipMax"
+                )}:`}</p>
               </div>
-            </li>
-            <li>
-              <div className="flex w-full px-2 py-1">
-                <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(
-                    lang,
-                    "flipProbability"
-                  )}:`}</p>
-                </div>
-                <div className="w-[20%]">
-                  <p className="font-bold text-sm">{`${getNumberWithDecimals(
-                    probability * 100,
-                    0
-                  )}%`}</p>
-                </div>
+              <div className="w-[20%]">
+                <p className="font-bold text-sm">
+                  {makeNumberCurrency(maxPrice)}
+                </p>
               </div>
-            </li>
-            <li>
-              <div className="flex w-full px-2 py-1">
-                <div className="w-[80%]">
-                  <p className="text-sm">{`${translate.getTranslation(
-                    lang,
-                    "flipPotential"
-                  )}:`}</p>
-                </div>
-                <div className="w-[20%]">
-                  <p className="font-bold text-sm">
-                    {makeNumberCurrency(flipPrice)}
-                  </p>
-                </div>
+            </div>
+          </li>
+          <li>
+            <div className="flex w-full px-2 py-1">
+              <div className="w-[80%]">
+                <p className="text-sm">{`${translate.getTranslation(
+                  lang,
+                  "flipAverage"
+                )}:`}</p>
               </div>
-            </li>
+              <div className="w-[20%]">
+                <p className="font-bold text-sm">
+                  {makeNumberCurrency(data.profit.average_competition)}
+                </p>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div className="flex w-full px-2 py-1">
+              <div className="w-[80%]">
+                <p className="text-sm">{`${translate.getTranslation(
+                  lang,
+                  "flipNewbuild"
+                )}:`}</p>
+              </div>
+              <div className="w-[20%]">
+                <p className="font-bold text-sm">
+                  {makeNumberCurrency(
+                    data.profit.competition_new_build_average
+                  )}
+                </p>
+              </div>
+            </div>
+          </li>
 
-            <hr className="text-gray-600 bg-gray-600 h-[1px] mt-2" />
-
-            <li className="mt-2">
-              <div className="flex w-full px-2 py-1">
-                <div className="w-[80%]">
-                  <p className="text-md font-semibold">{`${translate.getTranslation(
-                    lang,
-                    "flipProfit"
-                  )}:`}</p>
-                </div>
-                <div className="w-[20%]">
-                  <p
-                    className={`font-bold text-md ${
-                      flipPrice - flipInvestment > 0
-                        ? "text-blue-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {makeNumberCurrency(flipPrice - flipInvestment)}
-                  </p>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      )}
+          <li className="mt-3">
+            <PriceIndex lang={lang} index={getMarketPriceIndex(flipPrice, flipInvestment)} />
+          </li>
+        </ul>
+      </div>
     </div>
   );
 };

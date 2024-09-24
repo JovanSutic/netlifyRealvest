@@ -1,4 +1,4 @@
-import { Details, ListedAd } from "./dashboard.types";
+import { Details, ListedAd, RoleType } from "./dashboard.types";
 
 export interface Profitability {
   id?: number;
@@ -119,4 +119,12 @@ export type MarketSortType = (typeof marketSortTypes)[number];
 export interface SortParams {
   column: string;
   order: string;
-} 
+}
+
+export interface UserRole {
+  id: number;
+  user_id: string;
+  role: RoleType;
+  date: Date;
+  count: number;
+}

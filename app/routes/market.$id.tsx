@@ -4,19 +4,20 @@ import {
   MetaFunction,
   useLoaderData,
   useSearchParams,
-  useNavigate
+  useNavigate,
 } from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
 import { Translator } from "../data/language/translator";
 // import Loader from "../components/loader";
 import { getParamValue, detectDevice } from "../utils/params";
-import { Details, LangType, ListedAd } from "../types/dashboard.types";
+import { Details, LangType, ListedAd, RoleType } from "../types/dashboard.types";
 import { jwtDecode } from "jwt-decode";
 import { FinalError } from "../types/component.types";
 import {
   Profitability,
   PhotoItem,
   MarketSingleType,
+  UserRole,
 } from "../types/market.types";
 import { makeNumberCurrency } from "../utils/numbers";
 import Gallery from "../widgets/MarketGallery";
@@ -24,6 +25,11 @@ import MarketAppreciationAnalysis from "../widgets/MarketAppreciationAnalysis";
 import MarketFlipAnalysis from "../widgets/MarketFlipAnalysis";
 import MarketFeatureList from "../widgets/MarketFeatureList";
 import MarketRentalAnalysis from "../widgets/MarketRentalAnalysis";
+import {
+  getRoleForUpsert,
+  getSessionUserRole,
+  isRoleForUpdate,
+} from "../utils/market";
 
 export const links: LinksFunction = () => [
   {
@@ -59,10 +65,36 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     const { supabaseClient } = createSupabaseServerClient(request);
     const session = await supabaseClient.auth.getSession();
 
-    const decoded = jwtDecode<{ user_role: string }>(
+    const decoded = jwtDecode<{ user_role: string; sub: string }>(
       session?.data?.session?.access_token || ""
     );
-    userRole = decoded?.user_role;
+
+    const { data: roleData, error: roleError } = await supabaseClient
+      .from("user_roles")
+      .select("*")
+      .eq("user_id", decoded.sub)
+      .limit(1)
+      .returns<UserRole[]>();
+
+    if (roleError) {
+      isError = true;
+      finalError = roleError as FinalError;
+    }
+
+    const roleUser = roleData![0];
+    userRole = getSessionUserRole(roleUser);
+
+    if (roleUser) {
+      if (isRoleForUpdate(roleUser)) {
+        const { error: upsertError } = await supabaseClient
+          .from("user_roles")
+          .upsert(getRoleForUpsert(roleUser));
+        if (upsertError) {
+          isError = true;
+          finalError = upsertError as FinalError;
+        }
+      }
+    }
 
     const { data: apartmentData, error: apartmentError } = await supabaseClient
       .from("apartments")
@@ -146,7 +178,7 @@ const MarketSingle = () => {
   const { data, device, role } = useLoaderData<{
     data: MarketSingleType;
     device: string;
-    role: string;
+    role: RoleType;
   }>();
 
   const translate = new Translator("market");
@@ -186,7 +218,6 @@ const MarketSingle = () => {
           </WidgetWrapper>
           <WidgetWrapper>
             <MarketFlipAnalysis
-              price={data.price}
               average={data.average_price!}
               data={data as unknown as MarketSingleType}
               lang={lang}
