@@ -383,13 +383,34 @@ export const getMarketItemImportantData = (data: MarketSingleType) => {
 
   const renovationM2Price = getRenovationExpenses(data.details);
 
+  const flipInvestment =
+    data.size * renovationM2Price +
+    data.price +
+    getPropertyPurchaseExpenses(data.price, data.details).total;
+
   return {
-    probability:
-      data.profit.competition_new_build_count < 1
-        ? probability + 0.15
-        : probability,
+    probability: newBuildRatio < 0.1 ? probability + 0.15 : probability,
     competitionDisplacement,
+    structureProbability: getFlipProbability(
+      data.details,
+      data.room_ratio || 0.001
+    ),
     maxPrice: data.profit.max_competition,
     renovationM2Price,
+    flipInvestment,
   };
+};
+
+export const getMarketPriceIndex = (
+  flipPrice: number,
+  flipInvestment: number
+): number => {
+  const diff = flipPrice - flipInvestment;
+  const diffRatio = diff / flipInvestment;
+  if (diffRatio > 0.3) return 5;
+  if (diffRatio > 0.05) return 4;
+  if (diffRatio > -0.1) return 3;
+  if (diffRatio > -0.3) return 3;
+
+  return 1;
 };

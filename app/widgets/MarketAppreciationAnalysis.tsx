@@ -52,6 +52,17 @@ const MarketAppreciationAnalysis = ({
     setYears(Number(event.target.value));
   };
 
+  const profit =
+    calculateFuturePrice(average, trend, years) * size -
+    (price + getPropertyPurchaseExpenses(price).total);
+
+  const profitPercentage = (profit / price) * 100;
+  const irrPercentage = calculateIRR(
+    price + getPropertyPurchaseExpenses(price).total,
+    calculateFuturePrice(average, trend, years) * size,
+    years
+  );
+
   if (role !== "premium" && role !== "limitedPremium") {
     return (
       <div className="w-full h-full flex flex-col">
@@ -224,23 +235,32 @@ const MarketAppreciationAnalysis = ({
 
           <li className="mt-2">
             <div className="flex w-full px-2 py-1">
-              <div className="w-[80%]">
+              <div className="w-[60%]">
                 <p className="text-md font-semibold">{`${translate.getTranslation(
                   lang,
                   "profit"
                 )} ${years} ${translate.getTranslation(lang, "years")}:`}</p>
               </div>
-              <div className="w-[20%]">
-                <p className="font-bold text-md text-blue-500">
-                  {makeNumberCurrency(
-                    calculateFuturePrice(average, trend, years) * size -
-                      (price + getPropertyPurchaseExpenses(price).total)
-                  )}
+              <div className="w-[40%]">
+                <p
+                  className={`font-bold break-all text-md text-right ${
+                    profit > 0 ? "text-blue-500" : "text-red-500"
+                  }`}
+                >
+                  {makeNumberCurrency(profit)}
+                  <span className="text-[12px] ml-1">{`(${getNumberWithDecimals(
+                  profitPercentage,
+                  1
+                )}%)`}</span>
                 </p>
+                {/* <p className="text-gray-500 text-left text-sm font-semibold">{`(${getNumberWithDecimals(
+                  profitPercentage,
+                  1
+                )}%)`}</p> */}
               </div>
             </div>
           </li>
-          <li>
+          <li className="mt-1">
             <div className="flex w-full px-2 py-1">
               <div className="w-[80%]">
                 <p className="text-md font-semibold">{`${translate.getTranslation(
@@ -249,15 +269,12 @@ const MarketAppreciationAnalysis = ({
                 )}:`}</p>
               </div>
               <div className="w-[20%]">
-                <p className="font-bold text-md text-blue-500">
-                  {`${getNumberWithDecimals(
-                    calculateIRR(
-                      price + getPropertyPurchaseExpenses(price).total,
-                      calculateFuturePrice(average, trend, years) * size,
-                      years
-                    ),
-                    2
-                  )}%`}
+                <p
+                  className={`font-bold text-md ${
+                    irrPercentage > 0 ? "text-blue-500" : "text-red-500"
+                  }`}
+                >
+                  {`${getNumberWithDecimals(irrPercentage, 2)}%`}
                 </p>
               </div>
             </div>
