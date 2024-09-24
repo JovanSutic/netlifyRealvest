@@ -342,7 +342,7 @@ export const isRoleForUpdate = (role: UserRole): boolean => {
 
 export const getRoleForUpsert = (role: UserRole): UserRole => {
   const today = new Date();
-  const count = role.count === null ? 1 : role.count + 1;
+  const count = role.count === null || differenceInDays(today, role.date) > 0 ? 1 : role.count + 1;
   return { ...role, date: today, count };
 };
 
