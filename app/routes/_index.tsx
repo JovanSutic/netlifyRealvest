@@ -320,10 +320,10 @@ export default function Index() {
       <TPage mobile={mobile}>
         <div className="w-full mt-12 mb-10">
           <div className="w-full md:w-[80%] lg:w-[60%] mx-auto">
-            <h3 className="font-bold text-center text-4xl">
+            <h3 className="font-bold text-center text-2xl md:text-4xl">
               {translator.getTranslation(lang, "saveTimeTitle")}
             </h3>
-            <p className="font-regular text-center text-[18px] mt-8 text-gray-600">
+            <p className="font-regular text-center text-md md:text-[18px] mt-4 md:mt-8 text-gray-600">
               {translator.getTranslation(lang, "saveTimeText")}
             </p>
           </div>
