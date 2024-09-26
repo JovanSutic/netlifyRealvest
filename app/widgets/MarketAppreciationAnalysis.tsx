@@ -1,6 +1,7 @@
 import { ChangeEvent, useState } from "react";
 import { makeNumberCurrency } from "../utils/numbers";
 import {
+  calculateIRR,
   getNumberWithDecimals,
   getPropertyPurchaseExpenses,
 } from "../utils/market";
@@ -10,22 +11,6 @@ import { LangType, RoleType } from "../types/dashboard.types";
 import { Translator } from "../data/language/translator";
 import Tooltip from "../components/tooltip/Tooltip";
 import Premium from "../components/placeholder/Premium";
-
-const calculateIRR = (
-  currentPrice: number,
-  futurePrice: number,
-  years: number
-): number => {
-  if (currentPrice <= 0 || futurePrice <= 0 || years <= 0) {
-    throw new Error("All input values must be positive numbers.");
-  }
-
-  // Calculate the IRR using the compound annual growth rate formula
-  const irrDecimal = Math.pow(futurePrice / currentPrice, 1 / years) - 1;
-
-  // Convert to percentage
-  return irrDecimal * 100;
-};
 
 const MarketAppreciationAnalysis = ({
   trend,

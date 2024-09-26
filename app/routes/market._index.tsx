@@ -37,7 +37,7 @@ export const links: LinksFunction = () => [
 
 export const meta: MetaFunction = ({ location }) => {
   const lang = getParamValue(location.search, "lang", "sr");
-  const translate = new Translator("dashboard");
+  const translate = new Translator("market");
 
   return [
     { title: translate.getTranslation(lang, "searchMetaTitle") },

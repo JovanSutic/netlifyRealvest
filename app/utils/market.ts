@@ -129,6 +129,15 @@ export const isNewBuild = (detail: Details) => {
 };
 
 const isRenovation = (detail: Details) => {
+  if (
+    catchIndicators(detail.description || "", [
+      "sivoj fazi",
+      "siva faza",
+      "za renoviranje",
+      "zahteva određena renoviranja",
+    ])
+  )
+    return false;
   return catchIndicators(detail.description || "", [
     "lux",
     "renoviran",
@@ -147,10 +156,22 @@ export const getRenovationExpenses = (detail: Details) => {
     catchIndicators(detail.description || "", [
       "renovirano kupatilo",
       "renovirano je kupatilo",
+      "kupatilo je potpuno renovirano",
+      "kupatilo je potupno renovirano",
+      "kupatilo je renovirano",
     ])
   ) {
     return standardM2 * 0.8;
   }
+  if (
+    catchIndicators(detail.description || "", [
+      "sivoj fazi",
+      "siva faza",
+      "za renoviranje",
+      "zahteva određena renoviranja",
+    ])
+  )
+    return standardM2;
   if (
     catchIndicators(detail.description || "", [
       "lux",
@@ -230,10 +251,27 @@ const isGoodHeating = (detail: Details) => {
   );
 };
 
+const isTopOrBottomFloor = (detail: Details): boolean => {
+  if (
+    catchIndicators(detail.description || "", [
+      "suteren",
+      "prizemlje",
+      "visoko prizemlje",
+      "suterenu",
+    ]) ||
+    detail.floor < 1 ||
+    detail.floor === detail.floor_limit ||
+    detail.floor === null ||
+    detail.floor_limit === null
+  )
+    return true;
+
+  return false;
+};
+
 export const getFlipProbability = (detail: Details, roomRatio: number) => {
   let result = 40;
-  if (!(detail.floor < 1 || detail.floor === detail.floor_limit))
-    result = result + 10;
+  if (!isTopOrBottomFloor(detail)) result = result + 10;
   if (isNewBuild(detail)) result = result + 15;
   if (detail.lift) result = result + 5;
   if (detail.intercom) result = result + 3;
@@ -243,7 +281,9 @@ export const getFlipProbability = (detail: Details, roomRatio: number) => {
   if (roomRatio > 0.05) result = result + 2;
   result = result + getParkingPoints(detail);
 
-  return result < 65 ? 0.65 : result / 100;
+  console.log(result);
+
+  return result < 55 ? 0.55 : result / 100;
 };
 
 const isAdditionalLux = (detail: Details) => {
@@ -342,7 +382,10 @@ export const isRoleForUpdate = (role: UserRole): boolean => {
 
 export const getRoleForUpsert = (role: UserRole): UserRole => {
   const today = new Date();
-  const count = role.count === null || differenceInDays(today, role.date) > 0 ? 1 : role.count + 1;
+  const count =
+    role.count === null || differenceInDays(today, role.date) > 0
+      ? 1
+      : role.count + 1;
   return { ...role, date: today, count };
 };
 
@@ -413,4 +456,20 @@ export const getMarketPriceIndex = (
   if (diffRatio > -0.3) return 3;
 
   return 1;
+};
+
+export const calculateIRR = (
+  currentPrice: number,
+  futurePrice: number,
+  years: number
+): number => {
+  if (currentPrice <= 0 || futurePrice <= 0 || years <= 0) {
+    throw new Error("All input values must be positive numbers.");
+  }
+
+  // Calculate the IRR using the compound annual growth rate formula
+  const irrDecimal = Math.pow(futurePrice / currentPrice, 1 / years) - 1;
+
+  // Convert to percentage
+  return irrDecimal * 100;
 };

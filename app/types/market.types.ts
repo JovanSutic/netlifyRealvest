@@ -47,6 +47,7 @@ export interface MarketIndexItem {
   profitability_rental_count: number;
   profitability_average_competition: number;
   profitability_ad_id: number;
+  profitability_average_rental: number;
 }
 
 export interface MarketItem {

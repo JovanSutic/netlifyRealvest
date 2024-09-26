@@ -1,5 +1,8 @@
 export const marketMap: Record<string, Record<string, string>> = {
   en: {
+    searchMetaTitle:"Realvest - Find Perfect Property Investment: Comprehensive Real Estate Search",
+    searchMetaDesc:"Discover the best real estate opportunities with our advanced property search tool. Access up-to-date listings, market trends, and detailed insights all in one place. Start your journey to finding the ideal home or investment today!",
+    singleMetaDesc: "Realvest - Get detailed insights, photos, and market data to make an informed decision when investing in real estate.",
     allTitle: "Properties market search",
     paginationTotal: "total pages",
     page: "page",
@@ -92,8 +95,13 @@ export const marketMap: Record<string, Record<string, string>> = {
     sortPriceAsc: "sort by price ascending",
     sortSizeDesc: "sort by size descending",
     sortSizeAsc: "sort by size ascending",
+    cardIrr: "Internal rate of return",
+    cardRentPrice: "Monthly rent around",
   },
   sr: {
+    searchMetaTitle:"Realvest - Prnađite Najbolju Nekretninu za Investiciju: Pretraga nekretnina",
+    searchMetaDesc:"Istražite najbolje prilike za investicije u nekretnine. Pristupite svim potrebnim podacima kao što su kretanja na tržištu, finansijski podaci, mogućnosti za izdavanje.",
+    singleMetaDesc: "Realvest - Detaljni podaci koji su vam potrebni da u potpunosti istražite investicionu mogućnost nekretnine.",
     allTitle: "Pretraga tržišta nekretnina",
     paginationTotal: "ukupno stranica",
     page: "stranica",
@@ -186,5 +194,7 @@ export const marketMap: Record<string, Record<string, string>> = {
     sortPriceAsc: "sortiraj po ceni uzlazno",
     sortSizeDesc: "sortiraj po veličini silazno",
     sortSizeAsc: "sortiraj po veličini uzlazno",
+    cardIrr: "Interna stopa prinosa",
+    cardRentPrice: "Mesečna kirija oko",
   },
 };
