@@ -218,7 +218,7 @@ export default function Index() {
                   <div></div>
                   {!mobile && (
                     <div className="flex flex-row items-center justify-center px-2 lg:px-10">
-                      <div className="flex bg-gray-50 px-8 w-full rounded-lg w-[460px]">
+                      <div className="flex bg-gray-50 px-8 rounded-lg w-full lg:w-[460px]">
                         <div className="flex flex-row items-center h-full">
                           <div className="flex flex-col items-center pt-8 pb-2 lg:pb-10">
                             <h1 className="text-[32px] font-bold text-center leading-[40px] mb-6">
