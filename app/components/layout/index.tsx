@@ -140,7 +140,7 @@ export const TPage = ({
       } py-4`}
     >
       <div
-        className={`${mobile ? "w-full" : "w-[1366px]"} block relative  m-auto`}
+        className={` w-full block relative ${mobile ? "px-2" : "px-4"} m-auto`}
       >
         {children}
       </div>

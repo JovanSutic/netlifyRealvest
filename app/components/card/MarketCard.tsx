@@ -12,6 +12,8 @@ const MarketCard = ({
   lang,
   price,
   rent,
+  rentPrice,
+  irr,
 }: {
   photo: string;
   title: string;
@@ -21,6 +23,8 @@ const MarketCard = ({
   lang: LangType;
   price: string;
   rent: boolean;
+  rentPrice?: string;
+  irr?: string;
 }) => {
   const translate = new Translator("market");
 
@@ -61,18 +65,40 @@ const MarketCard = ({
             "trendLong"
           )})`}</span>
         </p>
-        <p className="mt-1">
-          <span className="text-gray-700 mr-1 text-md md:text-sm">
-            {`${translate.getTranslation(lang, "rentalHighlight")}:`}
-          </span>
-          <span
-            className={`font-regular mr-1 text-md md:text-sm ${
-              rent ? "text-blue-500" : "text-gray-400"
-            }`}
-          >
-            {`${translate.getTranslation(lang, rent ? "rentOn" : "rentOff")}`}
-          </span>
-        </p>
+        {irr && (
+          <p className="mt-1">
+            <span className="font-semibold text-gray-700 mr-1 text-md md:text-sm">
+              {`${translate.getTranslation(lang, "cardIrr")}:`}
+            </span>
+            <span className={`font-bold mr-1 text-md md:text-sm text-blue-500`}>
+              {irr}
+            </span>
+          </p>
+        )}
+        {rentPrice && (
+          <p className="mt-1">
+            <span className="font-semibold text-gray-700 mr-1 text-md md:text-sm">
+              {`${translate.getTranslation(lang, "cardRentPrice")}:`}
+            </span>
+            <span className={`font-bold mr-1 text-md md:text-sm text-blue-500`}>
+              {rentPrice}
+            </span>
+          </p>
+        )}
+        {!irr && !rentPrice && (
+          <p className="mt-1">
+            <span className="text-gray-700 mr-1 text-md md:text-sm">
+              {`${translate.getTranslation(lang, "rentalHighlight")}:`}
+            </span>
+            <span
+              className={`font-regular mr-1 text-md md:text-sm ${
+                rent ? "text-blue-500" : "text-gray-400"
+              }`}
+            >
+              {`${translate.getTranslation(lang, rent ? "rentOn" : "rentOff")}`}
+            </span>
+          </p>
+        )}
 
         <p className=" absolute bottom-3 left-3 text-gray-400 text-[13px] font-regular md:font-thin">
           {duration}

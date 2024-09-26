@@ -10,7 +10,12 @@ import { createSupabaseServerClient } from "../supabase.server";
 import { Translator } from "../data/language/translator";
 // import Loader from "../components/loader";
 import { getParamValue, detectDevice } from "../utils/params";
-import { Details, LangType, ListedAd, RoleType } from "../types/dashboard.types";
+import {
+  Details,
+  LangType,
+  ListedAd,
+  RoleType,
+} from "../types/dashboard.types";
 import { jwtDecode } from "jwt-decode";
 import { FinalError } from "../types/component.types";
 import {
@@ -37,19 +42,6 @@ export const links: LinksFunction = () => [
     href: "https://unpkg.com/leaflet@1.8.0/dist/leaflet.css",
   },
 ];
-
-export const meta: MetaFunction = ({ location }) => {
-  const lang = getParamValue(location.search, "lang", "sr");
-  const translate = new Translator("dashboard");
-
-  return [
-    { title: translate.getTranslation(lang, "searchMetaTitle") },
-    {
-      name: "description",
-      content: translate.getTranslation(lang, "searchMetaDesc"),
-    },
-  ];
-};
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const userAgent = request.headers.get("user-agent");
@@ -168,6 +160,22 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   };
 };
 
+export const meta: MetaFunction<typeof loader> = ({ data, location }) => {
+  const lang = getParamValue(location.search, "lang", "sr");
+  const loaderData = data!.data as MarketSingleType;
+  const translate = new Translator("dashboard");
+
+  return [
+    {
+      title: `${loaderData.city}, ${loaderData.city_part}, ${loaderData.size}, ${loaderData.price}`,
+    },
+    {
+      name: "description",
+      content: translate.getTranslation(lang, "singleMetaDesc"),
+    },
+  ];
+};
+
 const MarketSingle = () => {
   const [searchParams] = useSearchParams();
   const lang = (searchParams.get("lang") as LangType) || "sr";
@@ -210,7 +218,7 @@ const MarketSingle = () => {
               price={data.price}
               size={data.size}
               average={data.average_price!}
-              trend={data.profit.competition_trend}
+              trend={data.profit?.competition_trend || 0}
               lang={lang}
               isMobile={device === "mobile"}
               role={role}
