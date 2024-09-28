@@ -50,6 +50,9 @@ export const homepageMap: Record<string, Record<string, string>> = {
       "Accelerate your real estate search and turn weeks of searching into seconds. All the data you need is collected in one place. Whether you’re looking for market trends, property details, or investment analysis, our intuitive interface allows you to make informed decisions quickly and efficiently. Discover a smarter way to navigate the world of real estate",
     potentialTitle: "Opportunities with big potential",
     rentalTitle: "Properties with optimal rental possibilities",
+    footerInfo: "Information",
+    footerTerms: "Terms and conditions",
+    footerPrivacy: "Privacy policy",
   },
   sr: {
     heroTitle: "Podaci sa kojima donosite bolje odluke",
@@ -102,5 +105,8 @@ export const homepageMap: Record<string, Record<string, string>> = {
       "Ubrzajte pretraživanje nekretnina i pretvorite nedelje pretrage u sekunde. Na jednom mestu sakupljeni svi podaci koji su vam potrebni. Bilo da tražite tržišne trendove, detalje o nekretninama ili analizu investicija, naš intuitivan interfejs vam omogućava da brzo i efikasno donosite informisane odluke. Otkrijte pametniji način navigacije kroz svet nekretnina!",
     potentialTitle: "Prilike sa velikim potencijalom",
     rentalTitle: "Nekretnine sa optimalnim prihodnim mogućnostima",
+    footerInfo: "Informacije",
+    footerTerms: "Uslovi korišćenja",
+    footerPrivacy: "Politika privatnosti",
   },
 };

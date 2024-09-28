@@ -116,7 +116,7 @@ export const marketMap: Record<string, Record<string, string>> = {
     trendShort: "GPV",
     demandLong: "indikator potražnje",
     demandShort: "ILP",
-    underpricedHighlight: "Ispod prosečne cene",
+    underpricedHighlight: "Ispodprosečne cene",
     rentOn: "dostupna",
     rentOff: "nedostupna",
     appreciationTitle: "Analiza promene vrednosti",
@@ -171,7 +171,7 @@ export const marketMap: Record<string, Record<string, string>> = {
     rentalText:
       "Navedene procene prihoda od izdavanja su informativnog karaktera i nisu zagarantovane. Ove brojke su zasnovane na podacima ostvarenih kirija u prošlosti i dodatnim tržišnim trendovima koji mogu varirati iz različitih razloga. Iako zasnovane na podacima ove procene ne mogu biti garantovane, stoga vas molimo da sprovedete sopstvena istraživanja i pripremu.",
     rentalNoData:
-      "Na žalost za ovu nekretninu nije dostupna analiza izdavanja zbog nedostatka podataka.",
+      "Nažalost za ovu nekretninu nije dostupna analiza izdavanja zbog nedostatka podataka.",
     rentalAverage: "Prosečna kirija po m2",
     rentalMonth: "Očekivana mesečna kirija",
     rentalNoi: "Neto operativni prihod (NOI) godišnji",
@@ -187,7 +187,7 @@ export const marketMap: Record<string, Record<string, string>> = {
     filterAll1: "Svi",
     filterMore: "više od",
     filterCityPart: "Delovi grada",
-    filterLowPrice: "Sa ispod prosečnom cenom m2",
+    filterLowPrice: "Sa ispodprosečnom cenom m2",
     sortDateDesc: "sortiraj po datumu silazno",
     sortDateAsc: "sortiraj po datumu uzlazno",
     sortPriceDesc: "sortiraj po ceni silazno",
