@@ -401,11 +401,13 @@ export default function Index() {
           <TColumn span={1}>
             <footer className="bg-gray-700 p-10 font-[sans-serif] tracking-wide">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div className="lg:flex lg:items-center">
-                  <img src="logo3.png" alt="logo" className="w-52" />
+                <div className="lg:flex">
+                  <div className="max-w-[150px]">
+                    <img src="logo3.png" alt="logo" className="w-full" />
+                  </div>
                 </div>
 
-                <div className="lg:flex lg:items-center">
+                <div className="lg:flex">
                   <ul className="flex space-x-6">
                     <li>
                       <a
@@ -433,42 +435,34 @@ export default function Index() {
                   <h4 className="text-lg font-semibold mb-6 text-white">
                     {translator.getTranslation(lang, "contact")}
                   </h4>
-                  <ul className="text-gray-300">
+                  <ul className="text-gray-300 hover:text-white text-sm">
                     <li>office@yourealvest.com</li>
                   </ul>
                 </div>
 
-                {/* <div>
+                <div>
                   <h4 className="text-lg font-semibold mb-6 text-white">
-                    Information
+                    {translator.getTranslation(lang, "footerInfo")}
                   </h4>
                   <ul className="space-y-4">
                     <li>
-                      <a
-                        href="javascript:void(0)"
+                      <Link
+                        to={`/terms?lang=${lang}`}
                         className="text-gray-300 hover:text-white text-sm"
                       >
-                        About Us
-                      </a>
+                        {translator.getTranslation(lang, "footerTerms")}
+                      </Link>
                     </li>
                     <li>
-                      <a
-                        href="javascript:void(0)"
+                      <Link
+                        to={`/privacy?lang=${lang}`}
                         className="text-gray-300 hover:text-white text-sm"
                       >
-                        Terms &amp; Conditions
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="javascript:void(0)"
-                        className="text-gray-300 hover:text-white text-sm"
-                      >
-                        Privacy Policy
-                      </a>
+                        {translator.getTranslation(lang, "footerPrivacy")}
+                      </Link>
                     </li>
                   </ul>
-                </div> */}
+                </div>
               </div>
 
               <p className="text-gray-300 text-sm mt-10">

@@ -236,7 +236,7 @@ export const dashboardMap: Record<string, Record<string, string>> = {
     bigAreaWarn:
       "Smanjite krug mikrolokacije na 250 ili 500 metara ukoliko želite da vidite podatke o isplativosti.",
     noAppreciateData:
-      "Na žalost za izabranu mikrolokaciju nemamo dovoljno podataka o isplativosti.",
+      "Nažalost za izabranu mikrolokaciju nemamo dovoljno podataka o isplativosti.",
     filters: "Filteri",
     apply: "Primeni",
     close: "Zatvori",
