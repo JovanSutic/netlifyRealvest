@@ -2,6 +2,7 @@ import { Link } from "@remix-run/react";
 import { Translator } from "../../data/language/translator";
 import { LangType } from "../../types/dashboard.types";
 import { getNumberWithDecimals } from "../../utils/market";
+import { getNumbersFromString } from "../../utils/text";
 
 const MarketCard = ({
   photo,
@@ -27,6 +28,10 @@ const MarketCard = ({
   irr?: string;
 }) => {
   const translate = new Translator("market");
+  const irrNumber = irr ? getNumbersFromString(irr!) : undefined;
+  const rentPriceNumber = rentPrice
+    ? getNumbersFromString(rentPrice!)
+    : undefined;
 
   return (
     <Link
@@ -46,11 +51,11 @@ const MarketCard = ({
       </div>
 
       <div className="px-3 mb-12">
-        <h3 className="text-lg lg:text-sm font-semibold text-black mb-2">
+        <h3 className="text-lg lg:text-[15px] font-bold text-black mb-2">
           {title}
         </h3>
         <p>
-          <span className="text-gray-700 font-bold mr-1 text-md md:text-sm">
+          <span className="text-gray-600 mr-1 text-md md:text-sm">
             {`${translate.getTranslation(lang, "trendShort")}:`}
           </span>
           <span
@@ -67,21 +72,31 @@ const MarketCard = ({
         </p>
         {irr && (
           <p className="mt-1">
-            <span className="font-semibold text-gray-700 mr-1 text-md md:text-sm">
+            <span className="text-gray-600 mr-1 text-md md:text-sm">
               {`${translate.getTranslation(lang, "cardIrr")}:`}
             </span>
-            <span className={`font-bold mr-1 text-md md:text-sm text-blue-500`}>
+            <span
+              className={`font-bold mr-1 text-md md:text-sm ${
+                (irrNumber || 0) < 0 ? "text-red-500" : "text-blue-500"
+              }`}
+            >
               {irr}
             </span>
           </p>
         )}
         {rentPrice && (
           <p className="mt-1">
-            <span className="font-semibold text-gray-700 mr-1 text-md md:text-sm">
+            <span className="text-gray-600 mr-1 text-md md:text-sm">
               {`${translate.getTranslation(lang, "cardRentPrice")}:`}
             </span>
-            <span className={`font-bold mr-1 text-md md:text-sm text-blue-500`}>
-              {rentPrice}
+            <span
+              className={`mr-1 text-md md:text-sm ${
+                (rentPriceNumber || 0) > 0 ? "text-blue-500 font-bold" : "text-gray-400 font-regular"
+              }`}
+            >
+              {(rentPriceNumber || 0) > 0
+                ? rentPrice
+                : translate.getTranslation(lang, "noData")}
             </span>
           </p>
         )}
