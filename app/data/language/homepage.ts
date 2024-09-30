@@ -53,6 +53,10 @@ export const homepageMap: Record<string, Record<string, string>> = {
     footerInfo: "Information",
     footerTerms: "Terms and conditions",
     footerPrivacy: "Privacy policy",
+    termsMetaTitle: "Realvest - terms and conditions",
+    termsMetaDescription: "Terms and conditions of the Realvest service",
+    privacyMetaTitle: "Realvest - privacy policy",
+    privacyMetaDescription: "Privacy policy of the Realvest service",
   },
   sr: {
     heroTitle: "Podaci sa kojima donosite bolje odluke",
@@ -108,5 +112,9 @@ export const homepageMap: Record<string, Record<string, string>> = {
     footerInfo: "Informacije",
     footerTerms: "Uslovi korišćenja",
     footerPrivacy: "Politika privatnosti",
+    termsMetaTitle: "Realvest - uslovi korišćenja",
+    termsMetaDescription: "Uslovi korišćenja platforme Realvest",
+    privacyMetaTitle: "Realvest - politika privatnosti",
+    privacyMetaDescription: "Politika privatnosti platforme Realvest",
   },
 };
