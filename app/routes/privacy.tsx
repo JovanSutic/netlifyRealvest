@@ -7,10 +7,10 @@ export const meta: MetaFunction = ({ location }) => {
   const lang = getParamValue(location.search, "lang", "sr");
   const translate = new Translator("homepage");
   return [
-    { title: translate.getTranslation(lang, "homeMetaTitle") },
+    { title: translate.getTranslation(lang, "privacyMetaTitle") },
     {
       name: "description",
-      content: translate.getTranslation(lang, "homeMetaDesc"),
+      content: translate.getTranslation(lang, "privacyMetaDescription"),
     },
   ];
 };
