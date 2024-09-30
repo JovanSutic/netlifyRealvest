@@ -107,7 +107,7 @@ export default function AuthForgetPass() {
   const actionData = useActionData<typeof action>();
 
   const translator = new Translator("auth");
-  const lang = searchParams.get("lang");
+  const lang = searchParams.get("lang") || "sr";
 
   useEffect(() => {
     if (actionData && "success" in actionData && actionData.success) {
