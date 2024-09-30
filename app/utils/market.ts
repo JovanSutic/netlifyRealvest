@@ -281,8 +281,6 @@ export const getFlipProbability = (detail: Details, roomRatio: number) => {
   if (roomRatio > 0.05) result = result + 2;
   result = result + getParkingPoints(detail);
 
-  console.log(result);
-
   return result < 55 ? 0.55 : result / 100;
 };
 
