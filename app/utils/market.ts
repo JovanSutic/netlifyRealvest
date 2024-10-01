@@ -471,3 +471,15 @@ export const calculateIRR = (
   // Convert to percentage
   return irrDecimal * 100;
 };
+
+export const getShortRentalPrice = (
+  averagePrice: number,
+  size: number
+): number => {
+  if (size > 120) return averagePrice * 0.50 * size;
+  if (size > 100) return averagePrice * 0.65 * size;
+  if (size > 80) return averagePrice * 0.75 * size;
+  if (size > 60) return averagePrice * 0.85 * size;
+
+  return averagePrice * size;
+};

@@ -93,6 +93,10 @@ export type MarketSingleType = ListedAd & {
   details: Details;
   photos: PhotoItem[];
   profit: Profitability;
+  short?: {
+    occupancyLevel: number;
+    price: number;
+  }
 };
 
 export interface FeatureItem {
