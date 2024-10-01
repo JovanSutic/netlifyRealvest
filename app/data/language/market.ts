@@ -1,8 +1,11 @@
 export const marketMap: Record<string, Record<string, string>> = {
   en: {
-    searchMetaTitle:"Realvest - Find Perfect Property Investment: Comprehensive Real Estate Search",
-    searchMetaDesc:"Discover the best real estate opportunities with our advanced property search tool. Access up-to-date listings, market trends, and detailed insights all in one place. Start your journey to finding the ideal home or investment today!",
-    singleMetaDesc: "Realvest - Get detailed insights, photos, and market data to make an informed decision when investing in real estate.",
+    searchMetaTitle:
+      "Realvest - Find Perfect Property Investment: Comprehensive Real Estate Search",
+    searchMetaDesc:
+      "Discover the best real estate opportunities with our advanced property search tool. Access up-to-date listings, market trends, and detailed insights all in one place. Start your journey to finding the ideal home or investment today!",
+    singleMetaDesc:
+      "Realvest - Get detailed insights, photos, and market data to make an informed decision when investing in real estate.",
     allTitle: "Properties market search",
     paginationTotal: "total pages",
     page: "page",
@@ -97,11 +100,18 @@ export const marketMap: Record<string, Record<string, string>> = {
     sortSizeAsc: "sort by size ascending",
     cardIrr: "Internal rate of return",
     cardRentPrice: "Monthly rent around",
+    shortPrice: "Expected price for daily rent",
+    shortOccupancy: "Potential monthly occupancy",
+    shortIncome: "Potential monthly (day rent) income",
+    shortNoData: "Daily rent analysis not available for this property.",
   },
   sr: {
-    searchMetaTitle:"Realvest - Prnađite Najbolju Nekretninu za Investiciju: Pretraga nekretnina",
-    searchMetaDesc:"Istražite najbolje prilike za investicije u nekretnine. Pristupite svim potrebnim podacima kao što su kretanja na tržištu, finansijski podaci, mogućnosti za izdavanje.",
-    singleMetaDesc: "Realvest - Detaljni podaci koji su vam potrebni da u potpunosti istražite investicionu mogućnost nekretnine.",
+    searchMetaTitle:
+      "Realvest - Prnađite Najbolju Nekretninu za Investiciju: Pretraga nekretnina",
+    searchMetaDesc:
+      "Istražite najbolje prilike za investicije u nekretnine. Pristupite svim potrebnim podacima kao što su kretanja na tržištu, finansijski podaci, mogućnosti za izdavanje.",
+    singleMetaDesc:
+      "Realvest - Detaljni podaci koji su vam potrebni da u potpunosti istražite investicionu mogućnost nekretnine.",
     allTitle: "Pretraga tržišta nekretnina",
     paginationTotal: "ukupno stranica",
     page: "stranica",
@@ -178,7 +188,7 @@ export const marketMap: Record<string, Record<string, string>> = {
     rentalCap: "Stopa kapitalizacije",
     rentalPeriod: "Period otplate investicije u godinama",
     rentalOptimization:
-      "Optimizacije prihoda (razlika izmedju prosečne i max kirije)",
+      "Optimizacije prihoda (mogućnost povećanja kirije)",
     filters: "Detaljna pretraga",
     filterRentalFalse: "Sve dostupne nekretnine",
     filterRentalTrue: "Sa analizom izdavanja",
@@ -196,5 +206,9 @@ export const marketMap: Record<string, Record<string, string>> = {
     sortSizeAsc: "sortiraj po veličini uzlazno",
     cardIrr: "Interna stopa prinosa",
     cardRentPrice: "Mesečna kirija oko",
+    shortPrice: "Očekivana cena izdavanja na dan",
+    shortOccupancy: "Potencijalna mesečna popunjenost",
+    shortIncome: "Potencijalni mesečni prihod",
+    shortNoData: "Analiza izdavanja na dan nije dostupna za ovu nekretninu.",
   },
 };

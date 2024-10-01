@@ -16,6 +16,21 @@ const calculateCapRate = (noi: number, marketValue: number): number => {
   return (noi / marketValue) * 100;
 };
 
+const getOccupancy = (occupancy: number) => {
+  const base = Math.ceil(getNumberWithDecimals(occupancy || 0, 2) * 10) / 10;
+
+  if (base < 0.1) return 0.1;
+  if (base > 0.85) return getNumberWithDecimals(base * 0.8, 2);
+  if (base > 0.6) return base;
+  if (base > 0.5) return getNumberWithDecimals(base * 1.1, 2);
+  if (base > 0.4) return getNumberWithDecimals(base * 1.15, 2);
+  if (base > 0.3) return getNumberWithDecimals(base * 1.2, 2);
+  if (base > 0.2) return getNumberWithDecimals(base * 1.3, 2);
+  if (base > 0.1) return getNumberWithDecimals(base * 1.35, 2);
+
+  return base;
+};
+
 const MarketRentalAnalysis = ({
   data,
   price,
@@ -31,13 +46,13 @@ const MarketRentalAnalysis = ({
 }) => {
   const translate = new Translator("market");
   const dashTranslate = new Translator("dashboard");
+  const estimatedOccupancy = getOccupancy(data.short?.occupancyLevel || 0);
 
   const netIncome = data.profit.average_rental * data.size * 12;
   const expenses = getPropertyPurchaseExpenses(data.price, data.details).total;
   const optimization =
-    ((data.profit.max_rental - data.profit.average_rental) /
-      data.profit.average_rental) *
-    100;
+    (data.profit.max_rental - data.profit.average_rental) /
+    data.profit.average_rental;
 
   if (role !== "premium" && role !== "limitedPremium") {
     return (
@@ -47,7 +62,9 @@ const MarketRentalAnalysis = ({
             isMobile ? "mb-2" : "mb-4"
           }`}
         >
-          <h3 className="text-[22px] md:text-lg font-bold">{translate.getTranslation(lang, "rentalTitle")}</h3>
+          <h3 className="text-[22px] md:text-lg font-bold">
+            {translate.getTranslation(lang, "rentalTitle")}
+          </h3>
         </div>
         <Premium
           lang={lang}
@@ -59,7 +76,7 @@ const MarketRentalAnalysis = ({
     );
   }
 
-  if (data.profit.rental_count < 3) {
+  if (data.profit.rental_count < 2) {
     return (
       <div className="w-full h-full flex flex-col">
         <div
@@ -235,7 +252,7 @@ const MarketRentalAnalysis = ({
               </div>
             </div>
           </li>
-          <li className="mt-2">
+          <li className="mt-2 mb-2">
             <div className="flex w-full px-2 py-1">
               <div className="w-[80%]">
                 <p className="text-sm">{`${translate.getTranslation(
@@ -245,11 +262,73 @@ const MarketRentalAnalysis = ({
               </div>
               <div className="w-[20%]">
                 <p className="font-bold text-sm">
-                  {`${getNumberWithDecimals(optimization, 2)}%`}
+                  {`${getNumberWithDecimals(
+                    optimization > 0.3 ? 0.3 * 100 : optimization * 100,
+                    2
+                  )}%`}
                 </p>
               </div>
             </div>
           </li>
+
+          <hr />
+          {data.short?.price ? (
+            <>
+              <li className="mt-2">
+                <div className="flex w-full px-2 py-1">
+                  <div className="w-[80%]">
+                    <p className="text-sm">{`${translate.getTranslation(
+                      lang,
+                      "shortPrice"
+                    )}:`}</p>
+                  </div>
+                  <div className="w-[20%]">
+                    <p className="font-bold text-sm">
+                      {`${makeNumberCurrency(data.short.price)}`}
+                    </p>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div className="flex w-full px-2 py-1">
+                  <div className="w-[80%]">
+                    <p className="text-sm">{`${translate.getTranslation(
+                      lang,
+                      "shortOccupancy"
+                    )}:`}</p>
+                  </div>
+                  <div className="w-[20%]">
+                    <p className="font-bold text-sm">
+                      {`${estimatedOccupancy * 100}%`}
+                    </p>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div className="flex w-full px-2 py-1">
+                  <div className="w-[80%]">
+                    <p className="text-sm font-semibold">{`${translate.getTranslation(
+                      lang,
+                      "shortIncome"
+                    )}:`}</p>
+                  </div>
+                  <div className="w-[20%]">
+                    <p className="font-bold text-sm text-blue-500">
+                      {`${makeNumberCurrency(
+                        data.short.price * 30 * estimatedOccupancy
+                      )}`}
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </>
+          ) : (
+            <div className="py-3">
+              <p className="text-center text-md text-gray-500">
+                {translate.getTranslation(lang, "shortNoData")}
+              </p>
+            </div>
+          )}
         </ul>
       </div>
     </div>

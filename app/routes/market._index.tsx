@@ -112,7 +112,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         price_to: Number(priceTo),
         m2_price_from: Number(m2PriceFrom),
         m2_price_to: Number(m2PriceTo),
-        rental: rentalAnalysis === "true" ? 3 : 0,
+        rental: rentalAnalysis === "true" ? 2 : 0,
         trend: Number(appreciation) / 100,
         part: cityPart,
         low_price: low_price,
@@ -137,7 +137,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         price_to: Number(priceTo),
         m2_price_from: Number(m2PriceFrom),
         m2_price_to: Number(m2PriceTo),
-        rental: rentalAnalysis === "true" ? 3 : 0,
+        rental: rentalAnalysis === "true" ? 2 : 0,
         trend: Number(appreciation) / 100,
         part: cityPart,
         low_price: low_price,
@@ -387,9 +387,9 @@ const MarketAll = () => {
                         2
                       )}%`}
                       rent={(item?.profitability_rental_count || 0) > 2}
-                      rentPrice={makeNumberCurrency(
+                      rentPrice={item.profitability_rental_count > 1 ? makeNumberCurrency(
                         item.profitability_average_rental * item.size
-                      )}
+                      ) : '0'}
                       duration={`${translate.getTranslation(
                         lang,
                         "onMarket"
