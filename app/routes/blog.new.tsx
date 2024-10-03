@@ -15,9 +15,13 @@ import {
 } from "../types/blog.types";
 import { createSlug, getRandomString } from "../utils/text";
 import Alert from "../components/alert";
+import BlogSectionItem from "../widgets/BlogSectionItem";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  if (process.env.BASE_URL !== "http://localhost:5173") {
+  if (
+    process.env.BASE_URL !== "http://localhost:5173" ||
+    process.env.SUPABASE_URL_LOCAL === "http://127.0.0.1:54321"
+  ) {
     throw Error("Forbidden");
     return null;
   }
@@ -174,7 +178,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return null;
 };
 
-export default function Market() {
+export default function NewBlog() {
   const [searchParams, setSearchParams] = useSearchParams();
   const lang = (searchParams.get("lang") as LangType) || "sr";
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -275,102 +279,162 @@ export default function Market() {
         <div className="col-span-3 ">
           {searchParams.get("blog_id") && (
             <div className="w-full flex flex-col items-center px-4">
-              <div className="w-full">
-                <Form method="post" className="mt-4 w-full">
-                  <input name="source" type="hidden" value="section" />
-                  {sections.map((item, index) => (
-                    <div key={item.id}>
-                      <div>
+              {searchParams.get("preview") === "true" ? (
+                <div className="w-full">
+                  <button
+                    onClick={() => {
+                      searchParams.delete("preview");
+                      setSearchParams(searchParams);
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="size-6"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                  {sections.map((item) => (
+                    <BlogSectionItem
+                      key={item.id}
+                      content={item.content}
+                      type={item.type}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <>
+                  <div className="w-full">
+                    <Form method="post" className="mt-4 w-full">
+                      <input name="source" type="hidden" value="section" />
+                      {sections.map((item, index) => (
+                        <div key={item.id}>
+                          <div>
+                            <button
+                              onClick={() => {
+                                const newSections: BlogSection[] = [];
+                                sections.forEach((item, subIndex) => {
+                                  if (index !== subIndex) {
+                                    newSections.push(item);
+                                  }
+                                });
+
+                                setSections(newSections);
+                              }}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                className="size-6"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                          <div className="mb-2">
+                            <Select
+                              name={`type${index}`}
+                              value={item.type}
+                              isFullWidth={true}
+                              setValue={(value) => {
+                                const newSections: BlogSection[] = [];
+                                sections.forEach((item, subIndex) => {
+                                  if (index === subIndex) {
+                                    item.type = value as BlogSectionType;
+                                    newSections.push(item);
+                                  } else {
+                                    newSections.push(item);
+                                  }
+                                });
+                                setSections(newSections);
+                              }}
+                              options={[
+                                { text: "Title", value: "title" },
+                                { text: "Subtitle", value: "sub" },
+                                { text: "Article", value: "article" },
+                                { text: "MediaLink", value: "media" },
+                              ]}
+                            />
+                          </div>
+                          <textarea
+                            name={`content${index}`}
+                            rows={4}
+                            required
+                            className="block p-2.5 w-full text-sm text-gray-900 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-2"
+                            placeholder="Meta description"
+                            value={item.content}
+                            onChange={(event) => {
+                              const newSections: BlogSection[] = [];
+                              sections.forEach((item, subIndex) => {
+                                if (index === subIndex) {
+                                  item.content = event.target.value;
+                                  newSections.push(item);
+                                } else {
+                                  newSections.push(item);
+                                }
+                              });
+                              setSections(newSections);
+                            }}
+                          />
+                        </div>
+                      ))}
+                      <div className="flex flex-row justify-center gap-4 mt-6 mb-6">
                         <button
                           onClick={() => {
-                            const newSections: BlogSection[] = [];
-                            sections.forEach((item, subIndex) => {
-                              if (index !== subIndex) {
-                                newSections.push(item);
-                              }
-                            });
-
-                            setSections(newSections);
+                            setSections([
+                              ...sections,
+                              {
+                                id: getRandomString(8),
+                                type: "title",
+                                content: "",
+                              },
+                            ]);
                           }}
+                          className="px-6 py-2 font-semibold text-center text-sm text-white bg-blue-500 rounded-lg  transition-all duration-300 transform hover:bg-blue-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
                         >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            className="size-6"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
+                          {!sections.length
+                            ? "CREATE CONTENT SECTION"
+                            : "ADD CONTENT SECTION"}
                         </button>
+                        {sections.length > 0 && (
+                          <button
+                            onClick={() => {
+                              setSearchParams((prev) => {
+                                prev.set("preview", "true");
+                                return prev;
+                              });
+                            }}
+                            type="button"
+                            className="text-md px-6 py-2 bg-gray-500 font-semibold text-white rounded-lg transition-all duration-300 transform hover:bg-gray-700 focus:outline-none "
+                          >
+                            Preview
+                          </button>
+                        )}
+                        {sections.length > 0 && (
+                          <button
+                            className="text-md px-6 py-2 bg-green-500 font-semibold text-white rounded-lg transition-all duration-300 transform hover:bg-green-700 focus:outline-none "
+                            type="submit"
+                          >
+                            Create
+                          </button>
+                        )}
                       </div>
-                      <div className="mb-2">
-                        <Select
-                          name={`type${index}`}
-                          value={item.type}
-                          isFullWidth={true}
-                          setValue={(value) => {
-                            const newSections: BlogSection[] = [];
-                            sections.forEach((item, subIndex) => {
-                              if (index === subIndex) {
-                                item.type = value as BlogSectionType;
-                                newSections.push(item);
-                              } else {
-                                newSections.push(item);
-                              }
-                            });
-                            setSections(newSections);
-                          }}
-                          options={[
-                            { text: "Title", value: "title" },
-                            { text: "Subtitle", value: "sub" },
-                            { text: "Article", value: "article" },
-                            { text: "MediaLink", value: "media" },
-                          ]}
-                        />
-                      </div>
-                      <textarea
-                        name={`content${index}`}
-                        rows={4}
-                        required
-                        className="block p-2.5 w-full text-sm text-gray-900 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-2"
-                        placeholder="Meta description"
-                      />
-                    </div>
-                  ))}
-                  <div className="flex flex-row justify-center gap-4 mt-6">
-                    <button
-                      onClick={() => {
-                        setSections([
-                          ...sections,
-                          {
-                            id: getRandomString(8),
-                            type: "title",
-                            content: "",
-                          },
-                        ]);
-                      }}
-                      className="px-6 py-2 font-semibold text-center text-sm text-white bg-blue-500 rounded-lg  transition-all duration-300 transform hover:bg-blue-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
-                    >
-                      {!sections.length
-                        ? "CREATE CONTENT SECTION"
-                        : "ADD CONTENT SECTION"}
-                    </button>
-                    {sections.length > 0 && (
-                      <button
-                        className="text-md px-6 py-2 bg-green-500 font-semibold text-white rounded-lg transition-all duration-300 transform hover:bg-gray-700 focus:outline-none "
-                        type="submit"
-                      >
-                        Create
-                      </button>
-                    )}
+                    </Form>
                   </div>
-                </Form>
-              </div>
-              <div className="w-[260px]"></div>
+                  <div className="w-[260px]"></div>
+                </>
+              )}
             </div>
           )}
         </div>
