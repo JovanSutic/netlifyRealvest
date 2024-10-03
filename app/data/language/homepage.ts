@@ -57,6 +57,16 @@ export const homepageMap: Record<string, Record<string, string>> = {
     termsMetaDescription: "Terms and conditions of the Realvest service",
     privacyMetaTitle: "Realvest - privacy policy",
     privacyMetaDescription: "Privacy policy of the Realvest service",
+    blogTitle: "Real estate market insights - Beograd",
+    noBlogs:
+      "Currently there are no articles in english about real estate market for this city.",
+    home: "Home",
+    blog: "Blog",
+    back: "Back",
+    blogDate: "Article created",
+    blogMetaTitle: "Realvest - real estate market insights for Belgrade",
+    blogMetaDescription:
+      "Articles for people that are buying or investing in Belgrade real estate.",
   },
   sr: {
     heroTitle: "Podaci sa kojima donosite bolje odluke",
@@ -116,5 +126,14 @@ export const homepageMap: Record<string, Record<string, string>> = {
     termsMetaDescription: "Uslovi korišćenja platforme Realvest",
     privacyMetaTitle: "Realvest - politika privatnosti",
     privacyMetaDescription: "Politika privatnosti platforme Realvest",
+    blogTitle: "Uvidi u tržište nekretnina - Beograd",
+    noBlogs: "Trenutno nema članaka o tržištu nekretnina za ovaj grad.",
+    home: "Početna",
+    blog: "Blog",
+    back: "Nazad",
+    blogDate: "Članak napisan",
+    blogMetaTitle: "Realvest - uvidi u tržište nekretnina Beograda",
+    blogMetaDescription:
+      "Članci za one koji žele da investiraju u stanove u Beogradu ili koji žele da kupe stan u Beogradu.",
   },
 };

@@ -19,8 +19,7 @@ import BlogSectionItem from "../widgets/BlogSectionItem";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   if (
-    process.env.BASE_URL !== "http://localhost:5173" ||
-    process.env.SUPABASE_URL_LOCAL === "http://127.0.0.1:54321"
+    process.env.BASE_URL !== "http://localhost:5173"
   ) {
     throw Error("Forbidden");
     return null;

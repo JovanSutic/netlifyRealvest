@@ -61,6 +61,6 @@ export const blogSchema = z.object({
   description: z
     .string()
     .min(1, "descriptionErrorMin")
-    .max(80, "descriptionErrorMax"),
-  link: z.string().min(1, "linkErrorMin").max(30, "linkErrorMax"),
+    .max(180, "descriptionErrorMax"),
+  link: z.string().min(1, "linkErrorMin").max(120, "linkErrorMax"),
 });

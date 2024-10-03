@@ -7,6 +7,14 @@ export interface BlogSection {
   content: string;
 }
 
+export interface BlogContent {
+  id?: number;
+  type: BlogSectionType;
+  sequence: number;
+  content: string;
+  blog_id: number;
+}
+
 export interface Blog {
   id?: number;
   name: string;
@@ -15,12 +23,5 @@ export interface Blog {
   media_link: string;
   date_created: Date;
   language: string;
-}
-
-export interface BlogContent {
-  id?: number;
-  type: BlogSectionType;
-  sequence: number;
-  content: string;
-  blog_id: number;
+  sections?: BlogContent[];
 }
