@@ -21,9 +21,19 @@ const renderText = (text: string) => {
 
   return parts.map((part, index) => {
     if (part.startsWith("<a")) {
-      return <span key={index} dangerouslySetInnerHTML={{ __html: part }} className="text-blue-500 hover:underline" />;
+      return (
+        <span
+          key={index}
+          dangerouslySetInnerHTML={{ __html: part }}
+          className="text-blue-500 hover:underline"
+        />
+      );
     } else if (part.startsWith("<strong>")) {
-      return <strong key={index} className="font-bold text-gray-800">{part.replace(/<\/?strong>/g, "")}</strong>;
+      return (
+        <strong key={index} className="font-bold text-gray-800">
+          {part.replace(/<\/?strong>/g, "")}
+        </strong>
+      );
     } else {
       return part; // Regular text
     }
@@ -40,13 +50,17 @@ const BlogSectionItem = ({
   return (
     <div className="w-full">
       {type === "title" && (
-        <h3 className="font-bold text-black text-2xl mb-4">{content}</h3>
+        <h3 className="font-bold text-black text-xl md:text-2xl mb-4">
+          {content}
+        </h3>
       )}
       {type === "sub" && (
-        <h4 className="font-semibold text-xl mb-4">{content}</h4>
+        <h4 className="font-semibold text-lg md:text-xl mb-2">{content}</h4>
       )}
       {type === "article" && (
-        <p className="text-md text-gray-700 mb-4">{renderText(content)}</p>
+        <p className="text-sm md:text-md text-gray-700 mb-4">
+          {renderText(content)}
+        </p>
       )}
       {type === "media" && (
         <div className="w-full md:w-[500px] lg:w-[700px] text-center mx-auto mb-4">

@@ -447,6 +447,14 @@ export default function Index() {
                   <ul className="space-y-4">
                     <li>
                       <Link
+                        to={`/blog?lang=${lang}`}
+                        className="text-gray-300 hover:text-white text-sm"
+                      >
+                        {translator.getTranslation(lang, "blog")}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
                         to={`/terms?lang=${lang}`}
                         className="text-gray-300 hover:text-white text-sm"
                       >
