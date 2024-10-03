@@ -30,10 +30,10 @@ export const createSlug = (str: string): string => {
 
   // Remove special characters and replace spaces with hyphens
   str = str
-    .replace(/[^a-z0-9\s-]/g, '') // Remove non-alphanumeric characters
+    .replace(/[^a-z0-9\s-]/g, "") // Remove non-alphanumeric characters
     .trim() // Trim whitespace from both ends
-    .replace(/\s+/g, '-') // Replace spaces with a single hyphen
-    .replace(/--+/g, '-'); // Replace multiple hyphens with a single hyphen
+    .replace(/\s+/g, "-") // Replace spaces with a single hyphen
+    .replace(/--+/g, "-"); // Replace multiple hyphens with a single hyphen
 
   return str;
-}
+};
