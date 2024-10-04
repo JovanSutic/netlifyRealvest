@@ -6,14 +6,18 @@ import { formatDate } from "../../utils/dateTime";
 const BlogCard = ({
   blog,
   lang,
-  page,
+  isHome = false,
 }: {
   blog: Blog;
   lang: LangType;
-  page: string;
+  isHome?: boolean;
 }) => {
   return (
-    <div className="w-full flex flex-col md:flex-row p-2 border-b-[1px] border-gray-300">
+    <div
+      className={`w-full flex flex-col items-center md:flex-row p-2 ${
+        !isHome && "border-b-[1px] border-gray-300"
+      }`}
+    >
       <div className="w-[220px] h-[140px] mx-auto">
         <Link to={`/blog/${blog.slug}/?lang=${lang}`}>
           <img
@@ -25,8 +29,10 @@ const BlogCard = ({
       </div>
       <div className="flex-1 md:pl-2 lg:pl-3 mt-2 lg:mt-0">
         <Link
-          to={`/blog/${blog.slug}/?lang=${lang}&page=${page}`}
-          className="text-lg lg:text-2xl font-semibold text-black hover:underline"
+          to={`/blog/${blog.slug}/?lang=${lang}`}
+          className={`text-lg ${
+            isHome ? "lg:text-xl" : "lg:text-2xl"
+          } font-semibold text-black hover:underline`}
         >
           {blog.name}
         </Link>
