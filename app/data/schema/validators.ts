@@ -40,15 +40,27 @@ export const forgetSchema = z.object({
   email: z.string().email({ message: "emailError" }),
 });
 
-export const changePassSchema = z.object({
-  password: password,
-  confirmPass: password,
-}).superRefine(({ confirmPass, password }, ctx) => {
-  if (confirmPass !== password) {
-    ctx.addIssue({
-      code: "custom",
-      message: "confirmError",
-      path: ['confirmPass']
-    });
-  }
+export const changePassSchema = z
+  .object({
+    password: password,
+    confirmPass: password,
+  })
+  .superRefine(({ confirmPass, password }, ctx) => {
+    if (confirmPass !== password) {
+      ctx.addIssue({
+        code: "custom",
+        message: "confirmError",
+        path: ["confirmPass"],
+      });
+    }
+  });
+
+export const blogSchema = z.object({
+  name: z.string().min(1, "nameErrorMin").max(50, "nameErrorMax"),
+  language: z.string().min(1, "languageErrorMin").length(2, "languageErrorMax"),
+  description: z
+    .string()
+    .min(1, "descriptionErrorMin")
+    .max(180, "descriptionErrorMax"),
+  link: z.string().min(1, "linkErrorMin").max(120, "linkErrorMax"),
 });

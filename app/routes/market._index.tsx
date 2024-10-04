@@ -26,7 +26,13 @@ import { makeNumberCurrency } from "../utils/numbers";
 import Select from "../components/select/Select";
 import MarketFilter from "../components/filters/MarketFilter";
 import { useState } from "react";
-import { getSortingParams } from "../utils/market";
+import {
+  calculateIRR,
+  getNumberWithDecimals,
+  getPropertyPurchaseExpenses,
+  getSortingParams,
+} from "../utils/market";
+import { calculateFuturePrice } from "../utils/dashboard";
 
 export const links: LinksFunction = () => [
   {
@@ -66,8 +72,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const appreciation =
     new URL(request.url).searchParams.get("appreciation") || "-10";
   const cityPart = new URL(request.url).searchParams.get("city_part") || "all";
-  const sort = new URL(request.url).searchParams.get("sort") || "date_asc";
-  const low_price = new URL(request.url).searchParams.get("low_price") || "true";
+  const sort = new URL(request.url).searchParams.get("sort") || "date_desc";
+  const low_price =
+    new URL(request.url).searchParams.get("low_price") || "true";
 
   const limit = 20;
   const rangeStart = (Number(page) - 1) * limit;
@@ -105,7 +112,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         price_to: Number(priceTo),
         m2_price_from: Number(m2PriceFrom),
         m2_price_to: Number(m2PriceTo),
-        rental: rentalAnalysis === "true" ? 3 : 0,
+        rental: rentalAnalysis === "true" ? 2 : 0,
         trend: Number(appreciation) / 100,
         part: cityPart,
         low_price: low_price,
@@ -130,7 +137,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         price_to: Number(priceTo),
         m2_price_from: Number(m2PriceFrom),
         m2_price_to: Number(m2PriceTo),
-        rental: rentalAnalysis === "true" ? 3 : 0,
+        rental: rentalAnalysis === "true" ? 2 : 0,
         trend: Number(appreciation) / 100,
         part: cityPart,
         low_price: low_price,
@@ -217,7 +224,7 @@ const MarketAll = () => {
   const rentalAnalysis = searchParams.get("rental_analysis") || "false";
   const appreciation = searchParams.get("appreciation") || "0";
   const cityPart = searchParams.get("city_part") || "all";
-  const marketSort = searchParams.get("sort") || "date_asc";
+  const marketSort = searchParams.get("sort") || "date_desc";
   const lowPrice = searchParams.get("low_price") || "true";
 
   const setFilters = (filters: MarketFilterType) => {
@@ -242,8 +249,14 @@ const MarketAll = () => {
     setOpenFilter(false);
   };
 
-  const { data, pages, mobile, role, cityParts, count } =
-    useLoaderData<typeof loader>();
+  const { data, pages, mobile, role, cityParts, count } = useLoaderData<{
+    data: MarketIndexItem[];
+    pages: number;
+    count: number;
+    mobile: boolean;
+    role: RoleType;
+    cityParts: string[];
+  }>();
 
   return (
     <DashboardPage>
@@ -260,7 +273,7 @@ const MarketAll = () => {
           rentalAnalysis,
           appreciation,
           cityPart,
-          lowPrice
+          lowPrice,
         }}
         cityParts={cityParts}
         toggleOpen={() => setOpenFilter(!openFilter)}
@@ -303,12 +316,30 @@ const MarketAll = () => {
                   })
                 }
                 options={[
-                  { value: "date_desc", text: translate.getTranslation(lang, 'sortDateDesc') },
-                  { value: "date_asc", text: translate.getTranslation(lang, 'sortDateAsc')  },
-                  { value: "price_desc", text: translate.getTranslation(lang, 'sortPriceDesc')  },
-                  { value: "price_asc", text: translate.getTranslation(lang, 'sortPriceAsc')  },
-                  { value: "size_desc", text: translate.getTranslation(lang, 'sortSizeDesc')  },
-                  { value: "size_asc", text: translate.getTranslation(lang, 'sortSizeAsc')  },
+                  {
+                    value: "date_desc",
+                    text: translate.getTranslation(lang, "sortDateDesc"),
+                  },
+                  {
+                    value: "date_asc",
+                    text: translate.getTranslation(lang, "sortDateAsc"),
+                  },
+                  {
+                    value: "price_desc",
+                    text: translate.getTranslation(lang, "sortPriceDesc"),
+                  },
+                  {
+                    value: "price_asc",
+                    text: translate.getTranslation(lang, "sortPriceAsc"),
+                  },
+                  {
+                    value: "size_desc",
+                    text: translate.getTranslation(lang, "sortSizeDesc"),
+                  },
+                  {
+                    value: "size_asc",
+                    text: translate.getTranslation(lang, "sortSizeAsc"),
+                  },
                 ]}
               />
             </div>
@@ -332,7 +363,7 @@ const MarketAll = () => {
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4  gap-8 md:gap-6 xl:gap-4">
-                {data.map((item) => {
+                {(data || []).map((item) => {
                   return (
                     <MarketCard
                       key={item?.id}
@@ -342,7 +373,23 @@ const MarketAll = () => {
                       appreciation={item?.profitability_competition_trend || 0}
                       photo={item?.photo?.link || ""}
                       title={`${item?.city_part}, ${item?.size}m2`}
+                      irr={`${getNumberWithDecimals(
+                        calculateIRR(
+                          item.price +
+                            getPropertyPurchaseExpenses(item.price).total,
+                          calculateFuturePrice(
+                            item.average_price,
+                            item.profitability_competition_trend,
+                            5
+                          ) * item.size,
+                          5
+                        ),
+                        2
+                      )}%`}
                       rent={(item?.profitability_rental_count || 0) > 2}
+                      rentPrice={item.profitability_rental_count > 1 ? makeNumberCurrency(
+                        item.profitability_average_rental * item.size
+                      ) : '0'}
                       duration={`${translate.getTranslation(
                         lang,
                         "onMarket"

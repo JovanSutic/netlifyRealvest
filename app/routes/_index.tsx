@@ -19,6 +19,8 @@ import {
   getNumberWithDecimals,
 } from "../utils/market";
 import { calculateFuturePrice } from "../utils/dashboard";
+import { Blog } from "../types/blog.types";
+import BlogCard from "../components/card/BlogCard";
 
 export const meta: MetaFunction = ({ location }) => {
   const lang = getParamValue(location.search, "lang", "sr");
@@ -102,10 +104,23 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       });
     });
 
+    const { data: blogData, error: blogError } = await supabaseClient
+      .from("blogs")
+      .select("*")
+      .eq("language", lang)
+      .order("id")
+      .limit(4);
+
+    if (blogError) {
+      isError = true;
+      finalError = blogError as FinalError;
+    }
+
     return {
       mobile: isMobile(userAgent!),
       potential: resultsPotential,
       rental: resultsRental,
+      blogs: blogData,
     };
   } catch (error) {
     console.log(error);
@@ -118,13 +133,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return {
     potential: [],
     rental: [],
+    blogs: [],
     mobile: isMobile(userAgent!),
   };
 };
 
 export default function Index() {
   const [searchParams] = useSearchParams();
-  const lang = searchParams.get("lang") || "sr";
+  const lang = (searchParams.get("lang") as LangType) || "sr";
 
   const translator = new Translator("homepage");
   const translate = new Translator("market");
@@ -168,10 +184,12 @@ export default function Index() {
     mobile,
     potential,
     rental,
+    blogs,
   }: {
     mobile: boolean;
     potential: MarketIndexItem[];
     rental: MarketIndexItem[];
+    blogs: Blog[];
   } = useLoaderData();
 
   return (
@@ -209,6 +227,7 @@ export default function Index() {
           </TColumn>
         </TLine>
       </TPage>
+
       <TPage color="bg-white" mobile={mobile}>
         <TLine columns={12} gap={2}>
           <TColumn span={12}>
@@ -265,7 +284,9 @@ export default function Index() {
             </div>
           </TColumn>
         </TLine>
+      </TPage>
 
+      <TPage color="bg-white" mobile={mobile}>
         <div className="mt-6 lg:mt-10 mb-6">
           <h2 className="text-[24px] md:text-[32px] font-bold text-center mb-2">
             {translator.getTranslation(lang, "potentialTitle")}
@@ -380,6 +401,36 @@ export default function Index() {
           </div>
         </div>
       </TPage>
+      {blogs.length > 2 && (
+        <TPage color="bg-white" mobile={mobile}>
+          <div className="py-2 mb-3 md:mb-6">
+            <div>
+              <h3 className="text-[24px] md:text-[32px] font-bold text-center mb-10">
+                {translator.getTranslation(lang, "homeBlogTitle")}
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {blogs.map((item) => (
+                <BlogCard
+                  key={item.slug}
+                  lang={lang}
+                  isHome
+                  blog={item as unknown as Blog}
+                />
+              ))}
+            </div>
+            <div className="flex flex-row items-center mt-6 md:mt-8">
+              <Link
+                to={`/blog/?lang=${lang}&page=1`}
+                className="w-full font-regular text-center text-blue-500 hover:underline text-lg lg:text-xl"
+              >
+                {translator.getTranslation(lang, "homeBlogAll")}
+              </Link>
+            </div>
+          </div>
+        </TPage>
+      )}
+
       <TPage mobile={mobile}>
         <TLine columns={1}>
           <TColumn span={1}>
@@ -445,6 +496,14 @@ export default function Index() {
                     {translator.getTranslation(lang, "footerInfo")}
                   </h4>
                   <ul className="space-y-4">
+                    <li>
+                      <Link
+                        to={`/blog?lang=${lang}`}
+                        className="text-gray-300 hover:text-white text-sm"
+                      >
+                        {translator.getTranslation(lang, "blog")}
+                      </Link>
+                    </li>
                     <li>
                       <Link
                         to={`/terms?lang=${lang}`}

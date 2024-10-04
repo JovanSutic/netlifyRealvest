@@ -33,8 +33,10 @@ import MarketRentalAnalysis from "../widgets/MarketRentalAnalysis";
 import {
   getRoleForUpsert,
   getSessionUserRole,
+  getShortRentalPrice,
   isRoleForUpdate,
 } from "../utils/market";
+import { getMapCircle } from "../utils/dashboard";
 
 export const links: LinksFunction = () => [
   {
@@ -49,6 +51,8 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { id } = params;
 
   let userRole = "basic";
+  let occupancyLevel = 0;
+  let shortRentalM2 = 0;
 
   let isError = false;
   let finalError: FinalError | null = null;
@@ -124,6 +128,59 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
       finalError = detailError as FinalError;
     }
 
+    const { uniq } = getMapCircle(
+      Number(detailData![0].lat),
+      Number(detailData![0].lng),
+      200
+    );
+
+    const { data: shortsData, error: shortsError } = await supabaseClient
+      .from("short_rentals")
+      .select("*")
+      .gt("lat", 0)
+      .gt("lng", 0)
+      .gt("lat", uniq[1])
+      .lt("lat", uniq[0])
+      .gt("lng", uniq[3])
+      .lt("lng", uniq[2]);
+
+    if (shortsError) {
+      isError = true;
+      finalError = shortsError as FinalError;
+    }
+
+    if (shortsData && shortsData.length) {
+      const { count: shortsCount, error: shortsCountError } =
+        await supabaseClient
+          .from("short_calendar")
+          .select("*", { count: "exact", head: true });
+
+      if (shortsCountError) {
+        isError = true;
+        finalError = shortsCountError as FinalError;
+      }
+
+      const ids = shortsData.map((item) => item.id);
+
+      const { data: calendarData, error: calendarError } =
+        await supabaseClient.rpc("get_matching_short_calendar", { ids });
+
+      if (calendarError) {
+        isError = true;
+        finalError = calendarError as FinalError;
+      }
+
+      occupancyLevel = calendarData.length / shortsCount!;
+      const sumPrice = shortsData
+        ?.map((item) => item.price)
+        .reduce((a, b) => a + b, 0);
+      const sumSize = shortsData
+        ?.map((item) => item.size)
+        .reduce((a, b) => a + b, 0);
+
+      shortRentalM2 = sumPrice / sumSize;
+    }
+
     const { data: photoData, error: photoError } = await supabaseClient
       .from("photos")
       .select("*")
@@ -141,6 +198,10 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
         photos: photoData || [],
         profit: profitData?.[0],
         details: detailData?.[0],
+        short: {
+          occupancyLevel,
+          price: getShortRentalPrice(shortRentalM2, apartmentData![0].size),
+        },
       },
       device: detectDevice(userAgent!),
       role: userRole,

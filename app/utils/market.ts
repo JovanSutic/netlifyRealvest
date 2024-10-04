@@ -281,8 +281,6 @@ export const getFlipProbability = (detail: Details, roomRatio: number) => {
   if (roomRatio > 0.05) result = result + 2;
   result = result + getParkingPoints(detail);
 
-  console.log(result);
-
   return result < 55 ? 0.55 : result / 100;
 };
 
@@ -472,4 +470,16 @@ export const calculateIRR = (
 
   // Convert to percentage
   return irrDecimal * 100;
+};
+
+export const getShortRentalPrice = (
+  averagePrice: number,
+  size: number
+): number => {
+  if (size > 120) return averagePrice * 0.50 * size;
+  if (size > 100) return averagePrice * 0.65 * size;
+  if (size > 80) return averagePrice * 0.75 * size;
+  if (size > 60) return averagePrice * 0.85 * size;
+
+  return averagePrice * size;
 };
