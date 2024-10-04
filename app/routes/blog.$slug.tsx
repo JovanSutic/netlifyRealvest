@@ -3,6 +3,7 @@ import {
   Link,
   MetaFunction,
   useLoaderData,
+  useNavigate,
   useSearchParams,
 } from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
@@ -83,11 +84,12 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
 const BlogAll = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const goBack = () => navigate(-1);
 
   const translate = new Translator("homepage");
 
   const lang = (searchParams.get("lang") as LangType) || "sr";
-  const page = searchParams.get("page") || "1";
 
   const { data } = useLoaderData<{
     data: Blog;
@@ -103,12 +105,13 @@ const BlogAll = () => {
           </Link>
         </div>
         <div className="flex flex-row absolute bottom-0">
-          <Link
-            to={`/blog/?lang=${lang}&page=${page}`}
-            className="text-sm font-regular text-blue-400 underline transform hover:text-blue-500"
+          <button
+            type="button"
+            onClick={goBack}
+            className="text-blue-500 text-sm underline"
           >
-            {translate.getTranslation(lang!, "back")}
-          </Link>
+            {translate.getTranslation(lang, "back")}
+          </button>
         </div>
       </div>
       <div>

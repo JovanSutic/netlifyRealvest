@@ -21,7 +21,7 @@ export interface Blog {
   description: string;
   slug: string;
   media_link: string;
-  date_created: Date;
+  date_created: Date | string;
   language: string;
   sections?: BlogContent[];
 }

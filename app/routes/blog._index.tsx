@@ -79,7 +79,7 @@ const BlogAll = () => {
   const translate = new Translator("homepage");
 
   const lang = (searchParams.get("lang") as LangType) || "sr";
-  const page = searchParams.get("page") || "1";
+//   const page = searchParams.get("page") || "1";
 
   const { data } = useLoaderData<{
     data: Blog[];
@@ -111,7 +111,6 @@ const BlogAll = () => {
         <BlogCard
           key={item.slug}
           lang={lang}
-          page={page}
           blog={item as unknown as Blog}
         />
       ))}
