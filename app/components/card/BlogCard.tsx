@@ -14,19 +14,17 @@ const BlogCard = ({
 }) => {
   return (
     <div
-      className={`w-full flex flex-col items-center md:flex-row p-2 ${
+      className={`w-full flex flex-col items-center md:flex-row p-2  ${
         !isHome && "border-b-[1px] border-gray-300"
       }`}
     >
-      <div className="w-[220px] h-[140px] mx-auto">
-        <Link to={`/blog/${blog.slug}/?lang=${lang}`}>
-          <img
-            src={blog.media_link}
-            alt={blog.slug}
-            className="w-full max-h-full center rounded-md"
-          />
-        </Link>
-      </div>
+      <Link to={`/blog/${blog.slug}/?lang=${lang}`}>
+        <div
+          //@ts-expect-error ts-ignore
+          style={{ "--image-url": `url(${blog.media_link})` }}
+          className={`w-[220px] h-[140px] mx-auto bg-[image:var(--image-url)] bg-cover center rounded`}
+        ></div>
+      </Link>
       <div className="flex-1 md:pl-2 lg:pl-3 mt-2 lg:mt-0">
         <Link
           to={`/blog/${blog.slug}/?lang=${lang}`}
