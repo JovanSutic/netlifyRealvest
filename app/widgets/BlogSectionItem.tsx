@@ -30,7 +30,7 @@ const renderText = (text: string) => {
       );
     } else if (part.startsWith("<strong>")) {
       return (
-        <strong key={index} className="font-bold text-gray-800">
+        <strong key={index} className="font-semibold text-gray-800">
           {part.replace(/<\/?strong>/g, "")}
         </strong>
       );
@@ -55,15 +55,15 @@ const BlogSectionItem = ({
         </h3>
       )}
       {type === "sub" && (
-        <h4 className="font-semibold text-lg md:text-xl mb-2">{content}</h4>
+        <h4 className="font-bold text-lg md:text-xl mb-4 mt-6 md:mt-8">{content}</h4>
       )}
       {type === "article" && (
-        <p className="text-sm md:text-md text-gray-700 mb-4">
+        <p className="text-md font-light md:text-md text-gray-700 mb-4">
           {renderText(content)}
         </p>
       )}
       {type === "media" && (
-        <div className="w-full md:w-[500px] lg:w-[700px] text-center mx-auto mb-4">
+        <div className="w-full md:w-[500px] lg:w-[700px] text-center mx-auto mb-4 md:mb-6">
           <img src={content} alt="some text" className="max-w-full center" />
         </div>
       )}
