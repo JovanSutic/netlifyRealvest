@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-undef */
 import { DashboardPage, WidgetWrapper } from "../components/layout";
 import { LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
 import {
@@ -37,6 +38,8 @@ import {
   isRoleForUpdate,
 } from "../utils/market";
 import { getMapCircle } from "../utils/dashboard";
+import { ClientOnly } from "../components/helpers/ClientOnly";
+import IndexedMap from "../components/map/IndexedMap.client";
 
 export const links: LinksFunction = () => [
   {
@@ -308,6 +311,162 @@ const MarketSingle = () => {
           <WidgetWrapper>
             <MarketFeatureList details={data.details} lang={lang} />
           </WidgetWrapper>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-4">
+          <div className="col-span-2">
+            <WidgetWrapper>
+              <div>
+                <div className="border-b-[1px] border-gray-400 mb-3">
+                <h3 className="text-[22px] md:text-lg font-bold mb-2">
+                  {translate.getTranslation(lang, "distanceTitle")}
+                </h3>
+                <p className="text-md font-light text-gray-800 mb-3">
+                  {translate.getTranslation(lang, "distanceText")}
+                </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem1")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem2")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem3")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem4")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem5")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem6")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem7")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem8")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem9")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem10")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem11")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem12")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem13")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem14")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem15")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem16")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem17")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem18")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                    <p className="text-sm font-regular mb-1">
+                      <strong>
+                        {translate.getTranslation(lang, "distanceItem19")}
+                      </strong>{" "}
+                      100m, 1 minut vožnje
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </WidgetWrapper>
+          </div>
+          <div>
+            <WidgetWrapper>
+              <ClientOnly
+                fallback={
+                  <div
+                    id="skeleton"
+                    style={{ height: "100%", background: "#d1d1d1" }}
+                  />
+                }
+              >
+                {() => (
+                  <IndexedMap
+                    position={[data.details.lat, data.details.lng]}
+                    popText={`${data.city_part}, ${data.size}m2`}
+                  />
+                )}
+              </ClientOnly>
+            </WidgetWrapper>
+          </div>
         </div>
       </div>
     </DashboardPage>
