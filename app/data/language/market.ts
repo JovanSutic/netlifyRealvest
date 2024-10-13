@@ -104,9 +104,9 @@ export const marketMap: Record<string, Record<string, string>> = {
     shortOccupancy: "Potential monthly occupancy",
     shortIncome: "Potential monthly (day rent) income",
     shortNoData: "Daily rent analysis not available for this property.",
-    distanceTitle: "Distance List",
+    distanceTitle: "Location Analysis",
     distanceText:
-      "The distance between the property and important locations necessary for a comfortable life",
+      "List of the distance between the property and important locations necessary for a comfortable life",
     distanceItem1: "Kindergarten:",
     distanceItem2: "School:",
     distanceItem3: "Supermarket:",
@@ -126,6 +126,9 @@ export const marketMap: Record<string, Record<string, string>> = {
     distanceItem17: "Gas Station:",
     distanceItem18: "Bus Station:",
     distanceItem19: "Airport:",
+    minutes: "minutes",
+    seconds: "seconds",
+    drive: "drive",
   },
   sr: {
     searchMetaTitle:
@@ -231,9 +234,9 @@ export const marketMap: Record<string, Record<string, string>> = {
     shortOccupancy: "Potencijalna mesečna popunjenost",
     shortIncome: "Potencijalni mesečni prihod",
     shortNoData: "Analiza izdavanja na dan nije dostupna za ovu nekretninu.",
-    distanceTitle: "Lista udaljenosti",
+    distanceTitle: "Analiza lokacije",
     distanceText:
-      "Rastojanje između nekretnine i važnih lokacija potrebnih za udoban život",
+      "List udaljenosti između nekretnine i važnih lokacija potrebnih za udoban život",
     distanceItem1: "Vrtić:",
     distanceItem2: "Škola:",
     distanceItem3: "Supermarket:",
@@ -253,5 +256,8 @@ export const marketMap: Record<string, Record<string, string>> = {
     distanceItem17: "Benzinska pumpa:",
     distanceItem18: "Autobuska stanica:",
     distanceItem19: "Aerodrom:",
+    minutes: "minuta",
+    seconds: "sekundi",
+    drive: "vožnje",
   },
 };
