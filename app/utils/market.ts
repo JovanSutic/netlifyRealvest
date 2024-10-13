@@ -476,10 +476,45 @@ export const getShortRentalPrice = (
   averagePrice: number,
   size: number
 ): number => {
-  if (size > 120) return averagePrice * 0.50 * size;
+  if (size > 120) return averagePrice * 0.5 * size;
   if (size > 100) return averagePrice * 0.65 * size;
   if (size > 80) return averagePrice * 0.75 * size;
   if (size > 60) return averagePrice * 0.85 * size;
 
   return averagePrice * size;
 };
+
+export const getLocationTitle = (type: string) => {
+  const map = {
+    Hospital: "distanceItem13",
+    "Medical center": "distanceItem12",
+    Restaurant: "distanceItem6",
+    Retail: "distanceItem3",
+    Preschool: "distanceItem1",
+    "Elementary school": "distanceItem2",
+    Mall: "distanceItem4",
+    Gym: "distanceItem14",
+    "Bank/credit union": "distanceItem9",
+    "Hair salon": "distanceItem10",
+    Cafe: "distanceItem5",
+    Pharm: "distanceItem8",
+    "Gas Station": "distanceItem17",
+    Park: "distanceItem11",
+    Post: "distanceItem15",
+    "Train station": "distanceItem16",
+    "Bus station": "distanceItem18",
+    Airport: "distanceItem19",
+  };
+
+  return map[type as keyof typeof map];
+};
+
+export const convertSecondsToMinutes = (seconds: number): { minutes: number; seconds: number } => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  
+  return {
+    minutes: minutes,
+    seconds: remainingSeconds
+  };
+}
