@@ -137,7 +137,7 @@ export interface UserRole {
   user_id: string;
   role: RoleType;
   date: Date;
-  count: number;
+  count: number[];
 }
 
 export interface Places {
