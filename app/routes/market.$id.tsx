@@ -86,15 +86,13 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     const roleUser = roleData![0];
     userRole = getSessionUserRole(roleUser);
 
-    if (roleUser) {
-      if (isRoleForUpdate(roleUser)) {
-        const { error: upsertError } = await supabaseClient
-          .from("user_roles")
-          .upsert(getRoleForUpsert(roleUser));
-        if (upsertError) {
-          isError = true;
-          finalError = upsertError as FinalError;
-        }
+    if (roleUser && userRole === "limitedPremium" && id && isRoleForUpdate(roleUser, id!)) {
+      const { error: upsertError } = await supabaseClient
+        .from("user_roles")
+        .upsert(getRoleForUpsert(roleUser, id!));
+      if (upsertError) {
+        isError = true;
+        finalError = upsertError as FinalError;
       }
     }
 
