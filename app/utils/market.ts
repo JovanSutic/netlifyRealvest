@@ -1,5 +1,6 @@
 import { differenceInDays } from "date-fns";
 import { Details, LangType, RoleType } from "../types/dashboard.types";
+import { roundNumberToDecimal } from '../../../bgScraper/src/utils/general';
 import {
   AverageReport,
   FeatureItem,
@@ -509,12 +510,7 @@ export const getLocationTitle = (type: string) => {
   return map[type as keyof typeof map];
 };
 
-export const convertSecondsToMinutes = (seconds: number): { minutes: number; seconds: number } => {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
+export const convertSecondsToMinutes = (seconds: number): number => {
   
-  return {
-    minutes: minutes,
-    seconds: remainingSeconds
-  };
+  return roundNumberToDecimal(seconds / 60, 1);
 }

@@ -351,20 +351,21 @@ const MarketSingle = () => {
                             getLocationTitle(item.place_id.type)
                           )}
                         </strong>{" "}
-                        {`${roundNumberToDecimal(item.distance / 1000, 2)}km, ${
-                          convertSecondsToMinutes(item.duration).minutes
-                        } ${translate.getTranslation(lang, "minutes")}/${
-                          Math.round(convertSecondsToMinutes(item.duration).seconds)
-                        } ${translate.getTranslation(
+                        {`${roundNumberToDecimal(
+                          item.distance / 1000,
+                          2
+                        )}km, ${convertSecondsToMinutes(
+                          item.duration
+                        )} ${translate.getTranslation(
                           lang,
-                          "seconds"
+                          "minutes"
                         )} ${translate.getTranslation(lang, "drive")}`}
                       </p>
                     </div>
                   ))}
                 </div>
               </div>
-              <div>
+              <div className="mt-4 lg:mt-0">
                 <ClientOnly
                   fallback={
                     <div
