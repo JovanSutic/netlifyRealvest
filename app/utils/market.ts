@@ -1,6 +1,5 @@
 import { differenceInDays } from "date-fns";
 import { Details, LangType, RoleType } from "../types/dashboard.types";
-import { roundNumberToDecimal } from '../../../bgScraper/src/utils/general';
 import {
   AverageReport,
   FeatureItem,
@@ -11,6 +10,7 @@ import {
   SortParams,
   UserRole,
 } from "../types/market.types";
+import { roundNumberToDecimal } from "./numbers";
 
 export const switchLanguage = (path: string, newLang: LangType): string => {
   const oldLang = newLang === "sr" ? "en" : "sr";
