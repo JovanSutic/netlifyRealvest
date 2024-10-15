@@ -9,7 +9,7 @@ const IndexedMap = ({
   popText: string;
 }) => {
   return (
-    <div className="h-[250px] md:h-[330px] w-full" id="mapContainer">
+    <div className="h-[280px] md:h-[330px] w-full" id="mapContainer">
       <MapContainer
         style={{
           height: "100%",
