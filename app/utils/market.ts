@@ -11,6 +11,7 @@ import {
   UserRole,
 } from "../types/market.types";
 import { roundNumberToDecimal } from "./numbers";
+import { distance, point } from "@turf/turf";
 
 export const switchLanguage = (path: string, newLang: LangType): string => {
   const oldLang = newLang === "sr" ? "en" : "sr";
@@ -512,4 +513,13 @@ export const getLocationTitle = (type: string) => {
 
 export const convertSecondsToMinutes = (seconds: number): number => {
   return roundNumberToDecimal(seconds / 60, 1);
+};
+
+export const getWalkDistance = (from: number[], to: number[]) => {
+  const dist = Math.round(distance(point(from), point(to), { units: "meters" }));
+
+  return {
+    distance: roundNumberToDecimal(dist / 1000, 2),
+    duration: Math.ceil(dist / 60)
+  };
 };

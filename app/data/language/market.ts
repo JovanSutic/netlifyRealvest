@@ -129,6 +129,7 @@ export const marketMap: Record<string, Record<string, string>> = {
     minutes: "minutes",
     seconds: "seconds",
     drive: "drive",
+    walk: "walk",
   },
   sr: {
     searchMetaTitle:
@@ -259,5 +260,6 @@ export const marketMap: Record<string, Record<string, string>> = {
     minutes: "minuta",
     seconds: "sekundi",
     drive: "vožnje",
+    walk: "šetnje",
   },
 };

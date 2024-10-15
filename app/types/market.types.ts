@@ -155,6 +155,8 @@ export interface AdPlace {
   place_id: {
     id: number,
     type: string;
+    lat?: number;
+    lng?: number;
   };
   add_id: number;
   distance: number;

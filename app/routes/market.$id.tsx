@@ -9,7 +9,6 @@ import {
 } from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
 import { Translator } from "../data/language/translator";
-// import Loader from "../components/loader";
 import { getParamValue, detectDevice } from "../utils/params";
 import {
   Details,
@@ -33,8 +32,6 @@ import MarketFlipAnalysis from "../widgets/MarketFlipAnalysis";
 import MarketFeatureList from "../widgets/MarketFeatureList";
 import MarketRentalAnalysis from "../widgets/MarketRentalAnalysis";
 import {
-  convertSecondsToMinutes,
-  getLocationTitle,
   getRoleForUpsert,
   getSessionUserRole,
   getShortRentalPrice,
@@ -43,6 +40,7 @@ import {
 import { getMapCircle } from "../utils/dashboard";
 import { ClientOnly } from "../components/helpers/ClientOnly";
 import IndexedMap from "../components/map/IndexedMap.client";
+import LocationCard from "~/components/card/LocationCard";
 
 export const links: LinksFunction = () => [
   {
@@ -86,7 +84,12 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     const roleUser = roleData![0];
     userRole = getSessionUserRole(roleUser);
 
-    if (roleUser && userRole === "limitedPremium" && id && isRoleForUpdate(roleUser, id!)) {
+    if (
+      roleUser &&
+      userRole === "limitedPremium" &&
+      id &&
+      isRoleForUpdate(roleUser, id!)
+    ) {
       const { error: upsertError } = await supabaseClient
         .from("user_roles")
         .upsert(getRoleForUpsert(roleUser, id!));
@@ -198,7 +201,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
     const { data: placesData, error: placesError } = await supabaseClient
       .from("adds_places")
-      .select("id, duration, distance, add_id, place_id (id, type)")
+      .select("id, duration, distance, add_id, place_id (id, type, lat, lng)")
       .eq("add_id", id)
       .order("id");
 
@@ -330,36 +333,24 @@ const MarketSingle = () => {
           <WidgetWrapper>
             <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-4">
               <div className="col-span-2">
-                <div className="border-b-[1px] border-gray-400 mb-3">
-                  <h3 className="text-[22px] md:text-lg font-bold mb-2">
+                <div className="border-b-[1px] border-gray-400 mb-2">
+                  <h3 className="text-[22px] md:text-lg font-bold">
                     {translate.getTranslation(lang, "distanceTitle")}
                   </h3>
-                  <p className="text-md font-light text-gray-800 mb-3">
+                  <p className="text-md font-light text-gray-800 mb-2">
                     {translate.getTranslation(lang, "distanceText")}
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
                   {places.map((item) => (
-                    <div key={item.id}>
-                      <p className="text-sm font-regular mb-1">
-                        <strong>
-                          {translate.getTranslation(
-                            lang,
-                            getLocationTitle(item.place_id.type)
-                          )}
-                        </strong>{" "}
-                        {`${roundNumberToDecimal(
-                          item.distance / 1000,
-                          2
-                        )}km, ${convertSecondsToMinutes(
-                          item.duration
-                        )} ${translate.getTranslation(
-                          lang,
-                          "minutes"
-                        )} ${translate.getTranslation(lang, "drive")}`}
-                      </p>
-                    </div>
+                    <LocationCard
+                      key={item.id}
+                      adPlace={item}
+                      lang={lang}
+                      adLat={data.details.lat}
+                      adLng={data.details.lng}
+                    />
                   ))}
                 </div>
               </div>
