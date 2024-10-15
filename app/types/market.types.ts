@@ -96,7 +96,7 @@ export type MarketSingleType = ListedAd & {
   short?: {
     occupancyLevel: number;
     price: number;
-  }
+  };
 };
 
 export interface FeatureItem {
@@ -117,8 +117,14 @@ export interface MarketFilter {
   lowPrice: string;
 }
 
-
-const marketSortTypes = ["date_desc", "date_asc", "price_desc", "price_asc", "size_desc", "size_asc",] as const;
+const marketSortTypes = [
+  "date_desc",
+  "date_asc",
+  "price_desc",
+  "price_asc",
+  "size_desc",
+  "size_asc",
+] as const;
 export type MarketSortType = (typeof marketSortTypes)[number];
 
 export interface SortParams {
@@ -131,5 +137,28 @@ export interface UserRole {
   user_id: string;
   role: RoleType;
   date: Date;
-  count: number;
+  count: number[];
+}
+
+export interface Places {
+  id?: number;
+  name: string;
+  type: string;
+  address: string;
+  lat: number;
+  lng: number;
+  city_id: number;
+}
+
+export interface AdPlace {
+  id?: number;
+  place_id: {
+    id: number,
+    type: string;
+    lat?: number;
+    lng?: number;
+  };
+  add_id: number;
+  distance: number;
+  duration: number;
 }

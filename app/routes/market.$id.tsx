@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-undef */
 import { DashboardPage, WidgetWrapper } from "../components/layout";
 import { LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
 import {
@@ -8,7 +9,6 @@ import {
 } from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
 import { Translator } from "../data/language/translator";
-// import Loader from "../components/loader";
 import { getParamValue, detectDevice } from "../utils/params";
 import {
   Details,
@@ -23,8 +23,9 @@ import {
   PhotoItem,
   MarketSingleType,
   UserRole,
+  AdPlace,
 } from "../types/market.types";
-import { makeNumberCurrency } from "../utils/numbers";
+import { makeNumberCurrency, roundNumberToDecimal } from "../utils/numbers";
 import Gallery from "../widgets/MarketGallery";
 import MarketAppreciationAnalysis from "../widgets/MarketAppreciationAnalysis";
 import MarketFlipAnalysis from "../widgets/MarketFlipAnalysis";
@@ -37,6 +38,9 @@ import {
   isRoleForUpdate,
 } from "../utils/market";
 import { getMapCircle } from "../utils/dashboard";
+import { ClientOnly } from "../components/helpers/ClientOnly";
+import IndexedMap from "../components/map/IndexedMap.client";
+import LocationCard from "~/components/card/LocationCard";
 
 export const links: LinksFunction = () => [
   {
@@ -80,15 +84,18 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     const roleUser = roleData![0];
     userRole = getSessionUserRole(roleUser);
 
-    if (roleUser) {
-      if (isRoleForUpdate(roleUser)) {
-        const { error: upsertError } = await supabaseClient
-          .from("user_roles")
-          .upsert(getRoleForUpsert(roleUser));
-        if (upsertError) {
-          isError = true;
-          finalError = upsertError as FinalError;
-        }
+    if (
+      roleUser &&
+      userRole === "limitedPremium" &&
+      id &&
+      isRoleForUpdate(roleUser, id!)
+    ) {
+      const { error: upsertError } = await supabaseClient
+        .from("user_roles")
+        .upsert(getRoleForUpsert(roleUser, id!));
+      if (upsertError) {
+        isError = true;
+        finalError = upsertError as FinalError;
       }
     }
 
@@ -192,6 +199,17 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
       finalError = apartmentError as FinalError;
     }
 
+    const { data: placesData, error: placesError } = await supabaseClient
+      .from("adds_places")
+      .select("id, duration, distance, add_id, place_id (id, type, lat, lng)")
+      .eq("add_id", id)
+      .order("id");
+
+    if (placesError) {
+      isError = true;
+      finalError = placesError as FinalError;
+    }
+
     return json({
       data: {
         ...apartmentData![0],
@@ -203,6 +221,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
           price: getShortRentalPrice(shortRentalM2, apartmentData![0].size),
         },
       },
+      places: placesData,
       device: detectDevice(userAgent!),
       role: userRole,
     });
@@ -244,10 +263,11 @@ const MarketSingle = () => {
   const navigate = useNavigate();
   const goBack = () => navigate(-1);
 
-  const { data, device, role } = useLoaderData<{
+  const { data, device, role, places } = useLoaderData<{
     data: MarketSingleType;
     device: string;
     role: RoleType;
+    places: AdPlace[];
   }>();
 
   const translate = new Translator("market");
@@ -307,6 +327,51 @@ const MarketSingle = () => {
         <div className="grid grid-cols-1">
           <WidgetWrapper>
             <MarketFeatureList details={data.details} lang={lang} />
+          </WidgetWrapper>
+        </div>
+        <div>
+          <WidgetWrapper>
+            <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-4">
+              <div className="col-span-2">
+                <div className="border-b-[1px] border-gray-400 mb-2">
+                  <h3 className="text-[22px] md:text-lg font-bold">
+                    {translate.getTranslation(lang, "distanceTitle")}
+                  </h3>
+                  <p className="text-md font-light text-gray-800 mb-2">
+                    {translate.getTranslation(lang, "distanceText")}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
+                  {places.map((item) => (
+                    <LocationCard
+                      key={item.id}
+                      adPlace={item}
+                      lang={lang}
+                      adLat={data.details.lat}
+                      adLng={data.details.lng}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="mt-4 lg:mt-0">
+                <ClientOnly
+                  fallback={
+                    <div
+                      id="skeleton"
+                      style={{ height: "100%", background: "#d1d1d1" }}
+                    />
+                  }
+                >
+                  {() => (
+                    <IndexedMap
+                      position={[data.details.lat, data.details.lng]}
+                      popText={`${data.city_part}, ${data.size}m2`}
+                    />
+                  )}
+                </ClientOnly>
+              </div>
+            </div>
           </WidgetWrapper>
         </div>
       </div>

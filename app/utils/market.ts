@@ -10,6 +10,8 @@ import {
   SortParams,
   UserRole,
 } from "../types/market.types";
+import { roundNumberToDecimal } from "./numbers";
+import { distance, point } from "@turf/turf";
 
 export const switchLanguage = (path: string, newLang: LangType): string => {
   const oldLang = newLang === "sr" ? "en" : "sr";
@@ -368,22 +370,19 @@ export const getSortingParams = (param: MarketSortType): SortParams => {
   return { column: "date_signed", order: "ASC" };
 };
 
-export const isRoleForUpdate = (role: UserRole): boolean => {
+export const isRoleForUpdate = (role: UserRole, id: string): boolean => {
   const today = new Date();
   if (role.role === "premium") return false;
   if (role.date === null) return true;
   if (differenceInDays(today, role.date) > 0) return true;
-  if (role.count < 5) return true;
+  if (role.count.length < 10 && !role.count.includes(Number(id))) return true;
 
   return false;
 };
 
-export const getRoleForUpsert = (role: UserRole): UserRole => {
+export const getRoleForUpsert = (role: UserRole, id: string): UserRole => {
   const today = new Date();
-  const count =
-    role.count === null || differenceInDays(today, role.date) > 0
-      ? 1
-      : role.count + 1;
+  const count = [...role.count, Number(id)];
   return { ...role, date: today, count };
 };
 
@@ -391,7 +390,10 @@ export const getSessionUserRole = (role: UserRole): RoleType => {
   const today = new Date();
   if (role.role === "basic") {
     if (role.date !== null) {
-      if (differenceInDays(today, role.date) > 0 || role.count < 5) {
+      if (
+        differenceInDays(today, role.date) > 0 ||
+        role.count.map((item) => item !== null).length < 10
+      ) {
         return "limitedPremium";
       }
     } else {
@@ -476,10 +478,48 @@ export const getShortRentalPrice = (
   averagePrice: number,
   size: number
 ): number => {
-  if (size > 120) return averagePrice * 0.50 * size;
+  if (size > 120) return averagePrice * 0.5 * size;
   if (size > 100) return averagePrice * 0.65 * size;
   if (size > 80) return averagePrice * 0.75 * size;
   if (size > 60) return averagePrice * 0.85 * size;
 
   return averagePrice * size;
+};
+
+export const getLocationTitle = (type: string) => {
+  const map = {
+    Hospital: "distanceItem13",
+    "Medical center": "distanceItem12",
+    Restaurant: "distanceItem6",
+    Retail: "distanceItem3",
+    Preschool: "distanceItem1",
+    "Elementary school": "distanceItem2",
+    Mall: "distanceItem4",
+    Gym: "distanceItem14",
+    "Bank/credit union": "distanceItem9",
+    "Hair salon": "distanceItem10",
+    Cafe: "distanceItem5",
+    Pharm: "distanceItem8",
+    "Gas Station": "distanceItem17",
+    Park: "distanceItem11",
+    Post: "distanceItem15",
+    "Train station": "distanceItem16",
+    "Bus station": "distanceItem18",
+    Airport: "distanceItem19",
+  };
+
+  return map[type as keyof typeof map];
+};
+
+export const convertSecondsToMinutes = (seconds: number): number => {
+  return roundNumberToDecimal(seconds / 60, 1);
+};
+
+export const getWalkDistance = (from: number[], to: number[]) => {
+  const dist = Math.round(distance(point(from), point(to), { units: "meters" }));
+
+  return {
+    distance: roundNumberToDecimal(dist / 1000, 2),
+    duration: Math.ceil(dist / 60)
+  };
 };

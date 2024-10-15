@@ -55,9 +55,9 @@ export const detectDevice = (userAgent: string): string => {
 
 export const isMobile = (userAgent: string) => {
   if (
-    userAgent.match(/Mobi/i) ||
-    userAgent.match(/Android/i) ||
-    userAgent.match(/iPhone/i)
+    userAgent?.match(/Mobi/i) ||
+    userAgent?.match(/Android/i) ||
+    userAgent?.match(/iPhone/i)
   ) {
     return true;
   }
