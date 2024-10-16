@@ -29,6 +29,7 @@ const MarketCard = ({
 }) => {
   const translate = new Translator("market");
   const irrNumber = irr ? getNumbersFromString(irr!) : undefined;
+  
   const rentPriceNumber = rentPrice
     ? getNumbersFromString(rentPrice!)
     : undefined;

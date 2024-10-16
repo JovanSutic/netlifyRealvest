@@ -3,13 +3,16 @@ export const capitalizeFirstLetter = (text: string): string => {
 };
 
 export const getNumbersFromString = (numberString: string) => {
-  const result = numberString.replace(",", "").match(/-?\d+/g)?.map(Number) || [
-    0,
-  ];
+  const result = numberString.replace(",", "").match(/-?\d+(\.\d+)?/g)?.map(Number) || [];
 
-  return result.length > 1
-    ? parseFloat(result[0] + "." + result[1])
-    : result[0];
+  if (result.length > 1) {
+    const [wholeNumber, decimalNumber] = result;
+    return parseFloat(`${wholeNumber}.${decimalNumber}`);
+  } else if (result.length === 1) {
+    return result[0];
+  } else {
+    return 0;
+  }
 };
 
 export const getFirstWord = (text: string) => {
