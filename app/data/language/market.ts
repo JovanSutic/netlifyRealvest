@@ -133,7 +133,7 @@ export const marketMap: Record<string, Record<string, string>> = {
   },
   sr: {
     searchMetaTitle:
-      "Realvest - Prnađite Najbolju Nekretninu za Investiciju: Pretraga nekretnina",
+      "Realvest - Pronađite Najbolju Nekretninu za Investiciju: Pretraga nekretnina",
     searchMetaDesc:
       "Istražite najbolje prilike za investicije u nekretnine. Pristupite svim potrebnim podacima kao što su kretanja na tržištu, finansijski podaci, mogućnosti za izdavanje.",
     singleMetaDesc:

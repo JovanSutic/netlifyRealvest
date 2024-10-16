@@ -382,7 +382,7 @@ export const isRoleForUpdate = (role: UserRole, id: string): boolean => {
 
 export const getRoleForUpsert = (role: UserRole, id: string): UserRole => {
   const today = new Date();
-  const count = [...role.count, Number(id)];
+  const count = role.count.length > 9 ? [Number(id)] : [...role.count, Number(id)];
   return { ...role, date: today, count };
 };
 
