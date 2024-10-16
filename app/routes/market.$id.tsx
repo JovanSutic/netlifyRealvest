@@ -25,7 +25,7 @@ import {
   UserRole,
   AdPlace,
 } from "../types/market.types";
-import { makeNumberCurrency, roundNumberToDecimal } from "../utils/numbers";
+import { makeNumberCurrency } from "../utils/numbers";
 import Gallery from "../widgets/MarketGallery";
 import MarketAppreciationAnalysis from "../widgets/MarketAppreciationAnalysis";
 import MarketFlipAnalysis from "../widgets/MarketFlipAnalysis";
@@ -40,7 +40,7 @@ import {
 import { getMapCircle } from "../utils/dashboard";
 import { ClientOnly } from "../components/helpers/ClientOnly";
 import IndexedMap from "../components/map/IndexedMap.client";
-import LocationCard from "~/components/card/LocationCard";
+import LocationCard from "../components/card/LocationCard";
 
 export const links: LinksFunction = () => [
   {
@@ -263,6 +263,8 @@ const MarketSingle = () => {
   const navigate = useNavigate();
   const goBack = () => navigate(-1);
 
+  
+
   const { data, device, role, places } = useLoaderData<{
     data: MarketSingleType;
     device: string;
@@ -354,7 +356,7 @@ const MarketSingle = () => {
                   ))}
                 </div>
               </div>
-              <div className="mt-4 lg:mt-0">
+              <div className="mt-4 lg:mt-0 flex flex-col justify-center">
                 <ClientOnly
                   fallback={
                     <div
