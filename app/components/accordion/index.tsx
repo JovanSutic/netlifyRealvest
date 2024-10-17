@@ -15,7 +15,7 @@ const Accordion = ({
   return (
     <div className="w-full font-[sans-serif] border divide-y rounded-lg overflow-hidden">
       {data.map((item) => (
-        <div role="tab" key={item.title.replace(/\s/g, "")}>
+        <div key={item.title.replace(/\s/g, "")}>
           <button
             type="button"
             className="w-full text-sm font-semibold text-left py-6 px-6 text-blue-500 bg-white flex items-center transition-all"

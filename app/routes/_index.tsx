@@ -465,6 +465,7 @@ export default function Index() {
                         href="https://www.linkedin.com/company/yourealvest/?viewAsMember=true"
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label="Linkedin Realvest"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
