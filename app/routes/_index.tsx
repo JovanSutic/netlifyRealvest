@@ -243,9 +243,9 @@ export default function Index() {
                             <h1 className="text-[32px] font-bold text-center leading-[40px] mb-6">
                               {translator.getTranslation(lang, "heroTitle")}
                             </h1>
-                            <h3 className="w-full text-[18px] text-center text-gray-700 mb-6">
+                            <h2 className="w-full text-[18px] text-center text-gray-700 mb-6">
                               {translator.getTranslation(lang, "heroSubtitle")}
-                            </h3>
+                            </h2>
                             <Link
                               to={`auth/register/?lang=${lang}`}
                               className="px-6 py-3 text-md font-semibold text-white bg-blue-500 rounded-xl  transition-all duration-300 transform hover:bg-blue-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
@@ -293,7 +293,7 @@ export default function Index() {
           </h2>
           <div className="py-6 px-2 md:px-4 lg:px-12 rounded-lg">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-              {potential.map((item) => {
+              {potential.slice(0, mobile ? 2 : 5).map((item) => {
                 return (
                   <MarketCard
                     key={item?.id}
@@ -367,7 +367,7 @@ export default function Index() {
           </h2>
           <div className="py-6 px-2 md:px-4 lg:px-12 rounded-lg">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-              {rental.map((item) => {
+              {rental.slice(0, mobile ? 2 : 5).map((item) => {
                 return (
                   <MarketCard
                     key={item?.id}

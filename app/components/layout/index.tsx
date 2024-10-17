@@ -100,7 +100,7 @@ export const TLine = ({
   mt?: number;
 }) => {
   return (
-    <div className={`grid ${columnsMap[columns]} ${marginBottomMap[mb]} ${marginTopMap[mt]} grid-rows-1 ${gapsMap[gap]}`}>
+    <div className={`grid w-full xl:w-[1400px] ${columnsMap[columns]} ${marginBottomMap[mb]} ${marginTopMap[mt]} grid-rows-1 ${gapsMap[gap]} mx-auto`}>
       {children}
     </div>
   );
