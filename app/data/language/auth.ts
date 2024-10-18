@@ -59,6 +59,7 @@ export const authMap: Record<string, Record<string, string>> = {
     loginMetaDesc: 'Login to Realvest, real estate analytics platform Serbia',
     forgetMetaTitle: 'Realvest - forgoten password',
     forgetMetaDesc: 'Start the proces for the password change',
+    back: 'Go back',
   },
   sr: {
     home: "Početna",
@@ -120,6 +121,7 @@ export const authMap: Record<string, Record<string, string>> = {
     loginMetaDesc: 'Prijavite se na Realvest, platformu za analizu tržišta nekretnina Srbije',
     forgetMetaTitle: 'Realvest - zaboravljena lozinka',
     forgetMetaDesc: 'Započnite proces promene lozinke',
+    back: 'Nazad',
   },
 };
 

@@ -12,6 +12,7 @@ export type PropertyType = (typeof propertyType)[number];
 
 export const roles = [
   "admin",
+  "guest",
   "premium",
   "basic",
   "agency",
