@@ -13,7 +13,6 @@ import { getParamValue, isMobile } from "../utils/params";
 import MarketCard from "../components/card/MarketCard";
 import { LangType, RoleType } from "../types/dashboard.types";
 import Pagination from "../components/pagination/index";
-import { jwtDecode } from "jwt-decode";
 import { FinalError } from "../types/component.types";
 import {
   MarketFilter as MarketFilterType,
@@ -78,19 +77,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const limit = 20;
   const rangeStart = (Number(page) - 1) * limit;
-  let userRole = "basic";
+  const userRole = "guest";
 
   let isError = false;
   let finalError: FinalError | null = null;
 
   try {
     const { supabaseClient } = createSupabaseServerClient(request);
-    const session = await supabaseClient.auth.getSession();
 
-    const decoded = jwtDecode<{ user_role: string }>(
-      session?.data?.session?.access_token || ""
-    );
-    userRole = decoded?.user_role;
 
     const { data: partsData, error: partsError } = await supabaseClient.rpc(
       "get_distinct_city_part"

@@ -10,6 +10,7 @@ import {
   Link,
   json,
   useActionData,
+  useNavigate,
   useNavigation,
   useSearchParams,
   useSubmit,
@@ -177,6 +178,9 @@ export default function AuthRegister() {
   const lang = searchParams.get("lang") || "sr";
 
   const navigation = useNavigation();
+  
+  const navigate = useNavigate();
+  const goBack = () => navigate(-1);
 
   const [apiError, setApiError] = useState<string>();
   const [showPass, setShowPass] = useState<boolean>(false);
@@ -295,12 +299,12 @@ export default function AuthRegister() {
             </Link>
           </div>
           <div className="flex flex-row absolute bottom-0">
-            <Link
-              to={`/?lang=${lang}`}
+            <button
+              onClick={() => goBack()}
               className="text-sm font-regular text-blue-400 underline transform hover:text-blue-500"
             >
-              {translator.getTranslation(lang!, "home")}
-            </Link>
+              {translator.getTranslation(lang!, "back")}
+            </button>
           </div>
         </div>
 

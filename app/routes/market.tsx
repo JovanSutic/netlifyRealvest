@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs, redirect } from "@remix-run/node";
+import { LoaderFunctionArgs } from "@remix-run/node";
 import { createSupabaseServerClient } from "../supabase.server";
 import {
   Outlet,
@@ -14,19 +14,21 @@ import { useEffect, useState } from "react";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { supabaseClient } = createSupabaseServerClient(request);
-  const currentUrl = new URL(request.url);
   const userAgent = request.headers.get("user-agent");
-  const lang = currentUrl.searchParams.get("lang") || "sr";
-  const user = await supabaseClient.auth.getUser();
- 
-  if (user?.data?.user?.role !== "authenticated") {
-    return redirect(`/auth?lang=${lang}`);
-  }
+  let userName = '';
+  try {
+    const user = await supabaseClient.auth.getUser();
 
+    if(user) {
+      userName = user.data.user?.user_metadata.display_name;
+    }
+  } catch (error) {
+    console.log(error);
+  }
 
   return {
     mobile: isMobile(userAgent!),
-    user,
+    userName,
   };
 };
 
@@ -34,7 +36,7 @@ export default function Market() {
   const [searchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const lang = (searchParams.get("lang") as LangType) || "sr";
-  const { user, mobile } = useLoaderData<typeof loader>();
+  const { userName, mobile } = useLoaderData<typeof loader>();
   const location = useLocation();
 
   useEffect(() => {
@@ -51,13 +53,13 @@ export default function Market() {
           toggleOpen={() => setIsOpen(!isOpen)}
           lang={lang}
           url={`${location.pathname}${location.search}`}
-          name={user.data.user?.user_metadata.display_name}
+          name={userName}
           signOutLink={`/auth/sign_out?lang=${lang}`}
         />
       ) : (
         <SideNavigation
           url={`${location.pathname}${location.search}`}
-          name={user.data.user?.user_metadata.display_name}
+          name={userName}
           signOutLink={`/auth/sign_out?lang=${lang}`}
           lang={lang}
         />

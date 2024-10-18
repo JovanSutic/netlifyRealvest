@@ -31,16 +31,12 @@ import MarketAppreciationAnalysis from "../widgets/MarketAppreciationAnalysis";
 import MarketFlipAnalysis from "../widgets/MarketFlipAnalysis";
 import MarketFeatureList from "../widgets/MarketFeatureList";
 import MarketRentalAnalysis from "../widgets/MarketRentalAnalysis";
-import {
-  getRoleForUpsert,
-  getSessionUserRole,
-  getShortRentalPrice,
-  isRoleForUpdate,
-} from "../utils/market";
+import { getShortRentalPrice } from "../utils/market";
 import { getMapCircle } from "../utils/dashboard";
 import { ClientOnly } from "../components/helpers/ClientOnly";
 import IndexedMap from "../components/map/IndexedMap.client";
 import LocationCard from "../components/card/LocationCard";
+import useRoleLimits from "../utils/useRoleLimits";
 
 export const links: LinksFunction = () => [
   {
@@ -54,7 +50,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const lang = new URL(request.url).searchParams.get("lang") || "sr";
   const { id } = params;
 
-  let userRole = "basic";
+  let userRole = "guest";
   let occupancyLevel = 0;
   let shortRentalM2 = 0;
 
@@ -65,37 +61,27 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     const { supabaseClient } = createSupabaseServerClient(request);
     const session = await supabaseClient.auth.getSession();
 
-    const decoded = jwtDecode<{ user_role: string; sub: string }>(
-      session?.data?.session?.access_token || ""
-    );
+    if (session?.data?.session) {
+      const decoded = jwtDecode<{ user_role: string; sub: string }>(
+        session?.data?.session?.access_token || ""
+      );
 
-    const { data: roleData, error: roleError } = await supabaseClient
-      .from("user_roles")
-      .select("*")
-      .eq("user_id", decoded.sub)
-      .limit(1)
-      .returns<UserRole[]>();
+      if (decoded?.sub) {
+        const { data: roleData, error: roleError } = await supabaseClient
+          .from("user_roles")
+          .select("*")
+          .eq("user_id", decoded.sub)
+          .limit(1)
+          .returns<UserRole[]>();
 
-    if (roleError) {
-      isError = true;
-      finalError = roleError as FinalError;
-    }
+        if (roleError) {
+          isError = true;
+          finalError = roleError as FinalError;
+        }
 
-    const roleUser = roleData![0];
-    userRole = getSessionUserRole(roleUser);
-
-    if (
-      roleUser &&
-      userRole === "limitedPremium" &&
-      id &&
-      isRoleForUpdate(roleUser, id!)
-    ) {
-      const { error: upsertError } = await supabaseClient
-        .from("user_roles")
-        .upsert(getRoleForUpsert(roleUser, id!));
-      if (upsertError) {
-        isError = true;
-        finalError = upsertError as FinalError;
+        if (roleData) {
+          userRole = roleData[0].role;
+        }
       }
     }
 
@@ -263,14 +249,14 @@ const MarketSingle = () => {
   const navigate = useNavigate();
   const goBack = () => navigate(-1);
 
-  
-
   const { data, device, role, places } = useLoaderData<{
     data: MarketSingleType;
     device: string;
     role: RoleType;
     places: AdPlace[];
   }>();
+
+  const [localRole] = useRoleLimits(data.id!, role);
 
   const translate = new Translator("market");
 
@@ -294,7 +280,7 @@ const MarketSingle = () => {
             )}`}</span>
           </h2>
         </div>
-        <Gallery photos={data.photos} device={device} />
+        <Gallery photos={data.photos || []} device={device} />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-3 md:mt-4 lg:mt-5 mb-3 lg:mb-0">
           <WidgetWrapper>
             <MarketAppreciationAnalysis
@@ -304,7 +290,7 @@ const MarketSingle = () => {
               trend={data.profit?.competition_trend || 0}
               lang={lang}
               isMobile={device === "mobile"}
-              role={role}
+              role={localRole}
             />
           </WidgetWrapper>
           <WidgetWrapper>
@@ -313,7 +299,7 @@ const MarketSingle = () => {
               data={data as unknown as MarketSingleType}
               lang={lang}
               isMobile={device === "mobile"}
-              role={role}
+              role={localRole}
             />
           </WidgetWrapper>
           <WidgetWrapper>
@@ -322,7 +308,7 @@ const MarketSingle = () => {
               data={data as unknown as MarketSingleType}
               lang={lang}
               isMobile={device === "mobile"}
-              role={role}
+              role={localRole}
             />
           </WidgetWrapper>
         </div>
@@ -345,7 +331,7 @@ const MarketSingle = () => {
                 </div>
 
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
-                  {places.map((item) => (
+                  {places?.map((item) => (
                     <LocationCard
                       key={item.id}
                       adPlace={item}
