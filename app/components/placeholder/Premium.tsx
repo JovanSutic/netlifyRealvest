@@ -30,7 +30,7 @@ const Premium = ({
 
         <div className="w-full flex justify-center">
           <Link
-            to={`/plans?lang=${lang}`}
+            to={`/auth/register/?lang=${lang}`}
             className="text-md text-blue-950 px-6 py-2 bg-amber-300 font-semibold rounded-md transition-all duration-300 transform hover:bg-amber-400 focus:outline-none disabled:bg-gray-300 disabled:cursor-no-drop"
           >
             {button}
