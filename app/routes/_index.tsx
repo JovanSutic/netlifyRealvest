@@ -145,7 +145,7 @@ export default function Index() {
   const translator = new Translator("homepage");
   const translate = new Translator("market");
 
-  const [activeFaq, setActiveFaq] = useState<number>(1);
+  const [activeFaq, setActiveFaq] = useState<number>(7);
 
   const accordionData: AccordionData[] = [
     {
