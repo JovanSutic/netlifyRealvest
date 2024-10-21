@@ -145,7 +145,7 @@ export default function Index() {
   const translator = new Translator("homepage");
   const translate = new Translator("market");
 
-  const [activeFaq, setActiveFaq] = useState<number>(1);
+  const [activeFaq, setActiveFaq] = useState<number>(7);
 
   const accordionData: AccordionData[] = [
     {
@@ -246,6 +246,8 @@ export default function Index() {
                   <img
                     src="https://belgradeepass.com/uploads/images/b_adsiz-tasarim-21-1-.webp"
                     alt="Belgrade cityscape"
+                    width="100%"
+                    height="auto"
                   />
                 </picture>
                 <div className="relative md:absolute top-0 md:top-10 w-full flex flex-col items-center mb-4 md:mb-0">
