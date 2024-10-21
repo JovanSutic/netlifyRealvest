@@ -2,12 +2,10 @@
 const Pagination = ({
   page,
   total,
-  totalText,
   onClick,
 }: {
   page: number;
   total: number;
-  totalText: string;
   onClick: (page: number) => void;
 }) => {
   const getFirst = () => {
@@ -34,13 +32,13 @@ const Pagination = ({
 
   const activeStyle = "bg-blue-500 text-white";
   const passiveStyle = "cursor-pointer bg-gray-200 text-black";
-  const activeButton = "cursor-pointer bg-gray-300";
-  const disabledButton = "cursor-no-drop bg-gray-200";
+  const activeButton = "cursor-pointer bg-blue-500 text-white";
+  const disabledButton = "cursor-no-drop bg-gray-300";
 
   if (page <= total && total > 1) {
     return (
-      <div className="w-full border-t-[1px] border-gray-300">
-        <ul className="flex space-x-3 justify-center mt-4">
+      <div className="w-full border-t-[1px] border-gray-300 mb-4">
+        <ul className="flex space-x-1 md:space-x-3 justify-center mt-4">
           <li
             className={`flex items-center justify-center shrink-0 w-10 h-8 rounded ${
               page === 1 ? disabledButton : activeButton
@@ -52,7 +50,7 @@ const Pagination = ({
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-3 fill-gray-500"
+              className={`w-3 ${page === 1 ? "fill-gray-500" : "fill-white"}`}
               viewBox="0 0 55.753 55.753"
             >
               <path
@@ -61,6 +59,22 @@ const Pagination = ({
               />
             </svg>
           </li>
+          {total > 3 && page > 2 && (
+            <>
+              <li
+                className={`flex items-center justify-center shrink-0 w-10 h-8 rounded text-sm font-bold ${
+                  1 === page ? activeStyle : passiveStyle
+                }`}
+                onClick={() => (1 === page ? null : onClick(1))}
+                role="button"
+                onKeyDown={() => null}
+                tabIndex={0}
+              >
+                {1}
+              </li>
+              <li className="font-bold text-lg">...</li>
+            </>
+          )}
           <li
             className={`flex items-center justify-center shrink-0 w-10 h-8 rounded text-sm font-bold ${
               first === page ? activeStyle : passiveStyle
@@ -96,6 +110,22 @@ const Pagination = ({
               {last}
             </li>
           )}
+          {total > 3 && page + 1 < total && (
+            <>
+              <li className="font-bold text-lg">...</li>
+              <li
+                className={`flex items-center justify-center shrink-0 w-10 h-8 rounded text-sm font-bold ${
+                  total === page ? activeStyle : passiveStyle
+                }`}
+                onClick={() => (total === page ? null : onClick(total))}
+                role="button"
+                onKeyDown={() => null}
+                tabIndex={0}
+              >
+                {total}
+              </li>
+            </>
+          )}
 
           <li
             className={`flex items-center justify-center shrink-0 w-10 h-8 rounded ${
@@ -108,7 +138,9 @@ const Pagination = ({
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-3 fill-gray-500 rotate-180"
+              className={`w-3 rotate-180 ${
+                page === total ? "fill-gray-500" : "fill-white"
+              }`}
               viewBox="0 0 55.753 55.753"
             >
               <path
@@ -118,10 +150,6 @@ const Pagination = ({
             </svg>
           </li>
         </ul>
-        <p className="w-full text-center text-md my-2">
-          <span className="text-gray-400 font-semibold text-[12px]">{`${totalText.toUpperCase()}:`}</span>
-          <span className="ml-2 text-gray-800 text-sm font-bold">{`${total}`}</span>
-        </p>
       </div>
     );
   }

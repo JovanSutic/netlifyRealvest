@@ -409,7 +409,6 @@ const MarketAll = () => {
                 <Pagination
                   page={Number(page)}
                   total={pages!}
-                  totalText={translate.getTranslation(lang, "paginationTotal")}
                   onClick={(page: number) =>
                     setSearchParams((prev) => {
                       prev.set("page", `${page}`);
