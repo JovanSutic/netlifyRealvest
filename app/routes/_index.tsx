@@ -149,6 +149,11 @@ export default function Index() {
 
   const accordionData: AccordionData[] = [
     {
+      id: 7,
+      title: translator.getTranslation(lang, "faq7Title"),
+      text: translator.getTranslation(lang, "faq7Text"),
+    },
+    {
       id: 1,
       title: translator.getTranslation(lang, "faq1Title"),
       text: translator.getTranslation(lang, "faq1Text"),
@@ -207,17 +212,17 @@ export default function Index() {
                   />
                 </div>
               </div>
-              <div className="flex flex-col mt-3 md:mt-0">
+              <div className="flex flex-col md:mt-3 md:mt-0">
                 <div className="flex flex-col md:flex-row items-center">
                   <Link
                     to={`auth/?lang=${lang}`}
-                    className="text-md px-4 py-2 bg-slate-600 font-semibold text-white rounded-xl transition-all duration-300 transform hover:bg-slate-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                    className="hidden md:block text-md px-4 py-2 bg-slate-600 font-semibold text-white rounded-xl transition-all duration-300 transform hover:bg-slate-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
                   >
                     {translator.getTranslation(lang, "haveAccount")}
                   </Link>
                   <Link
                     to={`/?lang=${lang === "sr" ? "en" : "sr"}`}
-                    className="text-sm font-regular text-blue-500 transform hover:text-blue-700 mt-3 md:mt-0 ml-0 md:ml-6"
+                    className="text-sm font-regular text-blue-500 transform hover:text-blue-700 md:mt-3 md:mt-0 ml-0 md:ml-6"
                   >
                     {lang === "sr" ? "english version" : "srpska verzija"}
                   </Link>
@@ -231,63 +236,42 @@ export default function Index() {
       <TPage color="bg-white" mobile={mobile}>
         <TLine columns={12} gap={2}>
           <TColumn span={12}>
-            <div className="w-full">
-              <div className="bg-[url('/bgg_panorama.jpg')] bg-opacity-20 bg-cover bg-center h-[240px] lg:h-[460px] rounded-md">
-                <div className="grid grid-cols-1 lg:grid-cols-2 h-full">
-                  <div></div>
-                  {!mobile && (
-                    <div className="flex flex-row items-center justify-center px-2 lg:px-10">
-                      <div className="flex bg-gray-50 px-8 rounded-lg w-full lg:w-[460px]">
-                        <div className="flex flex-row items-center h-full">
-                          <div className="flex flex-col items-center pt-8 pb-2 lg:pb-10">
-                            <h1 className="text-[32px] font-bold text-center leading-[40px] mb-6">
-                              {translator.getTranslation(lang, "heroTitle")}
-                            </h1>
-                            <h2 className="w-full text-[18px] text-center text-gray-700 mb-6">
-                              {translator.getTranslation(lang, "heroSubtitle")}
-                            </h2>
-                            <Link
-                              to={`auth/register/?lang=${lang}`}
-                              className="px-6 py-3 text-md font-semibold text-white bg-blue-500 rounded-xl  transition-all duration-300 transform hover:bg-blue-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
-                            >
-                              {translator.getTranslation(lang, "heroCta")}
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-              {mobile && (
-                <div className="flex flex-row items-center mt-0 md:mt-4">
-                  <div className="flex bg-white bg-opacity-90 w-full rounded-xl">
-                    <div className="flex flex-row items-center h-full">
-                      <div className="flex flex-col items-center pt-4 pb-2">
-                        <h1 className="text-xl md:text-[32px] font-extrabold text-center mb-4 md:mb-6">
-                          {translator.getTranslation(lang, "heroTitle")}
-                        </h1>
-                        <h3 className="text-md text-center text-gray-600 mb-4 md:mb-6">
-                          {translator.getTranslation(lang, "heroSubtitle")}
-                        </h3>
-                        <Link
-                          to={`auth/register/?lang=${lang}`}
-                          className="px-6 py-3 text-md font-semibold text-white bg-blue-500 rounded-xl  transition-all duration-300 transform hover:bg-blue-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
-                        >
-                          {translator.getTranslation(lang, "heroCta")}
-                        </Link>
-                      </div>
-                    </div>
+            <div className="w-full flex flex-row">
+              <div className="w-full relative rounded-md md:overflow-hidden md:grayscale-[40%]">
+                <picture className="hidden md:block">
+                  <source
+                    srcSet="https://belgradeepass.com/uploads/images/b_adsiz-tasarim-21-1-.webp"
+                    type="image/webp"
+                  />
+                  <img
+                    src="https://belgradeepass.com/uploads/images/b_adsiz-tasarim-21-1-.webp"
+                    alt="Belgrade cityscape"
+                  />
+                </picture>
+                <div className="relative md:absolute top-0 md:top-10 w-full flex flex-col items-center mb-4 md:mb-0">
+                  <div className="w-full md:w-[80%] lg:w-[40%] text-center">
+                    <h1 className="text-gray-600 md:text-white font-bold text-2xl lg:text-4xl md:drop-shadow-xl text-center px-2 md: leading-[24px] lg:leading-[48px] mb-4 md:mb-2 lg:mb-8">
+                      {translator.getTranslation(lang, "heroTitle")}
+                    </h1>
+                    <h2 className="w-full drop-shadow-xl text-black md:text-white text-lg lg:text-xl text-center md:bg-gray-800 md:bg-opacity-60 p-1 rounded-lg mb-6 md:mb-4 lg:mb-8">
+                      {translator.getTranslation(lang, "heroSubtitle")}
+                    </h2>
+                    <Link
+                      to={`/market/?lang=${lang}&page=1`}
+                      className="text-md px-4 py-2 bg-blue-500 font-semibold text-white rounded-md transition-all duration-300 transform hover:bg-blue-700 focus:ring-2 focus:outline-none focus:ring-opacity-50"
+                    >
+                      {translator.getTranslation(lang, "heroCta")}
+                    </Link>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
           </TColumn>
         </TLine>
       </TPage>
 
       <TPage color="bg-white" mobile={mobile}>
-        <div className="mt-6 lg:mt-10 mb-6">
+        <div className="mt-0 lg:mt-4">
           <h2 className="text-[24px] md:text-[32px] font-bold text-center mb-2">
             {translator.getTranslation(lang, "potentialTitle")}
           </h2>
@@ -297,7 +281,7 @@ export default function Index() {
                 return (
                   <MarketCard
                     key={item?.id}
-                    link={`/market/${item?.id}?lang=${lang}`}
+                    link={`/market/${item?.id}?lang=${lang}&home=1`}
                     lang={lang as LangType}
                     price={makeNumberCurrency(item!.price)}
                     appreciation={item?.profitability_competition_trend || 0}
@@ -334,6 +318,14 @@ export default function Index() {
                 );
               })}
             </div>
+            <div className="w-full text-center mt-8">
+              <Link
+                to={`/market/?lang=${lang}&page=1`}
+                className="text-xl text-blue-500 hover:underline"
+              >
+                {translator.getTranslation(lang, "marketAll")}
+              </Link>
+            </div>
           </div>
         </div>
       </TPage>
@@ -354,14 +346,14 @@ export default function Index() {
               to={`auth/register/?lang=${lang}`}
               className="px-6 py-3 text-md font-semibold text-white bg-blue-500 rounded-xl  transition-all duration-300 transform hover:bg-blue-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
             >
-              {translator.getTranslation(lang, "heroCta")}
+              {translator.getTranslation(lang, "accountCta")}
             </Link>
           </div>
         </div>
       </TPage>
 
       <TPage color="bg-white" mobile={mobile}>
-        <div className="mt-6 lg:mt-10 mb-6">
+        <div className="mt-6 lg:mt-10">
           <h2 className="text-[24px] md:text-[32px] font-bold text-center mb-2">
             {translator.getTranslation(lang, "rentalTitle")}
           </h2>
@@ -371,7 +363,7 @@ export default function Index() {
                 return (
                   <MarketCard
                     key={item?.id}
-                    link={`/market/${item?.id}?lang=${lang}`}
+                    link={`/market/${item?.id}?lang=${lang}&home=1`}
                     lang={lang as LangType}
                     price={makeNumberCurrency(item!.price)}
                     appreciation={item?.profitability_competition_trend || 0}
@@ -397,6 +389,14 @@ export default function Index() {
                   />
                 );
               })}
+            </div>
+            <div className="w-full text-center mt-8">
+              <Link
+                to={`/market/?lang=${lang}&page=1`}
+                className="text-xl text-blue-500 hover:underline"
+              >
+                {translator.getTranslation(lang, "marketAll")}
+              </Link>
             </div>
           </div>
         </div>
@@ -497,6 +497,14 @@ export default function Index() {
                     {translator.getTranslation(lang, "footerInfo")}
                   </h4>
                   <ul className="space-y-4">
+                    <li>
+                      <Link
+                        to={`/market/?lang=${lang}&page=1`}
+                        className="text-gray-300 hover:text-white text-sm"
+                      >
+                        {translator.getTranslation(lang, "market")}
+                      </Link>
+                    </li>
                     <li>
                       <Link
                         to={`/blog?lang=${lang}`}

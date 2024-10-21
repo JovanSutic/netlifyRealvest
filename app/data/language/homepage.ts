@@ -1,10 +1,11 @@
 export const homepageMap: Record<string, Record<string, string>> = {
   en: {
-    heroTitle: "Data needed for better decisions",
+    heroTitle: "Choose property with great potential",
     haveAccount: "Have an account? Log in",
     heroSubtitle:
-      "Realvest is connecting you with relevant market data that will help you to make better decisions while buying, selling or renting real estate.",
-    heroCta: "Create free account",
+      "Purchasing a property is a significant investment. Our data-rich listings will ensure you have all the information you need to make an informed decision.",
+    heroCta: "See listings",
+    accountCta: "Create free account",
     howTitle: "Useful data, completely free available in just 3 clicks.",
     howTime:
       "Select the time frame for the data and reports that will be generated.",
@@ -32,12 +33,16 @@ export const homepageMap: Record<string, Record<string, string>> = {
     faq4Title: "How often is the data updated?",
     faq4Text:
       "Updating of data depends on changes in the market and availability of data in the sources we use. For example, sales data are updated on a monthly basis because they follow data from the RGZ Real Estate Price Register. Some other market changes, like the current market offer, we can register much faster and update immediately.",
-    faq5Title: "How many different report types can I see?",
+    faq5Title: "What kind of information is included in ads?",
     faq5Text:
-      "We currently display 8 types of reports. These are: general sales report, price movement, distribution of prices, distribution of sales, general rental report, rental prices movement, distribution of rental prices and rental features. There are many more reports, visualizations and conclusions planned that will help you get a clearer picture of certain parts of the market.",
+      "The goal of the advertisement is to present the property from an investment perspective. It should indicate whether the property is located in an area with rising prices, how its price aligns with previous market transactions, and what its potential rental income is. Accordingly, advertisements include: value change analysis, purchase analysis, rental analysis, and location analysis.",
     faq6Title: "Can I only see information about apartments?",
     faq6Text:
-      "The data we collect is divided into 3 types of real estate: residential (apartments), garage and commercial (business premises). Data for all 3 types is available to our users.",
+      "Currently, only data on residential properties (apartments) is publicly available on the listings. However, registered members have access to micro-location analysis for residential, garage, and commercial properties.",
+    faq7Title:
+      "Do I have to look at property purchase as an investment even for the apartment I want to live in?",
+    faq7Text:
+      "Purchasing a property results in ownership of an asset with both current and future value. Ideally, you should buy a property that will appreciate in value over time. Additionally, real estate has the ability to generate income through rental. If you believe in owning something that will increase in value and provide a steady income stream, then you should definitely consider real estate as an investment.",
     homeMetaTitle: "Realvest - platform for Belgrade real estate analysis",
     homeMetaDesc: "Platform for Belgrade real estate analysis",
     contact: "Contact",
@@ -61,6 +66,7 @@ export const homepageMap: Record<string, Record<string, string>> = {
     noBlogs:
       "Currently there are no articles in english about real estate market for this city.",
     home: "Home",
+    market: "Listings",
     blog: "Blog",
     back: "Back",
     blogDate: "Article created",
@@ -69,13 +75,15 @@ export const homepageMap: Record<string, Record<string, string>> = {
       "Articles for people that are buying or investing in Belgrade real estate.",
     homeBlogTitle: "Real estate market: articles and insights",
     homeBlogAll: "all articles",
+    marketAll: "See all listings",
   },
   sr: {
-    heroTitle: "Podaci sa kojima donosite bolje odluke",
+    heroTitle: "Izaberite nekretninu sa najvećim potencijalom",
     haveAccount: "Imate nalog? Prijavite se",
     heroSubtitle:
-      "Realvest vas povezuje sa relevantnim tržišnim podacima koji olakšavaju proces donošenja odluka pri kupovini, prodaji ili izdavanju nekretnina.",
-    heroCta: "Napravite nalog besplatno",
+      "Kupovina nekretnine je dugoročna finansijska odluka i ozbiljna investicija. Naši oglasi, sa gomilom podataka, pomoćiće vam da budete sigurni u vaš izbor.",
+    heroCta: "Pogledajte oglase",
+    accountCta: "Napravite besplatan nalog",
     howTitle: "Potpuno besplatno u samo 3 klika saznajte stanje na tržištu.",
     howTime:
       "Izaberite vremenski period koji treba uzeti u obzir prilikom generisanja izveštaja.",
@@ -102,12 +110,16 @@ export const homepageMap: Record<string, Record<string, string>> = {
     faq4Title: "Koliko često se ažuriraju podaci?",
     faq4Text:
       "Ažuriranje podataka zavisi od promena na tržištu i dostupnosti podataka iz izvorima koje koristimo. Na primer, podaci o prodaji ažuriraju se na mesečnom nivou zbog toga što prate podatke iz Registra cena nepokretnosti RGZ-a. Neke druge promene na tržištu, poput trenutne ponude, prikazujemo i ažuriramo odmah.",
-    faq5Title: "Koliko različitih tipova izveštaja mogu da vidim?",
+    faq5Title: "Kakvi podaci se nalaze u oglasima?",
     faq5Text:
-      "Za sada prikazujemo 8 tipova izveštaja. To su: generalni izveštaj prodaje nekretnina, kretanje cena, raspodela cena, raspodela prodaja, generalni izveštaj o izdavanju nekretnina, kretanje cena izdavanja, raspodela cena izdavanja i odlike izdatog. U planu je još mnogo dodatnih izveštaja, vizualizacija i informacija koje će vam pomoći da steknete jasniju sliku tržišta nekretnina.",
+      "Cilj oglasa je da nekretninu predstavi kroz jedan investicioni aspekt. On bi trebalo da ukaže, da li se nekretnina nalazi na lokaciji rasta cena, koliko je njena cena usklađena sa prethodnim tržišnim transakcijama i kolika je njena potencijalna prihodna sposobnost. U skladu sa tim, u oglasima postoje: analiza promene vrednosti, analiza kupovine, analiza izdavanja i analiza lokacije.",
     faq6Title: "Da li mogu da vidim samo podatke o stanovima?",
     faq6Text:
-      "Podaci koje trenutno prikupljamo podeljeni su na 3 vrste nekretnina: rezidencijalni (stanovi), komercijalni (poslovni prostori) i garažni. Podaci za sve 3 vrste dostupni su za sve korisnike.",
+      "Trenutno su na oglasima dostupni samo podaci o rezidencijalnim nekretninama (stanovima), ali registrovani članovi imaju pristup analizi mikrolokacija sa aspekta rezidencijalnih, garažnih i komercijalnih nekretnina.",
+    faq7Title:
+      "Da li kupovinu stana u kome ću da živim treba da posmatram kao investiciju?",
+    faq7Text:
+      "Kupovina nekretnine rezultira vlasništvom nad imovinom koja ima trenutnu, ali i buduću vrednost. Dobro bi bilo da kupite nekretninu kojoj će vrednost u budućnosti da skoči. Takođe, nekretnina ima sposobnost da generiše prihod kroz izdavanje. Ukoliko mislite da je dobro da posedujete nešto čija će vrednost da raste i što vam može obezbediti dobar prihod onda zaista trebate kupovinu nekretnine posmatrati kao investiciju.",
     homeMetaTitle:
       "Realvest - platforma za analizu tržišta nekretnina Beograda",
     homeMetaDesc: "Platforma za analizu tržišta nekretnina Beograda",
@@ -118,7 +130,7 @@ export const homepageMap: Record<string, Record<string, string>> = {
     errorPageButton: "Nazad na početnu",
     saveTimeTitle: "Nedelje pretrage sada su sekunde",
     saveTimeText:
-      "Ubrzajte pretraživanje nekretnina i pretvorite nedelje pretrage u sekunde. Na jednom mestu sakupljeni svi podaci koji su vam potrebni. Bilo da tražite tržišne trendove, detalje o nekretninama ili analizu investicija, naš intuitivan interfejs vam omogućava da brzo i efikasno donosite informisane odluke. Otkrijte pametniji način navigacije kroz svet nekretnina!",
+      "Ubrzajte pretraživanje nekretnina i pretvorite nedelje pretrage u sekunde. Na jednom mestu su sakupljeni svi podaci koji su vam potrebni. Bilo da tražite tržišne trendove, detalje o nekretninama ili analizu investicija, naši podaci vam omogućavaju da brzo i efikasno donosite informisane odluke. Otkrijte pametniji način navigacije kroz svet nekretnina!",
     potentialTitle: "Prilike sa velikim potencijalom",
     rentalTitle: "Nekretnine sa optimalnim prihodnim mogućnostima",
     footerInfo: "Informacije",
@@ -131,6 +143,7 @@ export const homepageMap: Record<string, Record<string, string>> = {
     blogTitle: "Uvidi u tržište nekretnina - Beograd",
     noBlogs: "Trenutno nema članaka o tržištu nekretnina za ovaj grad.",
     home: "Početna",
+    market: "Oglasi",
     blog: "Blog",
     back: "Nazad",
     blogDate: "Članak napisan",
@@ -139,5 +152,6 @@ export const homepageMap: Record<string, Record<string, string>> = {
       "Članci za one koji žele da investiraju u stanove u Beogradu ili koji žele da kupe stan u Beogradu.",
     homeBlogTitle: "Tržište nekretnina: članci i uvidi",
     homeBlogAll: "svi članici",
+    marketAll: "Pogledajte sve oglase",
   },
 };

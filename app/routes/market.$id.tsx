@@ -6,6 +6,7 @@ import {
   useLoaderData,
   useSearchParams,
   useNavigate,
+  Link,
 } from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
 import { Translator } from "../data/language/translator";
@@ -245,6 +246,7 @@ export const meta: MetaFunction<typeof loader> = ({ data, location }) => {
 const MarketSingle = () => {
   const [searchParams] = useSearchParams();
   const lang = (searchParams.get("lang") as LangType) || "sr";
+  const homeParam = (searchParams.get("home") as string) || "0";
 
   const navigate = useNavigate();
   const goBack = () => navigate(-1);
@@ -271,6 +273,14 @@ const MarketSingle = () => {
           >
             {translate.getTranslation(lang, "back")}
           </button>
+          {homeParam === "1" && (
+            <Link
+              to={`/market/?lang=${lang}&page=1`}
+              className="text-blue-500 text-md underline mr-4"
+            >
+              Pogledajte sve oglase
+            </Link>
+          )}
         </div>
         <div>
           <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">
@@ -317,7 +327,7 @@ const MarketSingle = () => {
             <MarketFeatureList details={data.details} lang={lang} />
           </WidgetWrapper>
         </div>
-        <div>
+        <div className="mt-3 lg:mt-0">
           <WidgetWrapper>
             <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-4">
               <div className="col-span-2">
@@ -358,6 +368,7 @@ const MarketSingle = () => {
                     />
                   )}
                 </ClientOnly>
+                <p className="text-sm font-regular mt-3 text-gray-500">{translate.getTranslation(lang, 'mapWarn')}</p>
               </div>
             </div>
           </WidgetWrapper>

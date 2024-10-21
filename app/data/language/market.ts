@@ -98,8 +98,6 @@ export const marketMap: Record<string, Record<string, string>> = {
     sortPriceAsc: "sort by price ascending",
     sortSizeDesc: "sort by size descending",
     sortSizeAsc: "sort by size ascending",
-    cardIrr: "Internal rate of return",
-    cardRentPrice: "Monthly rent around",
     shortPrice: "Expected price for daily rent",
     shortOccupancy: "Potential monthly occupancy",
     shortIncome: "Potential monthly (day rent) income",
@@ -130,6 +128,12 @@ export const marketMap: Record<string, Record<string, string>> = {
     seconds: "seconds",
     drive: "drive",
     walk: "walk",
+    cardAppreciation:
+      "Annual appreciation of a similar apartment in the location",
+    cardIrr: "Internal return of revenue stop for this location",
+    cardRental: "Potential monthly rent revenue for this property",
+    mapWarn:
+      "*The location is approximate and indicates micro-location. For specific details and location, please contact the listing agency.",
   },
   sr: {
     searchMetaTitle:
@@ -229,8 +233,6 @@ export const marketMap: Record<string, Record<string, string>> = {
     sortPriceAsc: "sortirajte po ceni uzlazno",
     sortSizeDesc: "sortirajte po veličini silazno",
     sortSizeAsc: "sortirajte po veličini uzlazno",
-    cardIrr: "Interna stopa prinosa",
-    cardRentPrice: "Mesečna kirija oko",
     shortPrice: "Očekivana cena izdavanja na dan",
     shortOccupancy: "Potencijalna mesečna popunjenost",
     shortIncome: "Potencijalni mesečni prihod",
@@ -261,5 +263,10 @@ export const marketMap: Record<string, Record<string, string>> = {
     seconds: "sekundi",
     drive: "vožnje",
     walk: "šetnje",
+    cardAppreciation: "Godišnje povećanje vrednosti sličnog stana na lokaciji",
+    cardIrr: "Interna stopa prinosa slične nekretnine na lokaciji",
+    cardRental: "Potencijalni mesečni prihod od izdavanja ovog stana",
+    mapWarn:
+      "*Lokacije nekretnine je približna, odražava mikrolokaciju. Za preciznije informacije kontaktirajte agenciju koja je objavila oglas.",
   },
 };

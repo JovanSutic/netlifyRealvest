@@ -13,7 +13,7 @@ const setLimit = (device: string): number => {
 const Gallery = ({ photos, device }: { photos: PhotoItem[], device: string }) => {
   const limit = setLimit(device);
   const [galleryPhotos, setGalleryPhotos] = useState<PhotoItem[]>(
-    photos.slice(0, limit)
+    photos?.slice(0, limit)
   );
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [modalOpen, setModalOpen] = useState<boolean>(false);

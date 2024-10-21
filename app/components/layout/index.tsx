@@ -155,7 +155,7 @@ export const DashboardPage = ({
 }) => {
   return (
     <div className="pl-0 lg:pl-[220px] min-h-screen bg-gray-100">
-      <div className="px-2 md:px-4 lg:px-5">{children}</div>
+      <div className="px-1 md:px-2 lg:px-3">{children}</div>
     </div>
   );
 };
