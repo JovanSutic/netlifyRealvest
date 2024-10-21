@@ -1,6 +1,6 @@
 export const homepageMap: Record<string, Record<string, string>> = {
   en: {
-    heroTitle: "Choose property with great potential",
+    heroTitle: "Choose property with biggest growth potential",
     haveAccount: "Have an account? Log in",
     heroSubtitle:
       "Purchasing a property is a significant investment. Our data-rich listings will ensure you have all the information you need to make an informed decision.",
@@ -53,7 +53,7 @@ export const homepageMap: Record<string, Record<string, string>> = {
     saveTimeTitle: "Weeks of searching are now second",
     saveTimeText:
       "Accelerate your real estate search and turn weeks of searching into seconds. All the data you need is collected in one place. Whether you’re looking for market trends, property details, or investment analysis, our intuitive interface allows you to make informed decisions quickly and efficiently. Discover a smarter way to navigate the world of real estate",
-    potentialTitle: "Opportunities with big potential",
+    potentialTitle: "Locations with big value growth",
     rentalTitle: "Properties with optimal rental possibilities",
     footerInfo: "Information",
     footerTerms: "Terms and conditions",
@@ -78,7 +78,7 @@ export const homepageMap: Record<string, Record<string, string>> = {
     marketAll: "See all listings",
   },
   sr: {
-    heroTitle: "Izaberite nekretninu sa najvećim potencijalom",
+    heroTitle: "Izaberite nekretninu sa najvećim potencijalom rasta",
     haveAccount: "Imate nalog? Prijavite se",
     heroSubtitle:
       "Kupovina nekretnine je dugoročna finansijska odluka i ozbiljna investicija. Naši oglasi, sa gomilom podataka, pomoćiće vam da budete sigurni u vaš izbor.",
@@ -131,7 +131,7 @@ export const homepageMap: Record<string, Record<string, string>> = {
     saveTimeTitle: "Nedelje pretrage sada su sekunde",
     saveTimeText:
       "Ubrzajte pretraživanje nekretnina i pretvorite nedelje pretrage u sekunde. Na jednom mestu su sakupljeni svi podaci koji su vam potrebni. Bilo da tražite tržišne trendove, detalje o nekretninama ili analizu investicija, naši podaci vam omogućavaju da brzo i efikasno donosite informisane odluke. Otkrijte pametniji način navigacije kroz svet nekretnina!",
-    potentialTitle: "Prilike sa velikim potencijalom",
+    potentialTitle: "Lokacije sa velikim rastom vrednosti",
     rentalTitle: "Nekretnine sa optimalnim prihodnim mogućnostima",
     footerInfo: "Informacije",
     footerTerms: "Uslovi korišćenja",
