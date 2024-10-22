@@ -18,7 +18,7 @@ const IndexCard = ({
   return (
     <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow sm:pb-1">
         <div className="h-32">
-        <img className="rounded-t-sm max-h-full" src={image || "/empty3.jpg"} alt="dashboard" />
+        <img className="rounded-t-sm max-h-full" src={image || "/empty3.jpg"} alt="dashboard" loading="lazy" />
         </div>
       
       <div className="p-5 h-[250px]">
