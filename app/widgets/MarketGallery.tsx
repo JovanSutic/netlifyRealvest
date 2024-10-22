@@ -10,7 +10,13 @@ const setLimit = (device: string): number => {
   return 5;
 };
 
-const Gallery = ({ photos, device }: { photos: PhotoItem[], device: string }) => {
+const Gallery = ({
+  photos,
+  device,
+}: {
+  photos: PhotoItem[];
+  device: string;
+}) => {
   const limit = setLimit(device);
   const [galleryPhotos, setGalleryPhotos] = useState<PhotoItem[]>(
     photos?.slice(0, limit)
@@ -57,7 +63,9 @@ const Gallery = ({ photos, device }: { photos: PhotoItem[], device: string }) =>
 
   const handleModalNext = () => {
     setModalPhoto((prevPhoto) => {
-      const currentIndex = photos.findIndex((item) => prevPhoto?.id === item.id);
+      const currentIndex = photos.findIndex(
+        (item) => prevPhoto?.id === item.id
+      );
       const nextIndex =
         currentIndex === photos.length - 1 ? 0 : currentIndex + 1;
       return photos[nextIndex];
@@ -66,7 +74,9 @@ const Gallery = ({ photos, device }: { photos: PhotoItem[], device: string }) =>
 
   const handleModalPrevious = () => {
     setModalPhoto((prevPhoto) => {
-      const currentIndex = photos.findIndex((item) => prevPhoto?.id === item.id);
+      const currentIndex = photos.findIndex(
+        (item) => prevPhoto?.id === item.id
+      );
       const nextIndex =
         currentIndex === 0 ? photos.length - 1 : currentIndex - 1;
       return photos[nextIndex];
@@ -101,8 +111,9 @@ const Gallery = ({ photos, device }: { photos: PhotoItem[], device: string }) =>
           {galleryPhotos.map((photo) => (
             <button key={photo.id} onClick={() => handlePhotoClick(photo)}>
               <img
-                alt=""
+                alt="realvest_photo"
                 src={photo.link}
+                loading="lazy"
                 className="object-cover cursor-pointer rounded-xl"
               />
             </button>

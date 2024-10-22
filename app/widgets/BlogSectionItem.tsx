@@ -64,7 +64,7 @@ const BlogSectionItem = ({
       )}
       {type === "media" && (
         <div className="w-full md:w-[500px] lg:w-[700px] text-center mx-auto mb-4 md:mb-6">
-          <img src={content} alt="some text" className="max-w-full center" />
+          <img src={content} alt="some text" loading="lazy" className="max-w-full center" />
         </div>
       )}
     </div>

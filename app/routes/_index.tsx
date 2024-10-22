@@ -209,6 +209,8 @@ export default function Index() {
                     src="logo1.png"
                     alt="Realvest logo"
                     className="max-w-full"
+                    width="160"
+                    height="46"
                   />
                 </div>
               </div>
@@ -248,6 +250,7 @@ export default function Index() {
                     alt="Belgrade cityscape"
                     width="100%"
                     height="auto"
+                    loading="lazy"
                   />
                 </picture>
                 <div className="relative md:absolute top-0 md:top-10 w-full flex flex-col items-center mb-4 md:mb-0">

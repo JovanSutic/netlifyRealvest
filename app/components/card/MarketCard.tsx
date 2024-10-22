@@ -48,6 +48,7 @@ const MarketCard = ({
           src={photo || "empty.jpg"}
           alt="Product 1"
           className="h-full w-full object-center"
+          loading="lazy"
         />
       </div>
 
