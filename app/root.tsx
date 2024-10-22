@@ -50,10 +50,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         {process.env.NODE_ENV !== "development" && gaTrackingId && isProd ? (
           <>
-            {/* <script
+            <script
               async
               src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
-            /> */}
+            />
             <script
               async
               id="gtag-init"
