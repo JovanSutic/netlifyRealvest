@@ -15,7 +15,7 @@ export const ErrorPage = ({
     <div className="flex flex-col w-full">
       <div className="w-full relative mb-10">
         <div className="w-[140px] mx-auto">
-          <img src="/logo2.png" alt="Realvest logo" className="max-w-full" />
+          <img src="/logo2.png" alt="Realvest logo" className="max-w-full" loading="lazy" />
         </div>
       </div>
       <div className="flex flex-row justify-center pt-4">

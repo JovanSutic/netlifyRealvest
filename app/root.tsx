@@ -17,8 +17,8 @@ import * as gtag from "./utils/gtag";
 import { useEffect } from "react";
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: appStyles },
-  { rel: "stylesheet", href: stylesheet },
+  { rel: "stylesheet", href: appStyles},
+  { rel: "stylesheet", href: stylesheet},
 ];
 
 export const loader = async () => {
@@ -50,10 +50,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         {process.env.NODE_ENV !== "development" && gaTrackingId && isProd ? (
           <>
-            <script
+            {/* <script
               async
               src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
-            />
+            /> */}
             <script
               async
               id="gtag-init"
