@@ -17,8 +17,8 @@ import * as gtag from "./utils/gtag";
 import { useEffect } from "react";
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: appStyles, media: "print", onload: "this.media='all'"},
-  { rel: "stylesheet", href: stylesheet, media: "print", onload: "this.media='all'" },
+  { rel: "stylesheet", href: appStyles},
+  { rel: "stylesheet", href: stylesheet},
 ];
 
 export const loader = async () => {
