@@ -4,6 +4,7 @@ import {
   Link,
   MetaFunction,
   useLoaderData,
+  useNavigation,
   useSearchParams,
 } from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
@@ -32,6 +33,7 @@ import {
   getSortingParams,
 } from "../utils/market";
 import { calculateFuturePrice } from "../utils/dashboard";
+import Loader from "../components/loader";
 
 export const links: LinksFunction = () => [
   {
@@ -207,6 +209,8 @@ const MarketAll = () => {
 
   const translate = new Translator("market");
 
+  const navigation = useNavigation();
+
   const lang = (searchParams.get("lang") as LangType) || "sr";
   const page = searchParams.get("page") || "1";
   const sizeFrom = searchParams.get("size_from") || "0";
@@ -254,6 +258,7 @@ const MarketAll = () => {
 
   return (
     <DashboardPage>
+      <Loader open={navigation.state === 'loading'} />
       <MarketFilter
         isOpen={openFilter}
         lang={lang}

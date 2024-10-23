@@ -7,6 +7,7 @@ import {
   useSearchParams,
   useNavigate,
   Link,
+  useNavigation,
 } from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
 import { Translator } from "../data/language/translator";
@@ -38,6 +39,7 @@ import { ClientOnly } from "../components/helpers/ClientOnly";
 import IndexedMap from "../components/map/IndexedMap.client";
 import LocationCard from "../components/card/LocationCard";
 import useRoleLimits from "../utils/useRoleLimits";
+import Loader from "../components/loader";
 
 export const links: LinksFunction = () => [
   {
@@ -250,6 +252,8 @@ const MarketSingle = () => {
 
   const navigate = useNavigate();
   const goBack = () => navigate(-1);
+  
+  const navigation = useNavigation();
 
   const { data, device, role, places } = useLoaderData<{
     data: MarketSingleType;
@@ -264,6 +268,7 @@ const MarketSingle = () => {
 
   return (
     <DashboardPage>
+      <Loader open={navigation.state === 'loading'} />
       <div className="w-full pt-2 pb-6">
         <div className="w-full mb-3 md:mb-2 flex flex-row-reverse">
           <button
