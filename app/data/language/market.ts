@@ -6,7 +6,7 @@ export const marketMap: Record<string, Record<string, string>> = {
       "Discover the best real estate opportunities with our advanced property search tool. Access up-to-date listings, market trends, and detailed insights all in one place. Start your journey to finding the ideal home or investment today!",
     singleMetaDesc:
       "Realvest - Get detailed insights, photos, and market data to make an informed decision when investing in real estate.",
-    allTitle: "Properties market search",
+    allTitle: "Properties listing search",
     paginationTotal: "total pages",
     page: "page",
     noPageLink: "Market start page",
@@ -134,6 +134,7 @@ export const marketMap: Record<string, Record<string, string>> = {
     cardRental: "Potential monthly rent revenue for this property",
     mapWarn:
       "*The location is approximate and indicates micro-location. For specific details and location, please contact the listing agency.",
+    marketAll: "See all listings",
   },
   sr: {
     searchMetaTitle:
@@ -142,7 +143,7 @@ export const marketMap: Record<string, Record<string, string>> = {
       "Istražite najbolje prilike za investicije u nekretnine. Pristupite svim potrebnim podacima kao što su kretanja na tržištu, finansijski podaci, mogućnosti za izdavanje.",
     singleMetaDesc:
       "Realvest - Detaljni podaci koji su vam potrebni da u potpunosti istražite investicionu mogućnost nekretnine.",
-    allTitle: "Pretraga tržišta nekretnina",
+    allTitle: "Pretraga oglasa na tržištu",
     paginationTotal: "ukupno stranica",
     page: "stranica",
     noPageLink: "Početna stranica tržišta",
@@ -268,5 +269,6 @@ export const marketMap: Record<string, Record<string, string>> = {
     cardRental: "Potencijalni mesečni prihod od izdavanja ovog stana",
     mapWarn:
       "*Lokacije nekretnine je približna, odražava mikrolokaciju. Za preciznije informacije kontaktirajte agenciju koja je objavila oglas.",
+    marketAll: "Pogledajte sve oglase",
   },
 };
