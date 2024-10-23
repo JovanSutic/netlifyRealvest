@@ -92,7 +92,7 @@ const MarketCard = ({
                 className={`w-[20%] font-extrabold mr-1 text-lg lg:text-sm text-right content-center  ${
                   (rentPriceNumber || 0) > 0
                     ? "text-blue-500 font-bold"
-                    : "text-gray-400 font-light center"
+                    : "text-gray-400 font-light center text-sm"
                 }`}
               >
                 {(rentPriceNumber || 0) > 0
