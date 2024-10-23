@@ -283,7 +283,7 @@ const MarketSingle = () => {
               to={`/market/?lang=${lang}&page=1`}
               className="text-blue-500 text-md underline mr-4"
             >
-              Pogledajte sve oglase
+              {translate.getTranslation(lang, 'marketAll')}
             </Link>
           )}
         </div>
