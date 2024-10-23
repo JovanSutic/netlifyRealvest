@@ -21,6 +21,7 @@
     border-right-color: transparent;
     transform-origin: center;
     animation: rotate 1s linear infinite;
+    z-index: 999;
   }
   
   @keyframes rotate {
