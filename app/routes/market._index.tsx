@@ -9,7 +9,6 @@ import {
 } from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
 import { Translator } from "../data/language/translator";
-// import Loader from "../components/loader";
 import { getParamValue, isMobile } from "../utils/params";
 import MarketCard from "../components/card/MarketCard";
 import { LangType, RoleType } from "../types/dashboard.types";
@@ -33,7 +32,7 @@ import {
   getSortingParams,
 } from "../utils/market";
 import { calculateFuturePrice } from "../utils/dashboard";
-import Loader from "../components/loader";
+import PageLoader from "../components/loader/PageLoader";
 
 export const links: LinksFunction = () => [
   {
@@ -258,7 +257,7 @@ const MarketAll = () => {
 
   return (
     <DashboardPage>
-      <Loader open={navigation.state === 'loading'} />
+      <PageLoader open={navigation.state === 'loading'} />
       <MarketFilter
         isOpen={openFilter}
         lang={lang}

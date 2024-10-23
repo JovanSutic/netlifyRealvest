@@ -13,8 +13,8 @@ import { LangType } from "../types/dashboard.types";
 import { FinalError } from "../types/component.types";
 import { Blog } from "../types/blog.types";
 import BlogCard from "../components/card/BlogCard";
-import Loader from "../components/loader";
 import Footer from "../components/layout/Footer";
+import PageLoader from "../components/loader/PageLoader";
 
 export const meta: MetaFunction = ({ location }) => {
   const lang = getParamValue(location.search, "lang", "sr");
@@ -94,7 +94,7 @@ const BlogAll = () => {
 
   return (
     <>
-      <Loader open={navigation.state === "loading"} />
+      <PageLoader open={navigation.state === "loading"} />
       <div className="w-full min-h-[500px] lg:w-[960px] mx-auto py-4 px-2">
         <div className="w-full relative mb-4">
           <div className="w-[140px] mx-auto">
