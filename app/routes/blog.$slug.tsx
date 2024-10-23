@@ -16,7 +16,7 @@ import { Blog } from "../types/blog.types";
 import BlogSectionItem from "../widgets/BlogSectionItem";
 import { formatDate } from "../utils/dateTime";
 import Footer from "../components/layout/Footer";
-import Loader from "../components/loader";
+import PageLoader from "../components/loader/PageLoader";
 
 export const meta: MetaFunction = ({ data }) => {
   const { data: loadingData } = data as { data: Blog };
@@ -103,7 +103,7 @@ const BlogSingle = () => {
 
   return (
     <>
-      <Loader open={navigation.state === "loading"} />
+      <PageLoader open={navigation.state === "loading"} />
       <div className="w-full lg:w-[960px] mx-auto py-4 px-2 mb-6">
         <div className="w-full relative mb-4">
           <div className="w-[140px] mx-auto">

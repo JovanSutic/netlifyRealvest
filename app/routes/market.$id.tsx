@@ -39,7 +39,7 @@ import { ClientOnly } from "../components/helpers/ClientOnly";
 import IndexedMap from "../components/map/IndexedMap.client";
 import LocationCard from "../components/card/LocationCard";
 import useRoleLimits from "../utils/useRoleLimits";
-import Loader from "../components/loader";
+import PageLoader from "../components/loader/PageLoader";
 
 export const links: LinksFunction = () => [
   {
@@ -268,7 +268,7 @@ const MarketSingle = () => {
 
   return (
     <DashboardPage>
-      <Loader open={navigation.state === 'loading'} />
+      <PageLoader open={navigation.state === 'loading'} />
       <div className="w-full pt-2 pb-6">
         <div className="w-full mb-3 md:mb-2 flex flex-row-reverse">
           <button

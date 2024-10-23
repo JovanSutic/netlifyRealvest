@@ -26,8 +26,8 @@ import {
 import { calculateFuturePrice } from "../utils/dashboard";
 import { Blog } from "../types/blog.types";
 import BlogCard from "../components/card/BlogCard";
-import Loader from "../components/loader";
 import Footer from "../components/layout/Footer";
+import PageLoader from "../components/loader/PageLoader";
 
 export const meta: MetaFunction = ({ location }) => {
   const lang = getParamValue(location.search, "lang", "sr");
@@ -208,7 +208,7 @@ export default function Index() {
 
   return (
     <>
-      <Loader open={navigation.state === "loading"} />
+      <PageLoader open={navigation.state === "loading"} />
       <TPage color="bg-white" mobile={mobile}>
         <TLine columns={1}>
           <TColumn span={1}>
