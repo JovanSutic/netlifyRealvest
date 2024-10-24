@@ -40,12 +40,12 @@ const MarketCard = ({
       to={link}
       className="bg-white rounded-xl cursor-pointer hover:-translate-y-1 transition-all shadow-md relative"
     >
-      <div className="px-3 py-1 absolute right-2 top-2 text-[15px] shadow-md font-bold bg-blue-700 text-white bg-opacity-70 rounded-xl">
-        {price}
-      </div>
-
       <div className="w-full h-[220px] lg:h-[180px] overflow-hidden relative rounded-t-xl mb-2">
         <ImageLoader src={photo} type="gallery" />
+      </div>
+
+      <div className="px-3 py-1 absolute right-2 top-2 text-[15px] shadow-md font-bold bg-blue-700 text-white bg-opacity-70 rounded-xl">
+        {price}
       </div>
 
       <div className="pb-7 mb-3">
