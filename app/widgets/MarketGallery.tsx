@@ -2,6 +2,7 @@ import { useState } from "react";
 import ChevronLeft from "../components/chevron/ChevronLeft";
 import ChevronRight from "../components/chevron/ChevronRight";
 import { PhotoItem } from "../types/market.types";
+import ImageLoader from "../components/image";
 
 const setLimit = (device: string): number => {
   if (device === "mobile") return 1;
@@ -9,6 +10,8 @@ const setLimit = (device: string): number => {
 
   return 5;
 };
+
+
 
 const Gallery = ({
   photos,
@@ -95,6 +98,15 @@ const Gallery = ({
   return (
     <div className="w-full relative">
       <div className="w-full relative min-h-[260px] md:min-h-[100%]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
+          {galleryPhotos.map((photo) => (
+            <button key={photo.id} onClick={() => handlePhotoClick(photo)}>
+              <div className="object-cover cursor-pointer rounded-xl">
+                <ImageLoader src={photo.link} type="gallery" />
+              </div>
+            </button>
+          ))}
+        </div>
         <ChevronLeft
           onClick={handlePrevious}
           style={`absolute top-[calc(50%-17px)] left-[4px] ${
@@ -107,18 +119,6 @@ const Gallery = ({
           }`}
           onClick={handleNext}
         />
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
-          {galleryPhotos.map((photo) => (
-            <button key={photo.id} onClick={() => handlePhotoClick(photo)}>
-              <img
-                alt="realvest_photo"
-                src={photo.link}
-                loading="lazy"
-                className="object-cover cursor-pointer rounded-xl"
-              />
-            </button>
-          ))}
-        </div>
       </div>
       {modalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center z-[9999] justify-center px-2 lg:px-0">

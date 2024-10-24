@@ -22,8 +22,6 @@ export async function getRecaptchaScore(token: string, key: string): Promise<boo
       console.log("recaptcha error:", e);
     }
   
-    console.log(res.score);
-  
     // Checking the result of the reCAPTCHA verification
     if (res && res.success && res.score > 0.5) {
       // If verification is successful, continue with form submission
