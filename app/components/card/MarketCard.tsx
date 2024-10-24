@@ -3,6 +3,7 @@ import { Translator } from "../../data/language/translator";
 import { LangType } from "../../types/dashboard.types";
 import { getNumberWithDecimals } from "../../utils/market";
 import { getNumbersFromString } from "../../utils/text";
+import ImageLoader from "../image";
 
 const MarketCard = ({
   photo,
@@ -43,13 +44,8 @@ const MarketCard = ({
         {price}
       </div>
 
-      <div className="w-full h-[220px] lg:h-[180px] overflow-hidden rounded-t-xl mb-2">
-        <img
-          src={photo || "empty.jpg"}
-          alt="Product 1"
-          className="h-full w-full object-center"
-          loading="lazy"
-        />
+      <div className="w-full h-[220px] lg:h-[180px] overflow-hidden relative rounded-t-xl mb-2">
+        <ImageLoader src={photo} type="gallery" />
       </div>
 
       <div className="pb-7 mb-3">
