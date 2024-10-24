@@ -17,7 +17,7 @@ import {
   // useSubmit,
 } from "@remix-run/react";
 import { Translator } from "../data/language/translator";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { registrationSchema } from "../data/schema/validators";
 import { createSupabaseServerClient } from "../supabase.server";
 import Alert from "../components/alert";
@@ -25,6 +25,9 @@ import { AuthError } from "@supabase/supabase-js";
 import { getParamValue } from "../utils/params";
 import { FinalError } from "../types/component.types";
 import { assignRole } from "../utils/auth";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { getRecaptchaScore } from "../utils/getRecaptchaScore";
+import { ZodError } from "zod";
 
 export const meta: MetaFunction = ({ location }) => {
   const lang = getParamValue(location.search, "lang", "sr");
@@ -68,8 +71,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const email = String(formData.get("email"));
   const name = formData.get("name");
   const type = formData.get("type");
+  const token = formData.get("_captcha") as string;
   const password = String(formData.get("password"));
   const { supabaseClient, headers } = createSupabaseServerClient(request);
+  const key = process.env.RECAPTHCA_SECRET_KEY as string;
 
   if (type == "3") {
     try {
@@ -110,7 +115,18 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       password,
     });
 
-    if (success) {
+
+
+    const recaptchaResult = await getRecaptchaScore(token, key);
+
+    if (!recaptchaResult) {
+      return json(
+        { success: false, error: { name: "RecaptchaError" } as AuthError },
+        { headers, status: 400 }
+      );
+    }
+
+    if (success && recaptchaResult) {
       const { data, error } = await supabaseClient.auth.signUp({
         email,
         password,
@@ -178,9 +194,26 @@ export default function AuthRegister() {
   const lang = searchParams.get("lang") || "sr";
 
   const navigation = useNavigation();
-  
+
   const navigate = useNavigate();
   const goBack = () => navigate(-1);
+
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+
+  const { executeRecaptcha } = useGoogleReCaptcha();
+
+  /**
+   * Handles the reCAPTCHA verification process.
+   * @returns A promise that resolves with the reCAPTCHA token.
+   */
+  const handleReCaptchaVerify = useCallback(async () => {
+    if (!executeRecaptcha) {
+      return;
+    }
+
+    const token = await executeRecaptcha("yourAction");
+    setCaptchaToken(token);
+  }, [executeRecaptcha]);
 
   const [apiError, setApiError] = useState<string>();
   const [showPass, setShowPass] = useState<boolean>(false);
@@ -197,14 +230,14 @@ export default function AuthRegister() {
   const translator = new Translator("auth");
 
   useEffect(() => {
-    if (actionData && "error" in actionData && "issues" in actionData.error) {
-      const nameErrorCatch = actionData?.error?.issues.filter((issue) =>
+    if (actionData && "error" in actionData && "issues" in (actionData.error || {})) {
+      const nameErrorCatch = ((actionData?.error as ZodError).issues || []).filter((issue) =>
         issue.path?.includes("name")
       );
-      const emailErrorCatch = actionData?.error.issues.filter((issue) =>
+      const emailErrorCatch = ((actionData?.error as ZodError).issues || []).filter((issue) =>
         issue.path?.includes("email")
       );
-      const passwordErrorCatch = actionData?.error.issues.filter((issue) =>
+      const passwordErrorCatch = ((actionData?.error as ZodError).issues || []).filter((issue) =>
         issue.path?.includes("password")
       );
 
@@ -237,7 +270,7 @@ export default function AuthRegister() {
     if (
       actionData &&
       "error" in actionData &&
-      !("issues" in actionData.error) &&
+      !("issues" in (actionData.error || {})) &&
       (passwordError || emailError || nameError)
     ) {
       if (passwordError) {
@@ -271,6 +304,17 @@ export default function AuthRegister() {
       setApiError(translator.getTranslation(lang!, "registrationApiError"));
     }
 
+    if (
+      actionData &&
+      "error" in actionData &&
+      !actionData.success &&
+      actionData.error?.name === "RecaptchaError"
+    ) {
+      setApiError(
+        translator.getTranslation(lang!, "registrationCaptchaError")
+      );
+    }
+
     if (actionData && "success" in actionData && actionData.success) {
       setPassword("");
       setName("");
@@ -278,6 +322,11 @@ export default function AuthRegister() {
       setConditions(false);
     }
   }, [actionData, lang]);
+
+  useEffect(() => {
+    handleReCaptchaVerify();
+  }, [handleReCaptchaVerify]);
+
   return (
     <div className="w-full flex justify-center bg-gray-100 font-[sans-serif] text-[#333] h-full md:min-h-screen p-4 sm:h-auto h-screen">
       <Alert
@@ -368,6 +417,13 @@ export default function AuthRegister() {
           <div>
             <Form method="post">
               <div className="pt-5 h-[82px]">
+                {captchaToken ? (
+                  <input
+                    type="hidden"
+                    name="_captcha"
+                    value={captchaToken}
+                  ></input>
+                ) : null}
                 <div className="relative flex items-center">
                   <input
                     name="name"
@@ -539,13 +595,14 @@ export default function AuthRegister() {
                     !conditions ||
                     !email ||
                     !name ||
-                    !password
-                    || actionData?.success
+                    !password ||
+                    actionData?.success
                   }
                   className="w-full py-2.5 px-4 text-sm font-semibold rounded-xl text-white bg-blue-500 hover:bg-blue-600 disabled:bg-slate-300 disabled:cursor-no-drop focus:outline-none"
                 >
                   {translator.getTranslation(lang!, "registerTitle")}
-                  {(navigation.state === "submitting" || actionData?.success) && (
+                  {(navigation.state === "submitting" ||
+                    actionData?.success) && (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="18px"
