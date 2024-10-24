@@ -15,22 +15,24 @@ import stylesheet from "../node_modules/tailwindcss/tailwind.css?url";
 import { default as ErrorPage } from "./components/error";
 import * as gtag from "./utils/gtag";
 import { useEffect } from "react";
+import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: appStyles},
-  { rel: "stylesheet", href: stylesheet},
+  { rel: "stylesheet", href: appStyles },
+  { rel: "stylesheet", href: stylesheet },
 ];
 
 export const loader = async () => {
   return json({
     gaTrackingId: process.env.GOOGLE_TAG_ID,
     baseUrl: process.env.BASE_URL,
+    recaptcha: process.env.RECAPTHCA_KEY,
   } as const);
 };
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
-  const { gaTrackingId, baseUrl } = useRouteLoaderData<typeof loader>("root")!;
+  const { gaTrackingId, baseUrl, recaptcha } = useRouteLoaderData<typeof loader>("root")!;
   const isProd = baseUrl === "https://yourealvest.com";
 
   useEffect(() => {
@@ -48,17 +50,26 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {process.env.NODE_ENV !== "development" && gaTrackingId && isProd ? (
-          <>
-            <script
-              async
-              src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
-            />
-            <script
-              async
-              id="gtag-init"
-              dangerouslySetInnerHTML={{
-                __html: `
+        <GoogleReCaptchaProvider
+          reCaptchaKey={recaptcha!}
+          scriptProps={{
+            async: false,
+            defer: true,
+            appendTo: "head",
+            nonce: undefined,
+          }}
+        >
+          {process.env.NODE_ENV !== "development" && gaTrackingId && isProd ? (
+            <>
+              <script
+                async
+                src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
+              />
+              <script
+                async
+                id="gtag-init"
+                dangerouslySetInnerHTML={{
+                  __html: `
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
@@ -67,13 +78,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   page_path: window.location.pathname,
                 });
               `,
-              }}
-            />
-          </>
-        ) : null}
-        {children}
-        <ScrollRestoration />
-        <Scripts />
+                }}
+              />
+            </>
+          ) : null}
+          {children}
+          <ScrollRestoration />
+          <Scripts />
+        </GoogleReCaptchaProvider>
       </body>
     </html>
   );
@@ -88,9 +100,8 @@ export function ErrorBoundary() {
 
   if (isRouteErrorResponse(error)) {
     if (error.status === 400) {
-      return <ErrorPage link={"/?lang=sr"} lang={error.data.lang || 'sr'} />;
+      return <ErrorPage link={"/?lang=sr"} lang={error.data.lang || "sr"} />;
     }
-    
   }
 
   return <ErrorPage link={"/?lang=sr"} />;
