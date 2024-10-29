@@ -70,6 +70,7 @@ const getCoordinatesOfType = (mapLocation: MapItem[], type: "LineString" | "Poly
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const part = new URL(request.url).searchParams.get("part");
+  const city = new URL(request.url).searchParams.get("city") || "1";
   const propType = new URL(request.url).searchParams.get("type");
   const location = new URL(request.url).searchParams.get("location");
   const search = new URL(request.url).searchParams.get("search");
@@ -86,7 +87,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const { supabaseClient } = createSupabaseServerClient(request);
 
     const { data: partsData, error: partsError } = await supabaseClient.rpc(
-      "get_distinct_city_part"
+      "get_distinct_city_part", {city_id: Number(city)}
     );
 
     if (partsError) {

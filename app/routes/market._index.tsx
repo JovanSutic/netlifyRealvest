@@ -56,6 +56,7 @@ export const meta: MetaFunction = ({ location }) => {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userAgent = request.headers.get("user-agent");
+  const city = new URL(request.url).searchParams.get("city") || "1";
   const lang = new URL(request.url).searchParams.get("lang") || "sr";
   const page = new URL(request.url).searchParams.get("page") || "1";
   const sizeFrom = new URL(request.url).searchParams.get("size_from") || "0";
@@ -86,9 +87,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     const { supabaseClient } = createSupabaseServerClient(request);
 
-
     const { data: partsData, error: partsError } = await supabaseClient.rpc(
-      "get_distinct_city_part"
+      "get_distinct_city_part", {city_id: Number(city)}
     );
 
     if (partsError) {
@@ -96,7 +96,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       finalError = partsError as FinalError;
     }
 
-    partsData.unshift("all");
+    partsData?.unshift("all");
 
     const { data: countData, error: countError } = await supabaseClient.rpc(
       "get_apartments_count",
@@ -111,6 +111,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         trend: Number(appreciation) / 100,
         part: cityPart,
         low_price: low_price,
+        city_id: city,
       }
     );
 
@@ -136,6 +137,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         trend: Number(appreciation) / 100,
         part: cityPart,
         low_price: low_price,
+        city_id: city,
         p_sort_column: sortingParams.column,
         p_sort_order: sortingParams.order,
       }
