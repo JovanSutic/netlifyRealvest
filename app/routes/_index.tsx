@@ -44,6 +44,7 @@ export const meta: MetaFunction = ({ location }) => {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userAgent = request.headers.get("user-agent");
   const lang = new URL(request.url).searchParams.get("lang") || "sr";
+  const city = 1;
 
   let isError = false;
   let finalError: FinalError | null = null;
@@ -52,7 +53,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const { supabaseClient } = createSupabaseServerClient(request);
 
     const { data: potentialData, error: potentialError } =
-      await supabaseClient.rpc("get_homepage_potential");
+      await supabaseClient.rpc("get_homepage_potential", { city_id: city });
 
     if (potentialError) {
       isError = true;
@@ -60,7 +61,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     }
 
     const { data: rentalData, error: rentalError } = await supabaseClient.rpc(
-      "get_homepage_rental"
+      "get_homepage_rental",
+      { city_id: city }
     );
 
     if (rentalError) {
@@ -335,7 +337,7 @@ export default function Index() {
             </div>
             <div className="w-full text-center mt-8">
               <Link
-                to={`/market/?lang=${lang}&page=1`}
+                to={`/market/?lang=${lang}&page=1&city=1`}
                 className="text-xl text-blue-500 hover:underline"
               >
                 {translator.getTranslation(lang, "marketAll")}
@@ -407,7 +409,7 @@ export default function Index() {
             </div>
             <div className="w-full text-center mt-8">
               <Link
-                to={`/market/?lang=${lang}&page=1`}
+                to={`/market/?lang=${lang}&page=1&city=1`}
                 className="text-xl text-blue-500 hover:underline"
               >
                 {translator.getTranslation(lang, "marketAll")}
