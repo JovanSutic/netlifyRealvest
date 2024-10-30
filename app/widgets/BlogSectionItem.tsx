@@ -5,19 +5,26 @@ const renderText = (text: string) => {
   const linkRegex = /\[(.+?)\]\((https?:\/\/[^\s]+)\)/g;
   // Regex for bold text: **Bold Text**
   const boldRegex = /\*\*(.+?)\*\*/g;
+  // Regex for unordered lists: *- List Item Text
+  const listRegex = /^\*- (.*)/gm;
 
-  // First, replace links with a placeholder
-  const withLinks = text.replace(linkRegex, (match, linkText, url) => {
+  // Replace in defined order to avoid conflicts (lists before links/bold)
+  const withLists = text.replace(listRegex, (match, listItemText) => {
+    return `<li>${listItemText}</li>`;
+  });
+
+  const withLinks = withLists.replace(linkRegex, (match, linkText, url) => {
     return `<a href="${url}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
   });
 
-  // Then, replace bold text with a placeholder
   const withBold = withLinks.replace(boldRegex, (match, boldText) => {
     return `<strong>${boldText}</strong>`;
   });
-
-  // Finally, convert the string with placeholders to JSX
-  const parts = withBold.split(/(<a.*?<\/a>|<strong>.*?<\/strong>)/g);
+  
+  const parts = withBold.split(
+    // eslint-disable-next-line no-useless-escape
+    /(<a.*?<\/a>|<strong>.*?<\/strong>|<\li>.*?<\/li>)/g
+  );
 
   return parts.map((part, index) => {
     if (part.startsWith("<a")) {
@@ -34,6 +41,12 @@ const renderText = (text: string) => {
           {part.replace(/<\/?strong>/g, "")}
         </strong>
       );
+    } else if (part.startsWith("<li")) {
+      return (
+        <li key={index} className="text-md font-light md:text-md text-gray-700">
+          {part.replace(/<\/?li>/g, "")}
+        </li>
+      );
     } else {
       return part; // Regular text
     }
@@ -43,9 +56,11 @@ const renderText = (text: string) => {
 const BlogSectionItem = ({
   content,
   type,
+  extra,
 }: {
   content: string;
   type: BlogSectionType;
+  extra: string;
 }) => {
   return (
     <div className="w-full">
@@ -55,7 +70,9 @@ const BlogSectionItem = ({
         </h3>
       )}
       {type === "sub" && (
-        <h4 className="font-bold text-lg md:text-xl mb-4 mt-6 md:mt-8">{content}</h4>
+        <h4 className="font-bold text-lg md:text-xl mb-4 mt-6 md:mt-8">
+          {content}
+        </h4>
       )}
       {type === "article" && (
         <p className="text-md font-light md:text-md text-gray-700 mb-4">
@@ -64,7 +81,33 @@ const BlogSectionItem = ({
       )}
       {type === "media" && (
         <div className="w-full md:w-[500px] lg:w-[700px] text-center mx-auto mb-4 md:mb-6">
-          <img src={content} alt="some text" loading="lazy" className="max-w-full center" />
+          <img
+            src={content}
+            alt="some text"
+            loading="lazy"
+            className="max-w-full center"
+          />
+        </div>
+      )}
+      {type === "list" && (
+        <ul className="w-full ml-8 mb-4 md:mb-6 list-disc">
+          {renderText(content)}
+        </ul>
+      )}
+      {type === "link" && (
+        <div className="w-full mb-4 md:mb-6">
+          <a
+            href={content}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Link"
+          >
+            <div className="p-3 border-[1px] border-blue-500 rounded-md">
+              <p className="w-full text-lg font-bold text-left text-blue-500">
+                {extra}
+              </p>
+            </div>
+          </a>
         </div>
       )}
     </div>
