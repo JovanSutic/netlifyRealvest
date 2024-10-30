@@ -18,9 +18,7 @@ import Alert from "../components/alert";
 import BlogSectionItem from "../widgets/BlogSectionItem";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  if (
-    process.env.BASE_URL !== "http://localhost:5173"
-  ) {
+  if (process.env.BASE_URL !== "http://localhost:5173") {
     throw Error("Forbidden");
     return null;
   }
@@ -87,6 +85,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (source === "section") {
     const types: BlogSectionType[] = [];
     const contents: string[] = [];
+    const extras: string[] = [];
 
     for (const [key, value] of formData.entries()) {
       if (key.substring(0, 4) === "type") {
@@ -94,6 +93,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       }
       if (key.substring(0, 4) === "cont") {
         contents.push(value as string);
+      }
+      if (key.substring(0, 4) === "extr") {
+        extras.push((value || '') as string);
       }
     }
 
@@ -145,6 +147,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             type: item,
             sequence: index + 1,
             content: contents[index],
+            extra: extras[index],
             blog_id: Number(blog_id),
           })
         );
@@ -303,6 +306,7 @@ export default function NewBlog() {
                     <BlogSectionItem
                       key={item.id}
                       content={item.content}
+                      extra={item.extra || ''}
                       type={item.type}
                     />
                   ))}
@@ -363,9 +367,33 @@ export default function NewBlog() {
                                 { text: "Subtitle", value: "sub" },
                                 { text: "Article", value: "article" },
                                 { text: "MediaLink", value: "media" },
+                                { text: "List", value: "list" },
+                                { text: "AnchorLink", value: "link" },
                               ]}
                             />
                           </div>
+                          {item.type === "link" && (
+                            <input
+                              type="text"
+                              name={`extra${index}`}
+                              value={item.extra}
+                              placeholder="Only for link"
+                              onChange={(event) => {
+                                const newSections: BlogSection[] = [];
+                                sections.forEach((item, subIndex) => {
+                                  if (index === subIndex) {
+                                    item.extra = event.target.value;
+                                    newSections.push(item);
+                                  } else {
+                                    newSections.push(item);
+                                  }
+                                });
+                                setSections(newSections);
+                              }}
+                              className="block p-2.5 w-full text-sm text-gray-900 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-2"
+                            />
+                          )}
+
                           <textarea
                             name={`content${index}`}
                             rows={4}

@@ -1,14 +1,16 @@
-const blogSectionTypes = ["title", "sub", "article", "media"] as const;
+const blogSectionTypes = ["title", "sub", "article", "media", "link", "list"] as const;
 export type BlogSectionType = (typeof blogSectionTypes)[number];
 
 export interface BlogSection {
   id?: string;
+  extra?: string;
   type: BlogSectionType;
   content: string;
 }
 
 export interface BlogContent {
   id?: number;
+  extra: string;
   type: BlogSectionType;
   sequence: number;
   content: string;
