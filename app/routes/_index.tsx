@@ -1,7 +1,8 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { TColumn, TLine, TPage } from "../components/layout";
-import { json } from "@remix-run/node";
+import { defer, json } from "@remix-run/node";
 import {
+  Await,
   Link,
   useLoaderData,
   useNavigation,
@@ -11,7 +12,7 @@ import { getParamValue, isMobile } from "../utils/params";
 import { Translator } from "../data/language/translator";
 import Accordion from "../components/accordion";
 import { AccordionData, FinalError } from "../types/component.types";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { createSupabaseServerClient } from "../supabase.server";
 import { makeNumberCurrency } from "../utils/numbers";
 import MarketCard from "../components/card/MarketCard";
@@ -125,12 +126,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       finalError = blogError as FinalError;
     }
 
-    return {
+    return defer({
       mobile: isMobile(userAgent!),
       potential: resultsPotential,
       rental: resultsRental,
       blogs: blogData,
-    };
+    });
   } catch (error) {
     console.log(error);
   }
@@ -292,58 +293,69 @@ export default function Index() {
           <h2 className="text-[24px] md:text-[32px] font-bold text-center mb-2">
             {translator.getTranslation(lang, "potentialTitle")}
           </h2>
-          <div className="py-6 px-2 md:px-4 lg:px-12 rounded-lg">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-              {potential.slice(0, mobile ? 2 : 5).map((item) => {
-                return (
-                  <MarketCard
-                    key={item?.id}
-                    link={`/market/${item?.id}?lang=${lang}&home=1`}
-                    lang={lang as LangType}
-                    price={makeNumberCurrency(item!.price)}
-                    appreciation={item?.profitability_competition_trend || 0}
-                    photo={item?.photo?.link || ""}
-                    title={`${item?.city_part}, ${item?.size}m2`}
-                    rent={(item?.profitability_rental_count || 0) > 2}
-                    irr={`${getNumberWithDecimals(
-                      calculateIRR(
-                        item.price +
-                          getPropertyPurchaseExpenses(item.price).total,
-                        calculateFuturePrice(
-                          item.average_price,
-                          item.profitability_competition_trend,
-                          5
-                        ) * item.size,
-                        5
-                      ),
-                      2
-                    )}%`}
-                    duration={`${translate.getTranslation(lang, "onMarket")} ${
-                      differenceInDays(
-                        item?.date_signed || new Date(),
-                        new Date()
-                      ) < 1
-                        ? Math.abs(
+          <Suspense fallback={null}>
+            <Await resolve={potential}>
+              {(potential) => (
+                <div className="py-6 px-2 md:px-4 lg:px-12 rounded-lg">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    {potential.slice(0, mobile ? 2 : 5).map((item) => {
+                      return (
+                        <MarketCard
+                          key={item?.id}
+                          link={`/market/${item?.id}?lang=${lang}&home=1`}
+                          lang={lang as LangType}
+                          price={makeNumberCurrency(item!.price)}
+                          appreciation={
+                            item?.profitability_competition_trend || 0
+                          }
+                          photo={item?.photo?.link || ""}
+                          title={`${item?.city_part}, ${item?.size}m2`}
+                          rent={(item?.profitability_rental_count || 0) > 2}
+                          irr={`${getNumberWithDecimals(
+                            calculateIRR(
+                              item.price +
+                                getPropertyPurchaseExpenses(item.price).total,
+                              calculateFuturePrice(
+                                item.average_price,
+                                item.profitability_competition_trend,
+                                5
+                              ) * item.size,
+                              5
+                            ),
+                            2
+                          )}%`}
+                          duration={`${translate.getTranslation(
+                            lang,
+                            "onMarket"
+                          )} ${
                             differenceInDays(
                               item?.date_signed || new Date(),
                               new Date()
-                            )
-                          )
-                        : 0
-                    } ${translate.getTranslation(lang, "days")}`}
-                  />
-                );
-              })}
-            </div>
-            <div className="w-full text-center mt-8">
-              <Link
-                to={`/market/?lang=${lang}&page=1&city=1`}
-                className="text-xl text-blue-500 hover:underline"
-              >
-                {translator.getTranslation(lang, "marketAll")}
-              </Link>
-            </div>
-          </div>
+                            ) < 1
+                              ? Math.abs(
+                                  differenceInDays(
+                                    item?.date_signed || new Date(),
+                                    new Date()
+                                  )
+                                )
+                              : 0
+                          } ${translate.getTranslation(lang, "days")}`}
+                        />
+                      );
+                    })}
+                  </div>
+                  <div className="w-full text-center mt-8">
+                    <Link
+                      to={`/market/?lang=${lang}&page=1&city=1`}
+                      className="text-xl text-blue-500 hover:underline"
+                    >
+                      {translator.getTranslation(lang, "marketAll")}
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </Await>
+          </Suspense>
         </div>
       </TPage>
 
@@ -374,48 +386,59 @@ export default function Index() {
           <h2 className="text-[24px] md:text-[32px] font-bold text-center mb-2">
             {translator.getTranslation(lang, "rentalTitle")}
           </h2>
-          <div className="py-6 px-2 md:px-4 lg:px-12 rounded-lg">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-              {rental.slice(0, mobile ? 2 : 5).map((item) => {
-                return (
-                  <MarketCard
-                    key={item?.id}
-                    link={`/market/${item?.id}?lang=${lang}&home=1`}
-                    lang={lang as LangType}
-                    price={makeNumberCurrency(item!.price)}
-                    appreciation={item?.profitability_competition_trend || 0}
-                    photo={item?.photo?.link || ""}
-                    title={`${item?.city_part}, ${item?.size}m2`}
-                    rent={(item?.profitability_rental_count || 0) > 2}
-                    rentPrice={makeNumberCurrency(
-                      item.profitability_average_rental * item.size
-                    )}
-                    duration={`${translate.getTranslation(lang, "onMarket")} ${
-                      differenceInDays(
-                        item?.date_signed || new Date(),
-                        new Date()
-                      ) < 1
-                        ? Math.abs(
+          <Suspense fallback={null}>
+            <Await resolve={rental}>
+              {(rental) => (
+                <div className="py-6 px-2 md:px-4 lg:px-12 rounded-lg">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    {rental.slice(0, mobile ? 2 : 5).map((item) => {
+                      return (
+                        <MarketCard
+                          key={item?.id}
+                          link={`/market/${item?.id}?lang=${lang}&home=1`}
+                          lang={lang as LangType}
+                          price={makeNumberCurrency(item!.price)}
+                          appreciation={
+                            item?.profitability_competition_trend || 0
+                          }
+                          photo={item?.photo?.link || ""}
+                          title={`${item?.city_part}, ${item?.size}m2`}
+                          rent={(item?.profitability_rental_count || 0) > 2}
+                          rentPrice={makeNumberCurrency(
+                            item.profitability_average_rental * item.size
+                          )}
+                          duration={`${translate.getTranslation(
+                            lang,
+                            "onMarket"
+                          )} ${
                             differenceInDays(
                               item?.date_signed || new Date(),
                               new Date()
-                            )
-                          )
-                        : 0
-                    } ${translate.getTranslation(lang, "days")}`}
-                  />
-                );
-              })}
-            </div>
-            <div className="w-full text-center mt-8">
-              <Link
-                to={`/market/?lang=${lang}&page=1&city=1`}
-                className="text-xl text-blue-500 hover:underline"
-              >
-                {translator.getTranslation(lang, "marketAll")}
-              </Link>
-            </div>
-          </div>
+                            ) < 1
+                              ? Math.abs(
+                                  differenceInDays(
+                                    item?.date_signed || new Date(),
+                                    new Date()
+                                  )
+                                )
+                              : 0
+                          } ${translate.getTranslation(lang, "days")}`}
+                        />
+                      );
+                    })}
+                  </div>
+                  <div className="w-full text-center mt-8">
+                    <Link
+                      to={`/market/?lang=${lang}&page=1&city=1`}
+                      className="text-xl text-blue-500 hover:underline"
+                    >
+                      {translator.getTranslation(lang, "marketAll")}
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </Await>
+          </Suspense>
         </div>
       </TPage>
       {blogs.length > 2 && (

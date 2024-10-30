@@ -149,6 +149,7 @@ const BlogSingle = () => {
               key={item.id}
               content={item.content}
               type={item.type}
+              extra={item.extra || ''}
             />
           ))}
         </div>
