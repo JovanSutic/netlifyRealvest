@@ -117,6 +117,18 @@ export const loader = () => {
 </url>
 
 <url>
+<loc>https://yourealvest.com/blog/stanovi-pregrevica-kupovina/</loc>
+<lastmod>2024-10-17T13:16:01+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+
+<url>
+<loc>https://yourealvest.com/blog/prodaja-stanova-donji-dorol/</loc>
+<lastmod>2024-10-17T13:16:01+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+
+<url>
 <loc>https://yourealvest.com/auth/forgot_password?lang=en</loc>
 <lastmod>2024-10-17T13:16:01+00:00</lastmod>
 <priority>0.51</priority>

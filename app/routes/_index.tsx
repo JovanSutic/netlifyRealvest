@@ -266,7 +266,7 @@ export default function Index() {
                     loading="lazy"
                   />
                 </picture>
-                <div className="relative md:absolute top-0 md:top-10 w-full flex flex-col items-center mb-4 md:mb-0">
+                <div className="relative md:absolute top-0 md:top-5 w-full flex flex-col items-center mb-4 md:mb-0">
                   <div className="w-full md:w-[80%] lg:w-[40%] text-center">
                     <h1 className="text-gray-600 md:text-white font-bold text-2xl lg:text-4xl md:drop-shadow-xl text-center px-2 md: leading-[24px] lg:leading-[48px] mb-4 md:mb-2 lg:mb-8">
                       {translator.getTranslation(lang, "heroTitle")}
@@ -382,7 +382,7 @@ export default function Index() {
       </TPage>
 
       <TPage color="bg-white" mobile={mobile}>
-        <div className="mt-6 lg:mt-10">
+        <div className="mt-6 lg:mt-10 pb-4">
           <h2 className="text-[24px] md:text-[32px] font-bold text-center mb-2">
             {translator.getTranslation(lang, "rentalTitle")}
           </h2>
@@ -440,10 +440,12 @@ export default function Index() {
             </Await>
           </Suspense>
         </div>
+        <hr />
       </TPage>
+      
       {blogs.length > 2 && (
         <TPage color="bg-white" mobile={mobile}>
-          <div className="py-2 mb-3 md:mb-6">
+          <div className="py-6 px-2 md:px-4 lg:px-12 rounded-lg">
             <div>
               <h3 className="text-[24px] md:text-[32px] font-bold text-center mb-10">
                 {translator.getTranslation(lang, "homeBlogTitle")}
