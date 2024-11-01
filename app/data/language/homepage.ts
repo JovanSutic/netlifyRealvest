@@ -74,7 +74,7 @@ export const homepageMap: Record<string, Record<string, string>> = {
     blogMetaDescription:
       "Articles for people that are buying or investing in Belgrade real estate.",
     homeBlogTitle: "Real estate market: articles and insights",
-    homeBlogAll: "all articles",
+    homeBlogAll: "All articles",
     marketAll: "See all listings",
   },
   sr: {
@@ -151,7 +151,7 @@ export const homepageMap: Record<string, Record<string, string>> = {
     blogMetaDescription:
       "Članci za one koji žele da investiraju u stanove u Beogradu ili koji žele da kupe stan u Beogradu.",
     homeBlogTitle: "Tržište nekretnina: članci i uvidi",
-    homeBlogAll: "svi članici",
+    homeBlogAll: "Svi članici",
     marketAll: "Pogledajte sve oglase",
   },
 };

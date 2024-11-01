@@ -118,11 +118,12 @@ const BlogAll = () => {
         <h2 className="w-full font-bold text-center text-[22px] md:text-[28px] lg:text-[32px] mb-3 md:mb-5 lg:mb-8">
           {translate.getTranslation(lang, "blogTitle")}
         </h2>
-        {data?.map((item) => (
+        {data?.map((item, index) => (
           <BlogCard
             key={item.slug}
             lang={lang}
             blog={item as unknown as Blog}
+            isBorder={index !== data.length - 1}
           />
         ))}
         {!data ||
