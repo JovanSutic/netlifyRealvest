@@ -109,6 +109,16 @@ export const getPropertyPurchaseExpenses = (
   };
 };
 
+export const isNewFromDesc = (description: string): boolean => {
+  return catchIndicators(description || "", [
+    "lux",
+    "nov stan",
+    "u novoizgradjenom kompleksu",
+    "u novogradnji",
+    "u izgradnji",
+  ])
+}
+
 export const isNewBuild = (detail: Details) => {
   if (
     catchIndicators(detail.description || "", [

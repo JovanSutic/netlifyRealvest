@@ -71,7 +71,6 @@ import { format } from "date-fns";
 import AppreciateReport from "../widgets/AppreciateReport";
 import Filters from "../components/filters";
 import FiltersDisplay from "../components/filters/FiltersDisplay";
-import { jwtDecode } from "jwt-decode";
 
 interface DashboardSearchLoader {
   data: AreaReportType;
@@ -135,7 +134,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   let isError = false;
   let finalError: FinalError | null = null;
-  let userRole: RoleType = "basic";
+  const userRole: RoleType = "premium";
 
   if (lat && lng && range && searchType) {
     const { uniq, circle } = getMapCircle(
@@ -146,12 +145,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
     try {
       const { supabaseClient } = createSupabaseServerClient(request);
-      const session = await supabaseClient.auth.getSession();
-
-      const decoded = jwtDecode<{ user_role: string }>(
-        session?.data?.session?.access_token || ""
-      );
-      const isPremium = decoded?.user_role === "premium";
+      const isPremium = true;
 
       let finalRentalData = null;
 
@@ -309,24 +303,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         list: finalData,
         rentalList: finalRentalData,
         lastDate: lastData![0].date,
-        role: decoded?.user_role || "basic",
+        role: "premium",
         mobile: isMobile(userAgent!),
         appreciationData,
         rentalEstimationData,
       });
-    } catch (error) {
-      isError = true;
-      finalError = error as FinalError;
-    }
-  } else {
-    try {
-      const { supabaseClient } = createSupabaseServerClient(request);
-      const session = await supabaseClient.auth.getSession();
-
-      const decoded = jwtDecode<{ user_role: RoleType }>(
-        session?.data?.session?.access_token || ""
-      );
-      userRole = decoded.user_role;
     } catch (error) {
       isError = true;
       finalError = error as FinalError;
