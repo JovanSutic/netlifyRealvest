@@ -116,8 +116,22 @@ export const isNewFromDesc = (description: string): boolean => {
     "u novoizgradjenom kompleksu",
     "u novogradnji",
     "u izgradnji",
-  ])
-}
+  ]);
+};
+
+export const isForRenovation = (description: string): boolean => {
+  if (
+    catchIndicators(description || "", [
+      "za renoviranje",
+      "potrebno renoviranje",
+    ])
+  )
+    return true;
+
+  if (isNewFromDesc(description)) return false;
+
+  return false;
+};
 
 export const isNewBuild = (detail: Details) => {
   if (
@@ -392,7 +406,8 @@ export const isRoleForUpdate = (role: UserRole, id: string): boolean => {
 
 export const getRoleForUpsert = (role: UserRole, id: string): UserRole => {
   const today = new Date();
-  const count = role.count.length > 9 ? [Number(id)] : [...role.count, Number(id)];
+  const count =
+    role.count.length > 9 ? [Number(id)] : [...role.count, Number(id)];
   return { ...role, date: today, count };
 };
 
@@ -526,10 +541,12 @@ export const convertSecondsToMinutes = (seconds: number): number => {
 };
 
 export const getWalkDistance = (from: number[], to: number[]) => {
-  const dist = Math.round(distance(point(from), point(to), { units: "meters" }));
+  const dist = Math.round(
+    distance(point(from), point(to), { units: "meters" })
+  );
 
   return {
     distance: roundNumberToDecimal(dist / 1000, 2),
-    duration: Math.ceil(dist / 60)
+    duration: Math.ceil(dist / 60),
   };
 };

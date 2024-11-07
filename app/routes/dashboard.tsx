@@ -33,7 +33,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       return redirect(`/`);
     }
 
-    console.log(decoded.user_role);
     if (
       user?.data?.user?.role === "authenticated" &&
       currentUrl.pathname === "/dashboard"
