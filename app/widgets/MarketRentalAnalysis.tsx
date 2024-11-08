@@ -54,7 +54,7 @@ const MarketRentalAnalysis = ({
     (data.profit.max_rental - data.profit.average_rental) /
     data.profit.average_rental;
 
-  if (role !== "premium" && role !== "limitedPremium") {
+  if (role !== "admin" && role !== "limitedPremium") {
     return (
       <div className="w-full h-full flex flex-col">
         <div
