@@ -335,3 +335,30 @@ export interface FiltersType {
   priceFrom: string;
   priceTo: string;
 }
+
+export interface OpportunityListItem {
+  id: number;
+  name: string;
+  link: string;
+  date_created: Date | string;
+  size: number;
+  price: number;
+  city_part: string;
+  average_rental: number;
+  rental_count: number;
+  competition_trend: number;
+  floor: number;
+  floor_limit: number;
+  lat: number;
+  lng: number;
+  description: string;
+  rent_ratio: number;
+  price_ratio: number;
+}
+
+export interface RentalAverage {
+  pairAverage: number;
+  allAverage: number;
+}
+
+export type RenovationType = "no" | "half" | "full";

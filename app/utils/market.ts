@@ -119,6 +119,22 @@ export const isNewFromDesc = (description: string): boolean => {
   ]);
 };
 
+export const isForHalfRenovation = (description: string): boolean => {
+  if (
+    catchIndicators(description || "", [
+      "za polu renoviranje",
+    ])
+  )
+    return true;
+
+  if (isNewFromDesc(description)) return false;
+
+  return false;
+};
+
+
+
+
 export const isForRenovation = (description: string): boolean => {
   if (
     catchIndicators(description || "", [

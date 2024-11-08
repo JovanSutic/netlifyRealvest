@@ -14,7 +14,7 @@ const Modal = ({
           <div className="flex self-center p-4">
             <div
               className={`bg-white rounded-xl w-full md:w-[420px] ${
-                width === "large" ? "xl:w-[960px]" : "xl:w-[560px]"
+                width === "large" ? "xl:w-[1060px]" : "xl:w-[560px]"
               } px-4 py-6`}
             >
               {children}
