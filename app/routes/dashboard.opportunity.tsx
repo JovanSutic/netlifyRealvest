@@ -1,6 +1,18 @@
 import { DashboardPage } from "../components/layout";
-import { LinksFunction, LoaderFunctionArgs, json } from "@remix-run/node";
-import { MetaFunction, useFetcher, useLoaderData } from "@remix-run/react";
+import {
+  ActionFunctionArgs,
+  LinksFunction,
+  LoaderFunctionArgs,
+  json,
+} from "@remix-run/node";
+import {
+  MetaFunction,
+  useFetcher,
+  useLoaderData,
+  useSubmit,
+  useActionData,
+  useNavigation,
+} from "@remix-run/react";
 import { createSupabaseServerClient } from "../supabase.server";
 import { getParamValue, isMobile } from "../utils/params";
 import { getLocationRentalPrice, sortOpportunity } from "../utils/opportunity";
@@ -10,11 +22,14 @@ import { useEffect, useState } from "react";
 import {
   ListedAd,
   OpportunityListItem,
+  OpportunityType,
   RentalAverage,
 } from "../types/dashboard.types";
 import { TableHeader, TableRow } from "../components/table/OpportunityTable";
 import CalcOpportunityModal from "../widgets/CalcOpportunityModal";
 import Select from "../components/select/Select";
+import PageLoader from "../components/loader/PageLoader";
+import Alert from "../components/alert";
 
 export const links: LinksFunction = () => [
   {
@@ -109,15 +124,51 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   });
 };
 
+export const action = async ({ request }: ActionFunctionArgs) => {
+  let isError = false;
+  let finalError: FinalError | null = null;
+
+  try {
+    const { supabaseClient } = createSupabaseServerClient(request);
+    const data = await request.json();
+    const { error: insertError } = await supabaseClient
+      .from("opportunities")
+      .insert(data);
+
+    if (insertError) {
+      isError = true;
+      finalError = insertError as FinalError;
+    } else {
+      return json(
+        {
+          message: `Insert for record ${data.apartment_id} is success.`,
+          error: false,
+        },
+        { status: 201 }
+      );
+    }
+  } catch (error) {
+    isError = true;
+    finalError = error as FinalError;
+  }
+
+  if (isError && finalError) {
+    return json({ message: finalError.message, error: true }, { status: 400 });
+  }
+
+  return null;
+};
+
 const DashboardOpportunity = () => {
   const [opportunityList, setOpportunityList] = useState<OpportunityListItem[]>(
     []
   );
   const [sort, setSort] = useState<string>("date_created|desc");
+  const [alert, setAlert] = useState<boolean>(false);
   const [calculation, setCalculation] = useState<boolean>(false);
-  const [calculatedAd, setCalculatedAd] = useState<
-    OpportunityListItem | undefined
-  >();
+  const [calculatedAd, setCalculatedAd] = useState<OpportunityListItem | null>(
+    null
+  );
   const { list } = useLoaderData<{
     list: OpportunityListItem[];
     rentalAverage: RentalAverage;
@@ -130,6 +181,15 @@ const DashboardOpportunity = () => {
     key: "get_opportunities",
   });
 
+  const submit = useSubmit();
+  const actionData = useActionData<typeof action>();
+  const navigation = useNavigation();
+
+  const handleSubmit = async (value: OpportunityType) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    submit(value as any, { method: "post", encType: "application/json" });
+  };
+
   useEffect(() => {
     const split = sort.split("|");
     const newList = sortOpportunity(
@@ -140,8 +200,39 @@ const DashboardOpportunity = () => {
     setOpportunityList(newList);
   }, [sort]);
 
+  useEffect(() => {
+    if (calculation && calculatedAd && !actionData?.error) {
+      setCalculation(false);
+      setCalculatedAd(null);
+    }
+
+    if (actionData && !alert) {
+      setAlert(true);
+    }
+  }, [actionData]);
+
+  useEffect(() => {
+    if (list.length !== opportunityList.length && opportunityList.length > 0) {
+      const split = sort.split("|");
+      const newList = sortOpportunity(
+        list,
+        split[0] as keyof OpportunityListItem,
+        split[1] === "desc"
+      );
+      setOpportunityList(newList);
+    }
+  }, [list.length]);
+
   return (
     <DashboardPage>
+      <Alert
+        type={actionData?.error ? "error" : "success"}
+        isOpen={alert}
+        title={actionData?.error ? "Error" : "Success"}
+        text={actionData?.message || ""}
+        close={() => setAlert(false)}
+      />
+      <PageLoader open={navigation.state === "loading"} />
       <div className="grid grid-cols-1 gap-4 pt-5 lg:pt-0">
         <div className="w-full mt-6">
           <h1 className="text-2xl text-center font-bold">
@@ -192,6 +283,7 @@ const DashboardOpportunity = () => {
               listItem={calculatedAd}
               onClose={() => setCalculation(false)}
               rentalAverage={fetcher.data?.rentalAverage || null}
+              onSubmit={handleSubmit}
               onAdditional={() =>
                 fetcher.load(
                   `/dashboard/opportunity/?calculationId=${calculatedAd?.id}`
@@ -210,7 +302,7 @@ const DashboardOpportunity = () => {
                       setCalculatedAd(
                         opportunityList.find(
                           (listing) => listing.id === item.id
-                        )
+                        ) || null
                       );
                     }}
                   />

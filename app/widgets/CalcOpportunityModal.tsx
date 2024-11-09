@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { TableHeader, TableRow } from "../components/table/OpportunityTable";
 import { normalizeUrlString } from "../utils/opportunity";
 import Modal from "../components/modal";
-import { OpportunityListItem, RentalAverage } from "../types/dashboard.types";
+import {
+  OpportunityListItem,
+  OpportunityType,
+  RentalAverage,
+} from "../types/dashboard.types";
 import { getNumberWithDecimals } from "../utils/market";
 import Map from "../components/map/index.client";
 import { ClientOnly } from "../components/helpers/ClientOnly";
@@ -14,21 +18,22 @@ const CalcOpportunityModal = ({
   rentalAverage,
   onClose,
   onAdditional,
+  onSubmit,
 }: {
   isOpen: boolean;
-  listItem: OpportunityListItem | undefined;
+  listItem: OpportunityListItem | null;
   rentalAverage: RentalAverage | null;
   onClose: () => void;
   onAdditional: () => void;
+  onSubmit: (opportunity: OpportunityType) => void;
 }) => {
   const [center, setCenter] = useState<number[]>();
   const [isRentalAverage, setIsRentalAverage] = useState<boolean>(false);
   const [newRent, setNewRent] = useState<number>();
   const [renovation, setRenovation] = useState<string>("no");
   const [discount, setDiscount] = useState<number>(0);
-  const [calculatedAd, setCalculatedAd] = useState<
-    OpportunityListItem | undefined
-  >();
+  const [calculatedAd, setCalculatedAd] =
+    useState<OpportunityListItem | null>();
 
   const getRenovation = (description: string, renovation: string): string => {
     if (renovation === "no")
@@ -126,7 +131,10 @@ const CalcOpportunityModal = ({
               />
             </div>
             <div>
-              <label htmlFor="opportunityRenovation" className="text-sm text-gray-500 ml-2">
+              <label
+                htmlFor="opportunityRenovation"
+                className="text-sm text-gray-500 ml-2"
+              >
                 Renovation
               </label>
               <Select
@@ -163,14 +171,16 @@ const CalcOpportunityModal = ({
             <div className="overflow-x-auto shadow-md sm:rounded-lg mb-8">
               <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <TableHeader short={true} />
-                {calculatedAd !== undefined && (
-                  <TableRow
-                    key={calculatedAd.id}
-                    item={calculatedAd}
-                    short={true}
-                    onCalc={() => console.log("a")}
-                  />
-                )}
+                <tbody>
+                  {calculatedAd !== null && calculatedAd !== undefined && (
+                    <TableRow
+                      key={calculatedAd.id}
+                      item={calculatedAd}
+                      short={true}
+                      onCalc={() => console.log("a")}
+                    />
+                  )}
+                </tbody>
               </table>
             </div>
           </div>
@@ -196,8 +206,8 @@ const CalcOpportunityModal = ({
 
                 <div className="text-center">
                   <p>New map data:</p>
-                  <p>{`Lat: ${center?.[0]}`}</p>
-                  <p>{`Lng: ${center?.[1]}`}</p>
+                  <p>{`Lat: ${getNumberWithDecimals(center?.[0] || 0, 6)}`}</p>
+                  <p>{`Lng: ${getNumberWithDecimals(center?.[1] || 0, 6)}`}</p>
                 </div>
 
                 <div className="text-center">
@@ -238,6 +248,23 @@ const CalcOpportunityModal = ({
             className="text-md px-4 py-2 bg-gray-500 font-semibold text-white rounded-md transition-all duration-300 transform hover:bg-gray-700 focus:outline-none "
           >
             Close
+          </button>
+          <button
+            onClick={() =>
+              onSubmit({
+                apartment_id: listItem?.id || 0,
+                lat: center ? center[0] : listItem?.lat || 0,
+                lng: center ? center[1] : listItem?.lng || 0,
+                discount: discount || 0,
+                renovation,
+                new_rent: newRent || listItem?.average_rental || 0,
+                is_qualified: false,
+                date_created: new Date(),
+              })
+            }
+            className="text-md mr-6 px-4 py-2 bg-blue-500 font-semibold text-white rounded-md transition-all duration-300 transform hover:bg-blue-700 focus:outline-none "
+          >
+            Create
           </button>
         </div>
       </>
