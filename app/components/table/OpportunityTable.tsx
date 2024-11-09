@@ -105,129 +105,133 @@ export const TableRow = ({
   onCalc,
   short = false,
 }: {
-  item: OpportunityListItem;
+  item: OpportunityListItem | null;
   onCalc: () => void;
   short?: boolean;
 }) => {
-  return (
-    <tr
-      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-      key={item.id}
-    >
-      <th
-        scope="row"
-        className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-        title={item.name}
+  if (item) {
+    return (
+      <tr
+        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+        key={item.id}
       >
-        {truncateString(item.name)}
-      </th>
-      <td className="px-4 py-3">{item.id}</td>
-      <td className="px-4 py-3">{item.city_part}</td>
-      <td className="px-4 py-3">{item.size}</td>
-      <td className="px-4 py-3">
-        {makeNumberCurrency(getFullPrice(item.price, item.description))}
-      </td>
-      <td className="px-4 py-3">
-        {makeNumberCurrency(
-          getFurnitureCost(item.size, getRenovationType(item.description))
+        <th
+          scope="row"
+          className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+          title={item.name}
+        >
+          {truncateString(item.name)}
+        </th>
+        <td className="px-4 py-3">{item.id}</td>
+        <td className="px-4 py-3">{item.city_part}</td>
+        <td className="px-4 py-3">{item.size}</td>
+        <td className="px-4 py-3">
+          {makeNumberCurrency(getFullPrice(item.price, item.description))}
+        </td>
+        <td className="px-4 py-3">
+          {makeNumberCurrency(
+            getFurnitureCost(item.size, getRenovationType(item.description))
+          )}
+        </td>
+        <td className="px-4 py-3">
+          {makeNumberCurrency(
+            getPurchaseFee(item.price, item.description, item.size)
+          )}
+        </td>
+        <td
+          className={`px-4 py-3 ${highlightPriceM2(
+            item.price,
+            item.description,
+            item.size
+          )}`}
+        >
+          {makeNumberCurrency(
+            getM2Price(item.price, item.description, item.size)
+          )}
+        </td>
+        <td className="px-4 py-3">{makeNumberCurrency(item.average_rental)}</td>
+        <td
+          className={`px-4 py-3 ${highlightRentGross(
+            item.average_rental,
+            item.size
+          )}`}
+        >
+          {makeNumberCurrency(getRentGross(item.average_rental, item.size))}
+        </td>
+        <td className="px-4 py-3">
+          {makeNumberCurrency(getRentNet(item.average_rental, item.size))}
+        </td>
+        <td className="px-4 py-3">
+          {makeNumberCurrency(getRentTax(item.average_rental, item.size))}
+        </td>
+        <td className="px-4 py-3">
+          {makeNumberCurrency(getRentFee(item.average_rental, item.size))}
+        </td>
+        <td className="px-4 py-3">
+          {makeNumberCurrency(
+            getRentAmortization(item.average_rental, item.size)
+          )}
+        </td>
+        <td className="px-4 py-3">
+          {makeNumberCurrency(getRentRevenue(item.average_rental, item.size))}
+        </td>
+        <td className="px-4 py-3">
+          {makeNumberCurrency(getRentRevenueM2(item.average_rental, item.size))}
+        </td>
+        <td className="px-4 py-3">
+          {makeNumberCurrency(
+            getRentRevenueM2Yearly(item.average_rental, item.size)
+          )}
+        </td>
+        <td
+          className={`px-4 py-3 ${highlightRoi(
+            item.average_rental,
+            item.price,
+            item.description,
+            item.size
+          )}`}
+        >
+          {getRentROI(
+            item.average_rental,
+            item.price,
+            item.description,
+            item.size
+          )}
+        </td>
+        <td className="px-4 py-3">{`${item.date_created}`}</td>
+        {!short && (
+          <>
+            <td className="px-4 py-3 text-right">
+              <a
+                href={`https://www.nekretnine.rs${item.link}`}
+                target="_blank"
+                rel="noreferrer"
+                className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+              >
+                Link
+              </a>
+            </td>
+            <td className="px-4 py-3 text-right">
+              <button
+                onClick={onCalc}
+                className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+              >
+                Calc
+              </button>
+            </td>
+            <td className="px-4 py-3 text-right">
+              <button
+                onClick={() => console.log("click")}
+                className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+              >
+                Edit
+              </button>
+            </td>
+          </>
         )}
-      </td>
-      <td className="px-4 py-3">
-        {makeNumberCurrency(
-          getPurchaseFee(item.price, item.description, item.size)
-        )}
-      </td>
-      <td
-        className={`px-4 py-3 ${highlightPriceM2(
-          item.price,
-          item.description,
-          item.size
-        )}`}
-      >
-        {makeNumberCurrency(
-          getM2Price(item.price, item.description, item.size)
-        )}
-      </td>
-      <td className="px-4 py-3">{makeNumberCurrency(item.average_rental)}</td>
-      <td
-        className={`px-4 py-3 ${highlightRentGross(
-          item.average_rental,
-          item.size
-        )}`}
-      >
-        {makeNumberCurrency(getRentGross(item.average_rental, item.size))}
-      </td>
-      <td className="px-4 py-3">
-        {makeNumberCurrency(getRentNet(item.average_rental, item.size))}
-      </td>
-      <td className="px-4 py-3">
-        {makeNumberCurrency(getRentTax(item.average_rental, item.size))}
-      </td>
-      <td className="px-4 py-3">
-        {makeNumberCurrency(getRentFee(item.average_rental, item.size))}
-      </td>
-      <td className="px-4 py-3">
-        {makeNumberCurrency(
-          getRentAmortization(item.average_rental, item.size)
-        )}
-      </td>
-      <td className="px-4 py-3">
-        {makeNumberCurrency(getRentRevenue(item.average_rental, item.size))}
-      </td>
-      <td className="px-4 py-3">
-        {makeNumberCurrency(getRentRevenueM2(item.average_rental, item.size))}
-      </td>
-      <td className="px-4 py-3">
-        {makeNumberCurrency(
-          getRentRevenueM2Yearly(item.average_rental, item.size)
-        )}
-      </td>
-      <td
-        className={`px-4 py-3 ${highlightRoi(
-          item.average_rental,
-          item.price,
-          item.description,
-          item.size
-        )}`}
-      >
-        {getRentROI(
-          item.average_rental,
-          item.price,
-          item.description,
-          item.size
-        )}
-      </td>
-      <td className="px-4 py-3">{`${item.date_created}`}</td>
-      {!short && (
-        <>
-          <td className="px-4 py-3 text-right">
-            <a
-              href={`https://www.nekretnine.rs${item.link}`}
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-            >
-              Link
-            </a>
-          </td>
-          <td className="px-4 py-3 text-right">
-            <button
-              onClick={onCalc}
-              className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-            >
-              Calc
-            </button>
-          </td>
-          <td className="px-4 py-3 text-right">
-            <button
-              onClick={() => console.log("click")}
-              className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-            >
-              Edit
-            </button>
-          </td>
-        </>
-      )}
-    </tr>
-  );
+      </tr>
+    );
+  }
+
+  return null;
 };

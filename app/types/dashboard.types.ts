@@ -362,3 +362,16 @@ export interface RentalAverage {
 }
 
 export type RenovationType = "no" | "half" | "full";
+
+export interface OpportunityType {
+  id?: number;
+  apartment_id: number;
+  lat: number;
+  lng: number;
+  discount: number;
+  renovation: string;
+  new_rent: number;
+  is_qualified: boolean;
+  date_created: Date;
+  date_qualified?: Date | null;
+}

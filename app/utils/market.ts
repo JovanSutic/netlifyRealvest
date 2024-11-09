@@ -26,7 +26,7 @@ export const switchLanguage = (path: string, newLang: LangType): string => {
 };
 
 export const getNumberWithDecimals = (num: number, decimal: number) => {
-  const map = [1, 10, 100, 1000, 10000, 100000];
+  const map = [1, 10, 100, 1000, 10000, 100000, 1000000];
   return Number(
     (Math.round(num * map[decimal]) / map[decimal]).toFixed(decimal)
   );
