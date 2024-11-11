@@ -12,7 +12,7 @@ export const navigationMap: Record<string, Record<string, string>> = {
   },
   sr: {
     account: "Otvorite besplatan nalog",
-    loginNav: "Prijavite se",
+    loginNav: "Prijava",
     logoutNav: "Odjava",
     areaSearch: "Mikrolokacije",
     marketSearch: "Pretraga oglasa",
