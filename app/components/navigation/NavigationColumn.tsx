@@ -16,9 +16,9 @@ const NavigationColumn = ({
 
   return (
     <header>
-      <div className="w-full xl:w-[1260px] mx-auto">
+      <div className="w-full xl:w-[1260px] mx-auto mb-0 lg:mb-1">
         <div className="grid grid-cols-2 lg:grid-cols-3">
-          <div className="px-4 py-4 lg:py-2">
+          <div className="flex flex-col justify-center px-4 py-4 lg:py-2">
             <div className="w-[110px]">
               <a href={`/?lang=${lang}`}>
                 <img

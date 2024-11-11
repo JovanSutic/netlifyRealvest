@@ -1,9 +1,11 @@
 export const homepageMap: Record<string, Record<string, string>> = {
   en: {
-    heroTitle: "Choose property with biggest growth potential",
+    heroTitle: "Easily invest in Real Estate",
+    accountBtn: "Open free account",
     haveAccount: "Have an account? Log in",
     heroSubtitle:
-      "Purchasing a property is a significant investment. Our data-rich listings will ensure you have all the information you need to make an informed decision.",
+      "Buy a single square meter and earn interest every quarter. All real estate management processes are handled by us.",
+    heroSubtitleBold: "Start today from €2500.",
     heroCta: "See listings",
     accountCta: "Create free account",
     howTitle: "Useful data, completely free available in just 3 clicks.",
@@ -78,10 +80,12 @@ export const homepageMap: Record<string, Record<string, string>> = {
     marketAll: "See all listings",
   },
   sr: {
-    heroTitle: "Izaberite nekretninu sa najvećim potencijalom rasta",
+    heroTitle: "Lako investirajte u nekretnine",
+    accountBtn: "Otvorite besplatan nalog",
     haveAccount: "Imate nalog? Prijavite se",
     heroSubtitle:
-      "Kupovina nekretnine je dugoročna finansijska odluka i ozbiljna investicija. Naši oglasi, sa gomilom podataka, pomoćiće vam da budete sigurni u vaš izbor.",
+      "Kupite jedan kvadratni metar i zarađujte kamatu svaki kvartal. Sve korake kupovine i upravljanje nekretninom prepustite nama.",
+    heroSubtitleBold: "Počnite danas za samo 2500 €.",
     heroCta: "Pogledajte oglase",
     accountCta: "Napravite besplatan nalog",
     howTitle: "Potpuno besplatno u samo 3 klika saznajte stanje na tržištu.",
