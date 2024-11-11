@@ -5,6 +5,7 @@ import {
   Await,
   Link,
   useLoaderData,
+  useLocation,
   useNavigation,
   useSearchParams,
 } from "@remix-run/react";
@@ -12,7 +13,7 @@ import { getParamValue, isMobile } from "../utils/params";
 import { Translator } from "../data/language/translator";
 import Accordion from "../components/accordion";
 import { AccordionData, FinalError } from "../types/component.types";
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { createSupabaseServerClient } from "../supabase.server";
 import { makeNumberCurrency } from "../utils/numbers";
 import MarketCard from "../components/card/MarketCard";
@@ -29,6 +30,7 @@ import { Blog } from "../types/blog.types";
 import BlogCard from "../components/card/BlogCard";
 import Footer from "../components/layout/Footer";
 import PageLoader from "../components/loader/PageLoader";
+import NavigationColumn from "../components/navigation/NavigationColumn";
 
 export const meta: MetaFunction = ({ location }) => {
   const lang = getParamValue(location.search, "lang", "sr");
@@ -150,6 +152,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function Index() {
   const [searchParams] = useSearchParams();
+  const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
   const lang = (searchParams.get("lang") as LangType) || "sr";
 
   const translator = new Translator("homepage");
@@ -208,45 +211,24 @@ export default function Index() {
   } = useLoaderData();
 
   const navigation = useNavigation();
+  const location = useLocation();
+
+  location.search;
+
+  useEffect(() => {
+    if (location.pathname || location.search) {
+      setIsNavOpen(false);
+    }
+  }, [location.pathname, location.search]);
 
   return (
     <>
       <PageLoader open={navigation.state === "loading"} />
-      <TPage color="bg-white" mobile={mobile}>
-        <TLine columns={1}>
-          <TColumn span={1}>
-            <div className="flex flex-col md:flex-row justify-between">
-              <div className="flex flex-row justify-center">
-                <div className="w-[140px] md:w-[160px]">
-                  <img
-                    src="logo1.png"
-                    alt="Realvest logo"
-                    className="max-w-full"
-                    width="160"
-                    height="46"
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col md:mt-3 md:mt-0">
-                <div className="flex flex-col md:flex-row items-center">
-                  <Link
-                    to={`auth/?lang=${lang}`}
-                    className="hidden md:block text-md px-4 py-2 bg-slate-600 font-semibold text-white rounded-xl transition-all duration-300 transform hover:bg-slate-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
-                  >
-                    {translator.getTranslation(lang, "haveAccount")}
-                  </Link>
-                  <Link
-                    to={`/?lang=${lang === "sr" ? "en" : "sr"}`}
-                    className="text-sm font-regular text-blue-500 transform hover:text-blue-700 md:mt-3 md:mt-0 ml-0 md:ml-6"
-                  >
-                    {lang === "sr" ? "english version" : "srpska verzija"}
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </TColumn>
-        </TLine>
-      </TPage>
+      <NavigationColumn
+        isOpen={isNavOpen}
+        toggleOpen={() => setIsNavOpen(!isNavOpen)}
+        lang={lang}
+      />
 
       <TPage color="bg-white" mobile={mobile}>
         <TLine columns={12} gap={2}>
@@ -442,7 +424,7 @@ export default function Index() {
         </div>
         <hr />
       </TPage>
-      
+
       {blogs.length > 2 && (
         <TPage color="bg-white" mobile={mobile}>
           <div className="py-6 px-2 md:px-4 lg:px-12 rounded-lg">
