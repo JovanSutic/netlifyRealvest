@@ -4,8 +4,38 @@ export const homepageMap: Record<string, Record<string, string>> = {
     accountBtn: "Open free account",
     haveAccount: "Have an account? Log in",
     heroSubtitle:
-      "Buy a single square meter and earn interest every quarter. All real estate management processes are handled by us.",
-    heroSubtitleBold: "Start today from €2500.",
+      "Buy as low as 1% of the property and earn interest every quarter. All purchase and management processes are handled by us.",
+    heroSubtitleBold: "Start investing today with only €1,000.",
+    latest: "Latest investment offers",
+    latestSub:
+      "Fractional ownership empowers a lot more people to enter into real estate market investments with significantly lower risks.",
+    interest: "Expected annual return:",
+    moreBtn: "See more",
+    why: "Why to invest in Realvest properties?",
+    whySub:
+      "With Realvest you are getting the opportunity to invest in properties that have undergone a thorough profitability assessment and that are carefully picked, maintained and managed by our experienced team.",
+    whyOption1: "Invest the way you want",
+    whyOption1Sub:
+      "Start investing in real estate with only 1,000€. In this way you are lowering your risk and at the same time you are keeping yourself involved in the property market growth.",
+    whyOption2: "Earn interest",
+    whyOption2Sub:
+      "Earn reliable passive income. Property that you are fractional owner of is making money through rent and you are getting your share of the profits.",
+    whyOption3: "Appreciate on the property",
+    whyOption3Sub:
+      "Properties are showing steady growth. when the prices on the real estate market rise your initial investment will rise as well.",
+    whyOption4: "Diversify your portfolio",
+    whyOption4Sub:
+      "Spread your risk by investing in multiple properties. Fractional ownership allows you to diversify your portfolio and reduce exposure to market fluctuations",
+    how: "How does it work?",
+    howOption1: "Browse",
+    howOption1Sub:
+      "Create an account on our web application and discover all the investment opportunities available to you.",
+    howOption2: "Invest",
+    howOption2Sub:
+      "Read the full prospectus of the offer, including the risks, and start building your portfolio.",
+    howOption3: "Earn",
+    howOption3Sub:
+      "Receive a fixed annual interest paid quarterly and from time to time check current value of your initial investment.",
     heroCta: "See listings",
     accountCta: "Create free account",
     howTitle: "Useful data, completely free available in just 3 clicks.",
@@ -84,8 +114,38 @@ export const homepageMap: Record<string, Record<string, string>> = {
     accountBtn: "Otvorite besplatan nalog",
     haveAccount: "Imate nalog? Prijavite se",
     heroSubtitle:
-      "Kupite jedan kvadratni metar i zarađujte kamatu svaki kvartal. Sve korake kupovine i upravljanje nekretninom prepustite nama.",
-    heroSubtitleBold: "Počnite danas za samo 2500 €.",
+      "Kupite samo 1% nekretnine i zarađujte kamatu svakog kvartala. Sve korake vezane za kupovinu i upravljanje nekretninom prepustite nama.",
+    heroSubtitleBold: "Počnite da investirate već danas sa samo 1,000 €.",
+    latest: "Najnovije investicione ponude",
+    latestSub:
+      "Parcijalno vlasništvo osnažuje veći broju ljudi da pristupe investiranju u tržište nekretnina uz dosta manji rizik.",
+    interest: "Očekivana godišnja kamata:",
+    moreBtn: "Pogledajte još",
+    why: "Zašto da investirate u Realvest nekretnine?",
+    whySub:
+      "Sa Realvest-om dobijate mogućnost da investirate u nekretnine koje su prošle temeljnu procenu rentabilnosti i  koje su pažljivo izabrane, održavane i vođene od strane našeg iskusnog tima.",
+    whyOption1: "Investirajte po želji",
+    whyOption1Sub:
+      "Počnite investiranje u nekretnine sa samo 1,000€. Time ćete umanjiti rizik a zadržavate mogućnost profita u slučaju rasta tržišta nekretnina.",
+    whyOption2: "Zarađujte kamatu",
+    whyOption2Sub:
+      "Osigurajte redovne pasivne prihode. Nekretnina čiji ste parcijalni vlasnik zarađuje kroz izdavanje, a vi imate udeo u toj zaradi.",
+    whyOption3: "Povećavajte vrednost",
+    whyOption3Sub:
+      "Cene nekretnina pokazuju stabilan rast. Kroz rast cene na tržištu raste i vrednost vaše investicije bez obzira na kvartalne prihode.",
+    whyOption4: "Divrzifikujte investicija",
+    whyOption4Sub:
+      "Investiranjem u manje delove velikog broja nekretnina raspodeljujete vaš rizik i vaše investicije postaju otpornije na tržišne promene.",
+    how: "Kako to sve funckioniše?",
+    howOption1: "Pregledajte",
+    howOption1Sub:
+      "Otvorite nalog na našoj aplikaciji i otkrijte sve dostupne investicione prilike.",
+    howOption2: "Investirajte",
+    howOption2Sub:
+      "Pročitajte sve podatke u opisu prilike, uračunajte vaše lične rizike i počnite da pravite vaš portfolio.",
+    howOption3: "Zarađujte",
+    howOption3Sub:
+      "Dobijajte redovne kvartalnu kamatu i povremeno proverite koliko trenutno vredi vaša inicijalna investicija.",
     heroCta: "Pogledajte oglase",
     accountCta: "Napravite besplatan nalog",
     howTitle: "Potpuno besplatno u samo 3 klika saznajte stanje na tržištu.",
