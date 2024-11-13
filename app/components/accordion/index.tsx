@@ -18,7 +18,9 @@ const Accordion = ({
         <div key={item.title.replace(/\s/g, "")}>
           <button
             type="button"
-            className="w-full text-sm font-semibold text-left py-6 px-6 text-blue-500 bg-white flex items-center transition-all"
+            className={`w-full text-sm ${
+              active === item.id && "border-b-[1px] border-gray-200"
+            } font-semibold text-left py-6 px-6 text-blue-500 bg-white flex items-center transition-all`}
             onClick={() => changeActive(active === item.id ? -1 : item.id)}
           >
             {active === item.id ? (
@@ -45,12 +47,14 @@ const Accordion = ({
               </svg>
             )}
 
-            <span className="mr-8 text-xl xl:text-[20px] text-gray-700">{item.title}</span>
+            <span className="mr-8 text-[17px] text-gray-700">
+              {item.title}
+            </span>
           </button>
 
           {active === item.id && (
-            <div className="py-4 px-6 bg-gray-100">
-              <p className="text:md xl:text-xl font-light text-gray-600">
+            <div className="py-4 px-6">
+              <p className="text-[16px] font-light text-gray-600">
                 {item.text}
               </p>
             </div>

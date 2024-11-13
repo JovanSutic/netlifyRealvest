@@ -1,5 +1,4 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { TColumn, TLine, TPage } from "../components/layout";
 import {
   Link,
   useLoaderData,
@@ -77,11 +76,6 @@ export default function Index() {
       title: translator.getTranslation(lang, "faq5Title"),
       text: translator.getTranslation(lang, "faq5Text"),
     },
-    {
-      id: 6,
-      title: translator.getTranslation(lang, "faq6Title"),
-      text: translator.getTranslation(lang, "faq6Text"),
-    },
   ];
 
   const {
@@ -149,7 +143,7 @@ export default function Index() {
       </div>
 
       <div className="bg-white">
-        <div className="w-full xl:w-[1080px] mx-auto px-2 md:px-8 py-8 lg:py-14">
+        <div className="w-full xl:w-[1080px] mx-auto px-10 md:px-8 py-8 lg:py-14">
           <div className="w-full mb-8">
             <h2 className="font-semibold text-[30px] text-center mb-4">
               {translator.getTranslation(lang, "latest")}
@@ -211,7 +205,7 @@ export default function Index() {
       </div>
 
       <div className="bg-indigo-50">
-        <div className="w-full xl:w-[1080px] mx-auto px-2 md:px-8 py-8 lg:py-14">
+        <div className="w-full xl:w-[1080px] mx-auto px-10 md:px-8 py-8 lg:py-14">
           <div className="w-full mb-16">
             <h2 className="font-semibold text-[30px] text-center mb-4">
               {translator.getTranslation(lang, "why")}
@@ -286,7 +280,7 @@ export default function Index() {
       </div>
 
       <div className="bg-white">
-        <div className="w-full xl:w-[1080px] mx-auto px-2 md:px-8 py-8 lg:py-14">
+        <div className="w-full xl:w-[1080px] mx-auto px-10 md:px-8 py-8 lg:py-14">
           <div className="w-full mb-16">
             <h2 className="font-semibold text-[30px] text-center mb-4">
               {translator.getTranslation(lang, "how")}
@@ -351,22 +345,33 @@ export default function Index() {
         </div>
       </div>
 
-      <TPage mobile={mobile}>
-        <TLine columns={1}>
-          <TColumn span={1}>
-            <div className="w-full py-10 mb-0 md:mb-4">
-              <h3 className="text-slate-800 font-bold text-2xl md:text-3xl mb-6 md:mb-8">
-                {translator.getTranslation(lang, "faq")}
-              </h3>
-              <Accordion
-                active={activeFaq}
-                changeActive={setActiveFaq}
-                data={accordionData}
-              />
+      <div className="bg-gray-100">
+        <div className="w-full xl:w-[1080px] mx-auto px-10 md:px-8 py-8 lg:py-14">
+          <div className="flex flex-col justify-center">
+            <div>
+              <p className="text-[52px] font-light text-center mb-2">250K €</p>
+              <p className="text-[18px] font-semibold text-center">
+                Obješnjenje nekog podatka
+              </p>
             </div>
-          </TColumn>
-        </TLine>
-      </TPage>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white">
+        <div className="w-full xl:w-[1080px] mx-auto px-2 md:px-8 py-8 lg:py-14">
+          <div className="w-full mb-16">
+            <h2 className="font-semibold text-[30px] text-center mb-4">
+              {translator.getTranslation(lang, "faq")}
+            </h2>
+          </div>
+          <Accordion
+            active={activeFaq}
+            changeActive={setActiveFaq}
+            data={accordionData}
+          />
+        </div>
+      </div>
       <Footer lang={lang} mobile={mobile} />
     </>
   );
