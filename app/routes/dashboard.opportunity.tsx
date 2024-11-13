@@ -131,9 +131,21 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     const { supabaseClient } = createSupabaseServerClient(request);
     const data = await request.json();
+    
+    const {coordinatesChange, ...rest} = data;
+
+    if(coordinatesChange) {
+      const {error: updateError} = await supabaseClient.from('ad_details').update({lat: rest.lat, lng: rest.lng}).match({ad_id: rest.apartment_id, type: 'apartment'});
+
+      if (updateError) {
+        isError = true;
+        finalError = updateError as FinalError;
+      }
+    }
+
     const { error: insertError } = await supabaseClient
       .from("opportunities")
-      .insert(data);
+      .insert(rest);
 
     if (insertError) {
       isError = true;

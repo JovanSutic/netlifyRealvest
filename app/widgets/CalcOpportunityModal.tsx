@@ -260,6 +260,7 @@ const CalcOpportunityModal = ({
                 new_rent: newRent || listItem?.average_rental || 0,
                 is_qualified: false,
                 date_created: new Date(),
+                coordinatesChange: center ? true : false,
               })
             }
             className="text-md mr-6 px-4 py-2 bg-blue-500 font-semibold text-white rounded-md transition-all duration-300 transform hover:bg-blue-700 focus:outline-none "
