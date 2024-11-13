@@ -374,4 +374,5 @@ export interface OpportunityType {
   is_qualified: boolean;
   date_created: Date;
   date_qualified?: Date | null;
+  coordinatesChange?: boolean;
 }
