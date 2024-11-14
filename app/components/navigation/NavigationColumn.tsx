@@ -22,7 +22,7 @@ const NavigationColumn = ({
             <div className="w-[110px]">
               <a href={`/?lang=${lang}`}>
                 <img
-                  src="logo1.png"
+                  src="/logo1.png"
                   alt="Realvest logo"
                   className="max-w-full"
                   width="160"
@@ -37,7 +37,7 @@ const NavigationColumn = ({
                 <li className="mr-6">
                   {" "}
                   <Link
-                    to={`/blog?${lang}`}
+                    to={`/offer-restricted/?lang=${lang}`}
                     className="text-[17px] font-semibold text-gray-700 hover:text-blue-600 leading-[40px]"
                   >
                     {translate.getTranslation(lang, "invest")}
@@ -46,7 +46,7 @@ const NavigationColumn = ({
                 <li className="mr-6">
                   {" "}
                   <Link
-                    to={`/blog?${lang}`}
+                    to={`/knowledge/?lang=${lang}`}
                     className="text-[17px] font-semibold text-gray-700 hover:text-blue-600 leading-[40px]"
                   >
                     {translate.getTranslation(lang, "knowledge")}
@@ -54,7 +54,7 @@ const NavigationColumn = ({
                 </li>
                 <li className="mr-6">
                   <Link
-                    to={`auth/?lang=${lang}`}
+                    to={`/auth/?lang=${lang}`}
                     className="hidden md:block text-[17px] font-semibold px-4 py-2 bg-gray-200 text-gray-800 rounded-xl transition-all duration-300 transform hover:bg-gray-300 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
                   >
                     {translate.getTranslation(lang, "loginNav")}
@@ -68,7 +68,7 @@ const NavigationColumn = ({
               <ul className="flex flex-row">
                 <li className="mr-8">
                   <Link
-                    to={`auth/register?lang=${lang}`}
+                    to={`/auth/register?lang=${lang}`}
                     className="hidden md:block text-[16px] font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
                   >
                     {translate.getTranslation(lang, "account")}
@@ -161,7 +161,7 @@ const NavigationColumn = ({
             </li>
 
             <li className="pt-6 px-3">
-              <Link to={`/blog?${lang}`}>
+              <Link to={`/offer-restricted/?lang=${lang}`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -182,7 +182,7 @@ const NavigationColumn = ({
               </Link>
             </li>
             <li className="pt-8 px-3">
-              <Link to={`/blog?${lang}`}>
+              <Link to={`/knowledge/?lang=${lang}`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -199,7 +199,7 @@ const NavigationColumn = ({
               </Link>
             </li>
             <li className="pt-8 px-3">
-              <Link to={`auth/?lang=${lang}`}>
+              <Link to={`/auth/?lang=${lang}`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -221,7 +221,7 @@ const NavigationColumn = ({
             </li>
             <li className="pt-8 px-3">
               <Link
-                to={`auth/register?lang=${lang}`}
+                to={`/auth/register?lang=${lang}`}
                 className="text-[16px] font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
               >
                 {translate.getTranslation(lang, "account")}

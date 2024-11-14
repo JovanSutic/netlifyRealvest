@@ -87,8 +87,6 @@ export default function Index() {
   const navigation = useNavigation();
   const location = useLocation();
 
-  location.search;
-
   useEffect(() => {
     if (location.pathname || location.search) {
       setIsNavOpen(false);
@@ -119,7 +117,7 @@ export default function Index() {
                 </p>
                 <div className="w-[70%]">
                   <Link
-                    to={`auth/register?lang=${lang}`}
+                    to={`/auth/register?lang=${lang}`}
                     className="text-[16px] text-center font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
                   >
                     {translator.getTranslation(lang, "accountBtn")}
@@ -195,7 +193,7 @@ export default function Index() {
           </div>
           <div className="flex flex-row justify-center">
             <Link
-              to={`auth/register?lang=${lang}`}
+              to={`/offer-restricted/?lang=${lang}`}
               className="text-[16px] text-center font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
             >
               {translator.getTranslation(lang, "moreBtn")}
@@ -336,7 +334,7 @@ export default function Index() {
 
           <div className="flex flex-row justify-center">
             <Link
-              to={`auth/register?lang=${lang}`}
+              to={`/auth/register?lang=${lang}`}
               className="text-[16px] text-center font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
             >
               {translator.getTranslation(lang, "accountBtn")}

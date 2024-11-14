@@ -4,11 +4,11 @@ export const homepageMap: Record<string, Record<string, string>> = {
     accountBtn: "Open free account",
     haveAccount: "Have an account? Log in",
     heroSubtitle:
-      "Buy as low as 1% of the property and earn interest every quarter. All purchase and management processes are handled by us.",
-    heroSubtitleBold: "Start investing today with only €1,000.",
+      "Buy real estate backed bonds and earn interest every quarter. Join and profit from the potential real estate market growth.",
+    heroSubtitleBold: "Start investing today with only €500.",
     latest: "Latest investment offers",
     latestSub:
-      "Fractional ownership empowers a lot more people to enter into real estate market investments with significantly lower risks.",
+      "Bonds backed by rentable real estate are a great way for small, conservative investors to invest their money and lower their risk.",
     interest: "Expected annual return:",
     moreBtn: "See more",
     why: "Why to invest in Realvest properties?",
@@ -59,8 +59,9 @@ export const homepageMap: Record<string, Record<string, string>> = {
     faq7Title: "What am I investing in?",
     faq7Text:
       "When you are investing in property on Realvest, you are buying a bond that is giving you the right to receive an interest during the holding period, and repayment of the nominal value of the bond at the end of the holding period. You can also get a premium if the property referred by the bond did grow in market value.",
-    homeMetaTitle: "Realvest - platform for Belgrade real estate analysis",
-    homeMetaDesc: "Platform for Belgrade real estate analysis",
+    homeMetaTitle: "Realvest - become real estate investor with only 500€",
+    homeMetaDesc:
+      "Buy real estate backed bonds and earn interest every quarter. Join and profit from the potential real estate market growth. Start with only 500€.",
     contact: "Contact",
     errorPageTitle: "Something is wrong!",
     errorPageSubTitle:
@@ -98,11 +99,11 @@ export const homepageMap: Record<string, Record<string, string>> = {
     accountBtn: "Otvorite besplatan nalog",
     haveAccount: "Imate nalog? Prijavite se",
     heroSubtitle:
-      "Kupite samo 1% nekretnine i zarađujte kamatu svakog kvartala. Sve korake vezane za kupovinu i upravljanje nekretninom prepustite nama.",
-    heroSubtitleBold: "Počnite da investirate već danas sa samo 1,000 €.",
+      "Kupite obveznice podržane rentabilnim nekretninama i zarađujte kamatu svakog kvartala. Učestvujte i profitirajte u potencijalnom budućem rastu tržišta nekretnina.",
+    heroSubtitleBold: "Počnite da investirate već danas sa samo 500 €.",
     latest: "Najnovije investicione ponude",
     latestSub:
-      "Parcijalno vlasništvo osnažuje veći broju ljudi da pristupe investiranju u tržište nekretnina uz dosta manji rizik.",
+      "Obveznice podržane rentabilnim nekretninama predstavljaju odlično rešenje za male konzervativne investitore koji žele da investiraju svoj novac uz minimalni rizik.",
     interest: "Očekivana godišnja kamata:",
     moreBtn: "Pogledajte još",
     why: "Zašto da investirate u Realvest nekretnine?",
@@ -116,7 +117,7 @@ export const homepageMap: Record<string, Record<string, string>> = {
       "Osigurajte redovne pasivne prihode. Nekretnina čiji ste parcijalni vlasnik zarađuje kroz izdavanje, a vi imate udeo u toj zaradi.",
     whyOption3: "Povećavajte vrednost",
     whyOption3Sub:
-      "Cene nekretnina pokazuju stabilan rast. Kroz rast cene na tržištu raste i vrednost vaše investicije bez obzira na kvartalne prihode.",
+      "Cene nekretnina pokazuju stabilan rast. Kroz rast cena na tržištu raste i vrednost vaše investicije bez obzira na kvartalne prihode.",
     whyOption4: "Divrzifikujte investicija",
     whyOption4Sub:
       "Investiranjem u manje delove velikog broja nekretnina raspodeljujete vaš rizik i vaše investicije postaju otpornije na tržišne promene.",
@@ -133,13 +134,6 @@ export const homepageMap: Record<string, Record<string, string>> = {
     heroCta: "Pogledajte oglase",
     accountCta: "Napravite besplatan nalog",
     invest: "Investicije",
-    howResult: "Razmotrite vizualizacije podataka o tržištu nekretnina.",
-    benefitFinancial: "Finansijski potencijal nekretnine",
-    benefitFinancialText:
-      "Prikazujemo podatke koji vam mogu ukazati da li bi nekretnina u određenoj zoni, sa određenim karakteristikama bila dobra investicija ili kupovina. Primarna informacija koju pratimo je kretanje prodajne cene nekretnina kroz vreme. Takodje, pratimo i potencijal nekretnine da generiše prihod kroz izdavanje.",
-    benefitData: "Brze i jasne informacije",
-    benefitDataText:
-      "Generišemo grafikone, tabele i izveštaje koji pokazuju kretanje cena nekretnina, cena kvadrata, postojanja određenih odlika u označenoj zoni. Svaka vizualizacija se sastoji iz konkretnih informacija koje su relevantne za ono što vi tražite. Takođe, podaci se kontinuirano obrađuju sa ciljem obezbeđivanje još relevantnijih i korisnijih informacija.",
     faq: "Često postavljana pitanja",
     faq1Title: "Kakvu zaradu mogu da očekujem?",
     faq1Text:
@@ -161,8 +155,8 @@ export const homepageMap: Record<string, Record<string, string>> = {
     faq7Text:
       "Kada investirate u nekretninu ponuđenu na Realvest-u, vi kupujete obveznicu koja vam daje pravo da dobijate definisanu godišnju kamatu u toku perioda važenja obveznice, te da na kraju tog perioda dobijete nominalnu vrednost kupljene obveznice i potencijalnu premiju, ukoliko je nekretnina na koju se obveznica odnosi porasla u vrednosti.",
     homeMetaTitle:
-      "Realvest - platforma za analizu tržišta nekretnina Beograda",
-    homeMetaDesc: "Platforma za analizu tržišta nekretnina Beograda",
+      "Realvest - postanite investitor u nekretnine za samo 500€",
+    homeMetaDesc: "Kupite obveznice podržane rentabilnim nekretninama i zarađujte kamatu svakog kvartala. Učestvujte i profitirajte u potencijalnom budućem rastu tržišta nekretnina. Počnite sa samo 500€.",
     contact: "Kontakt",
     errorPageTitle: "Nešto nije u redu!",
     errorPageSubTitle:
