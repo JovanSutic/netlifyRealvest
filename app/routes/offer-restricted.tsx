@@ -13,6 +13,7 @@ import { LangType } from "../types/dashboard.types";
 import Footer from "../components/layout/Footer";
 import PageLoader from "../components/loader/PageLoader";
 import NavigationColumn from "../components/navigation/NavigationColumn";
+// import OfferCard from "../components/card/OfferCard";
 
 export const meta: MetaFunction = ({ location }) => {
   const lang = getParamValue(location.search, "lang", "sr");
@@ -65,16 +66,21 @@ export default function RestrictedOffer() {
       />
       <div className="bg-gray-100">
         <div className="w-full xl:w-[1260px] mx-auto px-2 md:px-8 py-8 lg:py-14">
-          <h1 className="w-full text-center text-3xl font-semibold">
-            {translator.getTranslation(lang, "restrictedConst")}
-          </h1>
-          <div className="flex flex-row justify-center mt-12">
-            <Link
-              to={`/?lang=${lang}`}
-              className="text-[16px] text-center font-semibold px-6 py-2 bg-gray-500 text-white rounded-xl transition-all duration-300 transform hover:bg-gray-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
-            >
-              {translator.getTranslation(lang, "backBtn")}
-            </Link>
+          <div>
+            <h1 className="w-full text-center text-3xl font-semibold">
+              {translator.getTranslation(lang, "restrictedConst")}
+            </h1>
+            <div className="flex flex-row justify-center mt-12">
+              <Link
+                to={`/?lang=${lang}`}
+                className="text-[16px] text-center font-semibold px-6 py-2 bg-gray-500 text-white rounded-xl transition-all duration-300 transform hover:bg-gray-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+              >
+                {translator.getTranslation(lang, "backBtn")}
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-8 mb-8 mt-6">
           </div>
         </div>
       </div>

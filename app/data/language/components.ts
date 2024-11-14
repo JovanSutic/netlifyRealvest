@@ -44,6 +44,9 @@ export const componentsMap: Record<string, Record<string, string>> = {
       "This property shows promise, consider requesting a property tour with negotiation in mind.",
     priceIndexAdvice5:
       "Act quickly on this one it's a prime investment with significant upside.",
+    offerInterest: "Annual interest:",
+    offerPremium: "Potential premium",
+    offerMaturity: "years time to maturity",
   },
   sr: {
     planTitle: "Izaberite vaš plan",
@@ -90,5 +93,8 @@ export const componentsMap: Record<string, Record<string, string>> = {
       "Ova nekretnina obećava, razmislite da je obiđete i budite spremni na inicijalno pregovaranje.",
     priceIndexAdvice5:
       "Ovo je odlična prilika koja može biti dobra investicija stoga obiđite nekretninu i reagujte brzo.",
+    offerInterest: "Godišnja kamata:",
+    offerPremium: "Potencijalna premija",
+    offerMaturity: "godina, rok otplate",
   },
 };

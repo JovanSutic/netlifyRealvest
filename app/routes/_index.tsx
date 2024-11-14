@@ -152,11 +152,13 @@ export default function Index() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-8 mb-8">
             <div className="mb-8 lg:mb-0">
-              <img
-                src="/homeImg.jpg"
-                alt="home-img"
-                className="max-w-[100%] text-center rounded-xl mb-4"
-              />
+              <div className="w-full h-[180px] overflow-hidden rounded-lg mb-4">
+                <img
+                  src="/homeImg.jpg"
+                  alt="home-img"
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <p className="font-semibold text-[19px] lg:text-[17px] mb-1">
                 38 m2 Vračar, Beograd
               </p>
@@ -165,11 +167,13 @@ export default function Index() {
               </p>
             </div>
             <div className="mb-8 lg:mb-0">
-              <img
-                src="/homeImg.jpg"
-                alt="home-img"
-                className="max-w-[100%] text-center rounded-xl mb-4"
-              />
+              <div className="w-full h-[180px] overflow-hidden rounded-lg mb-4">
+                <img
+                  src="/homeImg.jpg"
+                  alt="home-img"
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <p className="font-semibold text-[17px] mb-1">
                 44 m2 Zeleni Venac, Beograd
               </p>
@@ -178,11 +182,13 @@ export default function Index() {
               </p>
             </div>
             <div className="mb-8 lg:mb-0">
-              <img
-                src="/homeImg.jpg"
-                alt="home-img"
-                className="max-w-[100%] text-center rounded-xl mb-4"
-              />
+              <div className="w-full h-[180px] overflow-hidden rounded-lg mb-4">
+                <img
+                  src="/homeImg.jpg"
+                  alt="home-img"
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <p className="font-semibold text-[17px] mb-1">
                 54 m2 Mirijevo, Beograd
               </p>
