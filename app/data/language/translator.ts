@@ -6,6 +6,7 @@ import { homepageMap } from "./homepage";
 import { termsMap } from "./terms";
 import { componentsMap } from "./components";
 import { marketMap } from "./market";
+import { knowledgeMap } from "./knowledge";
 
 const translationMap = {
   dashboard: dashboardMap,
@@ -16,6 +17,7 @@ const translationMap = {
   terms: termsMap,
   components: componentsMap,
   market: marketMap,
+  knowledge: knowledgeMap,
 };
 
 export type SectionType = keyof typeof translationMap;

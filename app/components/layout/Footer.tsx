@@ -58,7 +58,7 @@ const Footer = ({ mobile, lang }: { mobile: boolean; lang: LangType }) => {
                 <ul className="space-y-4">
                   <li>
                     <Link
-                      to={`/market/?lang=${lang}&page=1`}
+                      to={`/offer-restricted/?lang=${lang}`}
                       className="text-gray-300 hover:text-white text-sm"
                     >
                       {translate.getTranslation(lang, "invest")}
