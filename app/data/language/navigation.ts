@@ -8,7 +8,14 @@ export const navigationMap: Record<string, Record<string, string>> = {
     connections: "Connections",
     insights: "Insights",
     knowledge: "Knowledge base",
-    invest: "Investments"
+    invest: "Investments",
+    portYour: "Your Investment",
+    portTract: "Invested in 5 bonds in 2 properties",
+    portAccumulated: "Accumulated interest:",
+    portNext: "Next payout amount:",
+    portNextDate: "Next payout date:",
+    portProp: "Properties",
+    portTrans: "Transactions",
   },
   sr: {
     account: "Otvorite besplatan nalog",
@@ -19,6 +26,13 @@ export const navigationMap: Record<string, Record<string, string>> = {
     connections: "Veze",
     insights: "Uvidi",
     knowledge: "Baza znanja",
-    invest: "Investicije"
+    invest: "Investicije",
+    portYour: "Vaša Investicija",
+    portTract: "Investirano u 5 obveznica u 2 nekretnine",
+    portAccumulated: "Prikupljena kamata:",
+    portNext: "Iznos naredne isplate:",
+    portNextDate: "Datum naredne isplata:",
+    portProp: "Nekretnine",
+    portTrans: "Transakcije",
   },
 };
