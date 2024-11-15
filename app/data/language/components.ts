@@ -47,6 +47,7 @@ export const componentsMap: Record<string, Record<string, string>> = {
     offerInterest: "Annual interest:",
     offerPremium: "Potential premium",
     offerMaturity: "years time to maturity",
+    offerBond: "Bond price:"
   },
   sr: {
     planTitle: "Izaberite vaš plan",
@@ -96,5 +97,6 @@ export const componentsMap: Record<string, Record<string, string>> = {
     offerInterest: "Godišnja kamata:",
     offerPremium: "Potencijalna premija",
     offerMaturity: "godina, rok otplate",
+    offerBond: "Cena obveznice:"
   },
 };

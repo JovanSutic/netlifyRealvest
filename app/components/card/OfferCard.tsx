@@ -10,6 +10,7 @@ const OfferCard = ({
   maturity,
   lang,
   link,
+  bondPrice,
 }: {
   name: string;
   photo: string;
@@ -18,14 +19,24 @@ const OfferCard = ({
   maturity: number;
   lang: LangType;
   link: string;
+  bondPrice: number;
 }) => {
   const translator = new Translator("components");
   return (
     <div>
-      <div className="w-full h-[180px] overflow-hidden rounded-xl mb-2">
-        <Link to={link}>
-          <img src={photo} alt={name} className="w-full h-full object-cover" />
-        </Link>
+      <div className="relative">
+        <div className="w-full h-[200px] overflow-hidden rounded-xl mb-2">
+          <Link to={link}>
+            <img
+              src={photo}
+              alt={name}
+              className="w-full h-full object-cover"
+            />
+          </Link>
+        </div>
+        <span className="absolute text-center font-semibold top-[10px] right-[6px] bg-blue-400 text-white text-[12px] rounded-lg py-1 px-2 w-fit">
+          {`${translator.getTranslation(lang, 'offerBond')} ${bondPrice}€`}
+        </span>
       </div>
 
       <Link to={link}>

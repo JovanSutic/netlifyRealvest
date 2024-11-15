@@ -81,6 +81,16 @@ export default function RestrictedOffer() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-8 mb-8 mt-6">
+            {/* <OfferCard
+              name={"44m2 Zeleni Venac, Beograd"}
+              photo="https://img.nekretnine.rs/foto/Zml0LWluLzEwNjR4Nzk4L2NlbnRlci9taWRkbGUvZmlsdGVyczp3YXRlcm1hcmsoaHR0cHM6Ly93d3cubmVrcmV0bmluZS5ycy9idWlsZC9pbWFnZXMvd2F0ZXJtYXJrLTM0MHgzLnBuZyxjZW50ZXIsY2VudGVyLDUwKTpxdWFsaXR5KDgwKS9uZWs=/pwFJK_ZUW_fss?st=TvBk4pdk6xUBH9cFBwtSoGA3YsJlEvux1sHLELgA3Ks&ts=1678959697&e=0"
+              isPremium
+              interest={3.8}
+              maturity={8}
+              lang={lang}
+              link={`/auth/?lang=${lang}`}
+              bondPrice={500}
+            /> */}
           </div>
         </div>
       </div>
