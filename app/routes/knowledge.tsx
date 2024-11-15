@@ -63,7 +63,7 @@ export default function Knowledge() {
         toggleOpen={() => setIsNavOpen(!isNavOpen)}
         lang={lang}
       />
-      <div className="bg-gray-100">
+      <div className="bg-white border-t-[1px] border-gray-300">
         <div className="w-full xl:w-[1260px] mx-auto px-2 md:px-8 py-8 lg:py-14">
           <h1 className="w-full text-center text-3xl font-semibold">
             {translator.getTranslation(lang, "knowledgeConst")}

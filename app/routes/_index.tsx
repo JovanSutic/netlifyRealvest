@@ -292,11 +292,11 @@ export default function Index() {
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-14">
             <div className="flex flex-col items-center">
-              <div className="w-[80px]">
+              <div className="w-full h-[400px] overflow-hidden rounded-2xl mb-2 ">
                 <img
-                  src="/pie-chart.png"
-                  alt="building-icon"
-                  className="max-w-[100%] text-center rounded-xl mb-3"
+                  src={`/browse_${lang}.png`}
+                  alt="Browse"
+                  className="w-auto mx-auto h-full object-contain border-[5px] border-black rounded-2xl"
                 />
               </div>
               <p className="font-bold text-[20px] mb-2">
@@ -307,11 +307,11 @@ export default function Index() {
               </p>
             </div>
             <div className="flex flex-col items-center">
-              <div className="w-[80px]">
+              <div className="w-full h-[400px] overflow-hidden rounded-2xl mb-2 ">
                 <img
-                  src="/pie-chart.png"
-                  alt="building-icon"
-                  className="max-w-[100%] text-center rounded-xl mb-3"
+                  src={`/invest_${lang}.png`}
+                  alt="Invest"
+                  className="w-auto mx-auto h-full object-contain border-[5px] border-black rounded-2xl"
                 />
               </div>
               <p className="font-bold text-[20px] mb-2">
@@ -322,11 +322,11 @@ export default function Index() {
               </p>
             </div>
             <div className="flex flex-col items-center">
-              <div className="w-[80px]">
+              <div className="w-full h-[400px] overflow-hidden rounded-2xl mb-2 ">
                 <img
-                  src="/pie-chart.png"
-                  alt="building-icon"
-                  className="max-w-[100%] text-center rounded-xl mb-3"
+                  src={`/port_${lang}.png`}
+                  alt="Earn"
+                  className="w-auto mx-auto h-full object-contain border-[5px] border-black rounded-2xl"
                 />
               </div>
               <p className="font-bold text-[20px] mb-2">

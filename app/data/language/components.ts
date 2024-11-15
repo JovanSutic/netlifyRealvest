@@ -46,8 +46,12 @@ export const componentsMap: Record<string, Record<string, string>> = {
       "Act quickly on this one it's a prime investment with significant upside.",
     offerInterest: "Annual interest:",
     offerPremium: "Potential premium",
-    offerMaturity: "years time to maturity",
-    offerBond: "Bond price:"
+    offerMaturity: "y maturity period",
+    offerBond: "Bond price:",
+    propCardBonds: "Bonds on property",
+    propCardValue: "Investment value",
+    propCardInterest: "Accumulated interest",
+    propCardMature: "Quarters to maturity",
   },
   sr: {
     planTitle: "Izaberite vaš plan",
@@ -96,7 +100,11 @@ export const componentsMap: Record<string, Record<string, string>> = {
       "Ovo je odlična prilika koja može biti dobra investicija stoga obiđite nekretninu i reagujte brzo.",
     offerInterest: "Godišnja kamata:",
     offerPremium: "Potencijalna premija",
-    offerMaturity: "godina, rok otplate",
-    offerBond: "Cena obveznice:"
+    offerMaturity: "godina, rok dospeća",
+    offerBond: "Cena obveznice:",
+    propCardBonds: "Obveznice za nekretninu",
+    propCardValue: "Vrednost investicije",
+    propCardInterest: "Prikupljena kamata",
+    propCardMature: "Kvartali do dospeća",
   },
 };
