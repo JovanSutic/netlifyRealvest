@@ -16,9 +16,9 @@ export const authMap: Record<string, Record<string, string>> = {
     noAccount: "Don't have an account?",
     yesAccount: "Already have an account?",
     register: "Register here",
-    registerTitle: "Create an account",
+    registerTitle: "Open free account",
     registerDescription:
-      "We are happy that you want to join us. Please fill in the form below to create your account.",
+      "We are happy that you want to join us. Please fill in the form below to open your account.",
     passDescription:
       "Please enter your email address and we will send you a link to reset your password.",
     linkBtn: "Send link",
@@ -75,16 +75,16 @@ export const authMap: Record<string, Record<string, string>> = {
     passConfirmInput: "Potvrdite lozinku",
     nameInput: "Upišite ime",
     passForgot: "Zaboravili ste lozinku?",
-    sendLink: "Pošalji magični link",
+    sendLink: "Pošaljite magični link",
     noAccount: "Nemate nalog?",
     yesAccount: "Već imate nalog?",
     register: "Registrujte se",
-    registerTitle: "Napravite nalog",
+    registerTitle: "Otvorite nalog",
     registerDescription:
-      "Drago nam je da želite da nam se priključite. Molimo vas popunite formular i napravite vaš nalog.",
+      "Drago nam je da želite da nam se priključite. Molimo vas popunite formular i otvorite vaš nalog.",
     passDescription:
       "Molimo vas upišite email i poslaćemo vam link za resetovanje lozinke.",
-    linkBtn: "Pošalji link",
+    linkBtn: "Pošaljite link",
     backTo: "Nazad? ",
     passwordLength: "Lozinka mora imati najmanje 8 karaktera.",
     passwordSpecial: "Lozinka mora imati najmanje 1 specijalni karakter.",

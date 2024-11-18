@@ -48,7 +48,7 @@ const MarketAppreciationAnalysis = ({
     years
   );
 
-  if (role !== "premium" && role !== "limitedPremium") {
+  if (role !== "admin" && role !== "limitedPremium") {
     return (
       <div className="w-full h-full flex flex-col">
         <div

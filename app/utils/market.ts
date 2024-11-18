@@ -26,7 +26,7 @@ export const switchLanguage = (path: string, newLang: LangType): string => {
 };
 
 export const getNumberWithDecimals = (num: number, decimal: number) => {
-  const map = [1, 10, 100, 1000, 10000, 100000];
+  const map = [1, 10, 100, 1000, 10000, 100000, 1000000];
   return Number(
     (Math.round(num * map[decimal]) / map[decimal]).toFixed(decimal)
   );
@@ -107,6 +107,46 @@ export const getPropertyPurchaseExpenses = (
     legal: calculateLegalExpenses(price),
     total: agency + tax + calculateLegalExpenses(price),
   };
+};
+
+export const isNewFromDesc = (description: string): boolean => {
+  return catchIndicators(description || "", [
+    "lux",
+    "nov stan",
+    "u novoizgradjenom kompleksu",
+    "u novogradnji",
+    "u izgradnji",
+  ]);
+};
+
+export const isForHalfRenovation = (description: string): boolean => {
+  if (
+    catchIndicators(description || "", [
+      "za polu renoviranje",
+    ])
+  )
+    return true;
+
+  if (isNewFromDesc(description)) return false;
+
+  return false;
+};
+
+
+
+
+export const isForRenovation = (description: string): boolean => {
+  if (
+    catchIndicators(description || "", [
+      "za renoviranje",
+      "potrebno renoviranje",
+    ])
+  )
+    return true;
+
+  if (isNewFromDesc(description)) return false;
+
+  return false;
 };
 
 export const isNewBuild = (detail: Details) => {
@@ -382,7 +422,8 @@ export const isRoleForUpdate = (role: UserRole, id: string): boolean => {
 
 export const getRoleForUpsert = (role: UserRole, id: string): UserRole => {
   const today = new Date();
-  const count = role.count.length > 9 ? [Number(id)] : [...role.count, Number(id)];
+  const count =
+    role.count.length > 9 ? [Number(id)] : [...role.count, Number(id)];
   return { ...role, date: today, count };
 };
 
@@ -516,10 +557,12 @@ export const convertSecondsToMinutes = (seconds: number): number => {
 };
 
 export const getWalkDistance = (from: number[], to: number[]) => {
-  const dist = Math.round(distance(point(from), point(to), { units: "meters" }));
+  const dist = Math.round(
+    distance(point(from), point(to), { units: "meters" })
+  );
 
   return {
     distance: roundNumberToDecimal(dist / 1000, 2),
-    duration: Math.ceil(dist / 60)
+    duration: Math.ceil(dist / 60),
   };
 };

@@ -1,34 +1,21 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { TColumn, TLine, TPage } from "../components/layout";
-import { defer, json } from "@remix-run/node";
 import {
-  Await,
   Link,
   useLoaderData,
+  useLocation,
   useNavigation,
   useSearchParams,
 } from "@remix-run/react";
 import { getParamValue, isMobile } from "../utils/params";
 import { Translator } from "../data/language/translator";
 import Accordion from "../components/accordion";
-import { AccordionData, FinalError } from "../types/component.types";
-import { Suspense, useState } from "react";
-import { createSupabaseServerClient } from "../supabase.server";
-import { makeNumberCurrency } from "../utils/numbers";
-import MarketCard from "../components/card/MarketCard";
+import { AccordionData } from "../types/component.types";
+import { useState, useEffect } from "react";
 import { LangType } from "../types/dashboard.types";
-import { differenceInDays } from "date-fns";
-import { MarketIndexItem, PhotoItem } from "../types/market.types";
-import {
-  calculateIRR,
-  getPropertyPurchaseExpenses,
-  getNumberWithDecimals,
-} from "../utils/market";
-import { calculateFuturePrice } from "../utils/dashboard";
-import { Blog } from "../types/blog.types";
-import BlogCard from "../components/card/BlogCard";
 import Footer from "../components/layout/Footer";
 import PageLoader from "../components/loader/PageLoader";
+import NavigationColumn from "../components/navigation/NavigationColumn";
+import OfferCard from "../components/card/OfferCard";
 
 export const meta: MetaFunction = ({ location }) => {
   const lang = getParamValue(location.search, "lang", "sr");
@@ -44,116 +31,18 @@ export const meta: MetaFunction = ({ location }) => {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userAgent = request.headers.get("user-agent");
-  const lang = new URL(request.url).searchParams.get("lang") || "sr";
-  const city = 1;
-
-  let isError = false;
-  let finalError: FinalError | null = null;
-
-  try {
-    const { supabaseClient } = createSupabaseServerClient(request);
-
-    const { data: potentialData, error: potentialError } =
-      await supabaseClient.rpc("get_homepage_potential", { city_id: city });
-
-    if (potentialError) {
-      isError = true;
-      finalError = potentialError as FinalError;
-    }
-
-    const { data: rentalData, error: rentalError } = await supabaseClient.rpc(
-      "get_homepage_rental",
-      { city_id: city }
-    );
-
-    if (rentalError) {
-      isError = true;
-      finalError = rentalError as FinalError;
-    }
-
-    const apartmentIds: number[] = [];
-    potentialData?.forEach((item: MarketIndexItem) =>
-      apartmentIds.push(item.id)
-    );
-    rentalData?.forEach((item: MarketIndexItem) => apartmentIds.push(item.id));
-
-    const { data: photoData, error: photoError } = await supabaseClient
-      .from("photos")
-      .select("id, link, apartment_id")
-      .in("apartment_id", apartmentIds)
-      .order("id");
-
-    if (photoError) {
-      isError = true;
-      finalError = photoError as FinalError;
-    }
-
-    const photos: Record<string, PhotoItem> = {};
-
-    photoData?.forEach((item) => {
-      if (photos[item.apartment_id as string] === undefined) {
-        photos[item.apartment_id] = item;
-      }
-    });
-
-    const resultsRental: MarketIndexItem[] = [];
-
-    (rentalData || [])?.forEach((item: MarketIndexItem) => {
-      resultsRental.push({
-        ...item,
-        photo: photos[item.id],
-      });
-    });
-
-    const resultsPotential: MarketIndexItem[] = [];
-
-    (potentialData || [])?.forEach((item: MarketIndexItem) => {
-      resultsPotential.push({
-        ...item,
-        photo: photos[item.id],
-      });
-    });
-
-    const { data: blogData, error: blogError } = await supabaseClient
-      .from("blogs")
-      .select("*")
-      .eq("language", lang)
-      .order("id")
-      .limit(4);
-
-    if (blogError) {
-      isError = true;
-      finalError = blogError as FinalError;
-    }
-
-    return defer({
-      mobile: isMobile(userAgent!),
-      potential: resultsPotential,
-      rental: resultsRental,
-      blogs: blogData,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-
-  if (isError) {
-    throw json({ error: finalError?.message, lang }, { status: 400 });
-  }
 
   return {
-    potential: [],
-    rental: [],
-    blogs: [],
     mobile: isMobile(userAgent!),
   };
 };
 
 export default function Index() {
   const [searchParams] = useSearchParams();
+  const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
   const lang = (searchParams.get("lang") as LangType) || "sr";
 
   const translator = new Translator("homepage");
-  const translate = new Translator("market");
 
   const [activeFaq, setActiveFaq] = useState<number>(7);
 
@@ -188,307 +77,378 @@ export default function Index() {
       title: translator.getTranslation(lang, "faq5Title"),
       text: translator.getTranslation(lang, "faq5Text"),
     },
-    {
-      id: 6,
-      title: translator.getTranslation(lang, "faq6Title"),
-      text: translator.getTranslation(lang, "faq6Text"),
-    },
   ];
 
   const {
     mobile,
-    potential,
-    rental,
-    blogs,
   }: {
     mobile: boolean;
-    potential: MarketIndexItem[];
-    rental: MarketIndexItem[];
-    blogs: Blog[];
   } = useLoaderData();
 
   const navigation = useNavigation();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname || location.search) {
+      setIsNavOpen(false);
+    }
+  }, [location.pathname, location.search]);
 
   return (
     <>
       <PageLoader open={navigation.state === "loading"} />
-      <TPage color="bg-white" mobile={mobile}>
-        <TLine columns={1}>
-          <TColumn span={1}>
-            <div className="flex flex-col md:flex-row justify-between">
-              <div className="flex flex-row justify-center">
-                <div className="w-[140px] md:w-[160px]">
-                  <img
-                    src="logo1.png"
-                    alt="Realvest logo"
-                    className="max-w-full"
-                    width="160"
-                    height="46"
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col md:mt-3 md:mt-0">
-                <div className="flex flex-col md:flex-row items-center">
+      <NavigationColumn
+        isOpen={isNavOpen}
+        toggleOpen={() => setIsNavOpen(!isNavOpen)}
+        lang={lang}
+      />
+      <div className="bg-blue-100">
+        <div className="w-full xl:w-[1260px] mx-auto px-2 md:px-8 py-8 lg:py-14">
+          <div className="grid grid-cols-5 gap-8">
+            <div className="col-span-5 lg:col-span-2">
+              <div>
+                <h1 className="text-[46px] lg:text-[60px] leading-[56px] lg:leading-[68px] font-semibold mb-6">
+                  {translator.getTranslation(lang, "heroTitle")}
+                </h1>
+                <p className="text-[16px] lg:text-[18px] leading-[24px] lg:leading-[28px] w-full font-light mb-2">
+                  {translator.getTranslation(lang, "heroSubtitle")}
+                </p>
+                <p className="text-[16px] lg:text-[18px] leading-[24px] lg:leading-[28px] w-full font-light mb-10 font-semibold">
+                  {translator.getTranslation(lang, "heroSubtitleBold")}
+                </p>
+                <div className="w-[70%]">
                   <Link
-                    to={`auth/?lang=${lang}`}
-                    className="hidden md:block text-md px-4 py-2 bg-slate-600 font-semibold text-white rounded-xl transition-all duration-300 transform hover:bg-slate-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                    to={`/auth/register?lang=${lang}`}
+                    className="text-[16px] text-center font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
                   >
-                    {translator.getTranslation(lang, "haveAccount")}
-                  </Link>
-                  <Link
-                    to={`/?lang=${lang === "sr" ? "en" : "sr"}`}
-                    className="text-sm font-regular text-blue-500 transform hover:text-blue-700 md:mt-3 md:mt-0 ml-0 md:ml-6"
-                  >
-                    {lang === "sr" ? "english version" : "srpska verzija"}
+                    {translator.getTranslation(lang, "accountBtn")}
                   </Link>
                 </div>
               </div>
             </div>
-          </TColumn>
-        </TLine>
-      </TPage>
-
-      <TPage color="bg-white" mobile={mobile}>
-        <TLine columns={12} gap={2}>
-          <TColumn span={12}>
-            <div className="w-full flex flex-row">
-              <div className="w-full relative rounded-md md:overflow-hidden md:grayscale-[40%]">
-                <picture className="hidden md:block">
-                  <source
-                    srcSet="https://belgradeepass.com/uploads/images/b_adsiz-tasarim-21-1-.webp"
-                    type="image/webp"
-                  />
+            <div className="col-span-5 lg:col-span-3 ">
+              <div className="w-full flex justify-center lg:justify-end">
+                <div>
                   <img
-                    src="https://belgradeepass.com/uploads/images/b_adsiz-tasarim-21-1-.webp"
-                    alt="Belgrade cityscape"
-                    width="100%"
-                    height="auto"
-                    loading="lazy"
+                    src="/homeImg.jpg"
+                    alt="home-img"
+                    className="max-w-[100%] text-center rounded-md"
                   />
-                </picture>
-                <div className="relative md:absolute top-0 md:top-5 w-full flex flex-col items-center mb-4 md:mb-0">
-                  <div className="w-full md:w-[80%] lg:w-[40%] text-center">
-                    <h1 className="text-gray-600 md:text-white font-bold text-2xl lg:text-4xl md:drop-shadow-xl text-center px-2 md: leading-[24px] lg:leading-[48px] mb-4 md:mb-2 lg:mb-8">
-                      {translator.getTranslation(lang, "heroTitle")}
-                    </h1>
-                    <h2 className="w-full drop-shadow-xl text-black md:text-white text-lg lg:text-xl text-center md:bg-gray-800 md:bg-opacity-60 p-1 rounded-lg mb-6 md:mb-4 lg:mb-8">
-                      {translator.getTranslation(lang, "heroSubtitle")}
-                    </h2>
-                    <Link
-                      to={`/market/?lang=${lang}&page=1`}
-                      className="text-md px-4 py-2 bg-blue-500 font-semibold text-white rounded-md transition-all duration-300 transform hover:bg-blue-700 focus:ring-2 focus:outline-none focus:ring-opacity-50"
-                    >
-                      {translator.getTranslation(lang, "heroCta")}
-                    </Link>
-                  </div>
                 </div>
               </div>
             </div>
-          </TColumn>
-        </TLine>
-      </TPage>
-
-      <TPage color="bg-white" mobile={mobile}>
-        <div className="mt-0 lg:mt-4">
-          <h2 className="text-[24px] md:text-[32px] font-bold text-center mb-2">
-            {translator.getTranslation(lang, "potentialTitle")}
-          </h2>
-          <Suspense fallback={null}>
-            <Await resolve={potential}>
-              {(potential) => (
-                <div className="py-6 px-2 md:px-4 lg:px-12 rounded-lg">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                    {potential.slice(0, mobile ? 2 : 5).map((item) => {
-                      return (
-                        <MarketCard
-                          key={item?.id}
-                          link={`/market/${item?.id}?lang=${lang}&home=1`}
-                          lang={lang as LangType}
-                          price={makeNumberCurrency(item!.price)}
-                          appreciation={
-                            item?.profitability_competition_trend || 0
-                          }
-                          photo={item?.photo?.link || ""}
-                          title={`${item?.city_part}, ${item?.size}m2`}
-                          rent={(item?.profitability_rental_count || 0) > 2}
-                          irr={`${getNumberWithDecimals(
-                            calculateIRR(
-                              item.price +
-                                getPropertyPurchaseExpenses(item.price).total,
-                              calculateFuturePrice(
-                                item.average_price,
-                                item.profitability_competition_trend,
-                                5
-                              ) * item.size,
-                              5
-                            ),
-                            2
-                          )}%`}
-                          duration={`${translate.getTranslation(
-                            lang,
-                            "onMarket"
-                          )} ${
-                            differenceInDays(
-                              item?.date_signed || new Date(),
-                              new Date()
-                            ) < 1
-                              ? Math.abs(
-                                  differenceInDays(
-                                    item?.date_signed || new Date(),
-                                    new Date()
-                                  )
-                                )
-                              : 0
-                          } ${translate.getTranslation(lang, "days")}`}
-                        />
-                      );
-                    })}
-                  </div>
-                  <div className="w-full text-center mt-8">
-                    <Link
-                      to={`/market/?lang=${lang}&page=1&city=1`}
-                      className="text-xl text-blue-500 hover:underline"
-                    >
-                      {translator.getTranslation(lang, "marketAll")}
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </Await>
-          </Suspense>
+          </div>
         </div>
-      </TPage>
+      </div>
 
-      <TPage mobile={mobile}>
-        <div className="w-full mt-12 mb-10">
-          <div className="w-full md:w-[80%] lg:w-[60%] mx-auto">
-            <h3 className="font-bold text-center text-2xl md:text-4xl">
-              {translator.getTranslation(lang, "saveTimeTitle")}
-            </h3>
-            <p className="font-regular text-center text-md md:text-[18px] mt-4 md:mt-8 text-gray-600">
-              {translator.getTranslation(lang, "saveTimeText")}
+      <div className="bg-white">
+        <div className="w-full xl:w-[1080px] mx-auto px-10 md:px-8 py-8 lg:py-14">
+          <div className="w-full mb-8">
+            <h2 className="font-semibold text-[30px] text-center mb-4">
+              {translator.getTranslation(lang, "latest")}
+            </h2>
+            <p className="text-[16px] lg:text-[18px] leading-[24px] lg:leading-[28px] w-full font-light mb-2 text-center">
+              {translator.getTranslation(lang, "latestSub")}
             </p>
           </div>
-
-          <div className="flex flex-row justify-center mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-8 mb-8">
+            <div className="mb-8 lg:mb-0">
+              <div className="w-full h-[180px] overflow-hidden rounded-lg mb-4">
+                <img
+                  src="/homeImg.jpg"
+                  alt="home-img"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <p className="font-semibold text-[19px] lg:text-[17px] mb-1">
+                38 m2 Vračar, Beograd
+              </p>
+              <p className="font-regular text-[18px] lg:text-[16px]">
+                {`${translator.getTranslation(lang, "interest")} 3.7%`}
+              </p>
+            </div>
+            <div className="mb-8 lg:mb-0">
+              <div className="w-full h-[180px] overflow-hidden rounded-lg mb-4">
+                <img
+                  src="/homeImg.jpg"
+                  alt="home-img"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <p className="font-semibold text-[17px] mb-1">
+                44 m2 Zeleni Venac, Beograd
+              </p>
+              <p className="font-regular text-[16px]">
+                {`${translator.getTranslation(lang, "interest")} 4.2%`}
+              </p>
+            </div>
+            <div className="mb-8 lg:mb-0">
+              <div className="w-full h-[180px] overflow-hidden rounded-lg mb-4">
+                <img
+                  src="/homeImg.jpg"
+                  alt="home-img"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <p className="font-semibold text-[17px] mb-1">
+                54 m2 Mirijevo, Beograd
+              </p>
+              <p className="font-regular text-[16px]">
+                {`${translator.getTranslation(lang, "interest")} 3.8%`}
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-row justify-center">
             <Link
-              to={`auth/register/?lang=${lang}`}
-              className="px-6 py-3 text-md font-semibold text-white bg-blue-500 rounded-xl  transition-all duration-300 transform hover:bg-blue-700 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+              to={`/offer-restricted/?lang=${lang}`}
+              className="text-[16px] text-center font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
             >
-              {translator.getTranslation(lang, "accountCta")}
+              {translator.getTranslation(lang, "moreBtn")}
             </Link>
           </div>
         </div>
-      </TPage>
+      </div>
 
-      <TPage color="bg-white" mobile={mobile}>
-        <div className="mt-6 lg:mt-10 pb-4">
-          <h2 className="text-[24px] md:text-[32px] font-bold text-center mb-2">
-            {translator.getTranslation(lang, "rentalTitle")}
-          </h2>
-          <Suspense fallback={null}>
-            <Await resolve={rental}>
-              {(rental) => (
-                <div className="py-6 px-2 md:px-4 lg:px-12 rounded-lg">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                    {rental.slice(0, mobile ? 2 : 5).map((item) => {
-                      return (
-                        <MarketCard
-                          key={item?.id}
-                          link={`/market/${item?.id}?lang=${lang}&home=1`}
-                          lang={lang as LangType}
-                          price={makeNumberCurrency(item!.price)}
-                          appreciation={
-                            item?.profitability_competition_trend || 0
-                          }
-                          photo={item?.photo?.link || ""}
-                          title={`${item?.city_part}, ${item?.size}m2`}
-                          rent={(item?.profitability_rental_count || 0) > 2}
-                          rentPrice={makeNumberCurrency(
-                            item.profitability_average_rental * item.size
-                          )}
-                          duration={`${translate.getTranslation(
-                            lang,
-                            "onMarket"
-                          )} ${
-                            differenceInDays(
-                              item?.date_signed || new Date(),
-                              new Date()
-                            ) < 1
-                              ? Math.abs(
-                                  differenceInDays(
-                                    item?.date_signed || new Date(),
-                                    new Date()
-                                  )
-                                )
-                              : 0
-                          } ${translate.getTranslation(lang, "days")}`}
-                        />
-                      );
-                    })}
-                  </div>
-                  <div className="w-full text-center mt-8">
-                    <Link
-                      to={`/market/?lang=${lang}&page=1&city=1`}
-                      className="text-xl text-blue-500 hover:underline"
-                    >
-                      {translator.getTranslation(lang, "marketAll")}
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </Await>
-          </Suspense>
-        </div>
-        <hr />
-      </TPage>
-      
-      {blogs.length > 2 && (
-        <TPage color="bg-white" mobile={mobile}>
-          <div className="py-6 px-2 md:px-4 lg:px-12 rounded-lg">
-            <div>
-              <h3 className="text-[24px] md:text-[32px] font-bold text-center mb-10">
-                {translator.getTranslation(lang, "homeBlogTitle")}
-              </h3>
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {blogs.map((item) => (
-                <BlogCard
-                  key={item.slug}
-                  lang={lang}
-                  isHome
-                  blog={item as unknown as Blog}
+      <div className="bg-indigo-50">
+        <div className="w-full xl:w-[1080px] mx-auto px-10 md:px-8 py-8 lg:py-14">
+          <div className="w-full mb-16">
+            <h2 className="font-semibold text-[30px] text-center mb-4">
+              {translator.getTranslation(lang, "why")}
+            </h2>
+            <p className="text-[16px] lg:text-[18px] leading-[24px] lg:leading-[28px] w-full font-light mb-2 text-center">
+              {translator.getTranslation(lang, "whySub")}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div className="flex flex-col items-center">
+              <div className="w-[80px]">
+                <img
+                  src="/apartment.png"
+                  alt="building-icon"
+                  className="max-w-[100%] text-center rounded-xl mb-3"
                 />
-              ))}
+              </div>
+              <p className="font-semibold text-center text-[17px] mb-2">
+                {translator.getTranslation(lang, "whyOption1")}
+              </p>
+              <p className="font-regular text-[14px] text-center">
+                {translator.getTranslation(lang, "whyOption1Sub")}
+              </p>
             </div>
-            <div className="flex flex-row items-center mt-6 md:mt-8">
-              <Link
-                to={`/blog/?lang=${lang}&page=1`}
-                className="w-full font-regular text-center text-blue-500 hover:underline text-lg lg:text-xl"
-              >
-                {translator.getTranslation(lang, "homeBlogAll")}
-              </Link>
+            <div className="flex flex-col items-center">
+              <div className="w-[80px]">
+                <img
+                  src="/income.png"
+                  alt="building-icon"
+                  className="max-w-[100%] text-center rounded-xl mb-3"
+                />
+              </div>
+              <p className="font-semibold text-center text-[17px] mb-2">
+                {translator.getTranslation(lang, "whyOption2")}
+              </p>
+              <p className="font-regular text-[14px] text-center">
+                {translator.getTranslation(lang, "whyOption2Sub")}
+              </p>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-[80px]">
+                <img
+                  src="/statistics.png"
+                  alt="building-icon"
+                  className="max-w-[100%] text-center rounded-xl mb-3"
+                />
+              </div>
+              <p className="font-semibold text-center text-[17px] mb-2">
+                {translator.getTranslation(lang, "whyOption3")}
+              </p>
+              <p className="font-regular text-[14px] text-center">
+                {translator.getTranslation(lang, "whyOption3Sub")}
+              </p>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-[80px]">
+                <img
+                  src="/pie-chart.png"
+                  alt="building-icon"
+                  className="max-w-[100%] text-center rounded-xl mb-3"
+                />
+              </div>
+              <p className="font-semibold text-[17px] text-center mb-2">
+                {translator.getTranslation(lang, "whyOption4")}
+              </p>
+              <p className="font-regular text-[14px] text-center">
+                {translator.getTranslation(lang, "whyOption4Sub")}
+              </p>
             </div>
           </div>
-        </TPage>
-      )}
+        </div>
+      </div>
 
-      <TPage mobile={mobile}>
-        <TLine columns={1}>
-          <TColumn span={1}>
-            <div className="w-full py-10 mb-0 md:mb-4">
-              <h3 className="text-slate-800 font-bold text-2xl md:text-3xl mb-6 md:mb-8">
-                {translator.getTranslation(lang, "faq")}
-              </h3>
-              <Accordion
-                active={activeFaq}
-                changeActive={setActiveFaq}
-                data={accordionData}
+      <div className="bg-white">
+        <div className="w-full xl:w-[1080px] mx-auto px-10 md:px-8 py-8 lg:py-14">
+          <div className="w-full mb-16">
+            <h2 className="font-semibold text-[30px] text-center mb-4">
+              {translator.getTranslation(lang, "how")}
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-14">
+            <div className="flex flex-col items-center">
+              <div className="w-full h-[420px] overflow-hidden rounded-2xl mb-2 ">
+                <img
+                  src={`/browse_${lang}.png`}
+                  alt="Browse"
+                  className="w-auto h-[384px] mx-auto h-full object-contain border-[8px] border-slate-800 rounded-3xl shadow-xl"
+                />
+              </div>
+              <p className="font-bold text-[20px] mb-2">
+                {translator.getTranslation(lang, "howOption1")}
+              </p>
+              <p className="font-light text-[16px] text-center">
+                {translator.getTranslation(lang, "howOption1Sub")}
+              </p>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-full h-[420px] overflow-hidden rounded-2xl mb-2 ">
+                <img
+                  src={`/invest_${lang}.png`}
+                  alt="Invest"
+                  className="w-auto h-[384px] mx-auto h-full object-contain border-[8px] border-slate-800 rounded-3xl shadow-xl"
+                />
+              </div>
+              <p className="font-bold text-[20px] mb-2">
+                {translator.getTranslation(lang, "howOption2")}
+              </p>
+              <p className="font-light text-[16px] text-center">
+                {translator.getTranslation(lang, "howOption2Sub")}
+              </p>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-full h-[420px] overflow-hidden rounded-2xl mb-2 ">
+                <img
+                  src={`/port_${lang}.png`}
+                  alt="Earn"
+                  className="w-auto h-[384px] mx-auto h-full object-contain border-[8px] border-slate-800 rounded-3xl shadow-xl"
+                />
+              </div>
+              <p className="font-bold text-[20px] mb-2">
+                {translator.getTranslation(lang, "howOption3")}
+              </p>
+              <p className="font-light text-[16px] text-center">
+                {translator.getTranslation(lang, "howOption3Sub")}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-row justify-center">
+            <Link
+              to={`/auth/register?lang=${lang}`}
+              className="text-[16px] text-center font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+            >
+              {translator.getTranslation(lang, "accountBtn")}
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-gray-100">
+        <div className="w-full xl:w-[980px] mx-auto px-8 py-8 lg:py-14">
+          <div className="w-full mb-8">
+            <h2 className="font-semibold text-[30px] text-center mb-4">
+              {translator.getTranslation(lang, "example")}
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-7 gap-6 mb-12">
+            <div className="col-span-1 lg:col-span-3">
+              <OfferCard
+                name={"40 m2, Zemun, Beograd"}
+                photo="https://img.nekretnine.rs/foto/NjU4eDQ5NC9jZW50ZXIvbWlkZGxlL2ZpbHRlcnM6d2F0ZXJtYXJrKGh0dHBzOi8vd3d3Lm5la3JldG5pbmUucnMvYnVpbGQvaW1hZ2VzL3dhdGVybWFyay0yNTYucG5nLGNlbnRlcixjZW50ZXIsNTApOmZvcm1hdCh3ZWJwKS9uZWs=/Upc03g6_cS_fss?st=ZaZmU5QnEkfI9RBhidRmMpodh9rgkL60JaFode05bNU&ts=1731673419&e=0"
+                isPremium
+                interest={3.5}
+                maturity={10}
+                lang={lang}
+                link={`/?lang=${lang}`}
+                bondPrice={500}
               />
             </div>
-          </TColumn>
-        </TLine>
-      </TPage>
+            <div className="flex flex-col col-span-1 lg:col-span-4">
+              <p className="font-semibold text-[16px] text-center lg:text-left mb-5">
+                {translator.getTranslation(lang, "exampleSub")}
+              </p>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="bg-white rounded-lg p-1">
+                  <p className="text-[14px] font-light text-center">
+                    {translator.getTranslation(lang, "exampleCount")}
+                  </p>
+                  <p className="text-[20px] font-bold text-center mt-2">2</p>
+                </div>
+                <div className="bg-white rounded-lg p-1">
+                  <p className="text-[14px] font-light text-center">
+                    {translator.getTranslation(lang, "exampleInvest")}
+                  </p>
+                  <p className="text-[20px] font-bold text-center mt-2">
+                    1,000€
+                  </p>
+                </div>
+                <div className="bg-white rounded-lg p-1">
+                  <p className="text-[14px] font-light text-center">
+                    {translator.getTranslation(lang, "exampleGrowth")}
+                  </p>
+                  <p className="text-[20px] font-bold text-center text-blue-500 mt-2">
+                    40%
+                  </p>
+                </div>
+                <div className="bg-white rounded-lg p-1">
+                  <p className="text-[14px] font-light text-center">
+                    {translator.getTranslation(lang, "exampleInterest")}
+                  </p>
+                  <p className="text-[20px] font-bold text-center text-green-600 mt-2">
+                    350€
+                  </p>
+                </div>
+                <div className="bg-white rounded-lg p-1">
+                  <p className="text-[14px] font-light text-center">
+                    {translator.getTranslation(lang, "examplePremium")}
+                  </p>
+                  <p className="text-[20px] font-bold text-center text-green-600 mt-2">
+                    170€
+                  </p>
+                </div>
+                <div className="bg-white rounded-lg p-1">
+                  <p className="text-[14px] font-light text-center">
+                    {translator.getTranslation(lang, "exampleFull")}
+                  </p>
+                  <p className="text-[20px] font-bold text-center text-blue-500 mt-2">
+                    5.2%
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-row justify-center">
+            <Link
+              to={`/knowledge?lang=${lang}`}
+              className="text-[16px] text-center font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+            >
+              {translator.getTranslation(lang, "exampleBtn")}
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white">
+        <div className="w-full xl:w-[1080px] mx-auto px-2 md:px-8 py-8 lg:py-14">
+          <div className="w-full mb-16">
+            <h2 className="font-semibold text-[30px] text-center mb-4">
+              {translator.getTranslation(lang, "faq")}
+            </h2>
+          </div>
+          <Accordion
+            active={activeFaq}
+            changeActive={setActiveFaq}
+            data={accordionData}
+          />
+        </div>
+      </div>
       <Footer lang={lang} mobile={mobile} />
     </>
   );

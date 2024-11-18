@@ -11,6 +11,7 @@ import { LangType } from "../types/dashboard.types";
 import { isMobile } from "../utils/params";
 import MobileNavigation from "../components/navigation/MobileNavigation";
 import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { supabaseClient } = createSupabaseServerClient(request);
@@ -21,13 +22,23 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   if (user?.data?.user?.role !== "authenticated") {
     return redirect(`/auth?lang=${lang}`);
-  }
+  } else {
+    const session = await supabaseClient.auth.getSession();
 
-  if (
-    user?.data?.user?.role === "authenticated" &&
-    currentUrl.pathname === "/dashboard"
-  ) {
-    return redirect(`/dashboard/search?lang=${lang}`);
+    const decoded = jwtDecode<{ user_role: string }>(
+      session?.data?.session?.access_token || ""
+    );
+
+    if(decoded.user_role !== 'admin') {
+      return redirect(`/`);
+    }
+
+    if (
+      user?.data?.user?.role === "authenticated" &&
+      currentUrl.pathname === "/dashboard"
+    ) {
+      return redirect(`/dashboard/search?lang=${lang}`);
+    }
   }
 
   return {
