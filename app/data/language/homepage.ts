@@ -16,13 +16,13 @@ export const homepageMap: Record<string, Record<string, string>> = {
       "With Realvest you are getting the opportunity to invest in properties that have undergone a thorough profitability assessment and that are carefully picked, maintained and managed by our experienced team.",
     whyOption1: "Invest the way you want",
     whyOption1Sub:
-      "Start investing in real estate with only 1,000€. In this way you are lowering your risk and at the same time you are keeping yourself involved in the property market growth.",
+      "Start investing in real estate with only 500€. In this way you are lowering your risk and at the same time you are keeping yourself involved in the property market growth.",
     whyOption2: "Earn interest",
     whyOption2Sub:
       "Earn reliable passive income. Property that you are fractional owner of is making money through rent and you are getting your share of the profits.",
     whyOption3: "Appreciate on the property",
     whyOption3Sub:
-      "Properties are showing steady growth. when the prices on the real estate market rise your initial investment will rise as well.",
+      "Earn additional premium if the property your bond is referring to appreciates. Profit from the real estate growth with low risk.",
     whyOption4: "Diversify your portfolio",
     whyOption4Sub:
       "Spread your risk by investing in multiple properties. Fractional ownership allows you to diversify your portfolio and reduce exposure to market fluctuations",
@@ -32,10 +32,10 @@ export const homepageMap: Record<string, Record<string, string>> = {
       "Create an account on our web application and discover all the investment opportunities available to you.",
     howOption2: "Invest",
     howOption2Sub:
-      "Read the full prospectus of the offer, including the risks, and start building your portfolio.",
+      "Read the full prospectus of the offer, include your risks, and start building your portfolio.",
     howOption3: "Earn",
     howOption3Sub:
-      "Receive a fixed annual interest paid quarterly and from time to time check current value of your initial investment.",
+      "Receive a fixed annual interest paid quarterly and expect a premium if the property appreciates until end of bond maturity.",
     heroCta: "See listings",
     accountCta: "Create free account",
     invest: "Investments",
@@ -94,14 +94,15 @@ export const homepageMap: Record<string, Record<string, string>> = {
     homeBlogAll: "All articles",
     marketAll: "See all listings",
     example: "Potential investment example",
-    exampleSub: "Scenario with potential purchase of 2 bonds for this property.",
+    exampleSub:
+      "Scenario with potential purchase of 2 bonds for this property.",
     exampleCount: "Amount of bonds",
     exampleInvest: "Investment",
     exampleGrowth: "Property price growth",
     exampleInterest: "Full interest",
     examplePremium: "Potential premium",
     exampleFull: "Full annual interest",
-    exampleBtn: "Learn more"
+    exampleBtn: "Learn more",
   },
   sr: {
     heroTitle: "Lako investirajte u nekretnine",
@@ -120,13 +121,13 @@ export const homepageMap: Record<string, Record<string, string>> = {
       "Sa Realvest-om dobijate mogućnost da investirate u nekretnine koje su prošle temeljnu procenu rentabilnosti i  koje su pažljivo izabrane, održavane i vođene od strane našeg iskusnog tima.",
     whyOption1: "Investirajte po želji",
     whyOption1Sub:
-      "Počnite investiranje u nekretnine sa samo 1,000€. Time ćete umanjiti rizik a zadržavate mogućnost profita u slučaju rasta tržišta nekretnina.",
+      "Počnite investiranje u nekretnine sa samo 500€. Time ćete umanjiti rizik a zadržavate mogućnost profita u slučaju rasta tržišta nekretnina.",
     whyOption2: "Zarađujte kamatu",
     whyOption2Sub:
       "Osigurajte redovne pasivne prihode. Nekretnina čiji ste parcijalni vlasnik zarađuje kroz izdavanje, a vi imate udeo u toj zaradi.",
     whyOption3: "Povećavajte vrednost",
     whyOption3Sub:
-      "Cene nekretnina pokazuju stabilan rast. Kroz rast cena na tržištu raste i vrednost vaše investicije bez obzira na kvartalne prihode.",
+      "Zaradite dodatnu premiju ukoliko nekretnina za koju je obveznica vezana poraste u vrednosti. Profitirajte od rasta cena nekretnina uz minimalni rizik.",
     whyOption4: "Divrzifikujte investicija",
     whyOption4Sub:
       "Investiranjem u manje delove velikog broja nekretnina raspodeljujete vaš rizik i vaše investicije postaju otpornije na tržišne promene.",
@@ -136,10 +137,10 @@ export const homepageMap: Record<string, Record<string, string>> = {
       "Otvorite nalog na našoj aplikaciji i otkrijte sve dostupne investicione prilike.",
     howOption2: "Investirajte",
     howOption2Sub:
-      "Pročitajte sve podatke u opisu prilike, uračunajte vaše lične rizike i počnite da pravite vaš portfolio.",
+      "Proverite sve podatke u opisu investicije, uračunajte vaše lične rizike i počnite da pravite vaš portfolio.",
     howOption3: "Zarađujte",
     howOption3Sub:
-      "Dobijajte redovne kvartalnu kamatu i povremeno proverite koliko trenutno vredi vaša inicijalna investicija.",
+      "Dobijajte redovnu kvartalnu kamatu i očekujte premiju u slučaju da vrednost nekretnine poraste u periodu dospeća.",
     heroCta: "Pogledajte oglase",
     accountCta: "Napravite besplatan nalog",
     invest: "Investicije",
@@ -163,9 +164,9 @@ export const homepageMap: Record<string, Record<string, string>> = {
     faq7Title: "U šta to konkretno investiram?",
     faq7Text:
       "Kada investirate u nekretninu ponuđenu na Realvest-u, vi kupujete obveznicu koja vam daje pravo da dobijate definisanu godišnju kamatu u toku perioda važenja obveznice, te da na kraju tog perioda dobijete nominalnu vrednost kupljene obveznice i potencijalnu premiju, ukoliko je nekretnina na koju se obveznica odnosi porasla u vrednosti.",
-    homeMetaTitle:
-      "Realvest - postanite investitor u nekretnine za samo 500€",
-    homeMetaDesc: "Kupite obveznice podržane rentabilnim nekretninama i zarađujte kamatu svakog kvartala. Učestvujte i profitirajte u potencijalnom budućem rastu tržišta nekretnina. Počnite sa samo 500€.",
+    homeMetaTitle: "Realvest - postanite investitor u nekretnine za samo 500€",
+    homeMetaDesc:
+      "Kupite obveznice podržane rentabilnim nekretninama i zarađujte kamatu svakog kvartala. Učestvujte i profitirajte u potencijalnom budućem rastu tržišta nekretnina. Počnite sa samo 500€.",
     contact: "Kontakt",
     errorPageTitle: "Nešto nije u redu!",
     errorPageSubTitle:
@@ -204,6 +205,6 @@ export const homepageMap: Record<string, Record<string, string>> = {
     exampleInterest: "Ukupan iznos kamate",
     examplePremium: "Potencijalna premija",
     exampleFull: "Procenat godišnje zarade",
-    exampleBtn: "Saznajte više"
+    exampleBtn: "Saznajte više",
   },
 };
