@@ -15,6 +15,7 @@ import { LangType } from "../types/dashboard.types";
 import Footer from "../components/layout/Footer";
 import PageLoader from "../components/loader/PageLoader";
 import NavigationColumn from "../components/navigation/NavigationColumn";
+import OfferCard from "../components/card/OfferCard";
 
 export const meta: MetaFunction = ({ location }) => {
   const lang = getParamValue(location.search, "lang", "sr");
@@ -350,14 +351,86 @@ export default function Index() {
       </div>
 
       <div className="bg-gray-100">
-        <div className="w-full xl:w-[1080px] mx-auto px-10 md:px-8 py-8 lg:py-14">
-          <div className="flex flex-col justify-center">
-            <div>
-              <p className="text-[52px] font-light text-center mb-2">250K €</p>
-              <p className="text-[18px] font-semibold text-center">
-                Obješnjenje nekog podatka
-              </p>
+        <div className="w-full xl:w-[980px] mx-auto px-8 py-8 lg:py-14">
+          <div className="w-full mb-8">
+            <h2 className="font-semibold text-[30px] text-center mb-4">
+              {translator.getTranslation(lang, "example")}
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-7 gap-6 mb-12">
+            <div className="col-span-1 lg:col-span-3">
+              <OfferCard
+                name={"40 m2, Zemun, Beograd"}
+                photo="https://img.nekretnine.rs/foto/NjU4eDQ5NC9jZW50ZXIvbWlkZGxlL2ZpbHRlcnM6d2F0ZXJtYXJrKGh0dHBzOi8vd3d3Lm5la3JldG5pbmUucnMvYnVpbGQvaW1hZ2VzL3dhdGVybWFyay0yNTYucG5nLGNlbnRlcixjZW50ZXIsNTApOmZvcm1hdCh3ZWJwKS9uZWs=/Upc03g6_cS_fss?st=ZaZmU5QnEkfI9RBhidRmMpodh9rgkL60JaFode05bNU&ts=1731673419&e=0"
+                isPremium
+                interest={3.5}
+                maturity={10}
+                lang={lang}
+                link={`/?lang=${lang}`}
+                bondPrice={500}
+              />
             </div>
+            <div className="flex flex-col col-span-1 lg:col-span-4">
+              <p className="font-semibold text-[16px] text-center lg:text-left mb-5">
+                {translator.getTranslation(lang, "exampleSub")}
+              </p>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="bg-white rounded-lg p-1">
+                  <p className="text-[14px] font-light text-center">
+                    {translator.getTranslation(lang, "exampleCount")}
+                  </p>
+                  <p className="text-[20px] font-bold text-center mt-2">2</p>
+                </div>
+                <div className="bg-white rounded-lg p-1">
+                  <p className="text-[14px] font-light text-center">
+                    {translator.getTranslation(lang, "exampleInvest")}
+                  </p>
+                  <p className="text-[20px] font-bold text-center mt-2">
+                    1,000€
+                  </p>
+                </div>
+                <div className="bg-white rounded-lg p-1">
+                  <p className="text-[14px] font-light text-center">
+                    {translator.getTranslation(lang, "exampleGrowth")}
+                  </p>
+                  <p className="text-[20px] font-bold text-center text-blue-500 mt-2">
+                    40%
+                  </p>
+                </div>
+                <div className="bg-white rounded-lg p-1">
+                  <p className="text-[14px] font-light text-center">
+                    {translator.getTranslation(lang, "exampleInterest")}
+                  </p>
+                  <p className="text-[20px] font-bold text-center text-green-600 mt-2">
+                    350€
+                  </p>
+                </div>
+                <div className="bg-white rounded-lg p-1">
+                  <p className="text-[14px] font-light text-center">
+                    {translator.getTranslation(lang, "examplePremium")}
+                  </p>
+                  <p className="text-[20px] font-bold text-center text-green-600 mt-2">
+                    170€
+                  </p>
+                </div>
+                <div className="bg-white rounded-lg p-1">
+                  <p className="text-[14px] font-light text-center">
+                    {translator.getTranslation(lang, "exampleFull")}
+                  </p>
+                  <p className="text-[20px] font-bold text-center text-blue-500 mt-2">
+                    5.2%
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-row justify-center">
+            <Link
+              to={`/knowledge?lang=${lang}`}
+              className="text-[16px] text-center font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+            >
+              {translator.getTranslation(lang, "exampleBtn")}
+            </Link>
           </div>
         </div>
       </div>
