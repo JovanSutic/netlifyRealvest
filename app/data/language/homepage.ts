@@ -93,6 +93,15 @@ export const homepageMap: Record<string, Record<string, string>> = {
     homeBlogTitle: "Real estate market: articles and insights",
     homeBlogAll: "All articles",
     marketAll: "See all listings",
+    example: "Potential investment example",
+    exampleSub: "Scenario with potential purchase of 2 bonds for this property.",
+    exampleCount: "Amount of bonds",
+    exampleInvest: "Investment",
+    exampleGrowth: "Property price growth",
+    exampleInterest: "Full interest",
+    examplePremium: "Potential premium",
+    exampleFull: "Full annual interest",
+    exampleBtn: "Learn more"
   },
   sr: {
     heroTitle: "Lako investirajte u nekretnine",
@@ -187,5 +196,14 @@ export const homepageMap: Record<string, Record<string, string>> = {
     homeBlogTitle: "Tržište nekretnina: članci i uvidi",
     homeBlogAll: "Svi članici",
     marketAll: "Pogledajte sve oglase",
+    example: "Primer potencijalne investicije",
+    exampleSub: "Scenario potencijalne kupovine 2 obveznice za ovu nekretninu.",
+    exampleCount: "Kupljene obveznice",
+    exampleInvest: "Ukupna investicija",
+    exampleGrowth: "Očekivani rast nekretnine",
+    exampleInterest: "Ukupan iznos kamate",
+    examplePremium: "Potencijalna premija",
+    exampleFull: "Procenat godišnje zarade",
+    exampleBtn: "Saznajte više"
   },
 };
