@@ -297,7 +297,7 @@ export default function Index() {
                 <img
                   src={`/browse_${lang}.png`}
                   alt="Browse"
-                  className="w-auto h-[384px] mx-auto h-full object-contain border-[8px] border-slate-800 rounded-3xl shadow-xl"
+                  className="w-auto h-[384px] mx-auto object-contain border-[8px] border-slate-800 rounded-3xl shadow-xl"
                 />
               </div>
               <p className="font-bold text-[20px] mb-2">
@@ -312,7 +312,7 @@ export default function Index() {
                 <img
                   src={`/invest_${lang}.png`}
                   alt="Invest"
-                  className="w-auto h-[384px] mx-auto h-full object-contain border-[8px] border-slate-800 rounded-3xl shadow-xl"
+                  className="w-auto h-[384px] mx-auto object-contain border-[8px] border-slate-800 rounded-3xl shadow-xl"
                 />
               </div>
               <p className="font-bold text-[20px] mb-2">
@@ -327,7 +327,7 @@ export default function Index() {
                 <img
                   src={`/port_${lang}.png`}
                   alt="Earn"
-                  className="w-auto h-[384px] mx-auto h-full object-contain border-[8px] border-slate-800 rounded-3xl shadow-xl"
+                  className="w-auto h-[384px] mx-auto object-contain border-[8px] border-slate-800 rounded-3xl shadow-xl"
                 />
               </div>
               <p className="font-bold text-[20px] mb-2">
