@@ -39,6 +39,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   if (source === "blog") {
     const name = String(formData.get("name"));
+    const type = String(formData.get("type"));
     const language = String(formData.get("language"));
     const description = String(formData.get("description"));
     const link = String(formData.get("link"));
@@ -62,6 +63,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             language,
             name,
             description,
+            type,
             slug: createSlug(name),
             date_created: today,
             media_link: link,
@@ -95,7 +97,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         contents.push(value as string);
       }
       if (key.substring(0, 4) === "extr") {
-        extras.push((value || '') as string);
+        extras.push((value || "") as string);
       }
     }
 
@@ -185,6 +187,7 @@ export default function NewBlog() {
   const lang = (searchParams.get("lang") as LangType) || "sr";
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
+  const [type, setType] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [link, setLink] = useState<string>("");
   const [language, setLanguage] = useState<LangType>(lang || "sr");
@@ -201,6 +204,7 @@ export default function NewBlog() {
   useEffect(() => {
     if (actionData?.success && actionData.type === "blog") {
       setName("");
+      setType("");
       setDescription("");
       setLink("");
       setLanguage(lang);
@@ -306,7 +310,7 @@ export default function NewBlog() {
                     <BlogSectionItem
                       key={item.id}
                       content={item.content}
-                      extra={item.extra || ''}
+                      extra={item.extra || ""}
                       type={item.type}
                     />
                   ))}
@@ -481,6 +485,15 @@ export default function NewBlog() {
               placeholder="Blog name"
               value={name}
               onChange={(event) => setName(event.target.value)}
+            />
+            <input
+              name="type"
+              type="text"
+              required
+              className="w-full text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none mb-2"
+              placeholder="Blog type"
+              value={type}
+              onChange={(event) => setType(event.target.value)}
             />
             <div className="mb-2">
               <Select
