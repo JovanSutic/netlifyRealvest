@@ -25,5 +25,6 @@ export interface Blog {
   media_link: string;
   date_created: Date | string;
   language: string;
+  type?: string;
   sections?: BlogContent[];
 }
