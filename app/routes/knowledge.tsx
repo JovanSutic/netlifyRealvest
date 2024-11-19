@@ -98,6 +98,8 @@ export default function Knowledge() {
   const navigation = useNavigation();
   const location = useLocation();
 
+  console.log(data);
+
   useEffect(() => {
     if (location.pathname || location.search) {
       setIsNavOpen(false);
@@ -112,12 +114,12 @@ export default function Knowledge() {
         lang={lang}
       />
       <div className="bg-white border-t-[1px] border-gray-300">
-        <div className="w-full xl:w-[1260px] mx-auto px-2 md:px-8 pt-8">
-          <h1 className="w-full text-center text-[40px] font-bold">
+        <div className="w-full xl:w-[1260px] mx-auto px-2 md:px-8 pt-6 lg:pt-8">
+          <h1 className="w-full text-center text-[34px] lg:text-[40px] font-bold">
             {translator.getTranslation(lang, "title")}
           </h1>
 
-          <div className="grid grid-cols-2 gap-10 mt-14 pb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 mt-8 lg:mt-14 pb-16">
             <div className="flex flex-col">
               <div className="px-2 flex flex-row items-center mb-4">
                 <svg

@@ -103,6 +103,7 @@ export const homepageMap: Record<string, Record<string, string>> = {
     examplePremium: "Potential premium",
     exampleFull: "Full annual interest",
     exampleBtn: "Learn more",
+    footerKnow: "Knowledge Base",
   },
   sr: {
     heroTitle: "Lako investirajte u nekretnine",
@@ -206,5 +207,6 @@ export const homepageMap: Record<string, Record<string, string>> = {
     examplePremium: "Potencijalna premija",
     exampleFull: "Procenat godišnje zarade",
     exampleBtn: "Saznajte više",
+    footerKnow: "Baza znanja",
   },
 };

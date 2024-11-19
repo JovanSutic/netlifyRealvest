@@ -7,15 +7,17 @@ const NavigationColumn = ({
   isOpen,
   toggleOpen,
   lang,
+  border = false,
 }: {
   isOpen: boolean;
   toggleOpen: () => void;
   lang: LangType;
+  border?: boolean;
 }) => {
   const translate = new Translator("navigation");
 
   return (
-    <header>
+    <header className={`${border && "border-b-[1px] border-gray-300"}`}>
       <div className="w-full xl:w-[1260px] mx-auto mb-0 lg:mb-1">
         <div className="grid grid-cols-2 lg:grid-cols-3">
           <div className="flex flex-col justify-center px-4 py-4 lg:py-2">

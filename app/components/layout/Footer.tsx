@@ -66,10 +66,10 @@ const Footer = ({ mobile, lang }: { mobile: boolean; lang: LangType }) => {
                   </li>
                   <li>
                     <Link
-                      to={`/blog?lang=${lang}`}
+                      to={`/knowledge/?lang=${lang}`}
                       className="text-gray-300 hover:text-white text-sm"
                     >
-                      {translate.getTranslation(lang, "blog")}
+                      {translate.getTranslation(lang, "footerKnow")}
                     </Link>
                   </li>
                   <li>
