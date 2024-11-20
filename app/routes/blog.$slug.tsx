@@ -1,8 +1,9 @@
 import { LoaderFunctionArgs, json } from "@remix-run/node";
+import { useState, useEffect } from "react";
 import {
-  Link,
   MetaFunction,
   useLoaderData,
+  useLocation,
   useNavigate,
   useNavigation,
   useSearchParams,
@@ -17,6 +18,7 @@ import BlogSectionItem from "../widgets/BlogSectionItem";
 import { formatDate } from "../utils/dateTime";
 import Footer from "../components/layout/Footer";
 import PageLoader from "../components/loader/PageLoader";
+import NavigationColumn from "../components/navigation/NavigationColumn";
 
 export const meta: MetaFunction = ({ data }) => {
   const { data: loadingData } = data as { data: Blog };
@@ -88,6 +90,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 const BlogSingle = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
   const goBack = () => navigate(-1);
 
   const translate = new Translator("homepage");
@@ -95,26 +98,31 @@ const BlogSingle = () => {
   const lang = (searchParams.get("lang") as LangType) || "sr";
 
   const navigation = useNavigation();
+  const location = useLocation();
 
   const { data, mobile } = useLoaderData<{
     data: Blog;
     mobile: boolean;
   }>();
 
+  useEffect(() => {
+    if (location.pathname || location.search) {
+      setIsNavOpen(false);
+    }
+  }, [location.pathname, location.search]);
+
   return (
-    <>
+    <div className="w-full">
       <PageLoader open={navigation.state === "loading"} />
-      <div className="w-full lg:w-[960px] mx-auto py-4 px-2 mb-6">
-        <div className="w-full relative mb-4">
-          <div className="w-[140px] mx-auto">
-            <Link to={`/?lang=${lang}`}>
-              <img
-                src="/logo2.png"
-                alt="Realvest logo"
-                className="max-w-full"
-              />
-            </Link>
-          </div>
+      <NavigationColumn
+        isOpen={isNavOpen}
+        toggleOpen={() => setIsNavOpen(!isNavOpen)}
+        lang={lang}
+        border
+        url={location.pathname}
+      />
+      <div className="w-full xl:w-[1060px] mx-auto px-2 md:px-8 pt-6 lg:pt-8 pb-12">
+        <div className="w-full relative pt-4">
           <div className="flex flex-row absolute bottom-0">
             <button
               type="button"
@@ -134,11 +142,11 @@ const BlogSingle = () => {
             {data.name}
           </h2>
 
-          <div className="w-full md:w-[500px] lg:w-[700px] text-center mx-auto mb-3 md:mb-5 lg:mb-8">
+          <div className="w-full h-[188px] md:h-[266px] lg:h-[316px] md:w-[500px] lg:w-[700px] text-center mx-auto mb-3 md:mb-5 lg:mb-8 rounded-xl overflow-hidden">
             <img
               src={data.media_link}
               alt={data.slug}
-              className="max-w-full center"
+              className="w-full h-auto object-contain rounded-xl"
             />
           </div>
         </div>
@@ -149,13 +157,13 @@ const BlogSingle = () => {
               key={item.id}
               content={item.content}
               type={item.type}
-              extra={item.extra || ''}
+              extra={item.extra || ""}
             />
           ))}
         </div>
       </div>
       <Footer lang={lang} mobile={mobile} />
-    </>
+    </div>
   );
 };
 

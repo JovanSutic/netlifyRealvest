@@ -258,6 +258,7 @@ export default function AuthSign() {
         isOpen={isNavOpen}
         toggleOpen={() => setIsNavOpen(!isNavOpen)}
         lang={lang}
+        url={location.pathname}
       />
       <div className="w-full flex justify-center border-t-[1px] border-gray-300 font-[sans-serif] text-[#333] p-4 h-auto">
         <Alert

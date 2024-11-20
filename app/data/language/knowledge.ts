@@ -1,12 +1,28 @@
 export const knowledgeMap: Record<string, Record<string, string>> = {
   en: {
+    sectionMeta: "Important information for investors in real estate backed bonds.",
+    sectionMetaDescription: "Answers to important question investors in real estate backed bonds have about investing, security, property and bonds.",
+    title: "Knowledge base",
     knowledgeConst: "Knowledge base page is under construction",
     restrictedConst: "Investment offer page is under construction",
     backBtn: "Back to Home page",
+    investSub: "Investing",
+    bondSub: "Bonds",
+    securitySub: "Security",
+    propertySub: "Property",
+    supportSub: "Support",
   },
   sr: {
+    sectionMeta: "Važne informacije za investitore u obveznice podržane nekretninama.",
+    sectionMetaDescription: "Odgovori na važna pitanja koje investitori u obveznice podržane nekretninama imaju u vezi sa ulaganjem, sigurnošću, nekretninama i obveznicama.",
+    title: "Baza znanja",
     knowledgeConst: "Stranica Baza znanja je u izradi",
     restrictedConst: "Stranica Investicije je u izradi",
     backBtn: "Nazad na početnu stranicu",
+    investSub: "Investiranje",
+    bondSub: "Obveznice",
+    securitySub: "Sigurnost",
+    propertySub: "Nekretnine",
+    supportSub: "Podrška",
   },
 };

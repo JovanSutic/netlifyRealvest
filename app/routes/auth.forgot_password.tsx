@@ -171,6 +171,7 @@ export default function AuthForgetPass() {
         isOpen={isNavOpen}
         toggleOpen={() => setIsNavOpen(!isNavOpen)}
         lang={lang}
+        url={location.pathname}
       />
       <div className="w-full flex justify-center font-[sans-serif] border-t-[1px] border-gray-300 text-[#333] p-4 h-auto">
         <Alert

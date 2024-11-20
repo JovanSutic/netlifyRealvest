@@ -7,15 +7,20 @@ const NavigationColumn = ({
   isOpen,
   toggleOpen,
   lang,
+  border = false,
+  url,
 }: {
   isOpen: boolean;
   toggleOpen: () => void;
   lang: LangType;
+  border?: boolean;
+  url: string;
 }) => {
   const translate = new Translator("navigation");
+  const isBlog = url.split("/")?.[1] === "blog";
 
   return (
-    <header>
+    <header className={`${border && "border-b-[1px] border-gray-300"}`}>
       <div className="w-full xl:w-[1260px] mx-auto mb-0 lg:mb-1">
         <div className="grid grid-cols-2 lg:grid-cols-3">
           <div className="flex flex-col justify-center px-4 py-4 lg:py-2">
@@ -74,31 +79,33 @@ const NavigationColumn = ({
                     {translate.getTranslation(lang, "account")}
                   </Link>
                 </li>
-                <li className="pt-[1px]">
-                  <Dropdown activeText={lang === "sr" ? "Srpski" : "English"}>
-                    <ul>
-                      {lang === "sr" ? (
-                        <li className="px-4 py-2">
-                          <Link
-                            to={"?lang=en"}
-                            className="text-gray-700 hover:text-blue-600"
-                          >
-                            English
-                          </Link>
-                        </li>
-                      ) : (
-                        <li className="px-4 py-2">
-                          <Link
-                            to={"?lang=sr"}
-                            className="text-gray-700 hover:text-blue-600"
-                          >
-                            Srpski
-                          </Link>
-                        </li>
-                      )}
-                    </ul>
-                  </Dropdown>
-                </li>
+                {!isBlog && (
+                  <li className="pt-[1px]">
+                    <Dropdown activeText={lang === "sr" ? "Srpski" : "English"}>
+                      <ul>
+                        {lang === "sr" ? (
+                          <li className="px-4 py-2">
+                            <Link
+                              to={"?lang=en"}
+                              className="text-gray-700 hover:text-blue-600"
+                            >
+                              English
+                            </Link>
+                          </li>
+                        ) : (
+                          <li className="px-4 py-2">
+                            <Link
+                              to={"?lang=sr"}
+                              className="text-gray-700 hover:text-blue-600"
+                            >
+                              Srpski
+                            </Link>
+                          </li>
+                        )}
+                      </ul>
+                    </Dropdown>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -227,31 +234,33 @@ const NavigationColumn = ({
                 {translate.getTranslation(lang, "account")}
               </Link>
             </li>
-            <li className="pt-8 px-3">
-              <Dropdown activeText={lang === "sr" ? "Srpski" : "English"}>
-                <ul>
-                  {lang === "sr" ? (
-                    <li className="px-4 py-2">
-                      <Link
-                        to={"?lang=en"}
-                        className="text-blue-600 text-[14px] font-bold"
-                      >
-                        English
-                      </Link>
-                    </li>
-                  ) : (
-                    <li className="px-4 py-2">
-                      <Link
-                        to={"?lang=sr"}
-                        className="text-blue-600 text-[14px] font-bold"
-                      >
-                        Srpski
-                      </Link>
-                    </li>
-                  )}
-                </ul>
-              </Dropdown>
-            </li>
+            {!isBlog && (
+              <li className="pt-8 px-3">
+                <Dropdown activeText={lang === "sr" ? "Srpski" : "English"}>
+                  <ul>
+                    {lang === "sr" ? (
+                      <li className="px-4 py-2">
+                        <Link
+                          to={"?lang=en"}
+                          className="text-blue-600 text-[14px] font-bold"
+                        >
+                          English
+                        </Link>
+                      </li>
+                    ) : (
+                      <li className="px-4 py-2">
+                        <Link
+                          to={"?lang=sr"}
+                          className="text-blue-600 text-[14px] font-bold"
+                        >
+                          Srpski
+                        </Link>
+                      </li>
+                    )}
+                  </ul>
+                </Dropdown>
+              </li>
+            )}
           </ul>
         </div>
       )}{" "}
