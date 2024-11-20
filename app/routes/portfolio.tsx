@@ -66,6 +66,7 @@ export default function RestrictedOffer() {
         isOpen={isNavOpen}
         toggleOpen={() => setIsNavOpen(!isNavOpen)}
         lang={lang}
+        url={location.pathname}
       />
       <div className="bg-white border-t-[1px] border-gray-300">
         <div className="w-full xl:w-[1080px] mx-auto px-4">

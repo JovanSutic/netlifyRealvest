@@ -63,14 +63,14 @@ const BlogSectionItem = ({
   extra: string;
 }) => {
   return (
-    <div className="w-full">
+    <div className="w-full flex">
       {type === "title" && (
         <h3 className="font-bold text-black text-xl md:text-2xl mb-4">
           {content}
         </h3>
       )}
       {type === "sub" && (
-        <h4 className="font-bold text-lg md:text-xl mb-4 mt-6 md:mt-8">
+        <h4 className="font-bold text-[17px] md:text-[18px] mb-4 mt-3 md:mt-4">
           {content}
         </h4>
       )}
@@ -90,7 +90,7 @@ const BlogSectionItem = ({
         </div>
       )}
       {type === "list" && (
-        <ul className="w-full ml-8 mb-4 md:mb-6 list-disc">
+        <ul className="w-full ml-8 mb-4 md:mb-6 list-disc box-border">
           {renderText(content)}
         </ul>
       )}

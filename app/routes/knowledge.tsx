@@ -20,12 +20,12 @@ import { Blog } from "../types/blog.types";
 
 export const meta: MetaFunction = ({ location }) => {
   const lang = getParamValue(location.search, "lang", "sr");
-  const translator = new Translator("homepage");
+  const translator = new Translator("knowledge");
   return [
-    { title: translator.getTranslation(lang, "homeMetaTitle") },
+    { title: translator.getTranslation(lang, "sectionMeta") },
     {
       name: "description",
-      content: translator.getTranslation(lang, "homeMetaDesc"),
+      content: translator.getTranslation(lang, "sectionMetaDescription"),
     },
   ];
 };
@@ -98,8 +98,6 @@ export default function Knowledge() {
   const navigation = useNavigation();
   const location = useLocation();
 
-  console.log(data);
-
   useEffect(() => {
     if (location.pathname || location.search) {
       setIsNavOpen(false);
@@ -112,6 +110,7 @@ export default function Knowledge() {
         isOpen={isNavOpen}
         toggleOpen={() => setIsNavOpen(!isNavOpen)}
         lang={lang}
+        url={location.pathname}
       />
       <div className="bg-white border-t-[1px] border-gray-300">
         <div className="w-full xl:w-[1260px] mx-auto px-2 md:px-8 pt-6 lg:pt-8">
