@@ -56,11 +56,11 @@ export const changePassSchema = z
   });
 
 export const blogSchema = z.object({
-  name: z.string().min(1, "nameErrorMin").max(50, "nameErrorMax"),
+  name: z.string().min(1, "nameErrorMin").max(60, "nameErrorMax"),
   language: z.string().min(1, "languageErrorMin").length(2, "languageErrorMax"),
   description: z
     .string()
     .min(1, "descriptionErrorMin")
     .max(180, "descriptionErrorMax"),
-  link: z.string().min(1, "linkErrorMin").max(120, "linkErrorMax"),
+  link: z.string().min(1, "linkErrorMin").max(180, "linkErrorMax"),
 });

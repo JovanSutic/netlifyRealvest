@@ -86,7 +86,7 @@ export const homepageMap: Record<string, Record<string, string>> = {
     market: "Listings",
     blog: "Blog",
     back: "Back",
-    blogDate: "Article created",
+    blogDate: "Created",
     blogMetaTitle: "Realvest - real estate market insights for Belgrade",
     blogMetaDescription:
       "Articles for people that are buying or investing in Belgrade real estate.",
@@ -191,7 +191,7 @@ export const homepageMap: Record<string, Record<string, string>> = {
     market: "Oglasi",
     blog: "Blog",
     back: "Nazad",
-    blogDate: "Članak napisan",
+    blogDate: "Napisano",
     blogMetaTitle: "Realvest - uvidi u tržište nekretnina Beograda",
     blogMetaDescription:
       "Članci za one koji žele da investiraju u stanove u Beogradu ili koji žele da kupe stan u Beogradu.",
