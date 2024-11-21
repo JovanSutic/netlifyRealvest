@@ -43,7 +43,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       .from("blogs")
       .select("*")
       .eq("language", lang)
-      .not("type", "is", null);
+      .not("type", "is", null)
+      .order('id');
 
     if (blogError) {
       isError = true;
