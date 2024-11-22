@@ -50,9 +50,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let finalError: FinalError | null = null;
 
   try {
-    const user = await supabaseClient.auth.getUser();
-    if (user?.data?.user?.role === "authenticated") {
-      return redirect(`/market?page=1&lang=${lang}`);
+    const {data: userData} = await supabaseClient.auth.getUser();
+    if (userData.user && userData.user?.role === "authenticated") {
+      return redirect(`/offer-restricted/?lang=${lang}`);
     }
   } catch (error) {
     isError = true;

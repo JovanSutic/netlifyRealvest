@@ -2,11 +2,13 @@ import { Link } from "@remix-run/react";
 import { LangType } from "../../types/dashboard.types";
 import Dropdown from "../select/Dropdown";
 import { Translator } from "../../data/language/translator";
+import { User } from "@supabase/supabase-js";
 
 const NavigationColumn = ({
   isOpen,
   toggleOpen,
   lang,
+  user = null,
   border = false,
   url,
 }: {
@@ -15,6 +17,7 @@ const NavigationColumn = ({
   lang: LangType;
   border?: boolean;
   url: string;
+  user?: User | null;
 }) => {
   const translate = new Translator("navigation");
   const isBlog = url.split("/")?.[1] === "blog";
@@ -57,28 +60,43 @@ const NavigationColumn = ({
                     {translate.getTranslation(lang, "knowledge")}
                   </Link>{" "}
                 </li>
-                <li className="mr-6">
-                  <Link
-                    to={`/auth/?lang=${lang}`}
-                    className="hidden md:block text-[17px] font-semibold px-4 py-2 bg-gray-200 text-gray-800 rounded-xl transition-all duration-300 transform hover:bg-gray-300 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
-                  >
-                    {translate.getTranslation(lang, "loginNav")}
-                  </Link>
-                </li>
+                {!user && (
+                  <li className="mr-6">
+                    <Link
+                      to={`/auth/?lang=${lang}`}
+                      className="hidden md:block text-[17px] font-semibold px-4 py-2 bg-gray-200 text-gray-800 rounded-xl transition-all duration-300 transform hover:bg-gray-300 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                    >
+                      {translate.getTranslation(lang, "loginNav")}
+                    </Link>
+                  </li>
+                )}
+                {user && (
+                  <li className="mr-6">
+                    <Link
+                      to={`/auth/sign_out?lang=${lang}`}
+                      className="hidden md:block text-[17px] font-semibold px-4 py-2 bg-gray-200 text-gray-800 rounded-xl transition-all duration-300 transform hover:bg-gray-300 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                    >
+                      {translate.getTranslation(lang, "logoutNav")}
+                    </Link>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
           <div className="hidden lg:block lg:flex lg:flex-row-reverse">
             <div className="p-2">
               <ul className="flex flex-row">
-                <li className="mr-8">
-                  <Link
-                    to={`/auth/register?lang=${lang}`}
-                    className="hidden md:block text-[16px] font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
-                  >
-                    {translate.getTranslation(lang, "account")}
-                  </Link>
-                </li>
+                {!user && (
+                  <li className="mr-8">
+                    <Link
+                      to={`/auth/register?lang=${lang}`}
+                      className="hidden md:block text-[16px] font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                    >
+                      {translate.getTranslation(lang, "account")}
+                    </Link>
+                  </li>
+                )}
+
                 {!isBlog && (
                   <li className="pt-[1px]">
                     <Dropdown activeText={lang === "sr" ? "Srpski" : "English"}>
@@ -205,35 +223,63 @@ const NavigationColumn = ({
                 </span>
               </Link>
             </li>
-            <li className="pt-8 px-3">
-              <Link to={`/auth/?lang=${lang}`}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="size-6 w-6 mr-3 inline text-blue-900 font-bold"
+            {!user && (
+              <>
+                <li className="pt-8 px-3">
+                  <Link to={`/auth/?lang=${lang}`}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-6 w-6 mr-3 inline text-blue-900 font-bold"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3c0-2.9-2.35-5.25-5.25-5.25Zm3.75 8.25v-3a3.75 3.75 0 1 0-7.5 0v3h7.5Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span className="text-gray-700 text-[15px] font-bold">
+                      {translate.getTranslation(lang, "loginNav")}
+                    </span>
+                  </Link>
+                </li>
+                <li className="pt-8 px-3">
+                  <Link
+                    to={`/auth/register?lang=${lang}`}
+                    className="text-[16px] font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                  >
+                    {translate.getTranslation(lang, "account")}
+                  </Link>
+                </li>
+              </>
+            )}
+            {user && (
+              <li className="pt-6 px-3 mt-6">
+                <Link
+                  to={`/auth/sign_out?lang=${lang}`}
+                  className="text-white text-sm flex items-center rounded-md"
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3c0-2.9-2.35-5.25-5.25-5.25Zm3.75 8.25v-3a3.75 3.75 0 1 0-7.5 0v3h7.5Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-gray-700 text-[15px] font-bold">
-                  {translate.getTranslation(lang, "loginNav")}
-                </span>
-              </Link>
-            </li>
-            <li className="pt-8 px-3">
-              <Link
-                to={`/auth/register?lang=${lang}`}
-                className="text-[16px] font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
-              >
-                {translate.getTranslation(lang, "account")}
-              </Link>
-            </li>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    className="size-6 w-6 mr-3 inline text-blue-900 font-bold"
+                    viewBox="0 0 6.35 6.35"
+                  >
+                    <path
+                      d="M3.172.53a.265.266 0 0 0-.262.268v2.127a.265.266 0 0 0 .53 0V.798A.265.266 0 0 0 3.172.53zm1.544.532a.265.266 0 0 0-.026 0 .265.266 0 0 0-.147.47c.459.391.749.973.749 1.626 0 1.18-.944 2.131-2.116 2.131A2.12 2.12 0 0 1 1.06 3.16c0-.65.286-1.228.74-1.62a.265.266 0 1 0-.344-.404A2.667 2.667 0 0 0 .53 3.158a2.66 2.66 0 0 0 2.647 2.663 2.657 2.657 0 0 0 2.645-2.663c0-.812-.363-1.542-.936-2.03a.265.266 0 0 0-.17-.066z"
+                      data-original="#000000"
+                    />
+                  </svg>
+                  <span className="text-gray-700 text-[15px] font-bold">
+                    {translate.getTranslation(lang, "logoutNav")}
+                  </span>
+                </Link>
+              </li>
+            )}
+
             {!isBlog && (
               <li className="pt-8 px-3">
                 <Dropdown activeText={lang === "sr" ? "Srpski" : "English"}>

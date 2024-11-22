@@ -17,6 +17,7 @@ import FaqCard from "../components/card/FaqCard";
 import { createSupabaseServerClient } from "../supabase.server";
 import { FinalError } from "../types/component.types";
 import { Blog } from "../types/blog.types";
+import { User } from "@supabase/supabase-js";
 
 export const meta: MetaFunction = ({ location }) => {
   const lang = getParamValue(location.search, "lang", "sr");
@@ -51,9 +52,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       finalError = blogError as FinalError;
     }
 
+    const { data: userData } = await supabaseClient.auth.getUser();
+
     return json({
       data: blogData,
       mobile: isMobile(userAgent!),
+      user: userData.user || null,
     });
   } catch (error) {
     console.log(error);
@@ -68,6 +72,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return {
     mobile: isMobile(userAgent!),
     blogs: [],
+    user: null,
   };
 };
 
@@ -79,9 +84,11 @@ export default function Knowledge() {
   const {
     mobile,
     data,
+    user,
   }: {
     mobile: boolean;
     data: Blog[];
+    user: User | null;
   } = useLoaderData();
 
   const translator = new Translator("knowledge");
@@ -111,6 +118,7 @@ export default function Knowledge() {
         isOpen={isNavOpen}
         toggleOpen={() => setIsNavOpen(!isNavOpen)}
         lang={lang}
+        user={user}
         url={location.pathname}
       />
       <div className="bg-white border-t-[1px] border-gray-300">
