@@ -6,6 +6,7 @@ import {
   useNavigation,
   useSearchParams,
 } from "@remix-run/react";
+import { createSupabaseServerClient } from "../supabase.server";
 import { getParamValue, isMobile } from "../utils/params";
 import { Translator } from "../data/language/translator";
 import Accordion from "../components/accordion";
@@ -16,6 +17,7 @@ import Footer from "../components/layout/Footer";
 import PageLoader from "../components/loader/PageLoader";
 import NavigationColumn from "../components/navigation/NavigationColumn";
 import OfferCard from "../components/card/OfferCard";
+import { User } from "@supabase/supabase-js";
 
 export const meta: MetaFunction = ({ location }) => {
   const lang = getParamValue(location.search, "lang", "sr");
@@ -31,9 +33,23 @@ export const meta: MetaFunction = ({ location }) => {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userAgent = request.headers.get("user-agent");
+  const { supabaseClient } = createSupabaseServerClient(request);
+
+  try {
+    const { data: userData } = await supabaseClient.auth.getUser();
+    if (userData.user) {
+      return {
+        mobile: isMobile(userAgent!),
+        user: userData.user
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
 
   return {
     mobile: isMobile(userAgent!),
+    user: null,
   };
 };
 
@@ -81,8 +97,10 @@ export default function Index() {
 
   const {
     mobile,
+    user,
   }: {
     mobile: boolean;
+    user: User;
   } = useLoaderData();
 
   const navigation = useNavigation();
@@ -102,6 +120,7 @@ export default function Index() {
         toggleOpen={() => setIsNavOpen(!isNavOpen)}
         lang={lang}
         url={location.pathname}
+        user={user}
       />
       <div className="bg-blue-100">
         <div className="w-full xl:w-[1260px] mx-auto px-2 md:px-8 py-8 lg:py-14">

@@ -49,8 +49,8 @@ export const meta: MetaFunction = () => {
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { supabaseClient } = createSupabaseServerClient(request);
   try {
-    const user = await supabaseClient.auth.getUser();
-    if (user?.data?.user?.role !== "authenticated") {
+    const {data: userData} = await supabaseClient.auth.getUser();
+    if (userData.user && userData.user?.role !== "authenticated") {
       return redirect("/auth");
     }
   } catch (error) {

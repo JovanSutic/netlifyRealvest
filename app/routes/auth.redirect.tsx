@@ -34,10 +34,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       });
     }
 
-    const user = await supabaseClient.auth.getUser();
+    const {data: userData} = await supabaseClient.auth.getUser();
 
-    if (user?.data?.user?.role === "authenticated") {
-      return redirect(`/market?page=1&lang=${lang}`);
+    if (userData.user && userData.user?.role === "authenticated") {
+      return redirect(`/offer-restricted/?lang=${lang}`);
     }
   } catch (error) {
     isError = true;

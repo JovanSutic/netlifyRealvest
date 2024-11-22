@@ -6,6 +6,7 @@ import {
   useNavigation,
   useSearchParams,
 } from "@remix-run/react";
+import { createSupabaseServerClient } from "../supabase.server";
 import { getParamValue, isMobile } from "../utils/params";
 import { Translator } from "../data/language/translator";
 import { useState, useEffect } from "react";
@@ -13,6 +14,7 @@ import { LangType } from "../types/dashboard.types";
 import Footer from "../components/layout/Footer";
 import PageLoader from "../components/loader/PageLoader";
 import NavigationColumn from "../components/navigation/NavigationColumn";
+import { User } from "@supabase/supabase-js";
 // import OfferCard from "../components/card/OfferCard";
 
 // const SuccessScreen = () => {
@@ -72,9 +74,23 @@ export const meta: MetaFunction = ({ location }) => {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userAgent = request.headers.get("user-agent");
+  const { supabaseClient } = createSupabaseServerClient(request);
+
+  try {
+    const { data: userData } = await supabaseClient.auth.getUser();
+    if (userData.user) {
+      return {
+        mobile: isMobile(userAgent!),
+        user: userData.user
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
 
   return {
     mobile: isMobile(userAgent!),
+    user: null,
   };
 };
 
@@ -85,8 +101,10 @@ export default function RestrictedOffer() {
 
   const {
     mobile,
+    user,
   }: {
     mobile: boolean;
+    user: User | null;
   } = useLoaderData();
 
   const translator = new Translator("knowledge");
@@ -106,6 +124,7 @@ export default function RestrictedOffer() {
         isOpen={isNavOpen}
         toggleOpen={() => setIsNavOpen(!isNavOpen)}
         lang={lang}
+        user={user}
         url={location.pathname}
       />
       <div className="bg-white border-t-[1px] border-gray-300">
