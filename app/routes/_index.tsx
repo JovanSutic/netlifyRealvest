@@ -391,7 +391,7 @@ export default function Index() {
               />
             </div>
             <div className="flex flex-col col-span-1 lg:col-span-4">
-              <p className="font-semibold text-[16px] text-center lg:text-left mb-5">
+              <p className="font-semibold text-[18px] text-center lg:text-left mb-5">
                 {translator.getTranslation(lang, "exampleSub")}
               </p>
               <div className="grid grid-cols-3 gap-3">
