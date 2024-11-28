@@ -56,7 +56,7 @@ export const changePassSchema = z
   });
 
 export const blogSchema = z.object({
-  name: z.string().min(1, "nameErrorMin").max(60, "nameErrorMax"),
+  name: z.string().min(1, "nameErrorMin").max(100, "nameErrorMax"),
   language: z.string().min(1, "languageErrorMin").length(2, "languageErrorMax"),
   description: z
     .string()
