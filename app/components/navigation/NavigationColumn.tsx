@@ -9,13 +9,11 @@ const NavigationColumn = ({
   toggleOpen,
   lang,
   user = null,
-  border = false,
   url,
 }: {
   isOpen: boolean;
   toggleOpen: () => void;
   lang: LangType;
-  border?: boolean;
   url: string;
   user?: User | null;
 }) => {
@@ -23,8 +21,10 @@ const NavigationColumn = ({
   const isBlog = url.split("/")?.[1] === "blog";
 
   return (
-    <header className={`${border && "border-b-[1px] border-gray-300"}`}>
-      <div className="w-full xl:w-[1260px] mx-auto mb-0 lg:mb-1">
+    <header
+      className={`sticky top-[-1px] lg:top-0 bg-white z-[9999] shadow`}
+    >
+      <div className="w-full xl:w-[1260px] mx-auto pb-0 lg:pb-1">
         <div className="grid grid-cols-2 lg:grid-cols-3">
           <div className="flex flex-col justify-center px-4 py-4 lg:py-2">
             <div className="w-[110px]">
@@ -129,18 +129,33 @@ const NavigationColumn = ({
           </div>
           <div className="block lg:hidden flex flex-row-reverse px-4 py-4">
             <button id="toggleOpen" onClick={toggleOpen}>
-              <svg
-                className="w-8 h-8"
-                fill="bg-black"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
+              {isOpen ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-8 h-8 text-bold"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  className="w-8 h-8"
+                  fill="bg-black"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+              )}
             </button>
           </div>
         </div>
@@ -148,11 +163,11 @@ const NavigationColumn = ({
       {true && (
         <div
           id="collapseMenu"
-          className={`top-0 right-0 w-[100vw] bg-slate-800 bg-opacity-40 p-10 pl-20 text-white fixed h-full z-[9999] ease-in-out duration-300 ${
+          className={`top-[64px] right-0 w-[100vw] bg-slate-800 bg-opacity-40 p-10 pl-20 text-white fixed h-full z-[9999] ease-in-out duration-300 ${
             isOpen ? "translate-x-0 " : "translate-x-full"
           }`}
         >
-          <button
+          {/* <button
             id="toggleClose"
             onClick={toggleOpen}
             className="fixed top-2 right-4 z-[9999] rounded-full bg-gray-200 p-3"
@@ -171,10 +186,10 @@ const NavigationColumn = ({
                 data-original="#000000"
               ></path>
             </svg>
-          </button>
+          </button> */}
 
-          <ul className="block fixed bg-blue-100 w-1/2 min-w-[290px] top-0 left-0 h-full shadow-md overflow-auto z-[9998]">
-            <li className="bg-blue-900 py-3 px-3">
+          <ul className="block fixed bg-blue-100 w-1/2 min-w-[100%] top-0 left-0 h-full shadow-md overflow-auto z-[9998]">
+            {/* <li className="bg-blue-900 py-3 px-3">
               <div className="flex flex-wrap items-left">
                 <div className="w-[120px] mx-auto">
                   <Link to={`/?lang=${lang}`}>
@@ -183,7 +198,7 @@ const NavigationColumn = ({
                   </Link>
                 </div>
               </div>
-            </li>
+            </li> */}
 
             <li className="pt-6 px-3">
               <Link to={`/offer-restricted/?lang=${lang}`}>

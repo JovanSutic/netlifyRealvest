@@ -118,7 +118,6 @@ const BlogSingle = () => {
         isOpen={isNavOpen}
         toggleOpen={() => setIsNavOpen(!isNavOpen)}
         lang={lang}
-        border
         url={location.pathname}
       />
       <div className="w-full xl:w-[1060px] mx-auto px-2 md:px-8 pt-6 lg:pt-8 pb-12">

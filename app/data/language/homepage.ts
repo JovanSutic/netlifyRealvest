@@ -129,7 +129,7 @@ export const homepageMap: Record<string, Record<string, string>> = {
     whyOption3: "Povećavajte vrednost",
     whyOption3Sub:
       "Zaradite dodatnu premiju ukoliko osnovna imovina vaše obveznice poraste u vrednosti. Profitirajte od rasta cena nekretnina uz minimalni rizik.",
-    whyOption4: "Divrzifikujte investicija",
+    whyOption4: "Diverzifikujte investicije",
     whyOption4Sub:
       "Investiranjem u obveznice različitih nekretnina raspodeljujete vaš rizik i vaše investicije postaju otpornije na tržišne promene.",
     how: "Kako to sve funckioniše?",
