@@ -141,11 +141,11 @@ const BlogSingle = () => {
             {data.name}
           </h2>
 
-          <div className="w-full h-[188px] md:h-[266px] lg:h-[316px] md:w-[500px] lg:w-[700px] text-center mx-auto mb-3 md:mb-5 lg:mb-8 rounded-xl overflow-hidden">
+          <div className="flex w-full h-[188px] md:h-[266px] lg:h-[316px] md:w-[500px] lg:w-[700px] text-center mx-auto mb-3 md:mb-5 lg:mb-8 rounded-xl overflow-hidden">
             <img
               src={data.media_link}
               alt={data.slug}
-              className="w-full h-auto object-contain rounded-xl"
+              className="w-full min-h-auto block rounded-xl"
             />
           </div>
         </div>
