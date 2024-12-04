@@ -1,6 +1,5 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import {
-  Link,
   useLoaderData,
   useLocation,
   useNavigation,
@@ -15,7 +14,7 @@ import Footer from "../components/layout/Footer";
 import PageLoader from "../components/loader/PageLoader";
 import NavigationColumn from "../components/navigation/NavigationColumn";
 import { User } from "@supabase/supabase-js";
-// import OfferCard from "../components/card/OfferCard";
+import OfferCard from "../components/card/OfferCard";
 
 // const SuccessScreen = () => {
 //   return (
@@ -81,8 +80,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     if (userData.user) {
       return {
         mobile: isMobile(userAgent!),
-        user: userData.user
-      }
+        user: userData.user,
+      };
     }
   } catch (error) {
     console.log(error);
@@ -131,19 +130,11 @@ export default function RestrictedOffer() {
         <div className="w-full xl:w-[1260px] mx-auto px-2 md:px-8 py-8 lg:py-14">
           <div>
             <h1 className="w-full text-center text-3xl font-semibold">
-              {translator.getTranslation(lang, "restrictedConst")}
+              {translator.getTranslation(lang, "restrictedTitle")}
             </h1>
-            <div className="flex flex-row justify-center mt-12">
-              <Link
-                to={`/?lang=${lang}`}
-                className="text-[16px] text-center font-semibold px-6 py-2 bg-gray-500 text-white rounded-xl transition-all duration-300 transform hover:bg-gray-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
-              >
-                {translator.getTranslation(lang, "backBtn")}
-              </Link>
-            </div>
           </div>
 
-          {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-8 mt-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-8 mt-10">
             <OfferCard
               name={"55 m2, Beograd na vodi, Beograd"}
               photo="https://img.nekretnine.rs/foto/NjU4eDQ5NC9jZW50ZXIvbWlkZGxlL2ZpbHRlcnM6d2F0ZXJtYXJrKGh0dHBzOi8vd3d3Lm5la3JldG5pbmUucnMvYnVpbGQvaW1hZ2VzL3dhdGVybWFyay0yNTYucG5nLGNlbnRlcixjZW50ZXIsNTApOmZvcm1hdCh3ZWJwKS9uZWs=/TGusuEMlV_fss?st=I2Bix4AV7M6ROd6JrgW3IfoMdVOtxzeE6RL4CQ004BE&ts=1731370739&e=0"
@@ -151,8 +142,8 @@ export default function RestrictedOffer() {
               interest={4.25}
               maturity={10}
               lang={lang}
-              link={`/auth/?lang=${lang}`}
-              bondPrice={500}
+              link={`/offer-restricted/1/?lang=${lang}`}
+              bondPrice={100}
             />
 
             <OfferCard
@@ -162,10 +153,10 @@ export default function RestrictedOffer() {
               interest={3.8}
               maturity={8}
               lang={lang}
-              link={`/auth/?lang=${lang}`}
-              bondPrice={500}
+              link={`/offer-restricted/2/?lang=${lang}`}
+              bondPrice={100}
             />
-          </div> */}
+          </div>
         </div>
       </div>
       <Footer lang={lang} mobile={mobile} />

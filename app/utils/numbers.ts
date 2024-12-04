@@ -50,3 +50,7 @@ export const getAverageOfList = (data: number[]): number => {
   }
   return total / data.length;
 };
+
+export const makeNumberPercent = (num: number): string => {
+  return `${roundNumberToDecimal(num * 100, 2)}%`
+}
