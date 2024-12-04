@@ -531,7 +531,6 @@ const DashboardSearch = () => {
                   <div className="w-[30px]">
                     <LocalTooltip
                       text={translate.getTranslation(lang, "searchDescription")}
-                      style="top"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
