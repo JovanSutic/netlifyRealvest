@@ -45,7 +45,7 @@ const NavigationColumn = ({
                 <li className="mr-6">
                   {" "}
                   <Link
-                    to={`/offer-restricted/?lang=${lang}`}
+                    to={`/offer/?lang=${lang}`}
                     className="text-[17px] font-semibold text-gray-700 hover:text-blue-600 leading-[40px]"
                   >
                     {translate.getTranslation(lang, "invest")}
@@ -201,7 +201,7 @@ const NavigationColumn = ({
             </li> */}
 
             <li className="pt-6 px-3">
-              <Link to={`/offer-restricted/?lang=${lang}`}>
+              <Link to={`/offer/?lang=${lang}`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

@@ -220,7 +220,7 @@ export default function Index() {
           </div>
           <div className="flex flex-row justify-center">
             <Link
-              to={`/offer-restricted/?lang=${lang}`}
+              to={`/offer/?lang=${lang}`}
               className="text-[16px] text-center font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
             >
               {translator.getTranslation(lang, "moreBtn")}

@@ -1,6 +1,6 @@
 import { ListedAdType } from "./dashboard.types";
 
-const offerStatus = ["advertized", "bought", "rented", "sold"] as const;
+const offerStatus = ["negotiation", "bought", "preparation", "rented", "sold"] as const;
 export type OfferStatus = (typeof offerStatus)[number];
 
 export interface Offer {
@@ -27,4 +27,11 @@ export interface Offer {
   service_fee: number;
   vacancy_fee: number;
   maintenance_fee: number;
+  insurance_fee: number;
+  renovation: number;
+}
+
+export interface OfferMarketData {
+  labels: string[];
+  prices: number[];
 }

@@ -87,6 +87,10 @@ const Filters = ({
       value: "5y",
       text: translate.getTranslation(lang, "5y"),
     },
+    {
+      value: "10y",
+      text: translate.getTranslation(lang, "10y"),
+    },
   ];
 
   const mapRangeOptions = [
