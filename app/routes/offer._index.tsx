@@ -142,7 +142,7 @@ export default function RestrictedOffer() {
               interest={4.25}
               maturity={10}
               lang={lang}
-              link={`/offer-restricted/1/?lang=${lang}`}
+              link={`/offer/1/?lang=${lang}`}
               bondPrice={100}
             />
 
@@ -153,7 +153,7 @@ export default function RestrictedOffer() {
               interest={3.8}
               maturity={8}
               lang={lang}
-              link={`/offer-restricted/2/?lang=${lang}`}
+              link={`/offer/2/?lang=${lang}`}
               bondPrice={100}
             />
           </div>
