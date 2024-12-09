@@ -14,6 +14,8 @@ import PageLoader from "../components/loader/PageLoader";
 import NavigationColumn from "../components/navigation/NavigationColumn";
 import ToggleButton from "../components/toggleButtons/ToggleButton";
 import PropertyCard from "../components/card/PropertyCard";
+import { createSupabaseServerClient } from "../supabase.server";
+import { User } from "@supabase/supabase-js";
 
 export const meta: MetaFunction = ({ location }) => {
   const lang = getParamValue(location.search, "lang", "sr");
@@ -29,9 +31,22 @@ export const meta: MetaFunction = ({ location }) => {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userAgent = request.headers.get("user-agent");
+  const { supabaseClient } = createSupabaseServerClient(request);
+
+  try {
+    const { data: userData } = await supabaseClient.auth.getUser();
+
+    return {
+      mobile: isMobile(userAgent!),
+      user: userData.user || null,
+    };
+  } catch (error) {
+    console.log(error);
+  }
 
   return {
     mobile: isMobile(userAgent!),
+    user: null,
   };
 };
 
@@ -45,8 +60,10 @@ export default function RestrictedOffer() {
 
   const {
     mobile,
+    user,
   }: {
     mobile: boolean;
+    user: User;
   } = useLoaderData();
 
   const translator = new Translator("navigation");
@@ -66,6 +83,7 @@ export default function RestrictedOffer() {
         isOpen={isNavOpen}
         toggleOpen={() => setIsNavOpen(!isNavOpen)}
         lang={lang}
+        user={user}
         url={location.pathname}
       />
       <div className="bg-white border-t-[1px] border-gray-300">
