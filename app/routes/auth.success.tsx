@@ -27,7 +27,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const {data: userData} = await supabaseClient.auth.getUser();
 
     if (userData.user && userData.user?.role === "authenticated") {
-      return redirect(`/offer/?lang=${lang}`);
+      return redirect(`/portfolio/?lang=${lang}`);
     }
   } catch (error) {
     isError = true;

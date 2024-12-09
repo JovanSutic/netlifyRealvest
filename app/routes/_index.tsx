@@ -40,8 +40,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     if (userData.user) {
       return {
         mobile: isMobile(userAgent!),
-        user: userData.user
-      }
+        user: userData.user,
+      };
     }
   } catch (error) {
     console.log(error);
@@ -136,13 +136,23 @@ export default function Index() {
                 <p className="text-[16px] lg:text-[18px] leading-[24px] lg:leading-[28px] w-full font-light mb-10 font-semibold">
                   {translator.getTranslation(lang, "heroSubtitleBold")}
                 </p>
-                <div className="w-[70%]">
-                  <Link
-                    to={`/auth/register?lang=${lang}`}
-                    className="text-[16px] text-center font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
-                  >
-                    {translator.getTranslation(lang, "accountBtn")}
-                  </Link>
+                <div className="w-full flex flex-col items-center lg:flex-row">
+                  <div className="flex mb-4 lg:mb-0">
+                    <Link
+                      to={`/auth/register?lang=${lang}`}
+                      className="text-[16px] text-center font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                    >
+                      {translator.getTranslation(lang, "accountBtn")}
+                    </Link>
+                  </div>
+                  <div className="flex lg:ml-4">
+                    <Link
+                      to={`/auth/register?lang=${lang}`}
+                      className="text-[16px]  text-center font-semibold px-6 py-2 bg-white text-black rounded-xl transition-all duration-300 transform hover:bg-gray-100 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                    >
+                      {translator.getTranslation(lang, "callCta")}
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -359,13 +369,23 @@ export default function Index() {
             </div>
           </div>
 
-          <div className="flex flex-row justify-center">
-            <Link
-              to={`/auth/register?lang=${lang}`}
-              className="text-[16px] text-center font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
-            >
-              {translator.getTranslation(lang, "accountBtn")}
-            </Link>
+          <div className="flex flex-col lg:flex-row justify-center">
+            <div className="flex lg:mr-2">
+              <Link
+                to={`/auth/register?lang=${lang}`}
+                className="text-[16px] text-center font-semibold px-6 py-2 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+              >
+                {translator.getTranslation(lang, "accountBtn")}
+              </Link>
+            </div>
+            <div className="flex mt-2 lg:mt-0 lg:ml-2">
+              <Link
+                to={`/auth/register?lang=${lang}`}
+                className="text-[16px] text-center font-semibold px-6 py-2 bg-gray-200 text-black rounded-xl transition-all duration-300 transform hover:bg-gray-100 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+              >
+                {translator.getTranslation(lang, "callCta")}
+              </Link>
+            </div>
           </div>
         </div>
       </div>
