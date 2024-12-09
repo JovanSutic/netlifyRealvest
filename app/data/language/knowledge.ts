@@ -63,6 +63,7 @@ export const knowledgeMap: Record<string, Record<string, string>> = {
     toBuy: "Number of bonds available to buy:",
     invested: "Number of users that already invested:",
     deadline: "Deadline for bond purchase:",
+    callCta: "Schedule a call",
     buyCta: "Buy the Bonds",
     buyLoginCta: "Login and buy the bonds",
     rentGross: "Gross rental income",
@@ -129,7 +130,7 @@ export const knowledgeMap: Record<string, Record<string, string>> = {
     chartTitle: "Real estate price trend",
     chartSource:
       "Source: Republic Geodetic Institute, Cadastre, Real Estate Price Register",
-    appreciation: "Appreciation potential",
+    appreciation: "Estimated appreciation",
     appreciationTip:
       "Appreciation projections for the maturity period. These are estimates based on current market trends and historical data and are subject to change. This should not be considered as guaranteed information.",
     riskTitle: "Investment risk",
@@ -140,6 +141,8 @@ export const knowledgeMap: Record<string, Record<string, string>> = {
       "Rental income risk: If the property cannot be rented or fails to attract tenants, the lessor (our company) may have trouble generating the necessary income to pay interest and principal.",
     riskB:
       "Real estate value risk: A decline in real estate values ​​could affect the bond's total yield and the issuer's ability to repay investors.",
+    riskC:
+      "Lack of liquidity risk: After the initial purchase, and before the maturity date, Realvest bonds can be sold on our platform. A situation may occur in which none of the users is interested in buying the bond that you want to sell.",
   },
   sr: {
     sectionMeta:
@@ -205,6 +208,7 @@ export const knowledgeMap: Record<string, Record<string, string>> = {
     toBuy: "Broj obveznica dostunih za kupovinu:",
     invested: "Broj korisnika koji su već investirali:",
     deadline: "Rok za kupovinu obveznica:",
+    callCta: "Zakažite razgovor",
     buyCta: "Kupite obveznice",
     buyLoginCta: "Prijavite se i kupite obveznice",
     rentGross: "Bruto prihod od izdavanja",
@@ -271,7 +275,9 @@ export const knowledgeMap: Record<string, Record<string, string>> = {
     chartTitle: "Trend cena nekretnina",
     chartSource:
       "Izvor: Republički Geodetski zavod, Katastar, Registar cena nepokretnosti",
-    appreciation: "Potencijal rasta vrednosti",
+    premiumAmount: "Potencijalna premija",
+    premiumAmountTip: "Projekcije vrednosti premije. Ovo je samo procena. Ovaj broj je zasnovan na trenutnim tržišnim trendovima i istorijskim podacima i ne predstavlja konkretnu premiju koja će biti isplaćena.",
+    appreciation: "Potencijalni rast vrednosti",
     appreciationTip:
       "Projekcije rasta vrednosti u periodu dospeća. Ovo su procene zasnovane na trenutnim tržišnim trendovima i istorijskim podacima i podložne su promenama. Ovaj procenat ne treba smatrati zagarantovanom informacijom.",
     riskTitle: "Rizik investiranja",
@@ -281,6 +287,8 @@ export const knowledgeMap: Record<string, Record<string, string>> = {
     riskA:
       "Rizik prihoda od zakupnine: Ako se nekretnina ne može iznajmiti ili ne uspe da privuče zakupce, izdavalac (naša kompanija) može imati problema da ostvari neophodan prihod za plaćanje kamata i otplate glavnice.",
     riskB:
-      "Rizik vrednosti nekretnine: Pad vrednosti nekretnine mogao bi da utiče na ukupan prinos obveznice i na sposobnost izdavaoca da otplati investitore.",
+      "Rizik vrednosti nekretnine: Pad vrednosti nekretnine mogao bi da utiče na ukupan prinos obveznice i na sposobnost izdavaoca (naša kompanija) da otplati investitore.",
+    riskC:
+      "Rizik nedostatka likvidnosti: Nakon inicijalne kupovine, a pre roka dospeća, Realvest obveznice je moguće prodati na našoj platformi. Može se dogoditi situacija u kojoj niko od korisnika nije zainteresovan za kupovinu obveznice koju želite prodati.",
   },
 };

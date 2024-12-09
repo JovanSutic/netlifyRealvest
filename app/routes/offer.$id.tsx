@@ -11,6 +11,7 @@ import { createSupabaseServerClient } from "../supabase.server";
 import { getParamValue, isMobile } from "../utils/params";
 import {
   getNotaryFee,
+  getPremiumEstimate,
   makeNumberCurrency,
   makeNumberPercent,
 } from "../utils/numbers";
@@ -90,6 +91,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
         "2024",
       ],
       prices: [400, 450, 600, 700, 750, 800, 900, 1000, 1050, 1100],
+      appreciation: 0.45,
     };
     return {
       mobile: isMobile(userAgent!),
@@ -197,7 +199,7 @@ export default function RestrictedOffer() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
             <div className="col-span-2">
               <div className="w-full overflow-hidden h-auto md:h-[400px] lg:h-[360px] rounded-xl mb-2">
                 <img
@@ -292,20 +294,28 @@ export default function RestrictedOffer() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
-            <div className="col-span-1 flex lg:hidden flex-row justify-center items-center mb-10 lg:mb-0">
-              <div>
+            <div className="col-span-1 flex lg:hidden flex-col justify-center items-center mb-10 lg:mb-0">
+              <div className="w-full flex mb-4">
                 <Link
                   to={`/auth/register?lang=${lang}`}
-                  className="text-[20px] text-center font-semibold px-6 py-4 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                  className="w-full text-[17px] text-center font-semibold px-4 py-3 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
                 >
                   {user
                     ? translator.getTranslation(lang, "buyCta")
                     : translator.getTranslation(lang, "buyLoginCta")}
                 </Link>
               </div>
+              <div className="w-full flex">
+                <Link
+                  to={`/auth/register?lang=${lang}`}
+                  className="w-full text-[17px] text-center font-semibold px-4 py-3 bg-gray-500 text-white rounded-xl transition-all duration-300 transform hover:bg-gray-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                >
+                  {translator.getTranslation(lang, "callCta")}
+                </Link>
+              </div>
             </div>
             <div className="col-span-2 grid grid-cols-1 lg:grid-cols-3 gap-7 lg:gap-4">
-              <div>
+              <div className="flex flex-col justify-center">
                 <div className="flex flex-row lg:flex-col items-center px-3">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -329,7 +339,7 @@ export default function RestrictedOffer() {
                   </span>
                 </div>
               </div>
-              <div>
+              <div className="flex flex-col justify-center">
                 <div className="flex flex-row lg:flex-col items-center px-3">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -354,7 +364,7 @@ export default function RestrictedOffer() {
                   </span>
                 </div>
               </div>
-              <div>
+              <div className="flex flex-col justify-center">
                 <div className="flex flex-row lg:flex-col items-center px-3">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -380,11 +390,19 @@ export default function RestrictedOffer() {
                 </div>
               </div>
             </div>
-            <div className="col-span-1 hidden lg:flex flex-row justify-center items-center">
-              <div className="flex justify-center">
+            <div className="col-span-1 hidden lg:flex flex-col justify-center items-center">
+              <div className="w-full flex justify-center mb-4">
                 <Link
                   to={`/auth/register?lang=${lang}`}
-                  className="w-full text-[18px] text-center font-semibold px-4 py-4 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                  className="w-full text-[17px] text-center font-semibold px-4 py-3 bg-gray-500 text-white rounded-xl transition-all duration-300 transform hover:bg-gray-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                >
+                  {translator.getTranslation(lang, "callCta")}
+                </Link>
+              </div>
+              <div className="w-full flex justify-center">
+                <Link
+                  to={`/auth/register?lang=${lang}`}
+                  className="w-full text-[17px] text-center font-semibold px-4 py-3 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
                 >
                   {user
                     ? translator.getTranslation(lang, "buyCta")
@@ -734,32 +752,69 @@ export default function RestrictedOffer() {
               </p>
             </div>
             <div className="w-full flex items-center justify-center mt-6">
-              <div className="flex items-center">
-                <span className="text-center text-gray-800 text-[20px] font-regular">
-                  {translator.getTranslation(lang, "appreciation")}
-                </span>
-                <Tooltip
-                  text={translator.getTranslation(lang, "appreciationTip")}
-                  left="left-[-160px]"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-5 text-gray-700 ml-1"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                    />
-                  </svg>
-                </Tooltip>
-                <span className="font-bold text-black text-[22px] ml-2">
-                  45%
-                </span>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col items-center">
+                  <div className="flex">
+                    <span className="text-center text-gray-700 text-[16px] font-semibold">
+                      {translator.getTranslation(lang, "appreciation")}
+                    </span>
+                    <Tooltip
+                      text={translator.getTranslation(lang, "appreciationTip")}
+                      left="left-[-160px]"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-5 text-gray-700 ml-1"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                        />
+                      </svg>
+                    </Tooltip>
+                  </div>
+                  <span className="font-bold text-black text-[22px]">
+                    {makeNumberPercent(marketData?.appreciation || 0)}
+                  </span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <div className="flex">
+                    <span className="text-center text-gray-700 text-[16px] font-semibold">
+                      {translator.getTranslation(lang, "premiumAmount")}
+                    </span>
+                    <Tooltip
+                      text={translator.getTranslation(lang, "premiumAmountTip")}
+                      left="left-[-160px]"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-5 text-gray-700 ml-1"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                        />
+                      </svg>
+                    </Tooltip>
+                  </div>
+                  <span className="font-bold text-black text-[22px]">
+                    {`${getNumberWithDecimals(getPremiumEstimate(
+                      data.total,
+                      marketData?.appreciation || 0,
+                      bondsNumber
+                    ), 4)}€`}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -1362,25 +1417,46 @@ export default function RestrictedOffer() {
           <div className="grid grid-cols-1 gap-4 mb-14">
             <div className="w-full mb-8">
               <div className="w-full lg:w-[50%] mx-auto">
-                <div className="grid">
+                <div className="w-full flex mb-4">
                   <Link
                     to={`/auth/register?lang=${lang}`}
-                    className="text-[20px] text-center font-semibold px-6 py-4 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                    className="w-full text-[17px] text-center font-semibold px-4 py-3 bg-blue-500 text-white rounded-xl transition-all duration-300 transform hover:bg-blue-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
                   >
                     {user
                       ? translator.getTranslation(lang, "buyCta")
                       : translator.getTranslation(lang, "buyLoginCta")}
                   </Link>
                 </div>
+                <div className="w-full flex">
+                  <Link
+                    to={`/auth/register?lang=${lang}`}
+                    className="w-full text-[17px] text-center font-semibold px-4 py-3 bg-gray-500 text-white rounded-xl transition-all duration-300 transform hover:bg-gray-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                  >
+                    {translator.getTranslation(lang, "callCta")}
+                  </Link>
+                </div>
               </div>
             </div>
-            <p className="font-semibold text-[18px]">{translator.getTranslation(lang, 'riskTitle')}</p>
+            <p className="font-semibold text-[18px]">
+              {translator.getTranslation(lang, "riskTitle")}
+            </p>
             <div className="w-full py-2 px-5">
-              <p className="mb-4 text-[16px] text-gray-600">{translator.getTranslation(lang, 'riskText')}</p>
-              <p className="font-bold text-[16px]">{translator.getTranslation(lang, 'riskSub')}</p>
+              <p className="mb-4 text-[16px] text-gray-600">
+                {translator.getTranslation(lang, "riskText")}
+              </p>
+              <p className="font-bold text-[16px]">
+                {translator.getTranslation(lang, "riskSub")}
+              </p>
               <ul className="list-disc ml-6 mt-4">
-                <li className="mb-2 text-[16px] text-gray-600">{translator.getTranslation(lang, 'riskA')}</li>
-                <li className="text-[16px] text-gray-600">{translator.getTranslation(lang, 'riskB')}</li>
+                <li className="mb-2 text-[16px] text-gray-600">
+                  {translator.getTranslation(lang, "riskA")}
+                </li>
+                <li className="mb-2 text-[16px] text-gray-600">
+                  {translator.getTranslation(lang, "riskB")}
+                </li>
+                <li className="text-[16px] text-gray-600">
+                  {translator.getTranslation(lang, "riskC")}
+                </li>
               </ul>
             </div>
           </div>
