@@ -34,4 +34,5 @@ export interface Offer {
 export interface OfferMarketData {
   labels: string[];
   prices: number[];
+  appreciation: number;
 }

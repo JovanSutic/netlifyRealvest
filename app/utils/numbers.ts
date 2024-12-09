@@ -76,3 +76,10 @@ export const getNotaryFee = (price: number): number => {
 
   return fees[index];
 };
+
+export const getPremiumEstimate = (price: number, appreciation: number, bonds: number): number => {
+  const difference = price * appreciation;
+  console.log(price)
+  return  difference / 2 / bonds;
+
+}
