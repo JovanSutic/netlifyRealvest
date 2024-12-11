@@ -12,8 +12,10 @@ import { LangType } from "../types/dashboard.types";
 import Footer from "../components/layout/Footer";
 import PageLoader from "../components/loader/PageLoader";
 import NavigationColumn from "../components/navigation/NavigationColumn";
-import ToggleButton from "../components/toggleButtons/ToggleButton";
-import PropertyCard from "../components/card/PropertyCard";
+// import ToggleButton from "../components/toggleButtons/ToggleButton";
+// import PropertyCard from "../components/card/PropertyCard";
+import { createSupabaseServerClient } from "../supabase.server";
+import { User } from "@supabase/supabase-js";
 
 export const meta: MetaFunction = ({ location }) => {
   const lang = getParamValue(location.search, "lang", "sr");
@@ -29,24 +31,39 @@ export const meta: MetaFunction = ({ location }) => {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userAgent = request.headers.get("user-agent");
+  const { supabaseClient } = createSupabaseServerClient(request);
+
+  try {
+    const { data: userData } = await supabaseClient.auth.getUser();
+
+    return {
+      mobile: isMobile(userAgent!),
+      user: userData.user || null,
+    };
+  } catch (error) {
+    console.log(error);
+  }
 
   return {
     mobile: isMobile(userAgent!),
+    user: null,
   };
 };
 
 export default function RestrictedOffer() {
   const [searchParams] = useSearchParams();
-  const [infoType, setInfoType] = useState<"properties" | "transactions">(
-    "properties"
-  );
+  // const [infoType, setInfoType] = useState<"properties" | "transactions">(
+  //   "properties"
+  // );
   const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
   const lang = (searchParams.get("lang") as LangType) || "sr";
 
   const {
     mobile,
+    user,
   }: {
     mobile: boolean;
+    user: User;
   } = useLoaderData();
 
   const translator = new Translator("navigation");
@@ -66,13 +83,20 @@ export default function RestrictedOffer() {
         isOpen={isNavOpen}
         toggleOpen={() => setIsNavOpen(!isNavOpen)}
         lang={lang}
+        user={user}
         url={location.pathname}
       />
       <div className="bg-white border-t-[1px] border-gray-300">
         <div className="w-full xl:w-[1080px] mx-auto px-4">
           <div className="w-full">
-            <h1 className="w-full text-3xl font-bold mt-6">Portfolio</h1>
-            <div className="grid grid-cols-1 lg:grid-cols-2">
+            <h1 className="w-full text-3xl font-bold mt-8 text-center">{translator.getTranslation(lang, 'portfolio')}</h1>
+
+            <div className="mb-14 mt-8">
+              <p className="w-full text-[16px] font-gray-700 text-center">{translator.getTranslation(lang, 'portfolioEmpty')}</p>
+            </div>
+
+
+            {/* <div className="grid grid-cols-1 lg:grid-cols-2">
               <div className="mt-8">
                 <p className="font-semibold text-[17px]">
                   {translator.getTranslation(lang, "portYour")}
@@ -143,9 +167,9 @@ export default function RestrictedOffer() {
                   </p>
                 </div>
               </div>
-            </div>
+            </div> */}
 
-            <div className="mt-8 pb-12">
+            {/* <div className="mt-8 pb-12">
               <div className="w-full lg:w-[500px] mx-auto">
                 <ToggleButton
                   fullWidth
@@ -192,7 +216,7 @@ export default function RestrictedOffer() {
               ) : (
                 <div className="mt-6 grid grid-cols-1 gap-8"></div>
               )}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

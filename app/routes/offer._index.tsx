@@ -1,6 +1,5 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import {
-  Link,
   useLoaderData,
   useLocation,
   useNavigation,
@@ -81,8 +80,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     if (userData.user) {
       return {
         mobile: isMobile(userAgent!),
-        user: userData.user
-      }
+        user: userData.user,
+      };
     }
   } catch (error) {
     console.log(error);
@@ -128,18 +127,16 @@ export default function RestrictedOffer() {
         url={location.pathname}
       />
       <div className="bg-white border-t-[1px] border-gray-300">
-        <div className="w-full xl:w-[1260px] mx-auto px-2 md:px-8 py-8 lg:py-14">
+        <div className="w-full xl:w-[1260px] mx-auto px-2 md:px-8 py-8">
           <div>
-            <h1 className="w-full text-center text-3xl font-semibold">
-              {translator.getTranslation(lang, "restrictedConst")}
+            <h1 className="w-full text-3xl font-bold text-center">
+              {translator.getTranslation(lang, "restrictedTitle")}
             </h1>
-            <div className="flex flex-row justify-center mt-12">
-              <Link
-                to={`/?lang=${lang}`}
-                className="text-[16px] text-center font-semibold px-6 py-2 bg-gray-500 text-white rounded-xl transition-all duration-300 transform hover:bg-gray-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
-              >
-                {translator.getTranslation(lang, "backBtn")}
-              </Link>
+
+            <div className="mb-14 mt-8">
+              <p className="w-full text-[16px] font-gray-700 text-center">
+                {translator.getTranslation(lang, "offerEmpty")}
+              </p>
             </div>
           </div>
 
@@ -151,8 +148,8 @@ export default function RestrictedOffer() {
               interest={4.25}
               maturity={10}
               lang={lang}
-              link={`/auth/?lang=${lang}`}
-              bondPrice={500}
+              link={`/offer/1/?lang=${lang}`}
+              bondPrice={100}
             />
 
             <OfferCard
@@ -162,8 +159,8 @@ export default function RestrictedOffer() {
               interest={3.8}
               maturity={8}
               lang={lang}
-              link={`/auth/?lang=${lang}`}
-              bondPrice={500}
+              link={`/offer/2/?lang=${lang}`}
+              bondPrice={100}
             />
           </div> */}
         </div>

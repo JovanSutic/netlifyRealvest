@@ -21,9 +21,7 @@ const NavigationColumn = ({
   const isBlog = url.split("/")?.[1] === "blog";
 
   return (
-    <header
-      className={`sticky top-[-1px] lg:top-0 bg-white z-[9999] shadow`}
-    >
+    <header className={`sticky top-[-1px] lg:top-0 bg-white z-[9999] shadow`}>
       <div className="w-full xl:w-[1260px] mx-auto pb-0 lg:pb-1">
         <div className="grid grid-cols-2 lg:grid-cols-3">
           <div className="flex flex-col justify-center px-4 py-4 lg:py-2">
@@ -42,29 +40,42 @@ const NavigationColumn = ({
           <div className="hidden lg:block flex flex-row-reverse">
             <div className="px-4 py-2">
               <ul className="flex flex-row">
+                {user && (
+                  <li className="mr-6">
+                    <Link
+                      to={`/portfolio/?lang=${lang}`}
+                      className="text-[16px] font-semibold text-gray-700 hover:text-blue-600 leading-[40px]"
+                    >
+                      {translate.getTranslation(lang, "portfolio")}
+                    </Link>
+                  </li>
+                )}
                 <li className="mr-6">
                   {" "}
                   <Link
-                    to={`/offer-restricted/?lang=${lang}`}
-                    className="text-[17px] font-semibold text-gray-700 hover:text-blue-600 leading-[40px]"
+                    to={`/offer/?lang=${lang}`}
+                    className="text-[16px] font-semibold text-gray-700 hover:text-blue-600 leading-[40px]"
                   >
                     {translate.getTranslation(lang, "invest")}
                   </Link>{" "}
                 </li>
-                <li className="mr-6">
-                  {" "}
-                  <Link
-                    to={`/knowledge/?lang=${lang}`}
-                    className="text-[17px] font-semibold text-gray-700 hover:text-blue-600 leading-[40px]"
-                  >
-                    {translate.getTranslation(lang, "knowledge")}
-                  </Link>{" "}
-                </li>
+                {!user && (
+                  <li className="mr-6">
+                    {" "}
+                    <Link
+                      to={`/knowledge/?lang=${lang}`}
+                      className="text-[16px] font-semibold text-gray-700 hover:text-blue-600 leading-[40px]"
+                    >
+                      {translate.getTranslation(lang, "knowledge")}
+                    </Link>{" "}
+                  </li>
+                )}
+
                 {!user && (
                   <li className="mr-6">
                     <Link
                       to={`/auth/?lang=${lang}`}
-                      className="hidden md:block text-[17px] font-semibold px-4 py-2 bg-gray-200 text-gray-800 rounded-xl transition-all duration-300 transform hover:bg-gray-300 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                      className="hidden md:block text-[16px] font-semibold px-4 py-2 bg-gray-200 text-gray-800 rounded-xl transition-all duration-300 transform hover:bg-gray-300 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
                     >
                       {translate.getTranslation(lang, "loginNav")}
                     </Link>
@@ -74,7 +85,7 @@ const NavigationColumn = ({
                   <li className="mr-6">
                     <Link
                       to={`/auth/sign_out?lang=${lang}`}
-                      className="hidden md:block text-[17px] font-semibold px-4 py-2 bg-gray-200 text-gray-800 rounded-xl transition-all duration-300 transform hover:bg-gray-300 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
+                      className="hidden md:block text-[15px] font-semibold px-4 py-2 bg-gray-200 text-gray-800 rounded-xl transition-all duration-300 transform hover:bg-gray-300 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
                     >
                       {translate.getTranslation(lang, "logoutNav")}
                     </Link>
@@ -189,19 +200,31 @@ const NavigationColumn = ({
           </button> */}
 
           <ul className="block fixed bg-blue-100 w-1/2 min-w-[100%] top-0 left-0 h-full shadow-md overflow-auto z-[9998]">
-            {/* <li className="bg-blue-900 py-3 px-3">
-              <div className="flex flex-wrap items-left">
-                <div className="w-[120px] mx-auto">
-                  <Link to={`/?lang=${lang}`}>
-                    {" "}
-                    <img src="/logo3.png" alt="logo" />
-                  </Link>
-                </div>
-              </div>
-            </li> */}
-
+            {user && (
+              <li className="pt-6 px-3">
+                <Link to={`/offer/?lang=${lang}`}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-6 w-6 mr-3 inline text-blue-900 font-bold"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"
+                    />
+                  </svg>
+                  <span className="text-gray-700 text-[15px] font-bold">
+                    {translate.getTranslation(lang, "portfolio")}
+                  </span>
+                </Link>
+              </li>
+            )}
             <li className="pt-6 px-3">
-              <Link to={`/offer-restricted/?lang=${lang}`}>
+              <Link to={`/offer/?lang=${lang}`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

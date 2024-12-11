@@ -16,6 +16,8 @@ export const navigationMap: Record<string, Record<string, string>> = {
     portNextDate: "Next payout date:",
     portProp: "Properties",
     portTrans: "Transactions",
+    portfolio: "Portfolio",
+    portfolioEmpty: "At the moment you do not have any investments in your portfolio."
   },
   sr: {
     account: "Otvorite besplatan nalog",
@@ -34,5 +36,8 @@ export const navigationMap: Record<string, Record<string, string>> = {
     portNextDate: "Datum naredne isplata:",
     portProp: "Nekretnine",
     portTrans: "Transakcije",
+    portfolio: "Portfolijo",
+    portfolioEmpty: "Trenutno nemate aktivne investicije u svom portfoliju."
+    
   },
 };

@@ -109,7 +109,6 @@ const AreaLineReport = ({
               <div className="w-[30px]">
                 <TextTooltip
                   text={translate.getTranslation(lang, "infoReport")}
-                  style="top"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

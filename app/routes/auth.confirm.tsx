@@ -45,7 +45,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       });
 
       if (!error) {
-        return redirect(`/offer-restricted/?lang=${lang}`, { headers });
+        return redirect(`/portfolio/?lang=${lang}`, { headers });
       }
     } catch (error) {
       isError = true;

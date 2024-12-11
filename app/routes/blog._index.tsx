@@ -49,6 +49,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       .from("blogs")
       .select("*", { count: "exact", head: false })
       .eq("language", lang)
+      .is("type", null)
       .order("id")
       .range((Number(page) - 1) * limit, limit);
 

@@ -52,7 +52,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     const {data: userData} = await supabaseClient.auth.getUser();
     if (userData.user && userData.user?.role === "authenticated") {
-      return redirect(`/offer-restricted/?lang=${lang}`);
+      return redirect(`/portfolio/?lang=${lang}`);
     }
   } catch (error) {
     isError = true;
@@ -342,7 +342,7 @@ export default function AuthRegister() {
         lang={lang}
         url={location.pathname}
       />
-      <div className="w-full flex justify-center font-[sans-serif] border-t-[1px] border-gray-300 text-[#333]  p-4 h-auto">
+      <div className="w-full flex justify-center border-t-[1px] border-gray-300 text-[#333]  p-4 h-auto">
         <Alert
           type="error"
           isOpen={apiError !== undefined}
@@ -352,9 +352,9 @@ export default function AuthRegister() {
         />
         <div className="lg:w-1/3 md:w-1/2 sm:w-3/4 w-full">
 
-          <div className="rounded-2xl px-2 md:px-6 mt-4 md:mt-8 relative z-10">
+          <div className="rounded-2xl px-2 md:px-6 mt-4 relative z-10">
             <div className="mb-10">
-              <h3 className="text-3xl text-center font-extrabold text-slate-800 mb-3">
+              <h3 className="text-3xl font-bold text-center mb-3">
                 {translator.getTranslation(lang!, "registerTitle")}
               </h3>
               <h3 className="text-sm text-center text-slate-400">

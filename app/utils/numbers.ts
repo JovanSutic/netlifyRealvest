@@ -8,7 +8,11 @@ export const isNumber = (value: string | number): boolean => {
   return !Number.isNaN(Number(value.replace(",", ".")));
 };
 
-export const makeNumberCurrency = (num: number, currency: string = "€", fraction: number = 0) => {
+export const makeNumberCurrency = (
+  num: number,
+  currency: string = "€",
+  fraction: number = 0
+) => {
   return `${(num || 0).toLocaleString(undefined, {
     maximumFractionDigits: fraction,
   })}${currency}`;
@@ -50,3 +54,32 @@ export const getAverageOfList = (data: number[]): number => {
   }
   return total / data.length;
 };
+
+export const makeNumberPercent = (num: number): string => {
+  return `${roundNumberToDecimal(num * 100, 2)}%`;
+};
+
+export const getNotaryFee = (price: number): number => {
+  const additionFee = 10;
+  const additionLimit = 8550;
+  const limits = [5000, 21000, 42000, 60000, 85000, 120000];
+  const fees = [62, 105, 140, 200, 240, 280];
+
+  if (price > limits[limits.length - 1]) {
+    const addition =
+      Math.ceil((price - limits[limits.length - 1]) / additionLimit) *
+      additionFee;
+    return limits[limits.length - 1] + addition;
+  }
+
+  const index = limits.findIndex((item) => price < item);
+
+  return fees[index];
+};
+
+export const getPremiumEstimate = (price: number, appreciation: number, bonds: number): number => {
+  const difference = price * appreciation;
+  console.log(price)
+  return  difference / 2 / bonds;
+
+}
