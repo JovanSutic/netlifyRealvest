@@ -369,7 +369,7 @@ export default function Index() {
             </div>
           </div>
 
-          <div className="flex flex-col lg:flex-row justify-center">
+          <div className="flex flex-col lg:flex-row justify-center items-center">
             <div className="flex lg:mr-2">
               <Link
                 to={`/auth/register?lang=${lang}`}

@@ -12,8 +12,8 @@ import { LangType } from "../types/dashboard.types";
 import Footer from "../components/layout/Footer";
 import PageLoader from "../components/loader/PageLoader";
 import NavigationColumn from "../components/navigation/NavigationColumn";
-import ToggleButton from "../components/toggleButtons/ToggleButton";
-import PropertyCard from "../components/card/PropertyCard";
+// import ToggleButton from "../components/toggleButtons/ToggleButton";
+// import PropertyCard from "../components/card/PropertyCard";
 import { createSupabaseServerClient } from "../supabase.server";
 import { User } from "@supabase/supabase-js";
 
@@ -52,9 +52,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function RestrictedOffer() {
   const [searchParams] = useSearchParams();
-  const [infoType, setInfoType] = useState<"properties" | "transactions">(
-    "properties"
-  );
+  // const [infoType, setInfoType] = useState<"properties" | "transactions">(
+  //   "properties"
+  // );
   const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
   const lang = (searchParams.get("lang") as LangType) || "sr";
 
@@ -89,8 +89,14 @@ export default function RestrictedOffer() {
       <div className="bg-white border-t-[1px] border-gray-300">
         <div className="w-full xl:w-[1080px] mx-auto px-4">
           <div className="w-full">
-            <h1 className="w-full text-3xl font-bold mt-6">Portfolio</h1>
-            <div className="grid grid-cols-1 lg:grid-cols-2">
+            <h1 className="w-full text-3xl font-bold mt-8 text-center">{translator.getTranslation(lang, 'portfolio')}</h1>
+
+            <div className="mb-14 mt-8">
+              <p className="w-full text-[16px] font-gray-700 text-center">{translator.getTranslation(lang, 'portfolioEmpty')}</p>
+            </div>
+
+
+            {/* <div className="grid grid-cols-1 lg:grid-cols-2">
               <div className="mt-8">
                 <p className="font-semibold text-[17px]">
                   {translator.getTranslation(lang, "portYour")}
@@ -161,9 +167,9 @@ export default function RestrictedOffer() {
                   </p>
                 </div>
               </div>
-            </div>
+            </div> */}
 
-            <div className="mt-8 pb-12">
+            {/* <div className="mt-8 pb-12">
               <div className="w-full lg:w-[500px] mx-auto">
                 <ToggleButton
                   fullWidth
@@ -210,7 +216,7 @@ export default function RestrictedOffer() {
               ) : (
                 <div className="mt-6 grid grid-cols-1 gap-8"></div>
               )}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
