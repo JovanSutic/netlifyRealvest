@@ -14,7 +14,7 @@ import Footer from "../components/layout/Footer";
 import PageLoader from "../components/loader/PageLoader";
 import NavigationColumn from "../components/navigation/NavigationColumn";
 import { User } from "@supabase/supabase-js";
-import OfferCard from "../components/card/OfferCard";
+// import OfferCard from "../components/card/OfferCard";
 
 // const SuccessScreen = () => {
 //   return (
@@ -127,14 +127,20 @@ export default function RestrictedOffer() {
         url={location.pathname}
       />
       <div className="bg-white border-t-[1px] border-gray-300">
-        <div className="w-full xl:w-[1260px] mx-auto px-2 md:px-8 py-8 lg:py-14">
+        <div className="w-full xl:w-[1260px] mx-auto px-2 md:px-8 py-8">
           <div>
-            <h1 className="w-full text-center text-3xl font-semibold">
+            <h1 className="w-full text-3xl font-bold text-center">
               {translator.getTranslation(lang, "restrictedTitle")}
             </h1>
+
+            <div className="mb-14 mt-8">
+              <p className="w-full text-[16px] font-gray-700 text-center">
+                {translator.getTranslation(lang, "offerEmpty")}
+              </p>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-8 mt-10">
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-8 mt-10">
             <OfferCard
               name={"55 m2, Beograd na vodi, Beograd"}
               photo="https://img.nekretnine.rs/foto/NjU4eDQ5NC9jZW50ZXIvbWlkZGxlL2ZpbHRlcnM6d2F0ZXJtYXJrKGh0dHBzOi8vd3d3Lm5la3JldG5pbmUucnMvYnVpbGQvaW1hZ2VzL3dhdGVybWFyay0yNTYucG5nLGNlbnRlcixjZW50ZXIsNTApOmZvcm1hdCh3ZWJwKS9uZWs=/TGusuEMlV_fss?st=I2Bix4AV7M6ROd6JrgW3IfoMdVOtxzeE6RL4CQ004BE&ts=1731370739&e=0"
@@ -156,7 +162,7 @@ export default function RestrictedOffer() {
               link={`/offer/2/?lang=${lang}`}
               bondPrice={100}
             />
-          </div>
+          </div> */}
         </div>
       </div>
       <Footer lang={lang} mobile={mobile} />

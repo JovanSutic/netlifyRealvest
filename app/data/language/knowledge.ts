@@ -143,6 +143,7 @@ export const knowledgeMap: Record<string, Record<string, string>> = {
       "Real estate value risk: A decline in real estate values ​​could affect the bond's total yield and the issuer's ability to repay investors.",
     riskC:
       "Lack of liquidity risk: After the initial purchase, and before the maturity date, Realvest bonds can be sold on our platform. A situation may occur in which none of the users is interested in buying the bond that you want to sell.",
+    offerEmpty: "At the moment there are no active investment properties on offer."
   },
   sr: {
     sectionMeta:
@@ -290,5 +291,6 @@ export const knowledgeMap: Record<string, Record<string, string>> = {
       "Rizik vrednosti nekretnine: Pad vrednosti nekretnine mogao bi da utiče na ukupan prinos obveznice i na sposobnost izdavaoca (naša kompanija) da otplati investitore.",
     riskC:
       "Rizik nedostatka likvidnosti: Nakon inicijalne kupovine, a pre roka dospeća, Realvest obveznice je moguće prodati na našoj platformi. Može se dogoditi situacija u kojoj niko od korisnika nije zainteresovan za kupovinu obveznice koju želite prodati.",
+    offerEmpty: "Trenutno nema aktivne investicionih nekretnina u ponudi."
   },
 };
