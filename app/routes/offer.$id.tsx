@@ -306,12 +306,14 @@ export default function RestrictedOffer() {
                 </Link>
               </div>
               <div className="w-full flex">
-                <Link
-                  to={`/auth/register?lang=${lang}`}
+                <a
+                  href="https://calendly.com/josutic-sutic/inicijalni-sastanak"
+                  target="_blank"
+                  rel="noreferrer"
                   className="w-full text-[17px] text-center font-semibold px-4 py-3 bg-gray-500 text-white rounded-xl transition-all duration-300 transform hover:bg-gray-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
                 >
                   {translator.getTranslation(lang, "callCta")}
-                </Link>
+                </a>
               </div>
             </div>
             <div className="col-span-2 grid grid-cols-1 lg:grid-cols-3 gap-7 lg:gap-4">
@@ -392,12 +394,14 @@ export default function RestrictedOffer() {
             </div>
             <div className="col-span-1 hidden lg:flex flex-col justify-center items-center">
               <div className="w-full flex justify-center mb-4">
-                <Link
-                  to={`/auth/register?lang=${lang}`}
+                <a
+                  href="https://calendly.com/josutic-sutic/inicijalni-sastanak"
+                  target="_blank"
+                  rel="noreferrer"
                   className="w-full text-[17px] text-center font-semibold px-4 py-3 bg-gray-500 text-white rounded-xl transition-all duration-300 transform hover:bg-gray-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
                 >
                   {translator.getTranslation(lang, "callCta")}
-                </Link>
+                </a>
               </div>
               <div className="w-full flex justify-center">
                 <Link
@@ -808,11 +812,14 @@ export default function RestrictedOffer() {
                     </Tooltip>
                   </div>
                   <span className="font-bold text-black text-[22px]">
-                    {`${getNumberWithDecimals(getPremiumEstimate(
-                      data.total,
-                      marketData?.appreciation || 0,
-                      bondsNumber
-                    ), 4)}€`}
+                    {`${getNumberWithDecimals(
+                      getPremiumEstimate(
+                        data.total,
+                        marketData?.appreciation || 0,
+                        bondsNumber
+                      ),
+                      4
+                    )}€`}
                   </span>
                 </div>
               </div>
@@ -1428,12 +1435,14 @@ export default function RestrictedOffer() {
                   </Link>
                 </div>
                 <div className="w-full flex">
-                  <Link
-                    to={`/auth/register?lang=${lang}`}
+                  <a
+                    href="https://calendly.com/josutic-sutic/inicijalni-sastanak"
+                    target="_blank"
+                    rel="noreferrer"
                     className="w-full text-[17px] text-center font-semibold px-4 py-3 bg-gray-500 text-white rounded-xl transition-all duration-300 transform hover:bg-gray-600 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
                   >
                     {translator.getTranslation(lang, "callCta")}
-                  </Link>
+                  </a>
                 </div>
               </div>
             </div>
