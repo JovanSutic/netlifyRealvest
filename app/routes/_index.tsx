@@ -146,12 +146,14 @@ export default function Index() {
                     </Link>
                   </div>
                   <div className="flex lg:ml-4">
-                    <Link
-                      to={`/auth/register?lang=${lang}`}
+                    <a
+                      href="https://calendly.com/josutic-sutic/inicijalni-sastanak"
+                      target="_blank"
+                      rel="noreferrer"
                       className="text-[16px]  text-center font-semibold px-6 py-2 bg-white text-black rounded-xl transition-all duration-300 transform hover:bg-gray-100 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
                     >
                       {translator.getTranslation(lang, "callCta")}
-                    </Link>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -379,12 +381,14 @@ export default function Index() {
               </Link>
             </div>
             <div className="flex mt-2 lg:mt-0 lg:ml-2">
-              <Link
-                to={`/auth/register?lang=${lang}`}
+              <a
+                href="https://calendly.com/josutic-sutic/inicijalni-sastanak"
+                target="_blank"
+                rel="noreferrer"
                 className="text-[16px] text-center font-semibold px-6 py-2 bg-gray-200 text-black rounded-xl transition-all duration-300 transform hover:bg-gray-100 focus:ring-2 focus:outline-none  focus:ring-opacity-50"
               >
                 {translator.getTranslation(lang, "callCta")}
-              </Link>
+              </a>
             </div>
           </div>
         </div>
