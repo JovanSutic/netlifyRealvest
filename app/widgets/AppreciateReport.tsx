@@ -95,7 +95,6 @@ const AppreciateReport = ({
             <div className="w-[30px]">
               <Tooltip
                 text={translate.getTranslation(lang, "infoAppreciate")}
-                style="top"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
